@@ -3,6 +3,7 @@
 class Upload < ActiveRecord::Base
   # Upper limit for foreground checksum processing
   CHECKSUM_THRESHOLD = 100.megabytes
+  ALL_STORES = [ObjectStorage::Store::LOCAL, ObjectStorage::Store::REMOTE].freeze
 
   belongs_to :model, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
@@ -12,6 +13,7 @@ class Upload < ActiveRecord::Base
   validates :uploader, presence: true
 
   scope :with_files_stored_locally, -> { where(store: [nil, ObjectStorage::Store::LOCAL]) }
+  scope :with_files_stored_remotely, -> { where(store: [ObjectStorage::Store::REMOTE]) }
 
   before_save  :calculate_checksum!, if: :foreground_checksummable?
   after_commit :schedule_checksum,   if: :checksummable?
@@ -22,6 +24,50 @@ class Upload < ActiveRecord::Base
 
   def self.hexdigest(path)
     Digest::SHA256.file(path).hexdigest
+  end
+
+  class << self
+    def get_store_class(store)
+      case store
+      when ObjectStorage::Store::REMOTE
+        # FIXME: this should return class according method name
+        Uploads::Fog.new
+      when ObjectStorage::Store::LOCAL
+        Uploads::Local.new
+      else
+        raise ObjectStorage::UnknownStoreError
+      end
+    end
+
+    def get_relation(store)
+      case store
+      when ObjectStorage::Store::REMOTE
+        with_files_stored_remotely
+      when ObjectStorage::Store::LOCAL
+        with_files_stored_locally
+      else
+        raise ObjectStorage::UnknownStoreError
+      end
+    end
+
+    ##
+    # FastDestroyAll concerns
+    def begin_fast_destroy
+      ALL_STORES.each_with_object({}) do |store, result|
+        relation = get_relation(store) # rubocop:disable GitlabSecurity/PublicSend
+        keys = get_store_class(store).keys(relation)
+
+        result[store] = keys if keys.present?
+      end
+    end
+
+    ##
+    # FastDestroyAll concerns
+    def finalize_fast_destroy(keys)
+      keys.each do |store, value|
+        get_store_class(store).delete_keys(value)
+      end
+    end
   end
 
   def absolute_path
