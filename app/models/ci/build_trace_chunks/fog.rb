@@ -8,15 +8,19 @@ module Ci
       end
 
       def data(model)
-        connection.get_object(bucket_name, key(model))[:body]
+        model_key = key(model)
+
+        connection.get_object(bucket_name, key_raw(model_key))[:body]
       end
 
       def set_data(model, data)
-        connection.put_object(bucket_name, key(model), data)
+        model_key = key(model)
+
+        connection.put_object(bucket_name, key_raw(model_key), data)
       end
 
       def delete_data(model)
-        delete_keys([[model.build_id, model.chunk_index]])
+        delete_keys([key(model)])
       end
 
       def keys(relation)
@@ -27,17 +31,19 @@ module Ci
 
       def delete_keys(keys)
         keys.each do |key|
-          connection.delete_object(bucket_name, key_raw(*key))
+          connection.delete_object(bucket_name, key_raw(key))
         end
       end
 
       private
 
       def key(model)
-        key_raw(model.build_id, model.chunk_index)
+        [model.build_id, model.chunk_index]
       end
 
-      def key_raw(build_id, chunk_index)
+      def key_raw(key_array)
+        build_id, chunk_index = key_array
+
         "tmp/builds/#{build_id.to_i}/chunks/#{chunk_index.to_i}.log"
       end
 
