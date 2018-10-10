@@ -53,7 +53,7 @@ a test that will fail if it spots a new `README.md` file.
 ## Formatting
 
 - Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
-- Use undescore (`_`) for text in italics (`_italic_`).
+- Use underscore (`_`) for text in italics (`_italic_`).
 - Put an empty line between different markups. For example:
     ```md
     ## Header
@@ -112,7 +112,7 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
   document add: `[identifier]: https://example.com`, in which case, we do
   encourage you to also add an alternative text: `[identifier]: https://example.com "Alternative text"` that appears when hovering your mouse on a link.
 - To link to internal documentation, use relative links, not full URLs. Use `../` to
-  navigate tp high-level directories, and always add the file name `file.md` at the
+  navigate to high-level directories, and always add the file name `file.md` at the
   end of the link with the `.md` extension, not `.html`.
   Example: instead of `[text](../../merge_requests/)`, use
   `[text](../../merge_requests/index.md)` or, `[text](../../ci/README.md)`, or,
@@ -234,10 +234,34 @@ which renders in docs.gitlab.com to:
 
 If the text spans across multiple lines it's OK to split the line.
 
-## Specific sections and terms
+## Terms
 
-To mention and/or reference specific terms in GitLab, please follow the styles
-below.
+To maintain consistency through GitLab documentation, the following guides documentation authors
+on agreed styles and usage of terms.
+
+### Describing UI elements
+
+The following are styles to follow when describing UI elements on a screen:
+
+- For elements with a visible label, use that label in bold with matching case. For example, `the **Cancel** button`.
+- For elements with a tooltip or hover label, use that label in bold with matching case. For example, `the **Add status emoji** button`.
+
+### Verbs for UI elements
+
+The following are verbs that should be used in preference to alternatives.
+
+| Use      | Used for                        | Do not use                 |
+|:---------|:--------------------------------|:---------------------------|
+| "click"  | buttons, links, menu items      | "hit", "press", "select"   |
+| "check"  | checkboxes                      | "enable", "click", "press" |
+| "select" | dropdowns                       | "pick"                     |
+| "expand" | expandable sections             | "open"                     |
+
+### Other Verbs
+
+| Use      | Used for                        | Do not use                 |
+|:---------|:--------------------------------|:---------------------------|
+| "go"     | making a browser go to location | "navigate", "open"         |
 
 ### GitLab versions and tiers
 
@@ -309,6 +333,10 @@ Introduced by [!244](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/24
 the special markup `**[STARTER]**` will generate a `span` element to trigger the
 badges and tooltips (`<span class="badge-trigger starter">`). When the keyword
 "only" is added, the corresponding GitLab.com badge will not be displayed.
+
+## Specific sections
+
+Certain styles should be applied to specific sections. Styles for specific sections are outlined below.
 
 ### GitLab Restart
 
