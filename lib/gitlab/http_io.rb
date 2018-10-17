@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # This class is compatible with IO class (https://ruby-doc.org/core-2.3.1/IO.html)
 # source: https://gitlab.com/snippets/1685610
@@ -74,7 +76,7 @@ module Gitlab
     end
 
     def read(length = nil, outbuf = "")
-      out = ""
+      out = []
 
       length ||= size - tell
 
@@ -90,17 +92,15 @@ module Gitlab
         length -= chunk_data.bytesize
       end
 
-      # If outbuf is passed, we put the output into the buffer. This supports IO.copy_stream functionality
-      if outbuf
-        outbuf.slice!(0, outbuf.bytesize)
-        outbuf << out
-      end
+      out = out.join
 
+      # If outbuf is passed, we put the output into the buffer. This supports IO.copy_stream functionality
+      outbuf = "#{outbuf[outbuf.bytesize,]}#{out}" if outbuf # rubocop:disable Lint/UselessAssignment
       out
     end
 
     def readline
-      out = ""
+      out = []
 
       until eof?
         data = get_chunk
@@ -116,7 +116,7 @@ module Gitlab
         end
       end
 
-      out
+      out.join
     end
 
     def write(data)
