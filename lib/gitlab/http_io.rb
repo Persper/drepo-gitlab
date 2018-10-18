@@ -75,7 +75,7 @@ module Gitlab
       end
     end
 
-    def read(length = nil, outbuf = "")
+    def read(length = nil, outbuf = nil)
       out = []
 
       length ||= size - tell
@@ -95,7 +95,10 @@ module Gitlab
       out = out.join
 
       # If outbuf is passed, we put the output into the buffer. This supports IO.copy_stream functionality
-      outbuf = "#{outbuf[outbuf.bytesize,]}#{out}" if outbuf # rubocop:disable Lint/UselessAssignment
+      if outbuf
+        outbuf.replace(out)
+      end
+
       out
     end
 
