@@ -7,15 +7,22 @@ module Gitlab
         #
         class Image < Node
           include Validatable
+          include Attributable
 
-          ALLOWED_KEYS = %i[name entrypoint].freeze
+          ALLOWED_KEYS = %i[name entrypoint user].freeze
+
+          attributes ALLOWED_KEYS
 
           validations do
             validates :config, hash_or_string: true
             validates :config, allowed_keys: ALLOWED_KEYS
 
             validates :name, type: String, presence: true
-            validates :entrypoint, array_of_strings: true, allow_nil: true
+
+            with_options allow_nil: true do
+              validates :entrypoint, array_of_strings: true
+              validates :user, type: String
+            end
           end
 
           def hash?
@@ -24,14 +31,6 @@ module Gitlab
 
           def string?
             @config.is_a?(String)
-          end
-
-          def name
-            value[:name]
-          end
-
-          def entrypoint
-            value[:entrypoint]
           end
 
           def value

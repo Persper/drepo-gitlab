@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     module Build
       class Image
-        attr_reader :alias, :command, :entrypoint, :name
+        attr_reader :alias, :command, :entrypoint, :name, :user
 
         class << self
           def from_image(job)
@@ -29,6 +29,7 @@ module Gitlab
             @command = image[:command]
             @entrypoint = image[:entrypoint]
             @name = image[:name]
+            @user = image[:user]
           end
         end
 

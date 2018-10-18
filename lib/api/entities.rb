@@ -1299,7 +1299,7 @@ module API
       end
 
       class Image < Grape::Entity
-        expose :name, :entrypoint
+        expose :name, :entrypoint, :user
       end
 
       class Service < Image
