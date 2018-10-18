@@ -32,9 +32,9 @@
         'shouldRenderCalloutMessage',
         'shouldRenderTriggeredLabel',
         'hasEnvironment',
-        'isJobStuck',
         'hasTrace',
         'emptyStateIllustration',
+        'hasRunnersForProject',
       ]),
     },
   };
@@ -72,9 +72,9 @@
 
       <!-- Body Section -->
       <stuck-block
-        v-if="isJobStuck"
+        v-if="job.stuck"
         class="js-job-stuck"
-        :has-no-runners-for-project="job.runners.available"
+        :has-no-runners-for-project="hasRunnersForProject"
         :tags="job.tags"
         :runners-path="runnerSettingsUrl"
       />

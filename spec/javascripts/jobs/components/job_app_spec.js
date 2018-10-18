@@ -128,59 +128,73 @@ describe('Job App ', () => {
   });
 
   describe('stuck block', () => {
-    it('renders stuck block when there are no runners', () => {
-      store.dispatch(
-        'receiveJobSuccess',
-        Object.assign({}, job, {
-          status: {
-            group: 'pending',
-            icon: 'status_pending',
-            label: 'pending',
-            text: 'pending',
-            details_path: 'path',
-          },
-        }),
-      );
+    describe('without active runners availabl', () => {
+      it('renders stuck block when there are no runners', () => {
+        store.dispatch('receiveJobSuccess',
+          Object.assign({}, job, {
+            stuck: true,
+            runners: {
+              available: false,
+              online: false,
+            },
+            tags: [],
+          }),
+        );
+        vm = mountComponentWithStore(Component, { props, store });
 
-      vm = mountComponentWithStore(Component, {
-        props,
-        store,
+        expect(vm.$el.querySelector('.js-job-stuck')).not.toBeNull();
+        expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(
+          "This job is stuck, because you don't have any active runners that can run this job.",
+        );
       });
-
-      expect(vm.$el.querySelector('.js-job-stuck')).not.toBeNull();
     });
 
-    it('renders tags in stuck block when there are no runners', () => {
-      store.dispatch(
-        'receiveJobSuccess',
-        Object.assign({}, job, {
-          status: {
-            group: 'pending',
-            icon: 'status_pending',
-            label: 'pending',
-            text: 'pending',
-            details_path: 'path',
-          },
-        }),
-      );
+    describe('when available runners can not run specified tag', () => {
+      it('renders tags in stuck block when there are no runners', () => {
+        store.dispatch('receiveJobSuccess',
+          Object.assign({}, job, {
+            stuck: true,
+            runners: {
+              available: false,
+              online: false,
+            },
+          }),
+        );
 
-      vm = mountComponentWithStore(Component, {
-        props,
-        store,
+        vm = mountComponentWithStore(Component, {
+          props,
+          store,
+        });
+
+        expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(job.tags[0]);
+        expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(
+          "This job is stuck, because you don't have any active runners online with any of these tags assigned to them:",
+        );
       });
-
-      expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(job.tags[0]);
     });
 
-    it(' does not renders stuck block when there are no runners', () => {
-      store.dispatch('receiveJobSuccess', Object.assign({}, job, { runners: { available: true } }));
+    describe('when runners are offline and build has tags', () => {
+      it('renders message about job being stuck because of no runners with the specified tags', () => {
+        store.dispatch('receiveJobSuccess',
+          Object.assign({}, job, {
+            stuck: true,
+            runners: {
+              available: true,
+              online: true,
+            },
+          }),
+        );
 
-      vm = mountComponentWithStore(Component, {
-        props,
-        store,
+        vm = mountComponentWithStore(Component, {
+          props,
+          store,
+        });
+
+        expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(job.tags[0]);
+        expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(
+          "This job is stuck, because you don't have any active runners online with any of these tags assigned to them:",
+        );
       });
-
-      expect(vm.$el.querySelector('.js-job-stuck')).toBeNull();
     });
   });
 

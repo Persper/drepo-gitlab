@@ -1,0 +1,5 @@
+---
+title: Fix stuck job warning message
+merge_request: 8060
+author:
+type: fixed
