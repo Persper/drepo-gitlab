@@ -27,12 +27,34 @@ shared_examples 'repository lfs file load' do
           allow(controller).to receive(:send_file) { controller.head :ok }
         end
 
-        it 'serves the file' do
-          expect(controller).to receive(:send_file).with("#{LfsObjectUploader.root}/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", filename: filename, disposition: 'attachment')
+        context 'when feature flag workhorse_set_content_type is' do
+          before do
+            stub_feature_flags(workhorse_set_content_type: flag_value)
+          end
 
-          subject
+          context 'enabled' do
+            let(:flag_value) { true }
 
-          expect(response).to have_gitlab_http_status(200)
+            it 'serves the file' do
+              expect(controller).to receive(:send_file).with("#{LfsObjectUploader.root}/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", filename: filename)
+
+              subject
+
+              expect(response).to have_gitlab_http_status(200)
+            end
+          end
+
+          context 'disabled' do
+            let(:flag_value) { false }
+
+            it 'serves the file' do
+              expect(controller).to receive(:send_file).with("#{LfsObjectUploader.root}/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", filename: filename, disposition: 'attachment')
+
+              subject
+
+              expect(response).to have_gitlab_http_status(200)
+            end
+          end
         end
 
         context 'and lfs uses object storage' do
@@ -50,13 +72,36 @@ shared_examples 'repository lfs file load' do
             expect(response.location).to include(lfs_object.reload.file.path)
           end
 
-          it 'sets content disposition' do
-            subject
+          context 'when feature flag workhorse_set_content_type is' do
+            before do
+              stub_feature_flags(workhorse_set_content_type: flag_value)
+            end
 
-            file_uri = URI.parse(response.location)
-            params = CGI.parse(file_uri.query)
+            context 'enabled' do
+              let(:flag_value) { true }
 
-            expect(params["response-content-disposition"].first).to eq "attachment;filename=\"#{filename}\""
+              it 'sets content disposition' do
+                subject
+
+                file_uri = URI.parse(response.location)
+                params = CGI.parse(file_uri.query)
+
+                expect(params).not_to include('response-content-disposition', 'response-content-type')
+              end
+            end
+
+            context 'disabled' do
+              let(:flag_value) { false }
+
+              it 'sets content disposition' do
+                subject
+
+                file_uri = URI.parse(response.location)
+                params = CGI.parse(file_uri.query)
+
+                expect(params["response-content-disposition"].first).to eq "attachment;filename=\"#{filename}\""
+              end
+            end
           end
         end
       end
@@ -75,14 +120,36 @@ shared_examples 'repository lfs file load' do
         allow_any_instance_of(Project).to receive(:lfs_enabled?).and_return(false)
       end
 
-      it 'delivers ASCII file' do
-        subject
+      context 'when feature flag workhorse_set_content_type is' do
+        before do
+          stub_feature_flags(workhorse_set_content_type: flag_value)
+        end
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
-        expect(response.header['Content-Disposition'])
-            .to eq('inline')
-        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+        context 'enabled' do
+          let(:flag_value) { true }
+
+          it 'delivers ASCII file' do
+            subject
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
+            expect(response.header['Content-Disposition']).to be_nil
+            expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+          end
+        end
+
+        context 'disabled' do
+          let(:flag_value) { false }
+
+          it 'delivers ASCII file' do
+            subject
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
+            expect(response.header['Content-Disposition']).to eq('inline')
+            expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+          end
+        end
       end
     end
   end

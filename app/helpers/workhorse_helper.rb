@@ -6,22 +6,34 @@ module WorkhorseHelper
   # Send a Git blob through Workhorse
   def send_git_blob(repository, blob, inline: true)
     headers.store(*Gitlab::Workhorse.send_git_blob(repository, blob))
-    headers['Content-Disposition'] = content_disposition(blob, inline)
-    headers['Content-Type'] = safe_content_type(blob)
+
+    if Feature.disabled?(:workhorse_set_content_type)
+      headers['Content-Disposition'] = content_disposition(blob, inline)
+      headers['Content-Type'] = safe_content_type(blob)
+    end
+
     render plain: ""
   end
 
   # Send a Git diff through Workhorse
   def send_git_diff(repository, diff_refs)
     headers.store(*Gitlab::Workhorse.send_git_diff(repository, diff_refs))
-    headers['Content-Disposition'] = 'inline'
+
+    if Feature.disabled?(:workhorse_set_content_type)
+      headers['Content-Disposition'] = 'inline'
+    end
+
     head :ok
   end
 
   # Send a Git patch through Workhorse
   def send_git_patch(repository, diff_refs)
     headers.store(*Gitlab::Workhorse.send_git_patch(repository, diff_refs))
-    headers['Content-Disposition'] = 'inline'
+
+    if Feature.disabled?(:workhorse_set_content_type)
+      headers['Content-Disposition'] = 'inline'
+    end
+
     head :ok
   end
 
@@ -34,6 +46,11 @@ module WorkhorseHelper
   # Send an entry from artifacts through Workhorse
   def send_artifacts_entry(build, entry)
     headers.store(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
+
+    if Feature.enabled?(:workhorse_set_content_type)
+      headers['Allow-Content-Type'] = 'true'
+    end
+
     head :ok
   end
 

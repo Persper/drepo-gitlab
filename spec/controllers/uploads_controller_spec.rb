@@ -145,11 +145,34 @@ describe UploadsController do
       let(:project) { create(:project, :public) }
 
       context 'for PNG files' do
-        it 'returns Content-Disposition: inline' do
-          note = create(:note, :with_attachment, project: project)
-          get :show, model: 'note', mounted_as: 'attachment', id: note.id, filename: 'dk.png'
+        let(:note) { create(:note, :with_attachment, project: project) }
 
-          expect(response['Content-Disposition']).to start_with('inline;')
+        subject do
+          get :show, model: 'note', mounted_as: 'attachment', id: note.id, filename: 'dk.png'
+        end
+
+        context 'when feature flag workhorse_set_content_type is' do
+          before do
+            stub_feature_flags(workhorse_set_content_type: flag_value)
+
+            subject
+          end
+
+          context 'enabled' do
+            let(:flag_value) { true }
+
+            it 'returns Content-Disposition: attachment' do
+              expect(response['Content-Disposition']).to start_with('attachment;')
+            end
+          end
+
+          context 'disabled' do
+            let(:flag_value) { false }
+
+            it 'returns Content-Disposition: inline' do
+              expect(response['Content-Disposition']).to start_with('inline;')
+            end
+          end
         end
       end
 

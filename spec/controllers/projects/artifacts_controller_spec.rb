@@ -26,10 +26,30 @@ describe Projects::ArtifactsController do
     end
 
     context 'when no file type is supplied' do
-      it 'sends the artifacts file' do
-        expect(controller).to receive(:send_file).with(job.artifacts_file.path, hash_including(disposition: 'attachment')).and_call_original
+      context 'when feature flag workhorse_set_content_type is' do
+        before do
+          stub_feature_flags(workhorse_set_content_type: flag_value)
+        end
 
-        download_artifact
+        context 'enabled' do
+          let(:flag_value) { true }
+
+          it 'sends the artifacts file' do
+            expect(controller).to receive(:send_file).with(job.artifacts_file.path, hash_including(:filename)).and_call_original
+
+            download_artifact
+          end
+        end
+
+        context 'disabled' do
+          let(:flag_value) { false }
+
+          it 'sends the artifacts file' do
+            expect(controller).to receive(:send_file).with(job.artifacts_file.path, hash_including(:filename, disposition: 'attachment')).and_call_original
+
+            download_artifact
+          end
+        end
       end
     end
 
@@ -59,24 +79,27 @@ describe Projects::ArtifactsController do
           end
         end
 
-        context 'when file is stored remotely' do
+        context 'when feature flag workhorse_set_content_type is enabled' do
           before do
-            stub_artifacts_object_storage
-            create(:ci_job_artifact, :remote_store, :codequality, job: job)
+            stub_feature_flags(workhorse_set_content_type: true)
           end
 
           it 'sends the codequality report' do
-            expect(controller).to receive(:redirect_to).and_call_original
+            expect(controller).to receive(:send_file).with(job.job_artifacts_codequality.file.path, hash_including(:filename)).and_call_original
 
             download_artifact(file_type: file_type)
           end
+        end
 
-          context 'when proxied' do
-            it 'sends the codequality report' do
-              expect(Gitlab::Workhorse).to receive(:send_url).and_call_original
+        context 'when feature flag workhorse_set_content_type is disabled' do
+          before do
+            stub_feature_flags(workhorse_set_content_type: false)
+          end
 
-              download_artifact(file_type: file_type, proxy: true)
-            end
+          it 'sends the codequality report' do
+            expect(controller).to receive(:send_file).with(job.job_artifacts_codequality.file.path, hash_including(:filename, disposition: 'attachment')).and_call_original
+
+            download_artifact(file_type: file_type)
           end
         end
       end
@@ -185,6 +208,32 @@ describe Projects::ArtifactsController do
           # On object storage, the URL can end with a query string
           expect(params['Archive']).to match(/build_artifacts.zip(\?[^?]+)?$/)
           expect(params['Entry']).to eq(Base64.encode64('ci_artifacts.txt'))
+        end
+
+        context 'when feature flag workhorse_set_content_type is' do
+          before do
+            stub_feature_flags(workhorse_set_content_type: flag_value)
+          end
+
+          context 'enabled' do
+            let(:flag_value) { true }
+
+            it 'sets Allow-Content_type header' do
+              subject
+
+              expect(response.headers["Allow-Content-Type"]).to eq "true"
+            end
+          end
+
+          context 'disabled' do
+            let(:flag_value) { false }
+
+            it 'does not set Allow-Content_type header' do
+              subject
+
+              expect(response.headers).not_to include("Allow-Content-Type")
+            end
+          end
         end
 
         def send_data

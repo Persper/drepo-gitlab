@@ -52,24 +52,48 @@ describe Projects::WikisController do
 
       let(:path) { upload_file_to_wiki(project, user, file_name) }
 
-      before do
-        subject
-      end
-
       subject { get :show, namespace_id: project.namespace, project_id: project, id: path }
 
       context 'when file is an image' do
         let(:file_name) { 'dk.png' }
 
-        it 'renders the content inline' do
-          expect(response.headers['Content-Disposition']).to match(/^inline/)
-        end
+        context 'when feature flag workhorse_set_content_type is' do
+          before do
+            stub_feature_flags(workhorse_set_content_type: flag_value)
 
-        context 'when file is a svg' do
-          let(:file_name) { 'unsanitized.svg' }
+            subject
+          end
 
-          it 'renders the content as an attachment' do
-            expect(response.headers['Content-Disposition']).to match(/^attachment/)
+          context 'enabled' do
+            let(:flag_value) { true }
+
+            it 'does not set content disposition' do
+              expect(response.headers['Content-Disposition']).to be_nil
+            end
+
+            context 'when file is a svg' do
+              let(:file_name) { 'unsanitized.svg' }
+
+              it 'does not set content disposition' do
+                expect(response.headers['Content-Disposition']).to be_nil
+              end
+            end
+          end
+
+          context 'disabled' do
+            let(:flag_value) { false }
+
+            it 'renders the content inline' do
+              expect(response.headers['Content-Disposition']).to match(/^inline/)
+            end
+
+            context 'when file is a svg' do
+              let(:file_name) { 'unsanitized.svg' }
+
+              it 'renders the content as an attachment' do
+                expect(response.headers['Content-Disposition']).to match(/^attachment/)
+              end
+            end
           end
         end
       end
@@ -77,8 +101,28 @@ describe Projects::WikisController do
       context 'when file is a pdf' do
         let(:file_name) { 'git-cheat-sheet.pdf' }
 
-        it 'sets the content type to application/octet-stream' do
-          expect(response.headers['Content-Type']).to eq 'application/octet-stream'
+        context 'when feature flag workhorse_set_content_type is' do
+          before do
+            stub_feature_flags(workhorse_set_content_type: flag_value)
+
+            subject
+          end
+
+          context 'enabled' do
+            let(:flag_value) { true }
+
+            it 'sets the content type to text/plain' do
+              expect(response.headers['Content-Type']).to eq 'text/plain; charset=utf-8'
+            end
+          end
+
+          context 'disabled' do
+            let(:flag_value) { false }
+
+            it 'sets the content type to application/octet-stream' do
+              expect(response.headers['Content-Type']).to eq 'application/octet-stream'
+            end
+          end
         end
       end
     end

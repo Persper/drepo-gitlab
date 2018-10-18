@@ -20,6 +20,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/current_settings')
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
     require_dependency Rails.root.join('lib/gitlab/middleware/basic_health_check')
+    require_dependency Rails.root.join('lib/gitlab/middleware/workhorse_set_content_type_feature')
 
     # This needs to be loaded before DB connection is made
     # to make sure that all connections have NO_ZERO_DATE
@@ -185,6 +186,8 @@ module Gitlab
           expose: ['Link', 'X-Total', 'X-Total-Pages', 'X-Per-Page', 'X-Page', 'X-Next-Page', 'X-Prev-Page']
       end
     end
+
+    config.middleware.insert_before Rack::Sendfile, ::Gitlab::Middleware::WorkhorseSetContentTypeFeature
 
     # Use caching across all environments
     caching_config_hash = Gitlab::Redis::Cache.params

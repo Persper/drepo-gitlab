@@ -26,12 +26,34 @@ describe Projects::AvatarsController do
       context 'when the avatar is stored in the repository' do
         let(:filepath) { 'files/images/logo-white.png' }
 
-        it 'sends the avatar' do
-          subject
+        context 'when feature flag workhorse_set_content_type is' do
+          before do
+            stub_feature_flags(workhorse_set_content_type: flag_value)
+          end
 
-          expect(response).to have_gitlab_http_status(200)
-          expect(response.header['Content-Type']).to eq('image/png')
-          expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+          context 'enabled' do
+            let(:flag_value) { true }
+
+            it 'sends the avatar' do
+              subject
+
+              expect(response).to have_gitlab_http_status(200)
+              expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
+              expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+            end
+          end
+
+          context 'disabled' do
+            let(:flag_value) { false }
+
+            it 'sends the avatar' do
+              subject
+
+              expect(response).to have_gitlab_http_status(200)
+              expect(response.header['Content-Type']).to eq('image/png')
+              expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+            end
+          end
         end
       end
 
