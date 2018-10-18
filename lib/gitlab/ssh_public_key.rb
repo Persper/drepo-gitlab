@@ -28,9 +28,8 @@ module Gitlab
 
       return key_content if parts.empty?
 
-      content = "#{ssh_type} "
-      parts.each_with_index do |part, index|
-        content = "#{content}#{part}"
+      parts.each_with_object(+"#{ssh_type} ").with_index do |(part, content), index|
+        content << part
 
         if Gitlab::SSHPublicKey.new(content).valid?
           break [content, parts[index + 1]].compact.join(' ') # Add the comment part if present
