@@ -12,5 +12,4 @@ class ImportCommonMetricsNginxVts < ActiveRecord::Migration
   def down
     # no-op
   end
-
 end
