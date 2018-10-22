@@ -36,7 +36,7 @@ module Gitlab
       # Signal worker_start event
       # This should be called from unicorn/puma/etc lifecycle hooks
       def self.signal_worker_start
-        @worker_start_listeners && @worker_start_listeners.each do |block|
+        @worker_start_listeners&.each do |block|
           block.call
         end
       end
@@ -44,7 +44,7 @@ module Gitlab
       # Signal before_fork event
       # This should be called from unicorn/puma/etc lifecycle hooks
       def self.signal_before_fork
-        @before_fork_listeners && @before_fork_listeners.each do |block|
+        @before_fork_listeners&.each do |block|
           block.call
         end
       end
