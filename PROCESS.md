@@ -209,7 +209,7 @@ the stable branch are:
 * [Documentation updates](https://docs.gitlab.com/ee/development/documentation/workflow.html#documentation-shipped-late) for changes in the same release
 * New or updated translations (as long as they do not touch application code)
 * Changes that are behind a feature flag and have the ~"feature flag" label
-* Merge request that reduce the effort for picking regression fixes (such as code style changes) as long as they don't contain new functionality.  
+* Merge request that reduce the effort for picking regression fixes (such as code formatting changes) as long as they don't contain new functionality.  
   Keep in mind that instead of picking additional dependencies, **not** picking the corresponding regression fix is an option.
 
 During the feature freeze all merge requests that are meant to go into the
