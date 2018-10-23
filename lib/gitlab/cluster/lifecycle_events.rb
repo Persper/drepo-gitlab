@@ -24,7 +24,7 @@ module Gitlab
         def on_worker_start(&block)
           if in_clustered_environment?
             # Defer block execution
-            (@worker_start_listeners ||= []) << block
+            (@worker_start_hooks ||= []) << block
           else
             block.call
           end
@@ -33,7 +33,7 @@ module Gitlab
         def on_before_fork(&block)
           if in_clustered_environment?
             # Defer block execution
-            (@before_fork_listeners ||= []) << block
+            (@before_fork_hooks ||= []) << block
           else
             # Discard block
            end
@@ -42,7 +42,7 @@ module Gitlab
         def on_master_restart(&block)
           if in_clustered_environment?
             # Defer block execution
-            (@master_restart_listeners ||= []) << block
+            (@master_restart_hooks ||= []) << block
           else
             # Discard block
            end
@@ -52,19 +52,19 @@ module Gitlab
         # Lifecycle integration methods (called from unicorn.rb, puma.rb, etc.)
         #
         def do_worker_start
-          @worker_start_listeners&.each do |block|
+          @worker_start_hooks&.each do |block|
             block.call
           end
         end
 
         def do_before_fork
-          @before_fork_listeners&.each do |block|
+          @before_fork_hooks&.each do |block|
             block.call
           end
         end
 
         def do_master_restart
-          @master_restart_listeners && @master_restart_listeners.each do |block|
+          @master_restart_hooks && @master_restart_hooks.each do |block|
             block.call
           end
         end
