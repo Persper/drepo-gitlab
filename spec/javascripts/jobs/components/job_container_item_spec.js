@@ -12,12 +12,10 @@ describe('JobContainerItem', () => {
   });
 
   const sharedTests = () => {
-    it('displays a status icon', () => {
-      expect(vm.$el).toHaveSpriteIcon(job.status.icon);
-    });
-
     it('displays the job name', () => {
-      expect(vm.$el).toContainText(job.name);
+      const jobNameElement = vm.$el.querySelector('.js-job-name');
+
+      expect(jobNameElement).not.toBe(null);
     });
 
     it('displays a link to the job', () => {

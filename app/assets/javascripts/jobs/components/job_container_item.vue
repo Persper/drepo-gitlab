@@ -2,12 +2,14 @@
 import _ from 'underscore';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import JobName from '~/vue_shared/components/job_name_component.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   components: {
     CiIcon,
     Icon,
+    JobName,
   },
 
   directives: {
@@ -26,6 +28,10 @@ export default {
   },
 
   computed: {
+    jobName() {
+      return this.job.name ? this.job.name : this.job.id.toString();
+    },
+
     tooltipText() {
       return `${_.escape(this.job.name)} - ${this.job.status.tooltip}`;
     },
@@ -52,9 +58,11 @@ export default {
         class="js-arrow-right icon-arrow-right"
       />
 
-      <ci-icon :status="job.status" />
-
-      <span>{{ job.name ? job.name : job.id }}</span>
+      <job-name
+        class="js-job-name"
+        :name="jobName"
+        :status="job.status"
+      />
 
       <icon
         v-if="job.retried"
