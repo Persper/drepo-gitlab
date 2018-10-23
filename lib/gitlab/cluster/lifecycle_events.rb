@@ -2,92 +2,101 @@
 
 module Gitlab
   module Cluster
-    # This class abstracts various lifecycle events for different runtime environments
-    # This allows handlers for various events to be registered and executed regardless
-    # of the environment. Possible environments considered while building this class
-    # include Unicorn, Puma Single, Puma Clustered, Sidekiq Multithreaded Process, Ruby,
-    # Rake, rails-console etc
+    #
+    # LifecycleEvents lets Rails initializers register application startup hooks
+    # that are sensitive to forking. For example, to defer the creation of
+    # watchdog threads. This lets us abstract away the Unix process
+    # lifecycles of Unicorn, Sidekiq, Puma, Puma Cluster, etc.
+    #
+    # We have three lifecycle events.
+    #
+    # - before_fork (only in forking processes)
+    # - worker_start
+    # - before_master_restart (only in forking processes)
     #
     # Blocks will be executed in the order in which they are registered.
+    #
     class LifecycleEvents
-      # Initialization lifecycle event. Any block registered can expect to be
-      # executed once per process. In the event of single process environments,
-      # the block is executed immediately
-      def self.on_worker_start(&block)
-        if in_clustered_environment?
-          (@worker_start_listeners ||= []) << block
-        else
-          block.call
+      class << self
+        #
+        # Hook registration methods (called from initializers)
+        #
+        def on_worker_start(&block)
+          if in_clustered_environment?
+            # Defer block execution
+            (@worker_start_listeners ||= []) << block
+          else
+            block.call
+          end
         end
-      end
 
-      # Lifecycle event in the master process to signal that a child is about to be
-      # forked
-      def self.on_before_fork(&block)
-        (@before_fork_listeners ||= []) << block
-      end
-
-      # Lifecycle event for main process restart. Signals that the main process should
-      # restart.
-      def self.on_master_restart(&block)
-        (@master_restart_listeners ||= []) << block
-      end
-
-      # Signal worker_start event
-      # This should be called from unicorn/puma/etc lifecycle hooks
-      def self.signal_worker_start
-        @worker_start_listeners&.each do |block|
-          block.call
+        def on_before_fork(&block)
+          if in_clustered_environment?
+            # Defer block execution
+            (@before_fork_listeners ||= []) << block
+          else
+            # Discard block
+           end
         end
-      end
 
-      # Signal before_fork event
-      # This should be called from unicorn/puma/etc lifecycle hooks
-      def self.signal_before_fork
-        @before_fork_listeners&.each do |block|
-          block.call
+        def on_master_restart(&block)
+          if in_clustered_environment?
+            # Defer block execution
+            (@master_restart_listeners ||= []) << block
+          else
+            # Discard block
+           end
         end
-      end
 
-      # Signal master_restart event
-      # This should be called from unicorn/puma/etc lifecycle hooks
-      def self.signal_master_restart
-        @master_restart_listeners && @master_restart_listeners.each do |block|
-          block.call
+        #
+        # Lifecycle integration methods (called from unicorn.rb, puma.rb, etc.)
+        #
+        def do_worker_start
+          @worker_start_listeners&.each do |block|
+            block.call
+          end
         end
-      end
 
-      # Returns true when running in environments which fork worker processes
-      # from a main process. Noteably Puma, when running in clustered mode,
-      # and Unicorn. Sidekiq and plain Ruby do not fork workers, so return false
-      def self.in_clustered_environment?
-        # Sidekiq doesn't fork
-        return false if Sidekiq.server?
+        def do_before_fork
+          @before_fork_listeners&.each do |block|
+            block.call
+          end
+        end
 
-        # Unicorn always forks
-        return true if defined?(::Unicorn)
+        def do_master_restart
+          @master_restart_listeners && @master_restart_listeners.each do |block|
+            block.call
+          end
+        end
 
-        # Puma sometimes forks
-        return true if in_clustered_puma?
+        # Puma doesn't use singletons (which is good) but
+        # this means we need to pass through whether the
+        # puma server is running in single mode or cluster mode
+        def set_puma_options(options)
+          @puma_options = options
+        end
 
-        # Default assumption is that we don't fork
-        false
-      end
-      private_class_method :in_clustered_environment?
+        private
 
-      # Returns true when running in Puma in clustered mode
-      def self.in_clustered_puma?
-        return false unless defined?(::Puma)
+        def in_clustered_environment?
+          # Sidekiq doesn't fork
+          return false if Sidekiq.server?
 
-        @puma_options && @puma_options[:workers] && @puma_options[:workers] > 0
-      end
-      private_class_method :in_clustered_puma?
+          # Unicorn always forks
+          return true if defined?(::Unicorn)
 
-      # Puma doesn't use singletons (which is good) but
-      # this means we need to pass through whether the
-      # puma server is running in single mode or cluster mode
-      def self.set_puma_options(options)
-        @puma_options = options
+          # Puma sometimes forks
+          return true if in_clustered_puma?
+
+          # Default assumption is that we don't fork
+          false
+        end
+
+        def in_clustered_puma?
+          return false unless defined?(::Puma)
+
+          @puma_options && @puma_options[:workers] && @puma_options[:workers] > 0
+        end
       end
     end
   end
