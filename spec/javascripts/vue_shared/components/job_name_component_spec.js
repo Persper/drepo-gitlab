@@ -1,11 +1,11 @@
 import Vue from 'vue';
-import jobNameComponent from '~/pipelines/components/graph/job_name_component.vue';
+import JobName from '~/vue_shared/components/job_name_component.vue';
 
 describe('job name component', () => {
   let component;
 
   beforeEach(() => {
-    const JobNameComponent = Vue.extend(jobNameComponent);
+    const JobNameComponent = Vue.extend(JobName);
     component = new JobNameComponent({
       propsData: {
         name: 'foo',

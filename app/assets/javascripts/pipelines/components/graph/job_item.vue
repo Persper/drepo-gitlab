@@ -1,6 +1,6 @@
 <script>
 import ActionComponent from './action_component.vue';
-import JobNameComponent from './job_name_component.vue';
+import JobNameComponent from '~/vue_shared/components/job_name_component.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
 
 /**
