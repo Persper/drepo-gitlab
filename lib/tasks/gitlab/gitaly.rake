@@ -27,6 +27,11 @@ Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
       end
 
       storage_paths = { 'default' => args.storage_path }
+
+      if Rails.env.test?
+        storage_paths['secondary'] = 'tmp/tests/repositories-secondary/'
+      end
+
       Gitlab::SetupHelper.create_gitaly_configuration(args.dir, storage_paths)
       Dir.chdir(args.dir) do
         # In CI we run scripts/gitaly-test-build instead of this command

@@ -11,8 +11,6 @@ module Gitlab
       # only generate a configuration for the most common and simplest case: when
       # we have exactly one Gitaly process and we are sure it is running locally
       # because it uses a Unix socket.
-      # For development and testing purposes, an extra storage is added to gitaly,
-      # which is not known to Rails, but must be explicitly stubbed.
       def gitaly_configuration_toml(gitaly_dir, storage_paths, gitaly_ruby: true)
         storages = []
         address = nil
@@ -29,13 +27,6 @@ module Gitlab
           end
 
           storages << { name: key, path: storage_paths[key] }
-        end
-
-        if Rails.env.test?
-          storage_path = Rails.root.join('tmp', 'tests', 'second_storage').to_s
-
-          FileUtils.mkdir(storage_path) unless File.exist?(storage_path)
-          storages << { name: 'test_second_storage', path: storage_path }
         end
 
         config = { socket_path: address.sub(/\Aunix:/, ''), storage: storages }

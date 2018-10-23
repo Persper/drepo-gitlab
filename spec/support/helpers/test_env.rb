@@ -70,6 +70,7 @@ module TestEnv
 
   TMP_TEST_PATH = Rails.root.join('tmp', 'tests', '**')
   REPOS_STORAGE = 'default'.freeze
+  SECONDARY_REPOS_STORAGE = 'secondary'.freeze
 
   # Test environment
   #
@@ -119,6 +120,7 @@ module TestEnv
     end
 
     FileUtils.mkdir_p(repos_path)
+    FileUtils.mkdir_p(secondary_repos_path)
     FileUtils.mkdir_p(backup_path)
     FileUtils.mkdir_p(pages_path)
     FileUtils.mkdir_p(artifacts_path)
@@ -232,7 +234,8 @@ module TestEnv
   end
 
   def copy_repo(project, bare_repo:, refs:)
-    target_repo_path = File.expand_path(repos_path + "/#{project.disk_path}.git")
+    storage_path = project.repository_storage == 'secondary' ? secondary_repos_path : repos_path
+    target_repo_path = File.expand_path(storage_path + "/#{project.disk_path}.git")
 
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)
@@ -250,6 +253,10 @@ module TestEnv
 
   def repos_path
     @repos_path ||= Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
+  end
+
+  def secondary_repos_path
+    @secondary_repos_path ||= Gitlab.config.repositories.storages[SECONDARY_REPOS_STORAGE].legacy_disk_path
   end
 
   def backup_path

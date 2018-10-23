@@ -231,50 +231,14 @@ describe 'gitlab:app namespace rake task' do
     end
 
     context 'multiple repository storages' do
-      let(:test_second_storage) do
-        Gitlab::GitalyClient::StorageSettings.new(@default_storage_hash.merge('path' => 'tmp/tests/custom_storage'))
-      end
-      let(:storages) do
-        {
-          'default' => Gitlab.config.repositories.storages.default,
-          'test_second_storage' => test_second_storage
-        }
-      end
-
-      before(:all) do
-        @default_storage_hash = Gitlab.config.repositories.storages.default.to_h
-      end
-
       before do
         # We only need a backup of the repositories for this test
         stub_env('SKIP', 'db,uploads,builds,artifacts,lfs,registry')
-
-        allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
-
-        # Avoid asking gitaly about the root ref (which will fail beacuse of the
-        # mocked storages)
-        allow_any_instance_of(Repository).to receive(:empty?).and_return(false)
-      end
-
-      after do
-        FileUtils.rm_rf(Settings.absolute('tmp/tests/custom_storage'))
       end
 
       it 'includes repositories in all repository storages' do
         project_a = create(:project, :repository)
-        project_b = create(:project, :repository, repository_storage: 'test_second_storage')
-
-        b_storage_dir = File.join(Settings.absolute('tmp/tests/custom_storage'), File.dirname(project_b.disk_path))
-
-        FileUtils.mkdir_p(b_storage_dir)
-
-        # Even when overriding the storage, we have to move it there, so it exists
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          FileUtils.mv(
-            File.join(Settings.absolute(storages['default'].legacy_disk_path), project_b.repository.disk_path + '.git'),
-            Rails.root.join(storages['test_second_storage'].legacy_disk_path, project_b.repository.disk_path + '.git')
-          )
-        end
+        project_b = create(:project, :repository, repository_storage: 'secondary')
 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
 

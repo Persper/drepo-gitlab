@@ -772,6 +772,9 @@ test:
       default:
         path: tmp/tests/repositories/
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
+      secondary:
+        path: tmp/tests/repositories-secondary/
+        gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
 
   gitaly:
     client_path: tmp/tests/gitaly
