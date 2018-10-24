@@ -24,7 +24,6 @@
       .fade-right= icon('angle-right')
       .nav-links.scrolling-tabs.quick-links
         = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
-        = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
 
     = repository_languages_bar(@project.repository_languages)
 
@@ -41,4 +40,4 @@
     = render 'shared/auto_devops_callout'
 
   %div{ class: project_child_container_class(view_path) }
-    = render view_path
+    = render view_path, is_project_overview: true

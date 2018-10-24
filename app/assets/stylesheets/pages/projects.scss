@@ -198,6 +198,10 @@
   padding-top: $gl-padding-8;
   padding-bottom: $gl-padding-24;
 
+  + .project-stats {
+    border-bottom: 1px solid $border-color;
+  }
+
   .project-title-row {
     margin-right: $gl-padding-8;
   }
@@ -722,7 +726,6 @@
 .project-stats {
   font-size: 0;
   text-align: center;
-  border-bottom: 1px solid $border-color;
 
   .scrolling-tabs-container {
     .scrolling-tabs {
