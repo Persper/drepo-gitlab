@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'Merge request > User sees merge widget', :js do
   include ProjectForksHelper
   include TestReportsHelper
+  include ReactiveCachingHelpers
 
   let(:project) { create(:project, :repository) }
   let(:project_only_mwps) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
@@ -355,6 +356,10 @@ describe 'Merge request > User sees merge widget', :js do
     end
 
     context 'when result has already been parsed' do
+      before do
+        synchronous_reactive_cache(head_pipeline)
+      end
+
       context 'when JUnit xml is correctly formatted' do
         let!(:job_artifact) { create(:ci_job_artifact, :junit, job: build, project: project) }
 
