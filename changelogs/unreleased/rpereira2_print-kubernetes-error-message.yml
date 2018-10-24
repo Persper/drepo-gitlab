@@ -1,0 +1,5 @@
+---
+title: Add exception message to error message when helm/chart installation fails
+merge_request: 22567
+author:
+type: other
