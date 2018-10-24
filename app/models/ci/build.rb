@@ -213,7 +213,6 @@ module Ci
         build.update_deployments_status(:succeed)
 
         build.run_after_commit do
-          BuildSuccessWorker.perform_async(id)
           PagesWorker.perform_async(:deploy, id) if build.pages_generator?
         end
       end
