@@ -1,5 +1,7 @@
 - empty_repo = @project.empty_repo?
 - license = @project.license_anchor_data
+- show_auto_devops_callout = show_auto_devops_callout?(@project)
+
 .project-home-panel{ class: ("empty-project" if empty_repo) }
   .limit-container-width{ class: container_class }
     .project-header.d-flex.flex-row.flex-wrap.align-items-center.append-bottom-8
@@ -20,6 +22,15 @@
             = @project.tags_to_show
             - if @project.has_extra_tags?
               = _("+ %{count} more") % { count: @project.count_of_extra_tags_not_shown  }
+
+    - if can?(current_user, :download_code, @project)
+      %nav.project-stats
+        .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
+          .fade-left= icon('angle-left')
+          .fade-right= icon('angle-right')
+          .nav-links.scrolling-tabs
+            = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
+
 
     .project-home-desc
       - if @project.description.present?

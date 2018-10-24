@@ -144,7 +144,6 @@
 .group-home-panel {
   padding-top: 24px;
   padding-bottom: 24px;
-  border-bottom: 1px solid $border-color;
 
   .group-avatar {
     float: none;
@@ -197,10 +196,6 @@
 .project-home-panel {
   padding-top: $gl-padding-8;
   padding-bottom: $gl-padding-24;
-
-  + .project-stats {
-    border-bottom: 1px solid $border-color;
-  }
 
   .project-title-row {
     margin-right: $gl-padding-8;

@@ -1,3 +1,7 @@
+.group-home-panel {
+  border-bottom: 1px solid $border-color;
+}
+
 .milestone-row {
   @include str-truncated(90%);
 }
