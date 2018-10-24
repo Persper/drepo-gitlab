@@ -1451,10 +1451,11 @@ test:
 
 ## `include`
 
-> Introduced in [GitLab Premium][ee] 10.5.
+> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
 > Available for Starter, Premium and Ultimate since 10.6.
 > Behaviour expanded in GitLab 10.8 to allow more flexible overriding.
-> [Available][ce-21603] for Core since 11.4.
+> [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
+to GitLab Core in 11.4
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 
@@ -2031,5 +2032,3 @@ CI with various languages.
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
 [variables-expressions]: ../variables/README.md#variables-expressions
-[ce-21603]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603
-[ee]: https://about.gitlab.com/pricing/
