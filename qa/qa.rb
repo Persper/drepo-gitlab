@@ -18,6 +18,7 @@ module QA
     autoload :Address, 'qa/runtime/address'
     autoload :Path, 'qa/runtime/path'
     autoload :Fixtures, 'qa/runtime/fixtures'
+    autoload :Logger, 'qa/runtime/logger'
 
     module API
       autoload :Client, 'qa/runtime/api/client'
@@ -36,6 +37,7 @@ module QA
   # GitLab QA fabrication mechanisms
   #
   module Factory
+    autoload :ApiFabricator, 'qa/factory/api_fabricator'
     autoload :Base, 'qa/factory/base'
     autoload :Dependency, 'qa/factory/dependency'
     autoload :Product, 'qa/factory/product'
@@ -45,6 +47,7 @@ module QA
       autoload :Group, 'qa/factory/resource/group'
       autoload :Issue, 'qa/factory/resource/issue'
       autoload :Project, 'qa/factory/resource/project'
+      autoload :Label, 'qa/factory/resource/label'
       autoload :MergeRequest, 'qa/factory/resource/merge_request'
       autoload :ProjectImportedFromGithub, 'qa/factory/resource/project_imported_from_github'
       autoload :MergeRequestFromFork, 'qa/factory/resource/merge_request_from_fork'
@@ -240,6 +243,11 @@ module QA
       autoload :Banner, 'qa/page/layout/banner'
     end
 
+    module Label
+      autoload :New, 'qa/page/label/new'
+      autoload :Index, 'qa/page/label/index'
+    end
+
     module MergeRequest
       autoload :New, 'qa/page/merge_request/new'
       autoload :Show, 'qa/page/merge_request/show'
@@ -315,6 +323,14 @@ module QA
         autoload :Base, 'qa/vendor/saml_idp/page/base'
         autoload :Login, 'qa/vendor/saml_idp/page/login'
       end
+    end
+  end
+
+  # Classes that provide support to other parts of the framework.
+  #
+  module Support
+    module Page
+      autoload :Logging, 'qa/support/page/logging'
     end
   end
 end
