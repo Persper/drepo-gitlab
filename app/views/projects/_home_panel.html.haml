@@ -11,7 +11,6 @@
       .project-metadata.d-flex.flex-row.flex-wrap.align-items-baseline
         .project-visibility.d-inline-flex.align-items-baseline.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
           = visibility_level_icon(@project.visibility_level, fw: false, options: {class: 'icon'})
-          = visibility_level_label(@project.visibility_level)
         - if license.present?
           .project-license.d-inline-flex.align-items-baseline
             = link_to_if license.link, sprite_icon('scale', size: 16, css_class: 'icon') + license.label, license.link, class: license.enabled ? 'btn btn-link btn-secondary-hover-link' : 'btn btn-link'
