@@ -301,6 +301,7 @@ CommitStatus:
 - protected
 - failure_reason
 - scheduled_at
+- source
 Ci::Variable:
 - id
 - project_id
