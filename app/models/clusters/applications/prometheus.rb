@@ -5,7 +5,7 @@ module Clusters
     class Prometheus < ActiveRecord::Base
       include PrometheusAdapter
 
-      VERSION = '6.7.3'.freeze
+      VERSION = '7.3.2'.freeze
 
       self.table_name = 'clusters_applications_prometheus'
 

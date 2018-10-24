@@ -1,0 +1,5 @@
+---
+title: Upgrade Helm to 7.3.2 and Prometheus to 2.4.3
+merge_request: 22556
+author:
+type: changed

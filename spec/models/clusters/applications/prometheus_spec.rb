@@ -3,6 +3,8 @@ require 'rails_helper'
 describe Clusters::Applications::Prometheus do
   include KubernetesHelpers
 
+  let(:prometheus_helm_version) { '7.3.2' }
+
   include_examples 'cluster application core specs', :clusters_applications_prometheus
   include_examples 'cluster application status specs', :clusters_applications_prometheus
 
@@ -27,7 +29,7 @@ describe Clusters::Applications::Prometheus do
       let(:application) { create(:clusters_applications_prometheus, :scheduled, version: '6.7.2') }
 
       it 'updates the application version' do
-        expect(application.reload.version).to eq('6.7.3')
+        expect(application.reload.version).to eq(prometheus_helm_version)
       end
     end
   end
@@ -153,7 +155,7 @@ describe Clusters::Applications::Prometheus do
     it 'should be initialized with 3 arguments' do
       expect(subject.name).to eq('prometheus')
       expect(subject.chart).to eq('stable/prometheus')
-      expect(subject.version).to eq('6.7.3')
+      expect(subject.version).to eq(prometheus_helm_version)
       expect(subject).not_to be_rbac
       expect(subject.files).to eq(prometheus.files)
     end
@@ -170,7 +172,7 @@ describe Clusters::Applications::Prometheus do
       let(:prometheus) { create(:clusters_applications_prometheus, :errored, version: '2.0.0') }
 
       it 'should be initialized with the locked version' do
-        expect(subject.version).to eq('6.7.3')
+        expect(subject.version).to eq(prometheus_helm_version)
       end
     end
   end
