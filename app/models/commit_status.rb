@@ -17,7 +17,7 @@ class CommitStatus < ActiveRecord::Base
   delegate :commit, to: :pipeline
   delegate :sha, :short_sha, to: :pipeline
 
-  validates :pipeline, presence: true, unless: :importing?
+  validates :pipeline, presence: true, unless: -> { importing? || dangling? }
   validates :name, presence: true, unless: :importing?
 
   alias_attribute :author, :user
@@ -63,7 +63,7 @@ class CommitStatus < ActiveRecord::Base
   #
   # These are pages deployments and external statuses.
   #
-  before_create unless: :importing? do
+  before_create unless: -> { importing? || dangling? } do
     # rubocop: disable CodeReuse/ServiceClass
     Ci::EnsureStageService.new(project, user).execute(self) do |stage|
       self.run_after_commit { StageUpdateWorker.perform_async(stage.id) }

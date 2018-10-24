@@ -18,9 +18,6 @@ describe CommitStatus do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:auto_canceled_by) }
 
-  it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
-
   it { is_expected.to delegate_method(:sha).to(:pipeline) }
   it { is_expected.to delegate_method(:short_sha).to(:pipeline) }
 
@@ -28,6 +25,62 @@ describe CommitStatus do
   it { is_expected.to respond_to :failed? }
   it { is_expected.to respond_to :running? }
   it { is_expected.to respond_to :pending? }
+
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
+
+    describe 'pipeline presence validation' do
+      before do
+        commit_status.pipeline = nil
+      end
+
+      context 'when commit status is being imported' do
+        before do
+          commit_status.importing = true
+        end
+
+        it 'does not require pipeline being present' do
+          expect(commit_status.pipeline).to be_nil
+          expect(commit_status).to be_valid
+        end
+
+        it 'allows to persist commit status' do
+          commit_status.save!
+
+          expect(commit_status).to be_persisted
+        end
+      end
+
+      context 'when commit status has been created within a pipeline' do
+        it 'requires pipeline presence' do
+          expect(commit_status.pipeline).to be_nil
+          expect(commit_status).not_to be_valid
+        end
+
+        it 'raises an error when trying to persist commit status' do
+          expect { commit_status.save! }.to raise_error ActiveRecord::RecordInvalid
+        end
+      end
+
+      context 'when commit status is a dangling build' do
+        before do
+          commit_status.source = :chatops_source
+        end
+
+        it 'does not require pipeline presence' do
+          expect(commit_status.pipeline).to be_nil
+          expect(commit_status).to be_valid
+        end
+
+        it 'allows to persist commit status' do
+          commit_status.save!
+
+          expect(commit_status).to be_persisted
+        end
+      end
+    end
+  end
 
   describe '#author' do
     subject { commit_status.author }
@@ -539,6 +592,17 @@ describe CommitStatus do
     context 'when commit status is being imported' do
       let(:commit_status) do
         create(:commit_status, name: 'rspec', stage: 'test', importing: true)
+      end
+
+      it 'does not create a new stage' do
+        expect { commit_status }.not_to change { Ci::Stage.count }
+        expect(commit_status.stage_id).not_to be_present
+      end
+    end
+
+    context 'when commit status is a dangling status' do
+      let(:commit_status) do
+        create(:commit_status, name: 'rspec', stage: 'test', source: :chatops_source)
       end
 
       it 'does not create a new stage' do
