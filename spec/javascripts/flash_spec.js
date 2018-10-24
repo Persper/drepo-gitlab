@@ -21,9 +21,7 @@ describe('Flash', () => {
     it('escapes text', () => {
       el.innerHTML = createFlashEl('<script>alert("a");</script>', 'alert');
 
-      expect(el.querySelector('.flash-text').textContent.trim()).toBe(
-        '<script>alert("a");</script>',
-      );
+      expect(el.querySelector('.flash-text').textContent.trim()).toBe('');
     });
 
     it('adds container classes when inside content wrapper', () => {
@@ -124,9 +122,7 @@ describe('Flash', () => {
         title: '<script>alert("a")</script>',
       });
 
-      expect(el.querySelector('.flash-action').textContent.trim()).toBe(
-        '<script>alert("a")</script>',
-      );
+      expect(el.querySelector('.flash-action').textContent.trim()).toBe('');
     });
   });
 

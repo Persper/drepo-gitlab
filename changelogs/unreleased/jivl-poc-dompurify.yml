@@ -1,0 +1,5 @@
+---
+title: Replace all of our instances of _.escape to dompurify
+merge_request:
+author:
+type: other

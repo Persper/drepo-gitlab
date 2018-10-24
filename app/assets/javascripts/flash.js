@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import dompurify from 'dompurify';
 
 const hideFlash = (flashEl, fadeTransition = true) => {
   if (fadeTransition) {
@@ -31,7 +31,7 @@ const createAction = config => `
     class="flash-action"
     ${config.href ? '' : 'role="button"'}
   >
-    ${_.escape(config.title)}
+    ${dompurify.sanitize(config.title)}
   </a>
 `;
 
@@ -42,7 +42,7 @@ const createFlashEl = (message, type, isFixedLayout = false) => `
     <div
       class="flash-text ${isFixedLayout ? 'container-fluid container-limited limit-container-width' : ''}"
     >
-      ${_.escape(message)}
+      ${dompurify.sanitize(message)}
     </div>
   </div>
 `;
