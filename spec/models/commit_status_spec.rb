@@ -34,7 +34,7 @@ describe CommitStatus do
       let(:commit_status) { build(:commit_status) }
 
       before do
-        commit_status.update_attributes(project: project, pipeline: nil)
+        commit_status.update(project: project, pipeline: nil)
       end
 
       context 'when commit status has been created within a pipeline' do
