@@ -1,8 +1,15 @@
 require 'spec_helper'
 
 describe Ci::CompareTestReportsService do
+  include ReactiveCachingHelpers
+
   let(:service) { described_class.new(project) }
   let(:project) { create(:project, :repository) }
+
+  before do
+    synchronous_reactive_cache(base_pipeline) if base_pipeline
+    synchronous_reactive_cache(head_pipeline)
+  end
 
   describe '#execute' do
     subject { service.execute(base_pipeline, head_pipeline) }
@@ -14,6 +21,18 @@ describe Ci::CompareTestReportsService do
       it 'returns status and data' do
         expect(subject[:status]).to eq(:parsed)
         expect(subject[:data]).to match_schema('entities/test_reports_comparer')
+      end
+
+      context 'when parsing test reports exceeded timeout limit' do
+        before do
+          allow(head_pipeline).to receive(:test_reports).and_return(nil)
+          described_class::TIME_OUT = 1.second
+        end
+
+        it 'returns status and error message' do
+          expect(subject[:status]).to eq(:error)
+          expect(subject[:status_reason]).to include('Parsing test reports timed out')
+        end
       end
     end
 

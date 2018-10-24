@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Ci::Pipeline, :mailer do
+  include ReactiveCachingHelpers
+
   let(:user) { create(:user) }
   set(:project) { create(:project) }
 
@@ -1974,6 +1976,10 @@ describe Ci::Pipeline, :mailer do
 
   describe '#test_reports' do
     subject { pipeline.test_reports }
+
+    before do
+      synchronous_reactive_cache(pipeline)
+    end
 
     context 'when pipeline has multiple builds with test reports' do
       let!(:build_rspec) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline, project: project) }

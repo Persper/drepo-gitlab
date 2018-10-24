@@ -11,6 +11,11 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
     include EnumWithNil
+    include ReactiveCaching
+
+    self.reactive_cache_key = ->(model) { [model.project.id, model.id] }
+    self.reactive_cache_refresh_interval = 10.minutes
+    self.reactive_cache_lifetime = 10.minutes
 
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user
@@ -626,10 +631,19 @@ module Ci
     end
 
     def test_reports
-      Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
-        builds.latest.with_test_reports.each do |build|
-          build.collect_test_reports!(test_reports)
+      with_reactive_cache(:test_reports) { |data| data }
+    end
+
+    def calculate_reactive_cache(identifier, *args)
+      case identifier.to_sym
+      when :test_reports
+        Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
+          builds.latest.with_test_reports.each do |build|
+            build.collect_test_reports!(test_reports)
+          end
         end
+      else
+        raise NotImplementedError, "Unknown identifier: #{identifier}"
       end
     end
 
