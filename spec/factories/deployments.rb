@@ -17,9 +17,52 @@ FactoryBot.define do
       end
     end
 
+    # Legacy deployment rows do not have a value in status column.
+    # In spec, we set this status by default for retaining original intention of tests
+    after(:create) do |deployment, evaluator|
+      deployment.update_column(:status, nil)
+    end
+
     trait :review_app do
       sha { TestEnv::BRANCH_SHA['pages-deploy'] }
       ref 'pages-deploy'
+    end
+
+    trait :created do
+      after(:create) do |deployment, evaluator|
+        deployment.update_column(:status, Deployment.state_machine.states['created'].value)
+      end
+    end
+
+    trait :running do
+      after(:create) do |deployment, evaluator|
+        deployment.update_column(:status, Deployment.state_machine.states['running'].value)
+      end
+    end
+
+    trait :success do
+      finished_at { Time.now }
+
+      after(:create) do |deployment, evaluator|
+        deployment.update_column(:status, Deployment.state_machine.states['success'].value)
+        Ci::DeploymentSuccessWorker.new.perform(deployment)
+      end
+    end
+
+    trait :failed do
+      finished_at { Time.now }
+
+      after(:create) do |deployment, evaluator|
+        deployment.update_column(:status, Deployment.state_machine.states['failed'].value)
+      end
+    end
+
+    trait :canceled do
+      finished_at { Time.now }
+
+      after(:create) do |deployment, evaluator|
+        deployment.update_column(:status, Deployment.state_machine.states['canceled'].value)
+      end
     end
   end
 end

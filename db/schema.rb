@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181017001059) do
+ActiveRecord::Schema.define(version: 20181022135539) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -824,11 +824,14 @@ ActiveRecord::Schema.define(version: 20181017001059) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "on_stop"
+    t.integer "status", limit: 2
+    t.datetime_with_timezone "finished_at"
   end
 
   add_index "deployments", ["created_at"], name: "index_deployments_on_created_at", using: :btree
   add_index "deployments", ["deployable_type", "deployable_id"], name: "index_deployments_on_deployable_type_and_deployable_id", using: :btree
   add_index "deployments", ["environment_id", "id"], name: "index_deployments_on_environment_id_and_id", using: :btree
+  add_index "deployments", ["environment_id", "id"], name: "partial_index_deployments_with_successful_deployments", where: "((status = 2) OR (status IS NULL))", using: :btree
   add_index "deployments", ["environment_id", "iid", "project_id"], name: "index_deployments_on_environment_id_and_iid_and_project_id", using: :btree
   add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
 

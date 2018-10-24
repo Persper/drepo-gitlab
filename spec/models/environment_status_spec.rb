@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe EnvironmentStatus do
-  let(:deployment)    { create(:deployment, :review_app) }
+  let(:deployment)    { create(:deployment, :success, :review_app) }
   let(:environment)   { deployment.environment}
   let(:project)       { deployment.project }
   let(:merge_request) { create(:merge_request, :deployed_review_app, deployment: deployment) }

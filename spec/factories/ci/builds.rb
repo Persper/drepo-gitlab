@@ -94,6 +94,29 @@ FactoryBot.define do
                              url: 'http://staging.example.com/$CI_JOB_NAME' }
     end
 
+    trait :deploy_to_production do
+      environment 'production'
+
+      options environment: { name: 'production',
+                             url: 'http://prd.example.com/$CI_JOB_NAME' }
+    end
+
+    trait :start_review_app do
+      environment 'start_review_app'
+
+      options environment: { name: 'review_app',
+                             url: 'http://staging.example.com/$CI_JOB_NAME',
+                             on_stop: 'stop_review_app' }
+    end
+
+    trait :stop_review_app do
+      environment 'stop_review_app'
+
+      options environment: { name: 'review_app',
+                             url: 'http://staging.example.com/$CI_JOB_NAME',
+                             action: 'stop' }
+    end
+
     trait :allowed_to_fail do
       allow_failure true
     end

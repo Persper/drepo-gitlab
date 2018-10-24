@@ -26,16 +26,81 @@ describe Deployment do
     end
   end
 
-  describe 'after_create callbacks' do
-    let(:environment) { create(:environment) }
-    let(:store) { Gitlab::EtagCaching::Store.new }
+  describe 'state machine' do
+    context 'when deployment does not have a value on status column' do
+      let(:deployment) { create(:deployment) }
 
-    it 'invalidates the environment etag cache' do
-      old_value = store.get(environment.etag_cache_key)
+      context 'when status transits from legacy_success to running' do
+        it 'cannot update the status' do
+          expect { deployment.run! }.to raise_error(ArgumentError)
+        end
 
-      create(:deployment, environment: environment)
+        it 'has a success status with finished_at' do
+          expect(deployment).to be_success
+          expect(deployment.finished_at).to eq(deployment.created_at)
+        end
+      end
+    end
 
-      expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
+    context 'when deployment is created' do
+      let(:deployment) { create(:deployment, :created) }
+
+      context 'when deployment runs' do
+        before do
+          deployment.run!
+        end
+
+        it 'starts running' do
+          Timecop.freeze do
+            expect(deployment).to be_running
+            expect(deployment.finished_at).to be_nil
+          end
+        end
+      end
+    end
+
+    context 'when deployment is running' do
+      let(:deployment) { create(:deployment, :running) }
+
+      context 'when deployment succeeded' do
+        it 'has correct status' do
+          Timecop.freeze do
+            deployment.succeed!
+
+            expect(deployment).to be_success
+            expect(deployment.finished_at).to eq(Time.now)
+          end
+        end
+
+        it 'executes DeploymentSuccessWorker asynchronously' do
+          expect(Ci::DeploymentSuccessWorker)
+            .to receive(:perform_async).with(deployment.id)
+
+          deployment.succeed!
+        end
+      end
+
+      context 'when deployment failed' do
+        it 'has correct status' do
+          Timecop.freeze do
+            deployment.drop!
+
+            expect(deployment).to be_failed
+            expect(deployment.finished_at).to eq(Time.now)
+          end
+        end
+      end
+
+      context 'when deployment was canceled' do
+        it 'has correct status' do
+          Timecop.freeze do
+            deployment.cancel!
+
+            expect(deployment).to be_canceled
+            expect(deployment.finished_at).to eq(Time.now)
+          end
+        end
+      end
     end
   end
 

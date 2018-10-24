@@ -204,7 +204,7 @@ class Gitlab::Seeder::CycleAnalytics
 
       job = merge_request.head_pipeline.builds.where.not(environment: nil).last
 
-      CreateDeploymentService.new(job).execute
+      job.last_deployment.succeed!
     end
   end
 end

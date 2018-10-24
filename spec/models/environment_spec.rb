@@ -95,7 +95,7 @@ describe Environment do
 
     context 'with a last deployment' do
       let!(:deployment) do
-        create(:deployment, environment: environment, sha: project.commit('master').id)
+        create(:deployment, :success, environment: environment, sha: project.commit('master').id)
       end
 
       context 'in the same branch' do
@@ -136,8 +136,8 @@ describe Environment do
 
   describe '#first_deployment_for' do
     let(:project)       { create(:project, :repository) }
-    let!(:deployment)   { create(:deployment, environment: environment, ref: commit.parent.id) }
-    let!(:deployment1)  { create(:deployment, environment: environment, ref: commit.id) }
+    let!(:deployment)   { create(:deployment, :success, environment: environment, ref: commit.parent.id) }
+    let!(:deployment1)  { create(:deployment, :success, environment: environment, ref: commit.id) }
     let(:head_commit)   { project.commit }
     let(:commit)        { project.commit.parent }
 
