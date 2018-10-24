@@ -42,6 +42,11 @@ class CommitStatus < ActiveRecord::Base
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
 
+  enum_with_nil source: {
+    pipeline_source: nil,
+    chatops_source: 1
+  }
+
   enum_with_nil failure_reason: {
     unknown_failure: nil,
     script_failure: 1,
@@ -186,6 +191,10 @@ class CommitStatus < ActiveRecord::Base
 
   def auto_canceled?
     canceled? && auto_canceled_by_id?
+  end
+
+  def dangling?
+    !pipeline_source?
   end
 
   def detailed_status(current_user)

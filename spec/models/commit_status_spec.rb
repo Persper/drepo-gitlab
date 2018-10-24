@@ -591,4 +591,26 @@ describe CommitStatus do
 
     it { is_expected.to be_a(CommitStatusPresenter) }
   end
+
+  describe '#dangling?' do
+    context 'when a commit status has a pipeline source' do
+      before do
+        commit_status.source = :pipeline_source
+      end
+
+      it 'is not a dangling commit status' do
+        expect(commit_status).not_to be_dangling
+      end
+    end
+
+    context 'when a commit_status has chatops source' do
+      before do
+        commit_status.source = :chatops_source
+      end
+
+      it 'is a dangling commit status' do
+        expect(commit_status).to be_dangling
+      end
+    end
+  end
 end
