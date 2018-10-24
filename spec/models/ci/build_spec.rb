@@ -3197,4 +3197,15 @@ describe Ci::Build do
       it { expect(build.deployment_status).to eq(:creating) }
     end
   end
+
+  describe '#dangling?' do
+    context 'when a build has a pipeline source' do
+      it 'is not a dangling builds' do
+        binding.pry
+      end
+    end
+
+    context 'when a build has chatops source' do
+    end
+  end
 end

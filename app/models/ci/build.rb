@@ -61,6 +61,11 @@ module Ci
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
 
+    enum_with_nil source: {
+      pipeline: nil,
+      chatops: 1
+    }
+
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :with_artifacts_archive, ->() do
