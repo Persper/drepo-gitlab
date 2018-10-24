@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import _ from 'underscore';
+import dompurify from 'dompurify';
 
 function isValidProjectId(id) {
   return id > 0;
@@ -45,7 +45,7 @@ class SidebarMoveIssue {
       renderRow: project => `
         <li>
           <a href="#" class="js-move-issue-dropdown-item">
-            ${_.escape(project.name_with_namespace)}
+            ${dompurify.sanitize(project.name_with_namespace)}
           </a>
         </li>
       `,

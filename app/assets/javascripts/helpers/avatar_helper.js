@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import dompurify from 'dompurify';
 import { getFirstCharacterCapitalized } from '~/lib/utils/text_utility';
 
 export const DEFAULT_SIZE_CLASS = 's40';
@@ -19,9 +19,9 @@ export function renderIdenticon(entity, options = {}) {
   const bgClass = getIdenticonBackgroundClass(entity.id);
   const title = getIdenticonTitle(entity.name);
 
-  return `<div class="avatar identicon ${_.escape(sizeClass)} ${_.escape(bgClass)}">${_.escape(
-    title,
-  )}</div>`;
+  return `<div class="avatar identicon ${dompurify.sanitize(sizeClass)} ${dompurify.sanitize(
+    bgClass,
+  )}">${dompurify.sanitize(title)}</div>`;
 }
 
 export function renderAvatar(entity, options = {}) {
@@ -31,5 +31,7 @@ export function renderAvatar(entity, options = {}) {
 
   const { sizeClass = DEFAULT_SIZE_CLASS } = options;
 
-  return `<img src="${_.escape(entity.avatar_url)}" class="avatar ${_.escape(sizeClass)}" />`;
+  return `<img src="${dompurify.sanitize(entity.avatar_url)}" class="avatar ${dompurify.sanitize(
+    sizeClass,
+  )}" />`;
 }
