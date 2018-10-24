@@ -31,29 +31,15 @@ describe CommitStatus do
     it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
 
     describe 'pipeline presence validation' do
+      let(:commit_status) { build(:commit_status) }
+
       before do
-        commit_status.pipeline = nil
-      end
-
-      context 'when commit status is being imported' do
-        before do
-          commit_status.importing = true
-        end
-
-        it 'does not require pipeline being present' do
-          expect(commit_status.pipeline).to be_nil
-          expect(commit_status).to be_valid
-        end
-
-        it 'allows to persist commit status' do
-          commit_status.save!
-
-          expect(commit_status).to be_persisted
-        end
+        commit_status.update_attributes(project: project, pipeline: nil)
       end
 
       context 'when commit status has been created within a pipeline' do
         it 'requires pipeline presence' do
+          expect(commit_status).to be_pipeline_source
           expect(commit_status.pipeline).to be_nil
           expect(commit_status).not_to be_valid
         end
@@ -63,12 +49,13 @@ describe CommitStatus do
         end
       end
 
-      context 'when commit status is a dangling build' do
+      context 'when commit status is being imported' do
         before do
-          commit_status.source = :chatops_source
+          commit_status.importing = true
         end
 
-        it 'does not require pipeline presence' do
+        it 'does not require pipeline being present' do
+          expect(commit_status).to be_pipeline_source
           expect(commit_status.pipeline).to be_nil
           expect(commit_status).to be_valid
         end
@@ -77,6 +64,26 @@ describe CommitStatus do
           commit_status.save!
 
           expect(commit_status).to be_persisted
+        end
+      end
+
+      context 'when commit status is a dangling build' do
+        before do
+          commit_status.source = :chatops_source
+        end
+
+        it 'does not require pipeline presence' do
+          expect(commit_status).to be_chatops_source
+          expect(commit_status.pipeline).to be_nil
+          expect(commit_status).to be_valid
+        end
+
+        it 'allows to persist commit status' do
+          commit_status.save!
+
+          expect(commit_status).to be_persisted
+          expect(commit_status.stage_id).to be_nil
+          expect(commit_status.pipeline_id).to be_nil
         end
       end
     end
