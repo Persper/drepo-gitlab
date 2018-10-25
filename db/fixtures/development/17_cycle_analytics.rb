@@ -212,7 +212,7 @@ end
 Gitlab::Seeder.quiet do
   flag = 'SEED_CYCLE_ANALYTICS'
 
-  if ENV[flag]
+  if true
     Project.find_each do |project|
       # This seed naively assumes that every project has a repository, and every
       # repository has a `master` branch, which may be the case for a pristine
