@@ -41,7 +41,7 @@ might have different priorities.
 NOTE: **Note:**
 [Smaller MRs are better](https://gitlab.com/gitlab-com/blog-posts/issues/185#note_4401010)! Do not mix subjects (e.g. multiple unrelated pages), and ship the smallest MR possible.
 
-## Process for documenting a new or changed feature
+## Documenting a new or changed feature
 
 To follow a consistent workflow every month, documentation changes
 involve the Product Managers, the developer who shipped the feature,
@@ -154,7 +154,7 @@ and discoverable, while avoiding redundancy, bad file locations, typos, broken l
   - Improvements to the content
   - Accordance to the [docs style guide](styleguide.md)
 
-## Other Documentation Updates
+## Other documentation Updates
 
 For documentation improvements not associated with the release of a new/updated feature or with the other cases listed under [When documentation is required](#when-documentation-is-required):
 
