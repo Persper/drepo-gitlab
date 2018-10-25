@@ -331,6 +331,90 @@ describe Environment do
     end
   end
 
+  describe '.deployments' do
+    subject { environment.deployments }
+
+    before do
+      allow_any_instance_of(Deployment).to receive(:create_ref)
+    end
+
+    context 'when there is a deployment record with created status' do
+      let(:deployment) { create(:deployment, :created, environment: environment) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with running status' do
+      let(:deployment) { create(:deployment, :running, environment: environment) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with success status' do
+      let(:deployment) { create(:deployment, :success, environment: environment) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
+    end
+
+    context 'when there is a deployment record with legacy successful status' do
+      let(:deployment) { create(:deployment, environment: environment) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
+    end
+  end
+
+  describe '.last_deployment' do
+    subject { environment.last_deployment }
+
+    before do
+      allow_any_instance_of(Deployment).to receive(:create_ref)
+    end
+
+    context 'when there is an old deployment record' do
+      let!(:previous_deployment) { create(:deployment, environment: environment) }
+
+      context 'when there is a deployment record with created status' do
+        let!(:deployment) { create(:deployment, :created, environment: environment) }
+
+        it 'returns the previous deployment' do
+          is_expected.to eq(previous_deployment)
+        end
+      end
+
+      context 'when there is a deployment record with running status' do
+        let!(:deployment) { create(:deployment, :running, environment: environment) }
+
+        it 'returns the previous deployment' do
+          is_expected.to eq(previous_deployment)
+        end
+      end
+
+      context 'when there is a deployment record with success status' do
+        let!(:deployment) { create(:deployment, :success, environment: environment) }
+
+        it 'returns the latest successful deployment' do
+          is_expected.to eq(deployment)
+        end
+      end
+
+      context 'when there is a deployment record with legacy successful status' do
+        let!(:deployment) { create(:deployment, environment: environment) }
+
+        it 'returns the latest successful deployment' do
+          is_expected.to eq(deployment)
+        end
+      end
+    end
+  end
+
   describe '#has_terminals?' do
     subject { environment.has_terminals? }
 
