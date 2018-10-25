@@ -26,6 +26,34 @@ describe Deployment do
     end
   end
 
+  describe '.success' do
+    subject { described_class.success }
+
+    context 'when deployment status is legacy success' do
+      let(:deployment) { create(:deployment) }
+
+      it { is_expected.to eq([deployment]) }
+    end
+
+    context 'when deployment status is success' do
+      let(:deployment) { create(:deployment, :success) }
+
+      it { is_expected.to eq([deployment]) }
+    end
+
+    context 'when deployment status is created' do
+      let(:deployment) { create(:deployment, :created) }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when deployment status is running' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe 'state machine' do
     context 'when deployment does not have a value on status column' do
       let(:deployment) { create(:deployment) }
@@ -42,65 +70,153 @@ describe Deployment do
       end
     end
 
-    context 'when deployment is created' do
+    context 'when deployment runs' do
       let(:deployment) { create(:deployment, :created) }
 
-      context 'when deployment runs' do
-        before do
-          deployment.run!
-        end
+      before do
+        deployment.run!
+      end
 
-        it 'starts running' do
-          Timecop.freeze do
-            expect(deployment).to be_running
-            expect(deployment.finished_at).to be_nil
-          end
+      it 'starts running' do
+        Timecop.freeze do
+          expect(deployment).to be_running
+          expect(deployment.finished_at).to be_nil
+        end
+      end
+    end      
+
+    context 'when deployment succeeded' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it 'has correct status' do
+        Timecop.freeze do
+          deployment.succeed!
+
+          expect(deployment).to be_success
+          expect(deployment.finished_at).to eq(Time.now)
+        end
+      end
+
+      it 'executes DeploymentSuccessWorker asynchronously' do
+        expect(Ci::DeploymentSuccessWorker)
+          .to receive(:perform_async).with(deployment.id)
+
+        deployment.succeed!
+      end
+    end
+
+    context 'when deployment failed' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it 'has correct status' do
+        Timecop.freeze do
+          deployment.drop!
+
+          expect(deployment).to be_failed
+          expect(deployment.finished_at).to eq(Time.now)
         end
       end
     end
 
-    context 'when deployment is running' do
+    context 'when deployment was canceled' do
       let(:deployment) { create(:deployment, :running) }
 
-      context 'when deployment succeeded' do
-        it 'has correct status' do
-          Timecop.freeze do
-            deployment.succeed!
+      it 'has correct status' do
+        Timecop.freeze do
+          deployment.cancel!
 
-            expect(deployment).to be_success
-            expect(deployment.finished_at).to eq(Time.now)
-          end
-        end
-
-        it 'executes DeploymentSuccessWorker asynchronously' do
-          expect(Ci::DeploymentSuccessWorker)
-            .to receive(:perform_async).with(deployment.id)
-
-          deployment.succeed!
+          expect(deployment).to be_canceled
+          expect(deployment.finished_at).to eq(Time.now)
         end
       end
+    end
+  end
 
-      context 'when deployment failed' do
-        it 'has correct status' do
-          Timecop.freeze do
-            deployment.drop!
+  describe '#success?' do
+    subject { deployment.success? }
 
-            expect(deployment).to be_failed
-            expect(deployment.finished_at).to eq(Time.now)
-          end
-        end
-      end
+    context 'when deployment status is legacy success' do
+      let(:deployment) { create(:deployment) }
 
-      context 'when deployment was canceled' do
-        it 'has correct status' do
-          Timecop.freeze do
-            deployment.cancel!
+      it { is_expected.to be_truthy }
+    end
 
-            expect(deployment).to be_canceled
-            expect(deployment.finished_at).to eq(Time.now)
-          end
-        end
-      end
+    context 'when deployment status is success' do
+      let(:deployment) { create(:deployment, :success) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when deployment status is failed' do
+      let(:deployment) { create(:deployment, :failed) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#status_name' do
+    subject { deployment.status_name }
+
+    context 'when deployment status is legacy success' do
+      let(:deployment) { create(:deployment) }
+
+      it { is_expected.to eq(:success) }
+    end
+
+    context 'when deployment status is success' do
+      let(:deployment) { create(:deployment, :success) }
+
+      it { is_expected.to eq(:success) }
+    end
+
+    context 'when deployment status is failed' do
+      let(:deployment) { create(:deployment, :failed) }
+
+      it { is_expected.to eq(:failed) }
+    end
+  end
+
+  describe '#finished_at' do
+    subject { deployment.finished_at }
+
+    context 'when deployment status is legacy success' do
+      let(:deployment) { create(:deployment) }
+
+      it { is_expected.to eq(deployment.created_at) }
+    end
+
+    context 'when deployment status is success' do
+      let(:deployment) { create(:deployment, :success) }
+
+      it { is_expected.to eq(deployment.read_attribute(:finished_at)) }
+    end
+
+    context 'when deployment status is running' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#deployed_at' do
+    subject { deployment.deployed_at }
+
+    context 'when deployment status is legacy success' do
+      let(:deployment) { create(:deployment) }
+
+      it { is_expected.to eq(deployment.created_at) }
+    end
+
+    context 'when deployment status is success' do
+      let(:deployment) { create(:deployment, :success) }
+
+      it { is_expected.to eq(deployment.read_attribute(:finished_at)) }
+    end
+
+    context 'when deployment status is running' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it { is_expected.to be_nil }
     end
   end
 

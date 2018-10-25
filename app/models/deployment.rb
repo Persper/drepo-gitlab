@@ -63,8 +63,8 @@ class Deployment < ActiveRecord::Base
   end
 
   # Override state machine's predefined method to support legacy deployment records that do not have a value on `status` column
-  def status
-    return 'success' if read_attribute(:status).nil?
+  def status_name
+    return :success if read_attribute(:status).nil?
 
     super
   end
