@@ -4,8 +4,6 @@ module Deployable
   extend ActiveSupport::Concern
 
   included do
-    has_many :real_deployments, as: :deployable, class_name: 'Deployment'
-
     after_create :create_deployment
 
     def create_deployment
@@ -18,10 +16,10 @@ module Deployable
       environment.deployments.create!(
         project_id: environment.project_id,
         environment: environment,
-        ref: self.ref,
-        tag: self.tag,
-        sha: self.sha,
-        user: self.user,
+        ref: ref,
+        tag: tag,
+        sha: sha,
+        user: user,
         deployable: self,
         on_stop: on_stop)
     end
@@ -38,10 +36,24 @@ module Deployable
       raise NotImplementedError
     end
 
-    def update_deployments_status(event)
-      real_deployments.each do |deployment|
-        deployment.public_send(event) # rubocop:disable GitlabSecurity/PublicSend
-      end
+    def ref
+      raise NotImplementedError
+    end
+
+    def tag
+      raise NotImplementedError
+    end
+
+    def sha
+      raise NotImplementedError
+    end
+
+    def user
+      raise NotImplementedError
+    end
+
+    def project
+      raise NotImplementedError
     end
   end
 end

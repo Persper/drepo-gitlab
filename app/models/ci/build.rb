@@ -17,12 +17,14 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     has_many :deployments, -> { success }, as: :deployable
+    has_many :real_deployments, as: :deployable, class_name: 'Deployment'
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? }
     }.freeze
 
     has_one :last_deployment, -> { success.order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
+    has_one :real_last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
 
@@ -196,7 +198,7 @@ module Ci
       end
 
       after_transition pending: :running do |build|
-        build.update_deployments_status(:run)
+        build.real_last_deployment.run
 
         build.run_after_commit do
           BuildHooksWorker.perform_async(id)
@@ -210,7 +212,7 @@ module Ci
       end
 
       after_transition any => [:success] do |build|
-        build.update_deployments_status(:succeed)
+        build.real_last_deployment.succeed
 
         build.run_after_commit do
           PagesWorker.perform_async(:deploy, id) if build.pages_generator?
@@ -220,7 +222,7 @@ module Ci
       before_transition any => [:failed] do |build|
         next unless build.project
 
-        build.update_deployments_status(:drop)
+        build.real_last_deployment.drop
 
         next if build.retries_max.zero?
 
@@ -242,7 +244,7 @@ module Ci
       end
 
       after_transition any => [:skipped, :canceled] do |build|
-        build.update_deployments_status(:cancel)
+        build.real_last_deployment.cancel
       end
     end
 
