@@ -1,19 +1,26 @@
 require 'spec_helper'
 
 describe Ci::DeploymentSuccessWorker do
-  subject { described_class.new.perform(deployment.id) }
+  subject { described_class.new.perform(deployment&.id) }
 
-  describe '#execute' do
-    let(:environment) { create(:environment) }
-    let!(:deployment) { create(:deployment, environment: environment) }
-    let(:store) { Gitlab::EtagCaching::Store.new }
+  context 'when deploy record exists' do
+    let(:deployment) { create(:deployment) }
 
-    it 'invalidates the environment etag cache' do
-      old_value = store.get(environment.etag_cache_key)
+    it 'executes UpdateDeploymentService' do
+      expect(UpdateDeploymentService)
+        .to receive(:new).with(deployment).and_call_original
 
       subject
+    end
+  end
 
-      expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
+  context 'when deploy record does not exist' do
+    let(:deployment) { nil }
+
+    it 'executes UpdateDeploymentService' do
+      expect(UpdateDeploymentService).not_to receive(:new)
+
+      subject
     end
   end
 end

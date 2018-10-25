@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UpdateDeploymentMetricsService
+class UpdateDeploymentService
   attr_reader :deployment
   attr_reader :deployable
 
@@ -13,6 +13,9 @@ class UpdateDeploymentMetricsService
   end
 
   def execute
+    deployment.create_ref
+    deployment.invalidate_cache
+
     ActiveRecord::Base.transaction do
       environment.external_url = expanded_environment_url if
         expanded_environment_url

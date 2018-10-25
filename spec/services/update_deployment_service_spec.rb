@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UpdateDeploymentMetricsService do
+describe UpdateDeploymentService do
   let(:user) { create(:user) }
   let(:options) { nil }
 
@@ -9,10 +9,11 @@ describe UpdateDeploymentMetricsService do
       ref: 'master',
       tag: false,
       environment: 'production',
-      options: { environment: options })
+      options: { environment: options },
+      project: project)
   end
 
-  let(:project) { job.project }
+  let(:project) { create(:project, :repository) }
 
   let(:environment) { job.persisted_environment }
 
@@ -20,7 +21,6 @@ describe UpdateDeploymentMetricsService do
   let(:service) { described_class.new(deployment) }
 
   before do
-    allow_any_instance_of(Deployment).to receive(:create_ref)
     allow(Ci::DeploymentSuccessWorker).to receive(:perform_async)
 
     job.success!
@@ -28,6 +28,31 @@ describe UpdateDeploymentMetricsService do
 
   describe '#execute' do
     subject { service.execute }
+
+    let(:store) { Gitlab::EtagCaching::Store.new }
+
+    it 'invalidates the environment etag cache' do
+      old_value = store.get(environment.etag_cache_key)
+
+      subject
+
+      expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
+    end
+
+    it 'creates ref' do
+      expect_any_instance_of(Repository)
+        .to receive(:create_ref)
+        .with(deployment.ref, deployment.send(:ref_path))
+      
+      subject
+    end
+
+    it 'updates merge request metrics' do
+      expect_any_instance_of(Deployment)
+        .to receive(:update_merge_request_metrics!)
+
+      subject
+    end
 
     context 'when start action is defined' do
       let(:options) { { action: 'start' } }
@@ -152,7 +177,8 @@ describe UpdateDeploymentMetricsService do
               ref: 'master',
               tag: false,
               environment: 'staging',
-              options: { environment: options })
+              options: { environment: options },
+              project: project)
           end
 
           it "doesn't set the time if the deploy's environment is not 'production'" do
