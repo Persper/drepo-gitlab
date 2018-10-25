@@ -23,37 +23,5 @@ module Deployable
         deployable: self,
         on_stop: on_stop)
     end
-
-    def has_environment?
-      raise NotImplementedError
-    end
-
-    def expanded_environment_name
-      raise NotImplementedError
-    end
-
-    def on_stop
-      raise NotImplementedError
-    end
-
-    def ref
-      raise NotImplementedError
-    end
-
-    def tag
-      raise NotImplementedError
-    end
-
-    def sha
-      raise NotImplementedError
-    end
-
-    def user
-      raise NotImplementedError
-    end
-
-    def project
-      raise NotImplementedError
-    end
   end
 end

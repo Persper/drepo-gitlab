@@ -102,17 +102,18 @@ FactoryBot.define do
     end
 
     trait :start_review_app do
-      environment 'start_review_app'
+      environment 'review/$CI_COMMIT_REF_NAME'
 
-      options environment: { name: 'review_app',
+      options environment: { name: 'review/$CI_COMMIT_REF_NAME',
                              url: 'http://staging.example.com/$CI_JOB_NAME',
                              on_stop: 'stop_review_app' }
     end
 
     trait :stop_review_app do
-      environment 'stop_review_app'
+      name 'stop_review_app'
+      environment 'review/$CI_COMMIT_REF_NAME'
 
-      options environment: { name: 'review_app',
+      options environment: { name: 'review/$CI_COMMIT_REF_NAME',
                              url: 'http://staging.example.com/$CI_JOB_NAME',
                              action: 'stop' }
     end

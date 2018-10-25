@@ -811,6 +811,194 @@ describe Ci::Build do
     end
   end
 
+  describe '.deployments' do
+    subject { build.deployments }
+
+    context 'when there is a deployment record with created status' do
+      let(:deployment) { create(:deployment, :created, deployable: build) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with running status' do
+      let(:deployment) { create(:deployment, :running, deployable: build) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with success status' do
+      let(:deployment) { create(:deployment, :success, deployable: build) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
+    end
+
+    context 'when there is a deployment record with legacy successful status' do
+      let(:deployment) { create(:deployment, deployable: build) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
+    end
+  end
+
+  describe '.real_deployments' do
+    subject { build.real_deployments }
+
+    context 'when there is a deployment record with created status' do
+      let(:deployment) { create(:deployment, :created, deployable: build) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
+    end
+
+    context 'when there is a deployment record with running status' do
+      let(:deployment) { create(:deployment, :running, deployable: build) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
+    end
+
+    context 'when there is a deployment record with success status' do
+      let(:deployment) { create(:deployment, :success, deployable: build) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
+    end
+
+    context 'when there is a deployment record with legacy successful status' do
+      let(:deployment) { create(:deployment, deployable: build) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
+    end
+  end
+
+  describe '.real_last_deployment' do
+    subject { build.real_last_deployment }
+
+    context 'when there is an old deployment record' do
+      before do
+        create(:deployment, deployable: build, project: project)
+      end
+
+      context 'when there is a deployment record with created status' do
+        let!(:deployment) { create(:deployment, :created, deployable: build, project: project) }
+
+        it 'returns the record' do
+          is_expected.to eq(deployment)
+        end
+      end
+
+      context 'when there is a deployment record with running status' do
+        let!(:deployment) { create(:deployment, :running, deployable: build, project: project) }
+
+        it 'returns the record' do
+          is_expected.to eq(deployment)
+        end
+      end
+
+      context 'when there is a deployment record with success status' do
+        let!(:deployment) { create(:deployment, :success, deployable: build, project: project) }
+
+        it 'returns the record' do
+          is_expected.to eq(deployment)
+        end
+      end
+
+      context 'when there is a deployment record with legacy successful status' do
+        let!(:deployment) { create(:deployment, deployable: build, project: project) }
+
+        it 'returns the record' do
+          is_expected.to eq(deployment)
+        end
+      end
+    end
+  end
+
+  describe 'state transition as a deployable' do
+    let!(:build) { create(:ci_build, :start_review_app) }
+    let(:deployment) { build.real_last_deployment }
+    let(:environment) { deployment.environment }
+
+    it 'has deployments record with created status' do
+      expect(deployment).to be_created
+      expect(environment.name).to eq('review/master')
+    end
+
+    context 'when transits to running' do
+      before do
+        build.run!
+      end
+
+      it 'transits deployment status to running' do
+        expect(deployment).to be_running
+      end
+    end
+
+    context 'when transits to success' do
+      before do
+        allow(Ci::DeploymentSuccessWorker).to receive(:perform_async)
+        build.success!
+      end
+
+      it 'transits deployment status to success' do
+        expect(deployment).to be_success
+      end
+    end
+
+    context 'when transits to failed' do
+      before do
+        build.drop!
+      end
+
+      it 'transits deployment status to failed' do
+        expect(deployment).to be_failed
+      end
+    end
+
+    context 'when transits to skipped' do
+      before do
+        build.skip!
+      end
+
+      it 'transits deployment status to canceled' do
+        expect(deployment).to be_canceled
+      end
+    end
+
+    context 'when transits to canceled' do
+      before do
+        build.cancel!
+      end
+
+      it 'transits deployment status to canceled' do
+        expect(deployment).to be_canceled
+      end
+    end
+  end
+
+  describe '#on_stop' do
+    subject { build.on_stop }
+
+    context 'when a job has a specification that it can be stopped from the other job' do
+      let(:build) { create(:ci_build, :start_review_app) }
+
+      it 'returns the other job name' do
+        is_expected.to eq('stop_review_app')
+      end
+    end
+  end
+
   describe 'deployment' do
     describe '#last_deployment' do
       subject { build.last_deployment }
