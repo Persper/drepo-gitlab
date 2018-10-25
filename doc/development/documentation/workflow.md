@@ -135,7 +135,7 @@ in addition to the usual labels and correct milestone, include the labels `Pick 
 2. Obtain a review, as usual.
 3. Ensure that the MR is merged by the 14th of the month.
 
-### 3. Technical Writer's role in the documentation process
+### 3. Technical Writer's role
 
 **Planning**
   - Once an issue contains a Documentation label and the current milestone, a
@@ -156,24 +156,22 @@ and discoverable, while avoiding redundancy, bad file locations, typos, broken l
 
 ## Other Documentation Updates
 
-For documentation improvements not associated with a release:
+For documentation improvements not associated with the release of a new/updated feature or with the other cases listed under [When documentation is required](#when-documentation-is-required):
 
 1. Create a new issue **if** one does not already exist **and** the change is substantial and needs discussion with `@gl\-docsteam` or others before beginning work.
 Use the Documentation template and mention "docs" or "documentation" in the title, plus the feature name. Label the issue with `Documentation` and a relevant `<product-label>`.
-1. Ping `@gl\-docsteam` if you have questions or want a review of your plans.
-1. Create a new MR for shipping the docs changes and follow the same
-process [described above](#documentation-shipped-in-the-feature-mr).
-1. Use the MR description template named "Documentation".
+1. Ping `@gl\-docsteam` or the technical writer assigned to the relevant product area if you have questions or want a review of your plans.
+1. Create a new MR for the docs changes and use the template named "Documentation".
 1. Add the same labels and milestone as you did for the issue.
-1. Unless this is a minor fix, when ready, mention the team's technical writer in the MR asking for review (or `@gl\-docsteam` if you are not sure who that is).
+1. Unless this is a minor fix (like an updated sentence or link), when ready, mention the team's technical writer in the MR asking for a review (or `@gl\-docsteam` if you are not sure who that is).
 
-Other than docs for new or changed features, other docs updates that frequently require technical writer review or collaboration include:
-- Changing documentation location
-- Refactoring existing documentation
+Docs updates that frequently require technical writer review or collaboration include:
+- Changing documentation file locations
+- Rewrting or significantly editing existing documentation
 - Creating new documentation files
 
 When the MR only contains corrections to the content (typos, grammar,
-broken links, etc), it can be merged without review, although requests to review are always welcome.
+broken links, etc), it can be merged without review, although requests to perform a review are always welcome.
 
 <!-- To add:
 * References to issue and MR description templates as part of the process
