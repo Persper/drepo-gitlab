@@ -9,7 +9,7 @@ class AddPartialIndexToSuccessfulDeployments < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index(:deployments, ['environment_id', 'id'], where: "status = 2 OR status IS NULL", name: INDEX_NAME)
+    add_concurrent_index(:deployments, %w[environment_id id], where: "status = 2 OR status IS NULL", name: INDEX_NAME)
   end
 
   def down
