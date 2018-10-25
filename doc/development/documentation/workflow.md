@@ -68,7 +68,7 @@ New and edited docs should be shipped along with the MR introducing the code.
 However, if the new or changed doc requires extensive collaboration or conversation,
 a separate, linked issue and MR can be used.
 
-For guidance, see the documentation [Structure](structure.md) guide, [Style Guide](styleguide.md), and additional writing tips in the [Technical Writing handbook section](https://about.gitlab.com/handbook/product/technical-writing/).
+For guidance, see the documentation [Structure](structure.md) guide, [Style Guide](styleguide.md), the [main page](index.md) of this section, and additional writing tips in the [Technical Writing handbook section](https://about.gitlab.com/handbook/product/technical-writing/).
 
 If you need any help to choose the correct place for a doc, discuss a documentation
 idea or outline, or request any other help, ping a Technical Writer on your issue, MR,
@@ -176,4 +176,5 @@ broken links, etc), it can be merged without review, although requests to perfor
 <!-- To add:
 * References to issue and MR description templates as part of the process
 * More specific guidelines for working on docs for new products vs. new features vs. updated features. (And creating a new doc vs. updating an existing one.)
+* A step about CE vs EE (the ee-compat-check, etc.); we can link out for details
 -->
