@@ -23,7 +23,6 @@ describe Deployable do
     context 'when the deployable object will not deploy' do
       let(:job) { create(:ci_build) }
 
-
       it 'does not create a deployment and environment record' do
         expect(deployment).to be_nil
         expect(environment).to be_nil
