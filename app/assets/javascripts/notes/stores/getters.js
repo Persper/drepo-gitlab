@@ -117,7 +117,7 @@ export const unresolvedDiscussionsIdsByDate = (state, getters) =>
 // line numbers.
 export const unresolvedDiscussionsIdsByDiff = (state, getters) =>
   getters.allResolvableDiscussions
-    .filter(d => !d.resolved)
+    .filter(d => !d.resolved && d.active)
     .sort((a, b) => {
       if (!a.diff_file || !b.diff_file) {
         return 0;
