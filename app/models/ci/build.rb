@@ -198,7 +198,7 @@ module Ci
       end
 
       after_transition pending: :running do |build|
-        build.real_last_deployment.run
+        build.real_last_deployment&.run
 
         build.run_after_commit do
           BuildHooksWorker.perform_async(id)
@@ -212,7 +212,7 @@ module Ci
       end
 
       after_transition any => [:success] do |build|
-        build.real_last_deployment.succeed
+        build.real_last_deployment&.succeed
 
         build.run_after_commit do
           PagesWorker.perform_async(:deploy, id) if build.pages_generator?
@@ -222,7 +222,7 @@ module Ci
       before_transition any => [:failed] do |build|
         next unless build.project
 
-        build.real_last_deployment.drop
+        build.real_last_deployment&.drop
 
         next if build.retries_max.zero?
 
@@ -244,7 +244,7 @@ module Ci
       end
 
       after_transition any => [:skipped, :canceled] do |build|
-        build.real_last_deployment.cancel
+        build.real_last_deployment&.cancel
       end
     end
 
