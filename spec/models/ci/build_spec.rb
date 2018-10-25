@@ -847,42 +847,6 @@ describe Ci::Build do
     end
   end
 
-  describe '.real_deployments' do
-    subject { build.real_deployments }
-
-    context 'when there is a deployment record with created status' do
-      let(:deployment) { create(:deployment, :created, deployable: build) }
-
-      it 'returns the record' do
-        is_expected.to eq([deployment])
-      end
-    end
-
-    context 'when there is a deployment record with running status' do
-      let(:deployment) { create(:deployment, :running, deployable: build) }
-
-      it 'returns the record' do
-        is_expected.to eq([deployment])
-      end
-    end
-
-    context 'when there is a deployment record with success status' do
-      let(:deployment) { create(:deployment, :success, deployable: build) }
-
-      it 'returns the record' do
-        is_expected.to eq([deployment])
-      end
-    end
-
-    context 'when there is a deployment record with legacy successful status' do
-      let(:deployment) { create(:deployment, deployable: build) }
-
-      it 'returns the record' do
-        is_expected.to eq([deployment])
-      end
-    end
-  end
-
   describe '.real_last_deployment' do
     subject { build.real_last_deployment }
 

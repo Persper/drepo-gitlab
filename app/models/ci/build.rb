@@ -17,7 +17,6 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     has_many :deployments, -> { success }, as: :deployable
-    has_many :real_deployments, as: :deployable, class_name: 'Deployment'
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? }

@@ -60,7 +60,7 @@ describe Deployment do
 
       context 'when status transits from legacy_success to running' do
         it 'cannot update the status' do
-          expect { deployment.run! }.to raise_error(ArgumentError)
+          expect { deployment.run! }.to raise_error(StateMachines::InvalidTransition)
         end
 
         it 'has a success status with finished_at' do
@@ -83,7 +83,7 @@ describe Deployment do
           expect(deployment.finished_at).to be_nil
         end
       end
-    end      
+    end
 
     context 'when deployment succeeded' do
       let(:deployment) { create(:deployment, :running) }
