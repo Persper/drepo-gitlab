@@ -1,0 +1,5 @@
+---
+title: Add ability to define a private (noreply) commit email.
+merge_request: 22595
+author:
+type: added
