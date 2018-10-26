@@ -43,7 +43,7 @@ describe UpdateDeploymentService do
       expect_any_instance_of(Repository)
         .to receive(:create_ref)
         .with(deployment.ref, deployment.send(:ref_path))
-      
+
       subject
     end
 
