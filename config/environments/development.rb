@@ -45,4 +45,6 @@ Rails.application.configure do
 
   # Do not log asset requests
   config.assets.quiet = true
+
+  config.logger = ActiveSupport::TaggedLogging.new(Logger.new($stdout))
 end
