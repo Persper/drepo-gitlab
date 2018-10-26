@@ -3310,7 +3310,7 @@ describe Ci::Build do
 
   describe '#deployment_status' do
     before do
-      allow_any_instance_of(Ci::Build).to receive(:create_deployment)
+      allow_any_instance_of(described_class).to receive(:create_deployment)
     end
 
     context 'when build is a last deployment' do
