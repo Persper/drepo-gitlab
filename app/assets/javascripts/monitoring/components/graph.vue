@@ -13,8 +13,9 @@ import MonitoringMixin from '../mixins/monitoring_mixins';
 import eventHub from '../event_hub';
 import measurements from '../utils/measurements';
 import { bisectDate, timeScaleFormat } from '../utils/date_time_formatters';
-import createTimeSeries from '../utils/multiple_time_series';
+import createTimeSeries, { removeTimeSeriesNoData } from '../utils/multiple_time_series';
 import bp from '../../breakpoints';
+import { s__ } from '~/locale';
 
 const d3 = { scaleLinear, scaleTime, axisLeft, axisBottom, max, extent, select };
 
@@ -85,6 +86,7 @@ export default {
       graphDrawData: {},
       realPixelRatio: 1,
       seriesUnderMouse: [],
+      renderEmptyState: false,
     };
   },
   computed: {
@@ -105,6 +107,9 @@ export default {
     deploymentFlagData() {
       return this.reducedDeploymentData.find(deployment => deployment.showDeploymentFlag);
     },
+    noDataToDisplayMsg() {
+      return s__('Metrics|No data to display');
+    }
   },
   watch: {
     hoverData() {
@@ -120,17 +125,17 @@ export default {
     },
     draw() {
       const breakpointSize = bp.getBreakpointSize();
-      const query = this.graphData.queries[0];
       const svgWidth = this.$refs.baseSvg.getBoundingClientRect().width;
+
       this.margin = measurements.large.margin;
+
       if (this.smallGraph || breakpointSize === 'xs' || breakpointSize === 'sm') {
         this.graphHeight = 300;
         this.margin = measurements.small.margin;
         this.measurements = measurements.small;
       }
-      this.unitOfDisplay = query.unit || '';
+
       this.yAxisLabel = this.graphData.y_label || 'Values';
-      this.legendTitle = query.label || 'Average';
       this.graphWidth = svgWidth - this.margin.left - this.margin.right;
       this.graphHeight = this.graphHeight - this.margin.top - this.margin.bottom;
       this.baseGraphHeight = this.graphHeight - 50;
@@ -139,8 +144,20 @@ export default {
       // pixel offsets inside the svg and outside are not 1:1
       this.realPixelRatio = svgWidth / this.baseGraphWidth;
 
-      this.renderAxesPaths();
-      this.formatDeployments();
+      // verify the data
+      this.graphData.queries = removeTimeSeriesNoData(this.graphData.queries);
+      const queryLengthOfData = this.graphData.queries.filter(s => s.result.length > 0).length;
+
+      const [query] = this.graphData.queries;
+      this.legendTitle = query ? query.label : 'Average';
+      this.unitOfDisplay = query ? query.unit : '';
+
+      if (queryLengthOfData > 0) {
+        this.renderAxesPaths();
+        this.formatDeployments();
+      } else {
+        this.renderEmptyState = true;
+      }
     },
     handleMouseOverGraph(e) {
       let point = this.$refs.graphData.createSVGPoint();
@@ -283,6 +300,7 @@ export default {
           :unit-of-display="unitOfDisplay"
         />
         <svg
+          v-if="!renderEmptyState"
           ref="graphData"
           :viewBox="innerViewBox"
           class="graph-data"
@@ -316,8 +334,23 @@ export default {
             @mousemove="handleMouseOverGraph($event)"
           />
         </svg>
+        <svg
+          v-else
+          :viewBox="innerViewBox"
+          class="js-no-data-empty-state"
+        >
+          <text
+            x="50%"
+            y="50%"
+            alignment-baseline="middle"
+            text-anchor="middle"
+          >
+            {{ noDataToDisplayMsg }}
+          </text>
+        </svg>
       </svg>
       <graph-flag
+        v-if="!renderEmptyState"
         :real-pixel-ratio="realPixelRatio"
         :current-x-coordinate="currentXCoordinate"
         :current-data="currentData"

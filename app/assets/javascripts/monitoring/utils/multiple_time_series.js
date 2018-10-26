@@ -217,3 +217,35 @@ export default function createTimeSeries(queries, graphWidth, graphHeight, graph
     graphDrawData,
   };
 }
+
+function checkQueryEmptyData(query) {
+  return {
+    ...query,
+    result: query.result.filter(timeSeries => {
+      const newTimeSeries = timeSeries;
+      const emptyValues = timeSeries.values.filter(
+        val => Number.isNaN(val.value) || val.value === null || val.value === undefined,
+      );
+
+      if (emptyValues.length === timeSeries.values.length) {
+        newTimeSeries.values = [];
+      }
+
+      return newTimeSeries;
+    }),
+  };
+}
+
+export function removeTimeSeriesNoData(queries) {
+  const timeSeries = queries.reduce((series, query) => {
+    let checkedQuery = checkQueryEmptyData(query);
+    checkedQuery = {
+      ...checkedQuery,
+      result: checkedQuery.result.filter(c => c.values.length > 0),
+    };
+
+    return series.concat(checkedQuery);
+  }, []);
+
+  return timeSeries;
+}
