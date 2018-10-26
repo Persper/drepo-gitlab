@@ -50,7 +50,7 @@ class Deployment < ActiveRecord::Base
 
     after_transition any => :success do |deployment|
       deployment.run_after_commit do
-        Ci::DeploymentSuccessWorker.perform_async(id)
+        Deployments::SuccessWorker.perform_async(id)
       end
     end
   end

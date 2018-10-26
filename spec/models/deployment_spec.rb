@@ -97,8 +97,8 @@ describe Deployment do
         end
       end
 
-      it 'executes DeploymentSuccessWorker asynchronously' do
-        expect(Ci::DeploymentSuccessWorker)
+      it 'executes Deployments::SuccessWorker asynchronously' do
+        expect(Deployments::SuccessWorker)
           .to receive(:perform_async).with(deployment.id)
 
         deployment.succeed!

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::DeploymentSuccessWorker do
+describe Deployments::SuccessWorker do
   subject { described_class.new.perform(deployment&.id) }
 
   context 'when deploy record exists' do

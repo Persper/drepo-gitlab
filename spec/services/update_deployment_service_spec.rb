@@ -21,7 +21,7 @@ describe UpdateDeploymentService do
   let(:service) { described_class.new(deployment) }
 
   before do
-    allow(Ci::DeploymentSuccessWorker).to receive(:perform_async)
+    allow(Deployments::SuccessWorker).to receive(:perform_async)
 
     job.success!
   end

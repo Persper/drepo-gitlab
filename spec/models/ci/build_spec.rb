@@ -911,7 +911,7 @@ describe Ci::Build do
 
     context 'when transits to success' do
       before do
-        allow(Ci::DeploymentSuccessWorker).to receive(:perform_async)
+        allow(Deployments::SuccessWorker).to receive(:perform_async)
         build.success!
       end
 

@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-module Ci
-  class DeploymentSuccessWorker
+module Deployments
+  class SuccessWorker
     include ApplicationWorker
-    include PipelineQueue
 
-    queue_namespace :pipeline_processing
+    queue_namespace :deployment
 
     def perform(deployment_id)
       Deployment.find_by_id(deployment_id).try do |deployment|

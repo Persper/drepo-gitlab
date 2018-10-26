@@ -45,7 +45,7 @@ FactoryBot.define do
 
       after(:create) do |deployment, evaluator|
         deployment.update_column(:status, Deployment.state_machine.states['success'].value)
-        Ci::DeploymentSuccessWorker.new.perform(deployment)
+        Deployments::SuccessWorker.new.perform(deployment)
       end
     end
 
