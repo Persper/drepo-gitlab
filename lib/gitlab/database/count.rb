@@ -24,6 +24,25 @@ module Gitlab
           ].freeze
         end
 
+      def self.test_approximate_counts
+        models = [User, Project, Issue, MergeRequest, Note, Event]
+        strategies = [TablesampleCountStrategy, ReltuplesCountStrategy, ExactCountStrategy]
+        File.open('/tmp/result.csv', 'wb+') do |io|
+          strategies.each do |strategy|
+            models.each do |model|
+              ActiveRecord::Base.transaction do
+                ActiveRecord::Base.connection.execute('SET statement_timeout=0')
+                count = 0
+                timing = Benchmark.realtime do
+                  count = approximate_counts([model], strategies: [strategy])
+                end
+                io << [strategy, model.table_name, count[model], timing.round(4)].to_s + "\n"
+              end
+            end
+          end
+        end
+      end
+
       # Takes in an array of models and returns a Hash for the approximate
       # counts for them.
       #
