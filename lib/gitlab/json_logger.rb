@@ -6,6 +6,21 @@ module Gitlab
       raise NotImplementedError
     end
 
+    def self.use_correlation_id(correlation_id, &blk)
+      Thread.current[:correlation_id] ||= []
+      Thread.current[:correlation_id] << correlation_id
+
+      begin
+        yield
+      ensure
+        Thread.current[:correlation_id].unshift
+      end
+    end
+
+    def self.current_correlation_id
+      Thread.current[:correlation_id]&.last
+    end
+
     def format_message(severity, timestamp, progname, message)
       data = {}
       data[:severity] = severity
