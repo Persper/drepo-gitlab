@@ -460,6 +460,18 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['features']).to eq(expected_features)
           end
 
+          context 'when job is a dangling builds' do
+            before do
+              job.update(pipeline: nil, source: :chatops_source)
+            end
+
+            it 'correctly exposes a job' do
+              request_job
+
+              expect(response).to have_gitlab_http_status(201)
+            end
+          end
+
           context 'when job is made for tag' do
             let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
 
