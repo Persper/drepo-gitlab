@@ -1,0 +1,23 @@
+{
+  "types": "object",
+  "required": [
+    "environments",
+    "available_count",
+    "stopped_count"
+  ],
+  "properties": {
+    "environments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "size": { "type":  "integer"},
+          "latest": { "$ref": "environment.json"}
+        }
+      }
+    },
+    "available_count": { "type": "integer" },
+    "stopped_count": { "type": "integer" }
+  }
+}

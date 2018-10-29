@@ -69,6 +69,10 @@ describe Projects::EnvironmentsController do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers['Poll-Interval']).to eq("3000")
         end
+
+        it 'matches json schema' do
+          expect(response).to match_response_schema('environments')
+        end
       end
 
       context 'when requesting stopped environments scope' do
