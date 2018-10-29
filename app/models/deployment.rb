@@ -18,7 +18,7 @@ class Deployment < ActiveRecord::Base
   delegate :name, to: :environment, prefix: true
 
   scope :for_environment, -> (environment) { where(environment_id: environment) }
-  scope :success, -> { with_state(:success) }
+  scope :success, -> { with_status(:success) }
 
   state_machine :status, initial: :created do
     state :created, value: 0
