@@ -15,7 +15,6 @@ class AddStatusToDeployments < ActiveRecord::Migration
       :integer,
       limit: 2,
       default: DEPLOYMENT_STATUS_SUCCESS,
-      default_constraint: false,
       allow_null: false)
   end
 

@@ -7,16 +7,8 @@ class AddFinishedAtToDeployments < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  class Deployment < ActiveRecord::Base
-    self.table_name = 'deployments'
-  end
-
   def up
     add_column :deployments, :finished_at, :datetime_with_timezone
-
-    AddFinishedAtToDeployments::Deployment.find_in_batches(batch_size: 10_000) do |batch|
-      batch.update_all('finished_at=created_at')
-    end
   end
 
   def down

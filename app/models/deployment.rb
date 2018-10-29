@@ -139,6 +139,10 @@ class Deployment < ActiveRecord::Base
     @stop_action ||= manual_actions.find_by(name: on_stop)
   end
 
+  def finished_at
+    read_attribute(:finished_at) || legacy_finished_at
+  end
+
   def deployed_at
     return unless success?
 
@@ -179,5 +183,9 @@ class Deployment < ActiveRecord::Base
 
   def ref_path
     File.join(environment.ref_path, 'deployments', iid.to_s)
+  end
+
+  def legacy_finished_at
+    self.created_at if success? && !read_attribute(:finished_at)
   end
 end
