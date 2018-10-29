@@ -15,7 +15,6 @@ import measurements from '../utils/measurements';
 import { bisectDate, timeScaleFormat } from '../utils/date_time_formatters';
 import createTimeSeries, { removeTimeSeriesNoData } from '../utils/multiple_time_series';
 import bp from '../../breakpoints';
-import { s__ } from '~/locale';
 
 const d3 = { scaleLinear, scaleTime, axisLeft, axisBottom, max, extent, select };
 
@@ -86,7 +85,7 @@ export default {
       graphDrawData: {},
       realPixelRatio: 1,
       seriesUnderMouse: [],
-      renderEmptyState: false,
+      noDataToDisplay: false,
     };
   },
   computed: {
@@ -107,9 +106,6 @@ export default {
     deploymentFlagData() {
       return this.reducedDeploymentData.find(deployment => deployment.showDeploymentFlag);
     },
-    noDataToDisplayMsg() {
-      return s__('Metrics|No data to display');
-    }
   },
   watch: {
     hoverData() {
@@ -156,7 +152,7 @@ export default {
         this.renderAxesPaths();
         this.formatDeployments();
       } else {
-        this.renderEmptyState = true;
+        this.noDataToDisplay = true;
       }
     },
     handleMouseOverGraph(e) {
@@ -300,7 +296,7 @@ export default {
           :unit-of-display="unitOfDisplay"
         />
         <svg
-          v-if="!renderEmptyState"
+          v-if="!noDataToDisplay"
           ref="graphData"
           :viewBox="innerViewBox"
           class="graph-data"
@@ -337,7 +333,7 @@ export default {
         <svg
           v-else
           :viewBox="innerViewBox"
-          class="js-no-data-empty-state"
+          class="js-no-data-to-display"
         >
           <text
             x="50%"
@@ -345,12 +341,12 @@ export default {
             alignment-baseline="middle"
             text-anchor="middle"
           >
-            {{ noDataToDisplayMsg }}
+            {{ s__('Metrics|No data to display') }}
           </text>
         </svg>
       </svg>
       <graph-flag
-        v-if="!renderEmptyState"
+        v-if="!noDataToDisplay"
         :real-pixel-ratio="realPixelRatio"
         :current-x-coordinate="currentXCoordinate"
         :current-data="currentData"

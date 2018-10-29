@@ -14,7 +14,7 @@ export const metricsGroupsAPIResponse = {
           queries: [
             {
               query_range: 'avg(container_memory_usage_bytes{%{environment_filter}}) / 2^20',
-              y_label: 'Memory',
+              label: 'Memory',
               unit: 'MiB',
               result: [
                 {
@@ -324,12 +324,15 @@ export const metricsGroupsAPIResponse = {
           ],
         },
         {
+          id: 6,
           title: 'CPU usage',
           weight: 1,
           queries: [
             {
               query_range:
                 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) * 100',
+              label: 'Core Usage',
+              unit: 'Cores',
               result: [
                 {
                   metric: {},
@@ -6523,6 +6526,49 @@ export const singleRowMetricsMultipleSeries = [
         ],
       },
     ],
+  },
+];
+
+export const queryWithoutData = [
+  {
+    title: 'HTTP Error rate',
+    weight: 10,
+    y_label: 'Http Error Rate',
+    queries: [
+      {
+        query_range:
+          'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"nginx-test-8691397-production-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"nginx-test-8691397-production-.*"}[2m])) * 100',
+        label: '5xx errors',
+        unit: '%',
+        result: [
+          {
+            metric: {},
+            values: [
+              {
+                time: '2017-08-27T11:01:51.462Z',
+                value: NaN,
+              },
+              {
+                time: '2017-08-27T11:02:51.462Z',
+                value: NaN,
+              },
+              {
+                time: '2017-08-27T11:03:51.462Z',
+                value: NaN,
+              },
+              {
+                time: '2017-08-27T11:04:51.462Z',
+                value: NaN,
+              },
+              {
+                time: '2017-08-27T11:05:51.462Z',
+                value: NaN,
+              },
+            ]
+          }
+        ]
+      }
+    ]
   },
 ];
 
