@@ -1,3 +1,9 @@
+---
+category: create
+nav_title: 'Create 3'
+kind: article
+---
+
 # Merge requests
 
 Merge requests allow you to exchange changes you made to source code and
