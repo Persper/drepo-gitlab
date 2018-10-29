@@ -1,3 +1,10 @@
+---
+layout: default-copy
+category: create
+nav_title: 'Create 1'
+kind: article
+---
+
 # Projects
 
 In GitLab, you can create projects for hosting

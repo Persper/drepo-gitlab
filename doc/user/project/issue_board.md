@@ -1,3 +1,10 @@
+---
+layout: default-copy
+category: create
+nav_title: 'Create 2'
+kind: article
+---
+
 # Issue Boards
 
 > [Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#issue-board).
