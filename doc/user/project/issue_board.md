@@ -1,5 +1,4 @@
 ---
-layout: default-copy
 category: create
 nav_title: 'Create 2'
 kind: article
