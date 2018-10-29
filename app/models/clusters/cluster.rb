@@ -84,6 +84,17 @@ module Clusters
 
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
 
+    def self.belonging_to_parent_group_of_project(project_id, cluster_scope = all)
+      project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
+      hierarchy_groups = Gitlab::GroupHierarchy.new(project_groups)
+        .base_and_ancestors(depth: :desc)
+        .joins(:clusters).merge(cluster_scope)
+
+      hierarchy_groups.flat_map do |group|
+        group.clusters.merge(cluster_scope)
+      end
+    end
+
     def status_name
       if provider
         provider.status_name
