@@ -1,10 +1,25 @@
 # frozen_string_literal: true
 
 class AddStatusToDeployments < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
+  DEPLOYMENT_STATUS_SUCCESS = 2 # Equivalent to Deployment.state_machine.states['success'].value
+
   DOWNTIME = false
 
-  def change
-    add_column :deployments, :status, :integer, limit: 2
-    add_column :deployments, :finished_at, :datetime_with_timezone
+  disable_ddl_transaction!
+
+  def up
+    add_column_with_default(:deployments,
+      :status,
+      :integer,
+      limit: 2,
+      default: DEPLOYMENT_STATUS_SUCCESS,
+      default_constraint: false,
+      allow_null: false)
+  end
+
+  def down
+    remove_column(:deployments, :status)
   end
 end

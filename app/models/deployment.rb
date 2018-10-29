@@ -18,7 +18,7 @@ class Deployment < ActiveRecord::Base
   delegate :name, to: :environment, prefix: true
 
   scope :for_environment, -> (environment) { where(environment_id: environment) }
-  scope :success, -> { where('status = (?) OR status IS NULL', state_machine.states['success'].value) }
+  scope :success, -> { with_state(:success) }
 
   state_machine :status, initial: :created do
     state :created, value: 0
@@ -53,20 +53,6 @@ class Deployment < ActiveRecord::Base
         Deployments::SuccessWorker.perform_async(id)
       end
     end
-  end
-
-  # Override state machine's predefined method to support legacy deployment records that do not have a value on `status` column
-  def success?
-    return true if read_attribute(:status).nil?
-
-    super
-  end
-
-  # Override state machine's predefined method to support legacy deployment records that do not have a value on `status` column
-  def status_name
-    return :success if read_attribute(:status).nil?
-
-    super
   end
 
   def self.last_for_environment(environment)
@@ -151,12 +137,6 @@ class Deployment < ActiveRecord::Base
     return unless manual_actions
 
     @stop_action ||= manual_actions.find_by(name: on_stop)
-  end
-
-  def finished_at
-    return self.created_at if read_attribute(:status).nil?
-
-    read_attribute(:finished_at)
   end
 
   def deployed_at
