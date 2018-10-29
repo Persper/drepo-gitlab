@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Pipeline < ActiveRecord::Base
+  class Pipeline < Ci::Context
     extend Gitlab::Ci::Model
     include HasStatus
     include Importable
