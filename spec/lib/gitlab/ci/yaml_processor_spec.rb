@@ -330,6 +330,35 @@ module Gitlab
         end
       end
 
+      describe "Kaniko build handling" do
+        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+
+        let(:config) do
+            {
+              test: { kaniko: { credentials: [ { registry: 'registry.example.com',
+                                                 username: 'username',
+                                                 password: 'password' },
+                                               { registry: 'registry2.example.com',
+                                                 username: 'username2',
+                                                 password: 'password2' }],
+                                images: [ { #context: 'dockerfiles/test-1',
+                                           dockerfile: 'dockerfiles/test-1/Dockerfile',
+                                           tags: %w(registry.example.com/my/image-1 registry.example.com/my/image-2),
+                                           args: { 'ALPINE_VERSION' => '3.8' } },
+                                         { context: 'dockerfiles/test-2',
+                                           dockerfile: 'dockerfiles/test-2/Dockerfile',
+                                           tags: %w(registry.example.com/my/image-3) } ] } }
+            }
+        end
+
+        subject { config_processor.build_attributes('test') }
+
+        it 'prepares custom script' do
+          pp subject[:options]
+          puts subject[:commands]
+        end
+      end
+
       describe "Image and service handling" do
         context "when extended docker configuration is used" do
           it "returns image and service when defined" do

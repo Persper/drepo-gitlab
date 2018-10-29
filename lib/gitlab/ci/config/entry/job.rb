@@ -9,7 +9,7 @@ module Gitlab
           include Configurable
           include Attributable
 
-          ALLOWED_KEYS = %i[tags script only except type image services
+          ALLOWED_KEYS = %i[tags script kaniko only except type image services
                             allow_failure type stage when start_in artifacts cache
                             dependencies before_script after_script variables
                             environment coverage retry extends].freeze
@@ -17,11 +17,12 @@ module Gitlab
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
             validates :config, presence: true
-            validates :script, presence: true
             validates :name, presence: true
             validates :name, type: Symbol
 
             with_options allow_nil: true do
+              validates :kaniko, type: Hash
+
               validates :tags, array_of_strings: true
               validates :allow_failure, boolean: true
               validates :retry, numericality: { only_integer: true,
@@ -38,6 +39,14 @@ module Gitlab
 
             validates :start_in, duration: { limit: '1 day' }, if: :delayed?
             validates :start_in, absence: true, unless: :delayed?
+
+            validate do
+              errors.add(:config, 'either script or kaniko entry needs to be specified') unless script_or_kaniko_specified?
+            end
+
+            def script_or_kaniko_specified?
+              config.key?(:script) || config.key?(:kaniko)
+            end
           end
 
           entry :before_script, Entry::Script,
@@ -45,6 +54,9 @@ module Gitlab
 
           entry :script, Entry::Commands,
             description: 'Commands that will be executed in this job.'
+
+          entry :kaniko, Entry::Kaniko,
+            description: 'Configuration for Kaniko based Docker image build'
 
           entry :stage, Entry::Stage,
             description: 'Pipeline stage this job will be executed into.'
@@ -82,11 +94,11 @@ module Gitlab
           entry :coverage, Entry::Coverage,
                description: 'Coverage configuration for this job.'
 
-          helpers :before_script, :script, :stage, :type, :after_script,
+          helpers :before_script, :script, :kaniko, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
                   :artifacts, :commands, :environment, :coverage, :retry
 
-          attributes :script, :tags, :allow_failure, :when, :dependencies,
+          attributes :script, :kaniko, :tags, :allow_failure, :when, :dependencies,
                      :retry, :extends, :start_in
 
           def compose!(deps = nil)
@@ -110,7 +122,7 @@ module Gitlab
           end
 
           def commands
-            (before_script_value.to_a + script_value.to_a).join("\n")
+            (before_script_value.to_a + ensure_script_value.to_a).join("\n")
           end
 
           def manual_action?
@@ -143,9 +155,9 @@ module Gitlab
           def to_hash
             { name: name,
               before_script: before_script_value,
-              script: script_value,
+              script: ensure_script_value,
               commands: commands,
-              image: image_value,
+              image: ensure_image_value,
               services: services_value,
               stage: stage_value,
               cache: cache_value,
@@ -159,6 +171,16 @@ module Gitlab
               artifacts: artifacts_value,
               after_script: after_script_value,
               ignore: ignored? }
+          end
+
+          def ensure_script_value
+            return [[script_value], kaniko_value[:script]].flatten if @config.key?(:kaniko)
+            script_value
+          end
+
+          def ensure_image_value
+            return kaniko_value[:image] if @config.key?(:kaniko)
+            image_value
           end
         end
       end
