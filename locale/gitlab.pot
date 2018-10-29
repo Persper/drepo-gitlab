@@ -3599,6 +3599,9 @@ msgstr ""
 msgid "List available repositories"
 msgstr ""
 
+msgid "List view"
+msgstr ""
+
 msgid "List your Bitbucket Server repositories"
 msgstr ""
 
@@ -4025,9 +4028,6 @@ msgid "New..."
 msgstr ""
 
 msgid "No"
-msgstr ""
-
-msgid "No Assignee"
 msgstr ""
 
 msgid "No Label"
@@ -6517,6 +6517,9 @@ msgid "Total: %{total}"
 msgstr ""
 
 msgid "Track time with quick actions"
+msgstr ""
+
+msgid "Tree view"
 msgstr ""
 
 msgid "Trending"
