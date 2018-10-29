@@ -231,6 +231,53 @@ describe Clusters::Cluster do
     end
   end
 
+  describe '.belonging_to_parent_group_of_project' do
+    let(:cluster_scope) { described_class.all }
+    let(:group_cluster) { create(:cluster, :provided_by_gcp, :group) }
+    let(:group) { group_cluster.group }
+
+    subject { described_class.belonging_to_parent_group_of_project(project.id, cluster_scope) }
+
+    context 'when project does not belong to this group' do
+      let(:project) { create(:project, group: create(:group)) }
+
+      it 'returns nothing' do
+        expect(subject).to be_empty
+      end
+    end
+
+    context 'when group has a configured kubernetes cluster' do
+      let(:project) { create(:project, group: group) }
+
+      it 'returns the group cluster' do
+        expect(subject).to eq([group_cluster])
+      end
+    end
+
+    context 'when sub-group has configured kubernetes cluster', :postgresql do
+      let(:sub_group_cluster) { create(:cluster, :provided_by_gcp, :group) }
+      let(:sub_group) { sub_group_cluster.group }
+      let(:project) { create(:project, group: sub_group) }
+
+      before do
+        sub_group.update!(parent: group)
+      end
+
+      it 'returns clusters in order, ascending the hierachy' do
+        expect(subject).to eq([group_cluster, sub_group_cluster])
+      end
+    end
+
+    context 'cluster_scope arg' do
+      let(:cluster_scope) { described_class.none }
+      let(:project) { create(:project, group: group) }
+
+      it 'returns nothing' do
+        expect(subject).to be_empty
+      end
+    end
+  end
+
   describe '#provider' do
     subject { cluster.provider }
 
