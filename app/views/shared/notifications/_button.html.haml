@@ -1,4 +1,5 @@
-- btn_class = local_assigns.fetch(:btn_class)
+- btn_class = local_assigns.fetch(:btn_class, nil)
+- has_label = local_assigns.fetch(:has_label, true)
 
 - if notification_setting
   .js-notification-dropdown.notification-dropdown.project-action-button.dropdown.inline
@@ -8,16 +9,18 @@
       .js-notification-toggle-btns
         %div{ class: ("btn-group" if notification_setting.custom?) }
           - if notification_setting.custom?
-            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: "Notification setting", class: "#{btn_class}", "aria-label" => "Notification setting: #{notification_title(notification_setting.level)}", data: { container: "body", toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), display: 'static' } }
+            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: has_label ? "Notification setting" : "Notification setting - #{notification_title(notification_setting.level)}", class: "#{btn_class}", "aria-label" => "Notification setting: #{notification_title(notification_setting.level)}", data: { container: "body", toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), display: 'static' } }
               = icon("bell", class: "js-notification-loading")
-              = notification_title(notification_setting.level)
+              - if has_label
+                = notification_title(notification_setting.level)
             %button.btn.dropdown-toggle{ data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
               = icon('caret-down')
               .sr-only Toggle dropdown
           - else
-            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: "Notification setting", class: "#{btn_class}", "aria-label" => "Notification setting: #{notification_title(notification_setting.level)}", data: { container: "body", toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
+            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: has_label ? "Notification setting" : "Notification setting - #{notification_title(notification_setting.level)}", class: "#{btn_class}", "aria-label" => "Notification setting: #{notification_title(notification_setting.level)}", data: { container: "body", toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
               = icon("bell", class: "js-notification-loading")
-              = notification_title(notification_setting.level)
+              - if has_label
+                = notification_title(notification_setting.level)
               = icon("caret-down")
 
           = render "shared/notifications/notification_dropdown", notification_setting: notification_setting
