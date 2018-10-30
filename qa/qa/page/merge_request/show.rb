@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module MergeRequest
@@ -25,6 +27,10 @@ module QA
 
         view 'app/views/shared/issuable/_sidebar.html.haml' do
           element :labels_block
+        end
+
+        view 'app/views/projects/merge_requests/_mr_title.html.haml' do
+          element :edit_button
         end
 
         def fast_forward_possible?
@@ -105,6 +111,10 @@ module QA
           end
 
           click_element :squash_checkbox
+        end
+
+        def edit!
+          click_element :edit_button
         end
       end
     end
