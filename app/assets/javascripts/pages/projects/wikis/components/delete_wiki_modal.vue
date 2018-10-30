@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import dompurify from 'dompurify';
 import { s__, sprintf } from '~/locale';
 import { GlModal, GlModalDirective } from '@gitlab-org/gitlab-ui';
 
@@ -38,7 +38,7 @@ export default {
       return sprintf(
         s__('WikiPageConfirmDelete|Delete page %{pageTitle}?'),
         {
-          pageTitle: _.escape(this.pageTitle),
+          pageTitle: dompurify.sanitize(this.pageTitle),
         },
         false,
       );
