@@ -205,6 +205,8 @@
   }
 
   .project-title {
+    margin-top: 8px;
+    margin-bottom: 5px;
     font-size: 20px;
     line-height: 24px;
     font-weight: bold;
@@ -225,6 +227,32 @@
     }
   }
 
+  .project-title-row {
+    @include media-breakpoint-down(sm) {
+      .project-avatar {
+        width: 48px;
+        height: 48px;
+        flex-basis: 48px;
+
+        .avatar {
+          font-size: 20px;
+          line-height: 46px;
+        }
+      }
+
+      .project-title {
+        margin-top: 4px;
+        margin-bottom: 2px;
+        font-size: $gl-font-size;
+        line-height: $gl-font-size-large;
+      }
+
+      .project-tag-list,
+      .project-metadata {
+        font-size: $gl-font-size-small;
+      }
+    }
+  }
 
   .project-metadata {
     font-weight: normal;
@@ -240,8 +268,9 @@
       }
     }
 
-    .access-request-link {
-      margin-left: $gl-padding-4;
+    .access-request-link,
+    .project-tag-list {
+      margin-left: $gl-padding-8;
       padding-left: $gl-padding-8;
       border-left: 1px solid $gl-text-color-secondary;
     }
@@ -249,6 +278,12 @@
 
   .project-description {
     font-size: $gl-font-size-large;
+  }
+
+  .notifications-btn {
+    .fa-bell {
+      margin-right: 0;
+    }
   }
 }
 
@@ -347,8 +382,6 @@
   }
 
   .mobile-git-clone {
-    margin-top: $gl-padding-8;
-
     .dropdown-menu-inner-content {
       @extend .monospace;
     }
@@ -356,12 +389,12 @@
 }
 
 .project-repo-buttons {
-  .mobile-git-clone,
   .count-badge,
   .btn-xs {
     height: 24px;
   }
 
+  .dropdown-toggle,
   .clone-dropdown-btn {
     .fa {
       color: unset;
@@ -815,6 +848,10 @@
     .btn {
       padding: $gl-btn-vert-padding $gl-btn-horz-padding;
       line-height: $gl-btn-line-height;
+
+      .icon {
+        top: 0;
+      }
     }
 
     .btn-missing {

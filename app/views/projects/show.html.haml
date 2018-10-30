@@ -16,11 +16,10 @@
 
   = render "home_panel"
 
-- if can?(current_user, :download_code, @project) && @project.repository_languages.present?
-  %nav.project-stats
-    = repository_languages_bar(@project.repository_languages)
+  - if can?(current_user, :download_code, @project) && @project.repository_languages.present?
+    %nav.project-stats
+      = repository_languages_bar(@project.repository_languages)
 
-%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   - if @project.archived?
     .text-warning.center.prepend-top-20
       %p

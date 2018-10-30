@@ -2,9 +2,9 @@
 - ssh_copy_label = _("Copy SSH clone URL")
 - http_copy_label = _('Copy %{http_label} clone URL') % { http_label: gitlab_config.protocol.upcase }
 
-.btn-group.mobile-git-clone.js-mobile-git-clone
-  = clipboard_button(button_text: default_clone_label, text: default_url_to_repo(project), hide_button_icon: true, class: "btn btn-default btn-xs input-group-text clone-dropdown-btn js-clone-dropdown-label")
-  %button.btn.btn-default.btn-xs.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { toggle: "dropdown" } }
+.btn-group.mobile-git-clone.js-mobile-git-clone.btn-wide-on-xs
+  = clipboard_button(button_text: default_clone_label, text: default_url_to_repo(project), hide_button_icon: true, class: "btn-primary btn-wide-on-xs bold justify-content-center input-group-text clone-dropdown-btn js-clone-dropdown-label")
+  %button.btn.btn-primary.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { toggle: "dropdown" } }
     = icon("caret-down", class: "dropdown-btn-icon")
   %ul.dropdown-menu.dropdown-menu-selectable.dropdown-menu-right.clone-options-dropdown{ data: { dropdown: true } }
     %li
