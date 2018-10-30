@@ -331,7 +331,7 @@
 
   .project-clone-holder {
     display: inline-block;
-    margin: $gl-padding $gl-padding-8 0 0;
+    margin: $gl-padding 0 0;
 
     input {
       height: $input-height;
@@ -362,8 +362,10 @@
     height: 24px;
   }
 
-  .fa-caret-down {
-    color: unset;
+  .clone-dropdown-btn {
+    .fa {
+      color: unset;
+    }
   }
 }
 

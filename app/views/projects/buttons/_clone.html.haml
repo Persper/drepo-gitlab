@@ -10,13 +10,18 @@
       %span.js-clone-dropdown-label
         = _('Clone')
       = icon('caret-down')
-    %ul.dropdown-menu.dropdown-menu-selectable.clone-options-dropdown
+    %form.p-3.dropdown-menu.dropdown-menu-right.dropdown-menu-large.dropdown-menu-selectable.clone-options-dropdown
+      %li.pb-2
+        %label.label-bold
+          = _('Clone with SSH')
+        .input-group
+          = text_field_tag :ssh_project_clone, project.ssh_url_to_repo, class: "js-select-on-focus form-control", readonly: true, aria: { label: 'Project clone URL' }
+          .input-group-append
+            = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-default btn-clipboard")
       %li
-        = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: 'Project clone URL' }
-        .input-group-append
-          = clipboard_button(target: '#project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-default btn-clipboard")
-      %li
-        = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true, aria: { label: 'Project clone URL' }
-        .input-group-append
-          = clipboard_button(target: '#project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-default btn-clipboard")
-
+        %label.label-bold
+          = _('Clone with %{http_label}') % { http_label: gitlab_config.protocol.upcase }
+        .input-group
+          = text_field_tag :http_project_clone, project.http_url_to_repo, class: "js-select-on-focus form-control", readonly: true, aria: { label: 'Project clone URL' }
+          .input-group-append
+            = clipboard_button(target: '#http_project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-default btn-clipboard")

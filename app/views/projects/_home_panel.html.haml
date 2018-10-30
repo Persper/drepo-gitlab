@@ -26,7 +26,7 @@
           %span.access-request-links
             = render 'shared/members/access_request_links', source: @project
 
-    .project-repo-buttons.col-sm-12.col-md-6.d-inline-flex.flex-wrap.justify-content-end
+    .project-repo-buttons.col-sm-12.col-md-6.d-inline-flex.flex-wrap.justify-content-md-end
       - if current_user
         .d-none.d-sm-inline-flex
           = render 'shared/notifications/button', notification_setting: @notification_setting, btn_class: 'btn-xs'
