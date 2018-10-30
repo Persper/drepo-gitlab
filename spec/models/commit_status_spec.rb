@@ -28,19 +28,61 @@ describe CommitStatus do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
 
-    describe 'pipeline presence validation' do
-      let(:commit_status) { build(:commit_status) }
+    it 'validates status inclusion' do
+      expect(subject).to validate_inclusion_of(:status)
+        .in_array(%w(pending running failed success canceled))
+    end
 
-      before do
-        commit_status.update(project: project, pipeline: nil)
+    describe 'pipeline or context presence validation' do
+      let(:commit_status) { build(:commit_status, project: project) }
+
+      context 'when commit status belongs to a pipeline' do
+        it 'does not require context presence' do
+          expect(commit_status.pipeline).to be_present
+          expect(commit_status.context).to be_nil
+          expect(commit_status).to be_valid
+        end
+
+        it 'allows to persist commit status' do
+          commit_status.save!
+
+          expect(commit_status).to be_persisted
+          expect(commit_status.stage_id).to be_present
+          expect(commit_status.pipeline_id).to be_present
+        end
       end
 
-      context 'when commit status has been created within a pipeline' do
-        it 'requires pipeline presence' do
-          expect(commit_status).to be_pipeline_source
+      context 'when commit status belongs to a context' do
+        let(:status_context) { build(:ci_context, project: project) }
+
+        before do
+          commit_status.update(pipeline: nil, context: status_context)
+        end
+
+        it 'does not require pipeline presence' do
           expect(commit_status.pipeline).to be_nil
+          expect(commit_status.context).to be_present
+          expect(commit_status).to be_valid
+        end
+
+        it 'allows to persist commit status' do
+          commit_status.save!
+
+          expect(commit_status).to be_persisted
+          expect(commit_status.stage_id).to be_nil
+          expect(commit_status.pipeline_id).to be_nil
+        end
+      end
+
+      context 'when commit status does not belong to pipeline or context' do
+        before do
+          commit_status.update(pipeline: nil, context: nil)
+        end
+
+        it 'requires either pipeline or context to be present' do
+          expect(commit_status.pipeline).to be_nil
+          expect(commit_status.context).to be_nil
           expect(commit_status).not_to be_valid
         end
 
@@ -51,12 +93,13 @@ describe CommitStatus do
 
       context 'when commit status is being imported' do
         before do
+          commit_status.update(pipeline: nil, context: nil)
           commit_status.importing = true
         end
 
-        it 'does not require pipeline being present' do
-          expect(commit_status).to be_pipeline_source
+        it 'does not require pipeline or context to be present' do
           expect(commit_status.pipeline).to be_nil
+          expect(commit_status.context).to be_nil
           expect(commit_status).to be_valid
         end
 
@@ -64,26 +107,6 @@ describe CommitStatus do
           commit_status.save!
 
           expect(commit_status).to be_persisted
-        end
-      end
-
-      context 'when commit status is a dangling build' do
-        before do
-          commit_status.source = :chatops_source
-        end
-
-        it 'does not require pipeline presence' do
-          expect(commit_status).to be_chatops_source
-          expect(commit_status.pipeline).to be_nil
-          expect(commit_status).to be_valid
-        end
-
-        it 'allows to persist commit status' do
-          commit_status.save!
-
-          expect(commit_status).to be_persisted
-          expect(commit_status.stage_id).to be_nil
-          expect(commit_status.pipeline_id).to be_nil
         end
       end
     end
@@ -608,8 +631,13 @@ describe CommitStatus do
     end
 
     context 'when commit status is a dangling status' do
+      let(:status_context) { build(:ci_context, project: project) }
+
       let(:commit_status) do
-        create(:commit_status, name: 'rspec', stage: 'test', source: :chatops_source)
+        create(:commit_status, name: 'rspec',
+                               stage: 'test',
+                               pipeline: nil,
+                               context: status_context)
       end
 
       it 'does not create a new stage' do
@@ -664,19 +692,18 @@ describe CommitStatus do
   end
 
   describe '#dangling?' do
-    context 'when a commit status has a pipeline source' do
-      before do
-        commit_status.source = :pipeline_source
-      end
-
+    context 'when a commit status has a pipeline' do
       it 'is not a dangling commit status' do
+        expect(commit_status.pipeline).to be_present
         expect(commit_status).not_to be_dangling
       end
     end
 
-    context 'when a commit_status has chatops source' do
+    context 'when a commit status belongs to a context only' do
+      let(:status_context) { build(:ci_context, project: project) }
+
       before do
-        commit_status.source = :chatops_source
+        commit_status.update(pipeline: nil, context: status_context)
       end
 
       it 'is a dangling commit status' do

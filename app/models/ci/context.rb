@@ -2,6 +2,9 @@
 
 module Ci
   class Context < ActiveRecord::Base
-    self.abstract_class = true
+    extend Gitlab::Ci::Model
+    include Ci::Contextable
+
+    belongs_to :project
   end
 end

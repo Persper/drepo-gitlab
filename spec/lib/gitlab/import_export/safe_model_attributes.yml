@@ -218,6 +218,9 @@ MergeRequest::Metrics:
 - latest_build_started_at
 - latest_build_finished_at
 - first_deployed_to_production_at
+Ci::Context:
+- id
+- project_id
 Ci::Pipeline:
 - id
 - project_id
@@ -301,7 +304,7 @@ CommitStatus:
 - protected
 - failure_reason
 - scheduled_at
-- source
+- context_id
 Ci::Variable:
 - id
 - project_id

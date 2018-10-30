@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class AddSourceToCiBuild < ActiveRecord::Migration
+class AddCiContextReferenceToCiBuild < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
 
   def change
-    add_column :ci_builds, :source, :integer
+    add_reference :ci_builds, :context, index: true
   end
 end

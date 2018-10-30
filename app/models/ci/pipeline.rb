@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Pipeline < Ci::Context
+  class Pipeline < ActiveRecord::Base
     extend Gitlab::Ci::Model
     include HasStatus
     include Importable
@@ -11,6 +11,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
     include EnumWithNil
+    include Ci::Contextable
 
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user

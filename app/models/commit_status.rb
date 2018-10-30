@@ -12,12 +12,14 @@ class CommitStatus < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
+  belongs_to :context, class_name: 'Ci::Context'
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
 
   delegate :commit, to: :pipeline
   delegate :sha, :short_sha, to: :pipeline
 
-  validates :pipeline, presence: true, unless: -> { importing? || dangling? }
+  validates :pipeline, presence: true, unless: -> { importing? || context.present? }
+  validates :context, presence: true, unless: -> { importing? || pipeline.present? }
   validates :name, presence: true, unless: :importing?
 
   alias_attribute :author, :user
@@ -41,11 +43,6 @@ class CommitStatus < ActiveRecord::Base
   scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
-
-  enum_with_nil source: {
-    pipeline_source: nil,
-    chatops_source: 1
-  }
 
   enum_with_nil failure_reason: {
     unknown_failure: nil,
@@ -195,7 +192,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def dangling?
-    !pipeline_source?
+    pipeline.nil? && context.present?
   end
 
   def detailed_status(current_user)
