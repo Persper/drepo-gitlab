@@ -16,14 +16,11 @@ module Ci
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
 
-    has_many :deployments, -> { success }, as: :deployable
-
     RUNNER_FEATURES = {
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? }
     }.freeze
 
-    has_one :last_deployment, -> { success.order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
-    has_one :real_last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
+    has_one :deployment, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
 
@@ -197,7 +194,7 @@ module Ci
       end
 
       after_transition pending: :running do |build|
-        build.real_last_deployment&.run
+        build.deployment&.run
 
         build.run_after_commit do
           BuildHooksWorker.perform_async(id)
@@ -211,7 +208,7 @@ module Ci
       end
 
       after_transition any => [:success] do |build|
-        build.real_last_deployment&.succeed
+        build.deployment&.succeed
 
         build.run_after_commit do
           PagesWorker.perform_async(:deploy, id) if build.pages_generator?
@@ -221,7 +218,7 @@ module Ci
       before_transition any => [:failed] do |build|
         next unless build.project
 
-        build.real_last_deployment&.drop
+        build.deployment&.drop
 
         next if build.retries_max.zero?
 
@@ -243,7 +240,7 @@ module Ci
       end
 
       after_transition any => [:skipped, :canceled] do |build|
-        build.real_last_deployment&.cancel
+        build.deployment&.cancel
       end
     end
 
@@ -336,7 +333,7 @@ module Ci
     end
 
     def outdated_deployment?
-      success? && !last_deployment.try(:last?)
+      success? && !deployment.try(:last?)
     end
 
     def depends_on_builds
@@ -739,9 +736,9 @@ module Ci
     end
 
     def successful_deployment_status
-      if success? && last_deployment&.last?
+      if success? && deployment&.last?
         return :last
-      elsif success? && last_deployment.present?
+      elsif success? && deployment.present?
         return :out_of_date
       end
 

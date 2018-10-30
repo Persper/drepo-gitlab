@@ -9,7 +9,7 @@ class BuildSuccessWorker
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
-      break if build.real_last_deployment
+      break if build.deployment
 
       create_deployment(build) if build.has_environment?
     end
