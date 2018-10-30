@@ -8,6 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-30 18:27+0100\n"
+"PO-Revision-Date: 2018-10-30 18:27+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -4593,7 +4595,37 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-msgid "Preferences|Navigation theme"
+msgid "Preferences|Behavior"
+msgstr ""
+
+msgid "Preferences|Choose between fixed (max. 1280px) and fluid (100%) application layout."
+msgstr ""
+
+msgid "Preferences|Choose what content you want to see on a project’s overview page."
+msgstr ""
+
+msgid "Preferences|Customize the appearance of the application header and navigation sidebar."
+msgstr ""
+
+msgid "Preferences|Default dashboard"
+msgstr ""
+
+msgid "Preferences|Layout width"
+msgstr ""
+
+msgid "Preferences|Preferences|Navigation theme"
+msgstr ""
+
+msgid "Preferences|Project overview content"
+msgstr ""
+
+msgid "Preferences|Syntax highlighting theme"
+msgstr ""
+
+msgid "Preferences|This setting allows you to customize the appearance of the syntax."
+msgstr ""
+
+msgid "Preferences|This setting allows you to customize the behavior of the system layout and default views."
 msgstr ""
 
 msgid "Press Enter or click to search"
