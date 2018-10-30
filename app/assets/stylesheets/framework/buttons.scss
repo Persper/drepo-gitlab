@@ -146,6 +146,12 @@
     line-height: 18px;
   }
 
+  &.btn-xs {
+    padding: 2px 10px;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
   &.btn-success,
   &.btn-register {
     @include btn-green;

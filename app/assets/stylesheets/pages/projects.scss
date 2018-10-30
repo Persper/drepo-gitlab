@@ -196,10 +196,6 @@
   padding-top: $gl-padding;
   padding-bottom: $gl-padding-24;
 
-  .project-title-row {
-    margin-right: $gl-padding-8;
-  }
-
   .project-avatar {
     width: $project-title-row-height;
     height: $project-title-row-height;
@@ -305,8 +301,6 @@
     margin-top: $gl-padding;
 
     .count-badge {
-      height: $input-height;
-
       .icon {
         top: -1px;
       }
@@ -325,13 +319,13 @@
 
     .count-badge-count {
       padding: 0 12px;
-      border-right: 0;
-      border-radius: $border-radius-base 0 0 $border-radius-base;
       background: $gray-light;
+      border-radius: 0 $border-radius-base $border-radius-base 0;
     }
 
     .count-badge-button {
-      border-radius: 0 $border-radius-base $border-radius-base 0;
+      border-right: 0;
+      border-radius: $border-radius-base 0 0 $border-radius-base;
     }
   }
 
@@ -342,10 +336,6 @@
     input {
       height: $input-height;
     }
-  }
-
-  .clone-dropdown-btn {
-    background-color: $white-light;
   }
 
   .clone-options-dropdown {
@@ -362,6 +352,18 @@
     .dropdown-menu-inner-content {
       @extend .monospace;
     }
+  }
+}
+
+.project-repo-buttons {
+  .mobile-git-clone,
+  .count-badge,
+  .btn-xs {
+    height: 24px;
+  }
+
+  .fa-caret-down {
+    color: unset;
   }
 }
 
@@ -942,8 +944,6 @@ pre.light-well {
 }
 
 .git-clone-holder {
-  width: 320px;
-
   .btn-clipboard {
     border: 1px solid $border-color;
   }
