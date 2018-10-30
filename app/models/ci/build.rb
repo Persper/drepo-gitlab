@@ -860,7 +860,7 @@ module Ci
     end
 
     def update_project_statistics_after_destroy
-      update_project_statistics(-artifacts_size)
+      update_project_statistics(-read_attribute(:artifacts_size).to_i)
     end
 
     def update_project_statistics(difference)
