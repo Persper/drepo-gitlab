@@ -57,7 +57,7 @@ describe('locale', () => {
 
       const output = sprintf(input, parameters);
 
-      expect(output).toBe('contains &lt;script&gt;alert(&quot;malicious!&quot;)&lt;/script&gt;');
+      expect(output).toBe('contains ');
     });
 
     it('does not escape parameters for escapeParameters = false', () => {

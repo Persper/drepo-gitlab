@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import dompurify from 'dompurify';
 import helmInstallIllustration from '@gitlab/svgs/dist/illustrations/kubernetes-installation.svg';
 import elasticsearchLogo from 'images/cluster_app_logos/elasticsearch.png';
 import gitlabLogo from 'images/cluster_app_logos/gitlab.png';
@@ -74,7 +74,7 @@ export default {
     },
     ingressDescription() {
       const extraCostParagraph = sprintf(
-        _.escape(
+        dompurify.sanitize(
           s__(
             `ClusterIntegration|%{boldNotice} This will add some extra resources
             like a load balancer, which may incur additional costs depending on
@@ -83,15 +83,16 @@ export default {
           ),
         ),
         {
-          boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,
+          // TODO: Add test scenario for DOMpurify's sanitize method
+          boldNotice: `<strong>${dompurify.sanitize(s__('ClusterIntegration|Note:'))}</strong>`,
           pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb" target="_blank" rel="noopener noreferrer">
-              ${_.escape(s__('ClusterIntegration|check the pricing here'))}</a>`,
+              ${dompurify.sanitize(s__('ClusterIntegration|check the pricing here'))}</a>`,
         },
         false,
       );
 
       const externalIpParagraph = sprintf(
-        _.escape(
+        dompurify.sanitize(
           s__(
             `ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS
             at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}`,
@@ -99,7 +100,7 @@ export default {
         ),
         {
           ingressHelpLink: `<a href="${this.ingressHelpPath}">
-              ${_.escape(s__('ClusterIntegration|More information'))}
+              ${dompurify.sanitize(s__('ClusterIntegration|More information'))}
             </a>`,
         },
         false,
@@ -116,7 +117,7 @@ export default {
     },
     prometheusDescription() {
       return sprintf(
-        _.escape(
+        dompurify.sanitize(
           s__(
             `ClusterIntegration|Prometheus is an open-source monitoring system
             with %{gitlabIntegrationLink} to monitor deployed applications.`,
@@ -125,7 +126,7 @@ export default {
         {
           gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
               target="_blank" rel="noopener noreferrer">
-              ${_.escape(s__('ClusterIntegration|GitLab Integration'))}</a>`,
+              ${dompurify.sanitize(s__('ClusterIntegration|GitLab Integration'))}</a>`,
         },
         false,
       );
