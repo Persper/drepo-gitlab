@@ -4,23 +4,27 @@
 
 .project-home-panel{ class: ("empty-project" if empty_repo) }
   .project-header.d-flex.flex-row.flex-wrap.align-items-center.append-bottom-8
-    .project-title-row.d-flex.align-items-center
+    .project-title-row.d-flex
       .avatar-container.project-avatar.float-none
         = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s64')
-      %h1.project-title.d-flex.align-items-baseline.qa-project-name
-        = @project.name
-    .project-metadata.d-flex.flex-row.flex-wrap.align-items-baseline
-      .project-visibility.d-inline-flex.align-items-baseline.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
-        = visibility_level_icon(@project.visibility_level, fw: false, options: {class: 'icon'})
-      - if license.present?
-        .project-license.d-inline-flex.align-items-baseline
-          = link_to_if license.link, sprite_icon('scale', size: 16, css_class: 'icon') + license.label, license.link, class: license.enabled ? 'btn btn-link btn-secondary-hover-link' : 'btn btn-link'
-      - if @project.tag_list.present?
-        .project-tag-list.d-inline-flex.align-items-baseline.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_tags? ? @project.tag_list.join(', ') : nil }
-          = sprite_icon('tag', size: 16, css_class: 'icon')
-          = @project.tags_to_show
-          - if @project.has_extra_tags?
-            = _("+ %{count} more") % { count: @project.count_of_extra_tags_not_shown  }
+      .d-flex.flex-column.flex-wrap.align-items-baseline
+        .d-inline-flex.align-items-baseline
+          %h1.project-title.prepend-top-8.append-bottom-5.qa-project-name
+            = @project.name
+            %span.project-visibility.prepend-left-8.d-inline-flex.align-items-baseline.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
+              = visibility_level_icon(@project.visibility_level, fw: false, options: {class: 'icon'})
+            - if @project.tag_list.present?
+              %span.project-tag-list.d-inline-flex.align-items-baseline.prepend-left-5.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_tags? ? @project.tag_list.join(', ') : nil }
+                = sprite_icon('tag', size: 16, css_class: 'icon')
+                = @project.tags_to_show
+                - if @project.has_extra_tags?
+                  = _("+ %{count} more") % { count: @project.count_of_extra_tags_not_shown  }
+        .project-metadata
+          - if can?(current_user, :read_project, @project)
+            %span.text-secondary
+              = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
+          %span.access-request-links
+            = render 'shared/members/access_request_links', source: @project
 
   - if can?(current_user, :download_code, @project)
     %nav.project-stats
@@ -30,7 +34,6 @@
         .nav-links.scrolling-tabs
           = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
 
-
   .project-home-desc
     - if @project.description.present?
       .project-description
@@ -38,10 +41,6 @@
           = markdown_field(@project, :description)
         %button.btn.btn-blank.btn-link.text-secondary.js-read-more-trigger.text-secondary.d-lg-none{ type: "button" }
           = _("Read more")
-
-    - if can?(current_user, :read_project, @project)
-      .text-secondary.prepend-top-8
-        = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
 
     - if @project.forked?
       %p
@@ -88,5 +87,3 @@
 
       .d-none.d-sm-inline-flex
         = render 'shared/notifications/button', notification_setting: @notification_setting
-      .d-none.d-sm-inline-flex
-        = render 'shared/members/access_request_buttons', source: @project
