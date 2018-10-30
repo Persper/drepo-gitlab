@@ -1656,6 +1656,13 @@ caniuse-lite@^1.0.30000884:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000888.tgz#22edb50d91dd70612b5898e3b36f460600c6492f"
   integrity sha512-vftg+5p/lPsQGpnhSo/yBuYL36ai/cyjLvU3dOPJY1kkKrekLWIy8SLm+wzjX0hpCUdFTasC4/ZT7uqw4rKOnQ==
 
+canvas@~1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/canvas/-/canvas-1.1.6.tgz#d84b088f3bcd3840fe14977cd3625f5fe89f81ee"
+  integrity sha1-2EsIjzvNOED+FJd802JfX+ifge4=
+  dependencies:
+    nan "~1.2.0"
+
 capture-stack-trace@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz#4a6fa07399c26bba47f0b2496b4d0fb408c5550d"
@@ -4223,6 +4230,13 @@ ignore@^4.0.6:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
 
+imagediff@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/imagediff/-/imagediff-1.0.8.tgz#7e23153e8104b0e0be125e3fa56d9dd37ada5505"
+  integrity sha1-fiMVPoEEsOC+El4/pW2d03raVQU=
+  optionalDependencies:
+    canvas "~1.1.6"
+
 immediate@~3.0.5:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
@@ -5566,6 +5580,11 @@ nan@^2.9.2:
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
   integrity sha512-bAdJv7fBLhWC+/Bls0Oza+mvTaNQtP+1RyhhhvD95pgUJz6XM5IzgmxOkItJ9tkoCiplvAnXI1tNmmUD/eScyA==
+
+nan@~1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-1.2.0.tgz#9c4d63ce9e4f8e95de2d574e18f7925554a8a8ef"
+  integrity sha1-nE1jzp5PjpXeLVdOGPeSVVSoqO8=
 
 nanomatch@^1.2.9:
   version "1.2.9"

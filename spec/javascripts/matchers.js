@@ -1,3 +1,5 @@
+import imagediff from 'imagediff';
+
 export default {
   toContainText: () => ({
     compare(vm, text) {
@@ -54,4 +56,13 @@ export default {
       return result;
     },
   }),
+  toImageDiffEqual() {
+    return {
+      compare(actual, expected, tolerance) {
+        return {
+          pass: imagediff.equal(actual, expected, tolerance),
+        };
+      },
+    };
+  },
 };
