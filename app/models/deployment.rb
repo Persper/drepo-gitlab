@@ -178,10 +178,6 @@ class Deployment < ActiveRecord::Base
     metrics&.merge(deployment_time: finished_at.to_i) || {}
   end
 
-  def status
-    'success'
-  end
-
   private
 
   def prometheus_adapter
