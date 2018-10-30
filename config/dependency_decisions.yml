@@ -599,3 +599,9 @@
       in compiled/distributed product so attribution not needed.
     :versions: []
     :when: 2018-10-02 19:23:54.840151000 Z
+- - :approve
+  - dompurify
+  - :who: Jose Vargas
+    :why: https://github.com/cure53/DOMPurify/blob/master/LICENSE
+    :versions: []
+    :when: 2018-10-30 22:54:31.519639000 Z

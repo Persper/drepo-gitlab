@@ -57,6 +57,7 @@ Libraries with the following licenses are acceptable for use:
 - [Creative Commons Zero (CC0)][CC0]: A public domain dedication, recommended as a way to disclaim copyright on your work to the maximum extent possible.
 - [Unlicense][UNLICENSE]: Another public domain dedication.
 - [OWFa 1.0][OWFa1]: An open-source license and patent grant designed for specifications.
+- [DomPurify License][DomPurify]: Dual-licensed under either the Apache 2.0 License or the Mozilla Public License Version 2.0, defer to the Apache 2-0 License.
 
 ## Unacceptable Licenses
 
@@ -120,6 +121,7 @@ Dependencies which are only used in development or test environment are exempt f
 [GPLv2]: http://www.gnu.org/licenses/gpl-2.0.txt
 [GPLv3]: http://www.gnu.org/licenses/gpl-3.0.txt
 [AGPLv3]: http://choosealicense.com/licenses/agpl-3.0/
+[DomPurify]: https://github.com/cure53/DOMPurify/blob/master/LICENSE
 [GNU-GPL-FAQ]: http://www.gnu.org/licenses/gpl-faq.html#IfLibraryIsGPL
 [OSI-GPL]: https://opensource.org/faq#linking-proprietary-code
 [OSL]: https://opensource.org/licenses/OSL-3.0
