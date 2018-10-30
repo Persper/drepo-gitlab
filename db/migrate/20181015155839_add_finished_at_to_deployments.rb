@@ -9,9 +9,11 @@ class AddFinishedAtToDeployments < ActiveRecord::Migration
 
   def up
     add_column :deployments, :finished_at, :datetime_with_timezone
+    add_column :deployments, :action, :integer, limit: 2
   end
 
   def down
     remove_column :deployments, :finished_at, :datetime_with_timezone
+    remove_column :deployments, :action, :integer, limit: 2
   end
 end

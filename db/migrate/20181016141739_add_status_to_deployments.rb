@@ -9,6 +9,11 @@ class AddStatusToDeployments < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
+  ##
+  # NOTE:
+  # Ideally, `status` column should not have default value because it should be leveraged by state machine (i.e. application level).
+  # However, we have to use the default value for avoiding `NOT NULL` violation during the transition period.
+  # The default value should be removed in the future release.
   def up
     add_column_with_default(:deployments,
       :status,

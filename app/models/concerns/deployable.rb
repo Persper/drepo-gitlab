@@ -21,7 +21,8 @@ module Deployable
         sha: sha,
         user: user,
         deployable: self,
-        on_stop: on_stop)
+        on_stop: on_stop,
+        action: environment_action)
     end
   end
 end

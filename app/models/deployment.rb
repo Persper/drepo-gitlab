@@ -4,6 +4,7 @@ class Deployment < ActiveRecord::Base
   include AtomicInternalId
   include IidRoutes
   include AfterCommitQueue
+  include EnumWithNil
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
@@ -16,6 +17,12 @@ class Deployment < ActiveRecord::Base
   validates :ref, presence: true
 
   delegate :name, to: :environment, prefix: true
+
+  enum_with_nil action: {
+    unknown_action: nil,
+    start: 1,
+    stop: 2
+  }
 
   scope :for_environment, -> (environment) { where(environment_id: environment) }
   scope :success, -> { with_status(:success) }
