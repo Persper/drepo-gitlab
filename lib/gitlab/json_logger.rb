@@ -21,6 +21,10 @@ module Gitlab
       Thread.current[:correlation_id]&.last
     end
 
+    def additional_message_data
+      {}
+    end
+
     def format_message(severity, timestamp, progname, message)
       data = {}
       data[:severity] = severity
@@ -33,6 +37,8 @@ module Gitlab
       when Hash
         data.merge!(message)
       end
+
+      data.merge!(additional_message_data)
 
       data.to_json + "\n"
     end

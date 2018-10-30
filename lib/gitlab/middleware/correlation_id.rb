@@ -5,22 +5,22 @@ module Gitlab
     class CorrelationId
       include ActionView::Helpers::TagHelper
 
-      CORRELATION_HEADER = 'HTTP_CORRELATION_ID'
+      HTTP_X_REQUEST_ID = 'HTTP_X_REQUEST_ID'
 
       def initialize(app)
         @app = app
       end
 
       def call(env)
-        Gitlab::JsonLogger.use_correlation_id(correlation_id) do
+        Gitlab::JsonLogger.use_correlation_id(correlation_id(env)) do
           @app.call(env)
         end
       end
 
       private
 
-      def correlation_id
-        env[CORRELATION_HEADER] || SecureRandom.hex
+      def correlation_id(env)
+        env[HTTP_X_REQUEST_ID] || SecureRandom.hex
       end
     end
   end
