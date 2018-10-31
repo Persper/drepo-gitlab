@@ -363,7 +363,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.concat(predefined_variables)
         variables.concat(project.predefined_variables)
-    predefined_variables    variables.concat(context.predefined_variables)
+        variables.concat(context.predefined_variables)
         variables.concat(runner.predefined_variables) if runner
         variables.concat(project.deployment_variables(environment: environment)) if environment
         variables.concat(yaml_variables)
@@ -777,7 +777,7 @@ module Ci
         break variables unless persisted?
 
         variables
-          .concat(pipeline.persisted_variables)
+          .concat(pipeline&.persisted_variables)
           .append(key: 'CI_JOB_ID', value: id.to_s)
           .append(key: 'CI_JOB_URL', value: Gitlab::Routing.url_helpers.project_job_url(project, self))
           .append(key: 'CI_JOB_TOKEN', value: token, public: false)
@@ -859,7 +859,7 @@ module Ci
     end
 
     def build_attributes_from_config
-      return {} unless pipeline.config_processor
+      return {} unless pipeline&.config_processor
 
       pipeline.config_processor.build_attributes(name)
     end

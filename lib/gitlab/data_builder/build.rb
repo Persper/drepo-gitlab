@@ -8,8 +8,6 @@ module Gitlab
         commit = build.pipeline
         user = build.user
 
-        author_url = build_author_url(build.commit, commit)
-
         data = {
           object_kind: 'build',
 
@@ -41,16 +39,6 @@ module Gitlab
           },
 
           commit: {
-            id: commit.id,
-            sha: commit.sha,
-            message: commit.git_commit_message,
-            author_name: commit.git_author_name,
-            author_email: commit.git_author_email,
-            author_url: author_url,
-            status: commit.status,
-            duration: commit.duration,
-            started_at: commit.started_at,
-            finished_at: commit.finished_at
           },
 
           repository: {
@@ -63,6 +51,23 @@ module Gitlab
             visibility_level: project.visibility_level
           }
         }
+
+        if commit.present?
+          author_url = build_author_url(build.commit, commit)
+
+          data[:commit] = {
+            id: commit.id,
+            sha: commit.sha,
+            message: commit.git_commit_message,
+            author_name: commit.git_author_name,
+            author_email: commit.git_author_email,
+            author_url: author_url,
+            status: commit.status,
+            duration: commit.duration,
+            started_at: commit.started_at,
+            finished_at: commit.finished_at
+          }
+        end
 
         data
       end

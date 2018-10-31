@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def concat(resources)
-          tap { resources.each { |variable| self.append(variable) } }
+          tap { resources.to_a.each { |variable| self.append(variable) } }
         end
 
         def each
