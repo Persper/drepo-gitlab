@@ -19,5 +19,9 @@ module Ci
     def short_sha
       raise NotImplementedError
     end
+
+    def before_sha
+      raise NotImplementedError
+    end
   end
 end

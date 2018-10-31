@@ -153,7 +153,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def before_sha
-    pipeline&.before_sha || Gitlab::Git::BLANK_SHA
+    context.before_sha || Gitlab::Git::BLANK_SHA
   end
 
   def group_name

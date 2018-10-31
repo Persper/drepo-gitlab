@@ -14,5 +14,8 @@ module Ci
 
     def short_sha
     end
+
+    def before_sha
+    end
   end
 end
