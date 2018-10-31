@@ -221,6 +221,8 @@ MergeRequest::Metrics:
 Ci::Workspace:
 - id
 - project_id
+- created_at
+- updated_at
 Ci::Pipeline:
 - id
 - project_id
@@ -304,7 +306,7 @@ CommitStatus:
 - protected
 - failure_reason
 - scheduled_at
-- context_id
+- workspace_id
 Ci::Variable:
 - id
 - project_id

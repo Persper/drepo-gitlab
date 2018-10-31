@@ -31,7 +31,7 @@ describe Ci::RetryBuildService do
        job_artifacts_codequality scheduled_at].freeze
 
   IGNORE_ACCESSORS =
-    %i[type lock_version target_url base_tags trace_sections
+    %i[type lock_version target_url base_tags trace_sections workspace_id
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
        user_id auto_canceled_by_id retried failure_reason
@@ -40,13 +40,14 @@ describe Ci::RetryBuildService do
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
+    let(:workspace) { create(:ci_workspace, project: project) }
 
     let(:build) do
       create(:ci_build, :failed, :expired, :erased, :queued, :coverage, :tags,
              :allowed_to_fail, :on_tag, :triggered, :teardown_environment,
              description: 'my-job', stage: 'test', stage_id: stage.id,
              pipeline: pipeline, auto_canceled_by: another_pipeline,
-             scheduled_at: 10.seconds.since)
+             workspace: workspace, scheduled_at: 10.seconds.since)
     end
 
     before do
