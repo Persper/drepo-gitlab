@@ -7,10 +7,38 @@ function sortMetrics(metrics) {
     .value();
 }
 
+function checkQueryEmptyData(query) {
+  return {
+    ...query,
+    result: query.result.filter(timeSeries => {
+      const newTimeSeries = timeSeries;
+      const hasValue = series => !Number.isNaN(series.value) && series.value != null;
+      const hasNonNullValue = timeSeries.values.find(hasValue);
+
+      newTimeSeries.values = hasNonNullValue ? newTimeSeries.values : [];
+
+      return newTimeSeries;
+    }),
+  };
+}
+
+function removeTimeSeriesNoData(queries) {
+  const timeSeries = queries.reduce((series, query) => {
+    let checkedQuery = checkQueryEmptyData(query);
+    checkedQuery = {
+      ...checkedQuery,
+      result: checkedQuery.result.filter(c => c.values.length > 0),
+    };
+
+    return series.concat(checkedQuery);
+  }, []);
+
+  return timeSeries;
+}
+
 function normalizeMetrics(metrics) {
-  return metrics.map(metric => ({
-    ...metric,
-    queries: metric.queries.map(query => ({
+  return metrics.map(metric => {
+    const queries = metric.queries.map(query => ({
       ...query,
       result: query.result.map(result => ({
         ...result,
@@ -19,8 +47,13 @@ function normalizeMetrics(metrics) {
           value: Number(value),
         })),
       })),
-    })),
-  }));
+    }));
+
+    return {
+      ...metric,
+      queries: removeTimeSeriesNoData(queries),
+    };
+  });
 }
 
 export default class MonitoringStore {

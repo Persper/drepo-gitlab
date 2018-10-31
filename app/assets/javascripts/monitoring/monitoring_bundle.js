@@ -1,9 +1,6 @@
 import Vue from 'vue';
 import { convertPermissionToBoolean } from '~/lib/utils/common_utils';
-import Translate from '~/vue_shared/translate';
 import Dashboard from './components/dashboard.vue';
-
-Vue.use(Translate);
 
 export default () => {
   const el = document.getElementById('prometheus-graphs');

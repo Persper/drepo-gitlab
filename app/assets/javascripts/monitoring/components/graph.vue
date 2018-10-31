@@ -13,7 +13,7 @@ import MonitoringMixin from '../mixins/monitoring_mixins';
 import eventHub from '../event_hub';
 import measurements from '../utils/measurements';
 import { bisectDate, timeScaleFormat } from '../utils/date_time_formatters';
-import createTimeSeries, { removeTimeSeriesNoData } from '../utils/multiple_time_series';
+import createTimeSeries from '../utils/multiple_time_series';
 import bp from '../../breakpoints';
 
 const d3 = { scaleLinear, scaleTime, axisLeft, axisBottom, max, extent, select };
@@ -85,7 +85,6 @@ export default {
       graphDrawData: {},
       realPixelRatio: 1,
       seriesUnderMouse: [],
-      noDataToDisplay: false,
     };
   },
   computed: {
@@ -105,6 +104,9 @@ export default {
     },
     deploymentFlagData() {
       return this.reducedDeploymentData.find(deployment => deployment.showDeploymentFlag);
+    },
+    shouldRenderData() {
+      return this.graphData.queries.filter(s => s.result.length > 0).length > 0;
     },
   },
   watch: {
@@ -140,19 +142,14 @@ export default {
       // pixel offsets inside the svg and outside are not 1:1
       this.realPixelRatio = svgWidth / this.baseGraphWidth;
 
-      // verify the data
-      this.graphData.queries = removeTimeSeriesNoData(this.graphData.queries);
-      const queryLengthOfData = this.graphData.queries.filter(s => s.result.length > 0).length;
-
+      // set the legends on the axes
       const [query] = this.graphData.queries;
       this.legendTitle = query ? query.label : 'Average';
       this.unitOfDisplay = query ? query.unit : '';
 
-      if (queryLengthOfData > 0) {
+      if (this.shouldRenderData) {
         this.renderAxesPaths();
         this.formatDeployments();
-      } else {
-        this.noDataToDisplay = true;
       }
     },
     handleMouseOverGraph(e) {
@@ -296,7 +293,7 @@ export default {
           :unit-of-display="unitOfDisplay"
         />
         <svg
-          v-if="!noDataToDisplay"
+          v-if="shouldRenderData"
           ref="graphData"
           :viewBox="innerViewBox"
           class="graph-data"
@@ -346,7 +343,7 @@ export default {
         </svg>
       </svg>
       <graph-flag
-        v-if="!noDataToDisplay"
+        v-if="shouldRenderData"
         :real-pixel-ratio="realPixelRatio"
         :current-x-coordinate="currentXCoordinate"
         :current-data="currentData"

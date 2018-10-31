@@ -642,6 +642,39 @@ export const metricsGroupsAPIResponse = {
         },
       ],
     },
+    {
+      group: 'NGINX',
+      priority: 2,
+      metrics: [
+        {
+          id: 100,
+          title: 'Http Error Rate',
+          weight: 100,
+          queries: [
+            {
+              query_range:
+                'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"nginx-test-8691397-production-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"nginx-test-8691397-production-.*"}[2m])) * 100',
+              label: '5xx errors',
+              unit: '%',
+              result: [
+                {
+                  metric: {},
+                  values: [
+                    [1495700554.925, NaN],
+                    [1495700614.925, NaN],
+                    [1495700674.925, NaN],
+                    [1495700734.925, NaN],
+                    [1495700794.925, NaN],
+                    [1495700854.925, NaN],
+                    [1495700914.925, NaN],
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
   ],
   last_update: '2017-05-25T13:18:34.949Z',
 };
@@ -6529,48 +6562,20 @@ export const singleRowMetricsMultipleSeries = [
   },
 ];
 
-export const queryWithoutData = [
-  {
-    title: 'HTTP Error rate',
-    weight: 10,
-    y_label: 'Http Error Rate',
-    queries: [
-      {
-        query_range:
-          'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"nginx-test-8691397-production-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"nginx-test-8691397-production-.*"}[2m])) * 100',
-        label: '5xx errors',
-        unit: '%',
-        result: [
-          {
-            metric: {},
-            values: [
-              {
-                time: '2017-08-27T11:01:51.462Z',
-                value: NaN,
-              },
-              {
-                time: '2017-08-27T11:02:51.462Z',
-                value: NaN,
-              },
-              {
-                time: '2017-08-27T11:03:51.462Z',
-                value: NaN,
-              },
-              {
-                time: '2017-08-27T11:04:51.462Z',
-                value: NaN,
-              },
-              {
-                time: '2017-08-27T11:05:51.462Z',
-                value: NaN,
-              },
-            ]
-          }
-        ]
-      }
-    ]
-  },
-];
+export const queryWithoutData = {
+  title: 'HTTP Error rate',
+  weight: 10,
+  y_label: 'Http Error Rate',
+  queries: [
+    {
+      query_range:
+        'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"nginx-test-8691397-production-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"nginx-test-8691397-production-.*"}[2m])) * 100',
+      label: '5xx errors',
+      unit: '%',
+      result: [],
+    },
+  ],
+};
 
 export function convertDatesMultipleSeries(multipleSeries) {
   const convertedMultiple = multipleSeries;

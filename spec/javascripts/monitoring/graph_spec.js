@@ -19,7 +19,6 @@ const createComponent = propsData => {
 };
 
 const convertedMetrics = convertDatesMultipleSeries(singleRowMetricsMultipleSeries);
-const [convertedQueryWithoutData] = convertDatesMultipleSeries(queryWithoutData);
 
 describe('Graph', () => {
   beforeEach(() => {
@@ -110,13 +109,11 @@ describe('Graph', () => {
   describe('Without data to display', () => {
     it('shows a "no data to display" empty state on a graph', done => {
       const component = createComponent({
-        graphData: convertedQueryWithoutData,
+        graphData: queryWithoutData,
         deploymentData,
         tagsPath,
         projectPath,
       });
-
-      expect(component.noDataToDisplay).toEqual(true);
 
       Vue.nextTick(() => {
         expect(
