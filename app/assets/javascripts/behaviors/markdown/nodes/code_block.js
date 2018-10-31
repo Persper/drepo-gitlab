@@ -1,0 +1,66 @@
+import { CodeBlockNode as BaseCodeBlockNode } from 'tiptap-extensions'
+
+const PLAINTEXT_LANG = 'plaintext';
+
+export default class CodeBlockNode extends BaseCodeBlockNode {
+  get schema() {
+    return {
+      content: 'text*',
+      marks: '',
+      group: 'block',
+      code: true,
+      defining: true,
+      attrs: {
+        lang: { default: PLAINTEXT_LANG }
+      },
+      parseDOM: [
+        {
+          tag: 'pre.code.highlight',
+          preserveWhitespace: 'full',
+          getAttrs: (el) => {
+            let lang = el.getAttribute('lang');
+            if (!lang || lang === '') return {};
+
+            return { lang };
+          }
+        },
+        {
+          tag: 'span.katex-display',
+          preserveWhitespace: 'full',
+          contentElement: 'annotation[encoding="application/x-tex"]',
+          attrs: { lang: 'math' }
+        },
+        {
+          tag: 'svg.mermaid',
+          preserveWhitespace: 'full',
+          contentElement: 'text.source',
+          attrs: { lang: 'mermaid' }
+        }
+      ],
+      toDOM: node => ['pre', { class: 'code highlight', lang: node.attrs.lang }, ['code', 0]],
+    }
+  }
+
+  toMarkdown(state, node) {
+    if (!node.childCount) return;
+
+    const text = node.textContent;
+    const lang = node.attrs.lang;
+
+    // Prefixes lines with 4 spaces if the code contains a line that starts with triple backticks
+    if (lang === PLAINTEXT_LANG && text.match(/^```/gm)) {
+      state.wrapBlock("    ", null, node, () => state.text(text, false));
+      return;
+    }
+
+    state.write("```");
+    if (lang !== PLAINTEXT_LANG) state.write(lang);
+
+    state.ensureNewLine();
+    state.text(text, false);
+    state.ensureNewLine();
+
+    state.write("```");
+    state.closeBlock(node);
+  }
+}
