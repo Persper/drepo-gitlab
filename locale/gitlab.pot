@@ -432,9 +432,6 @@ msgstr ""
 msgid "Advanced settings"
 msgstr ""
 
-msgid "After you begin creating issues for your projects, we can start tracking and displaying metrics for them"
-msgstr ""
-
 msgid "All"
 msgstr ""
 
@@ -558,9 +555,6 @@ msgstr ""
 msgid "An error occurred while importing project: %{details}"
 msgstr ""
 
-msgid "An error occurred while loading chart data"
-msgstr ""
-
 msgid "An error occurred while loading commit signatures"
 msgstr ""
 
@@ -595,9 +589,6 @@ msgid "An error occurred while validating username"
 msgstr ""
 
 msgid "An error occurred. Please try again."
-msgstr ""
-
-msgid "Analytics"
 msgstr ""
 
 msgid "Anonymous"
@@ -3552,9 +3543,6 @@ msgid_plural "Last %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Last 12 months"
-msgstr ""
-
 msgid "Last Pipeline"
 msgstr ""
 
@@ -5679,9 +5667,6 @@ msgstr ""
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-msgid "Sorry, your filter produced no results"
-msgstr ""
-
 msgid "Sort by"
 msgstr ""
 
@@ -6123,9 +6108,6 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr ""
 
 msgid "There are no archived projects yet"
-msgstr ""
-
-msgid "There are no issues for the projects in your group"
 msgstr ""
 
 msgid "There are no issues to show"
