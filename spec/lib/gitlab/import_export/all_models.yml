@@ -131,6 +131,7 @@ stages:
 statuses:
 - project
 - pipeline
+- context
 - stage
 - user
 - auto_canceled_by

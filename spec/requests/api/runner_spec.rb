@@ -462,7 +462,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           context 'when job is a dangling builds' do
             before do
-              job.update(pipeline: nil, source: :chatops_source)
+              job.update(pipeline: nil, context: create(:ci_context))
             end
 
             it 'correctly exposes a job' do
