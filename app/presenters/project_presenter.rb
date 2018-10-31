@@ -16,8 +16,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def statistics_anchors(show_auto_devops_callout:)
     [
-      readme_anchor_data,
-      changelog_anchor_data,
       contribution_guide_anchor_data,
       files_anchor_data,
       commits_anchor_data,
@@ -183,24 +181,26 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def readme_anchor_data
     if current_user && can_current_user_push_to_default_branch? && repository.readme.nil?
       AnchorData.new(false,
-                     _('Add Readme'),
+                     _('Add README'),
                      add_readme_path)
     elsif repository.readme
-      AnchorData.new(true,
-                     _('Readme'),
-                     default_view != 'readme' ? readme_path : '#readme')
+      AnchorData.new(false,
+                     _('README'),
+                     default_view != 'readme' ? readme_path : '#readme',
+                    'default')
     end
   end
 
   def changelog_anchor_data
     if current_user && can_current_user_push_to_default_branch? && repository.changelog.blank?
       AnchorData.new(false,
-                     _('Add Changelog'),
+                     _('Add CHANGELOG'),
                      add_changelog_path)
     elsif repository.changelog.present?
-      AnchorData.new(true,
-                     _('Changelog'),
-                     changelog_path)
+      AnchorData.new(false,
+                     _('CHANGELOG'),
+                     changelog_path,
+                    'default')
     end
   end
 
