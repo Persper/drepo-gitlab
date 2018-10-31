@@ -53,6 +53,10 @@ module TokenAuthenticatable
       define_method("reset_#{token_field}!") do
         strategy.reset_token!(self)
       end
+
+      define_method("#{token_field}_matches?") do |other_token|
+        strategy.token_set?(self) &&  ActiveSupport::SecurityUtils.variable_size_secure_compare(other_token, strategy.get_token(self))
+      end
     end
   end
 end
