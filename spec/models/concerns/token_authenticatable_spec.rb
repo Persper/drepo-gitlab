@@ -30,6 +30,19 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
         it { is_expected.not_to be_blank }
       end
 
+      # describe 'for non-unique token' do
+      #   subject { described_class.new.send(token_field, unique: false) }
+
+      #   it 'avoids database lookup of existing tokens' do
+      #     expect_any_instance_of(activerecord).not_to receive(:find_by)
+      #     do-stuff
+      #
+      #     queries = ActiveRecord::QueryRecorder.new { do_stuff }
+      #     expect(queries.log_message).not_to include("SELECT")
+      #     expect(queries.count).to eq 1
+      #   end
+      # end
+
       describe 'ensured token' do
         subject { described_class.new.send("ensure_#{token_field}") }
 
