@@ -90,12 +90,11 @@ describe('UpdateUsername component', () => {
   it('confirmation modal should escape usernames properly', done => {
     const { modalBody } = findElements();
 
-    vm.username = '<i>Italic</i>';
+    vm.username = `<script>alert('hello')</script>`;
     vm.newUsername = vm.username;
 
     Vue.nextTick()
       .then(() => {
-        expect(modalBody.innerHTML).toContain('&lt;i&gt;Italic&lt;/i&gt;');
         expect(modalBody.innerHTML).not.toContain(vm.username);
       })
       .then(done)
