@@ -27,7 +27,7 @@ class PipelineScheduleWorker
   private
 
   def error(schedule, message)
-    Rails.logger.error "#{schedule.id}: Failed to create a scheduled pipeline: #{message}"
+    Rails.logger.error "Failed to create a scheduled pipeline. schedule_id: #{schedule.id} message: #{message}"
     failed_creation_counter.increment
   end
 
