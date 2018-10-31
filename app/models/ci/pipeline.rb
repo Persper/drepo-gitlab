@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Pipeline < ActiveRecord::Base
+  class Pipeline < Ci::Context
     extend Gitlab::Ci::Model
     include HasStatus
     include Importable
@@ -11,7 +11,6 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
     include EnumWithNil
-    include Ci::Contextable
 
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user
@@ -39,149 +38,6 @@ module Ci
     has_many :scheduled_actions, -> { latest.scheduled_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :artifacts, -> { latest.with_artifacts_not_expired.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
 
-    has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
-    has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
-
-    accepts_nested_attributes_for :variables, reject_if: :persisted?
-
-    delegate :id, to: :project, prefix: true
-    delegate :full_path, to: :project, prefix: true
-
-    validates :sha, presence: { unless: :importing? }
-    validates :ref, presence: { unless: :importing? }
-    validates :status, presence: { unless: :importing? }
-    validate :valid_commit_sha, unless: :importing?
-
-    # Replace validator below with
-    # `validates :source, presence: { unless: :importing? }, on: :create`
-    # when removing Gitlab.rails5? code.
-    validate :valid_source, unless: :importing?, on: :create
-
-    after_create :keep_around_commits, unless: :importing?
-
-    enum_with_nil source: {
-      unknown: nil,
-      push: 1,
-      web: 2,
-      trigger: 3,
-      schedule: 4,
-      api: 5,
-      external: 6
-    }
-
-    enum_with_nil config_source: {
-      unknown_source: nil,
-      repository_source: 1,
-      auto_devops_source: 2
-    }
-
-    enum failure_reason: {
-      unknown_failure: 0,
-      config_error: 1
-    }
-
-    state_machine :status, initial: :created do
-      event :enqueue do
-        transition [:created, :skipped, :scheduled] => :pending
-        transition [:success, :failed, :canceled] => :running
-      end
-
-      event :run do
-        transition any - [:running] => :running
-      end
-
-      event :skip do
-        transition any - [:skipped] => :skipped
-      end
-
-      event :drop do
-        transition any - [:failed] => :failed
-      end
-
-      event :succeed do
-        transition any - [:success] => :success
-      end
-
-      event :cancel do
-        transition any - [:canceled] => :canceled
-      end
-
-      event :block do
-        transition any - [:manual] => :manual
-      end
-
-      event :delay do
-        transition any - [:scheduled] => :scheduled
-      end
-
-      # IMPORTANT
-      # Do not add any operations to this state_machine
-      # Create a separate worker for each new operation
-
-      before_transition [:created, :pending] => :running do |pipeline|
-        pipeline.started_at = Time.now
-      end
-
-      before_transition any => [:success, :failed, :canceled] do |pipeline|
-        pipeline.finished_at = Time.now
-        pipeline.update_duration
-      end
-
-      before_transition any => [:manual] do |pipeline|
-        pipeline.update_duration
-      end
-
-      before_transition canceled: any - [:canceled] do |pipeline|
-        pipeline.auto_canceled_by = nil
-      end
-
-      before_transition any => :failed do |pipeline, transition|
-        transition.args.first.try do |reason|
-          pipeline.failure_reason = reason
-        end
-      end
-
-      after_transition [:created, :pending] => :running do |pipeline|
-        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
-      end
-
-      after_transition any => [:success] do |pipeline|
-        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
-      end
-
-      after_transition [:created, :pending, :running] => :success do |pipeline|
-        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(pipeline.id) }
-      end
-
-      after_transition do |pipeline, transition|
-        next if transition.loopback?
-
-        pipeline.run_after_commit do
-          PipelineHooksWorker.perform_async(pipeline.id)
-          ExpirePipelineCacheWorker.perform_async(pipeline.id)
-        end
-      end
-
-      after_transition any => [:success, :failed] do |pipeline|
-        pipeline.run_after_commit do
-          PipelineNotificationWorker.perform_async(pipeline.id)
-        end
-      end
-
-      after_transition any => [:failed] do |pipeline|
-        next unless pipeline.auto_devops_source?
-
-        pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
-      end
-    end
-
-    scope :internal, -> { where(source: internal_sources) }
-
-    # Returns the pipelines in descending order (= newest first), optionally
-    # limited to a number of references.
-    #
-    # ref - The name (or names) of the branch(es)/tag(s) to limit the list of
-    #       pipelines to.
     def self.newest_first(ref = nil)
       relation = order(id: :desc)
 
@@ -249,6 +105,10 @@ module Ci
 
     def self.internal_sources
       sources.reject { |source| source == "external" }.values
+    end
+
+    def sha
+      read_attribute(:sha)
     end
 
     def stages_count

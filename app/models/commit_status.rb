@@ -15,8 +15,7 @@ class CommitStatus < ActiveRecord::Base
   belongs_to :workspace, class_name: 'Ci::Workspace'
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
 
-  delegate :commit, to: :pipeline
-  delegate :sha, :short_sha, to: :pipeline
+  delegate :commit, :sha, :short_sha, to: :context
 
   validates :pipeline, presence: true, unless: -> { importing? || workspace.present? }
   validates :workspace, presence: true, unless: -> { importing? || pipeline.present? }
@@ -120,7 +119,7 @@ class CommitStatus < ActiveRecord::Base
       next if transition.loopback?
 
       commit_status.run_after_commit do
-        if pipeline_id
+        if pipeline.present?
           if complete? || manual?
             PipelineProcessWorker.perform_async(pipeline_id)
           else
@@ -145,12 +144,16 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
+  def context
+    pipeline || workspace
+  end
+
   def locking_enabled?
     status_changed?
   end
 
   def before_sha
-    pipeline.before_sha || Gitlab::Git::BLANK_SHA
+    pipeline&.before_sha || Gitlab::Git::BLANK_SHA
   end
 
   def group_name

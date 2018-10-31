@@ -441,6 +441,16 @@ describe CommitStatus do
         is_expected.to eq(value)
       end
     end
+
+    context 'when there is no pipeline associated with a commit status' do
+      before do
+        commit_status.update(pipeline: nil)
+      end
+
+      it 'returns blank SHA' do
+        is_expected.to eq(Gitlab::Git::BLANK_SHA)
+      end
+    end
   end
 
   describe '#commit' do

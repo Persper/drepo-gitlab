@@ -129,7 +129,7 @@ module Ci
 
     before_create :ensure_metadata
     after_create unless: :importing? do |build|
-      run_after_commit { BuildHooksWorker.perform_async(build.id) }
+      run_after_commit { BuildHooksWorker.perform_async(build.id) } unless dangling?
     end
 
     after_save :update_project_statistics_after_save, if: :artifacts_size_changed?
@@ -246,6 +246,8 @@ module Ci
     end
 
     def other_actions
+      return [] if pipeline.nil?
+
       pipeline.manual_actions.where.not(name: name)
     end
 
@@ -288,6 +290,8 @@ module Ci
     end
 
     def retries_count
+      return [] if pipeline.nil?
+
       pipeline.builds.retried.where(name: self.name).count
     end
 
@@ -328,6 +332,8 @@ module Ci
     end
 
     def depends_on_builds
+      return [] if pipeline.nil?
+
       # Get builds of the same type
       latest_builds = self.pipeline.builds.latest
 
@@ -357,7 +363,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.concat(predefined_variables)
         variables.concat(project.predefined_variables)
-        variables.concat(pipeline.predefined_variables)
+    predefined_variables    variables.concat(context.predefined_variables)
         variables.concat(runner.predefined_variables) if runner
         variables.concat(project.deployment_variables(environment: environment)) if environment
         variables.concat(yaml_variables)
@@ -365,8 +371,11 @@ module Ci
         variables.concat(secret_group_variables)
         variables.concat(secret_project_variables(environment: environment))
         variables.concat(trigger_request.user_variables) if trigger_request
-        variables.concat(pipeline.variables)
-        variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
+        variables.concat(pipeline.variables) if pipeline.present?
+
+        if pipeline.present? && pipeline.pipeline_schedule.present?
+          variables.concat(pipeline.pipeline_schedule.job_variables)
+        end
       end
     end
 

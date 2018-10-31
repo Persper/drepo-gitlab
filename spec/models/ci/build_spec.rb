@@ -573,6 +573,30 @@ describe Ci::Build do
     end
   end
 
+  describe '#context' do
+    let(:workspace) { create(:ci_workspace, project: project) }
+
+    context 'when a build has a pipeline' do
+      let(:build) do
+        create(:ci_build, pipeline: pipeline, name: 'build', workspace: workspace)
+      end
+
+      it 'returns a pipeline' do
+        expect(build.context).to eq pipeline
+      end
+    end
+
+    context 'when a build has a workspace only' do
+      let(:build) do
+        create(:ci_build, pipeline: nil, name: 'build', workspace: workspace)
+      end
+
+      it 'returns a workspace' do
+        expect(build.context).to eq workspace
+      end
+    end
+  end
+
   describe '#depends_on_builds' do
     let!(:build) { create(:ci_build, pipeline: pipeline, name: 'build', stage_idx: 0, stage: 'build') }
     let!(:rspec_test) { create(:ci_build, pipeline: pipeline, name: 'rspec', stage_idx: 1, stage: 'test') }
