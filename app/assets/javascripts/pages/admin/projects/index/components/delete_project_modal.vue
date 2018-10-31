@@ -1,5 +1,6 @@
 <script>
 import _ from 'underscore';
+import dompurify from 'dompurify';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import { s__, sprintf } from '~/locale';
 
@@ -34,7 +35,7 @@ export default {
       return sprintf(
         s__('AdminProjects|Delete Project %{projectName}?'),
         {
-          projectName: `'${_.escape(this.projectName)}'`,
+          projectName: `'${dompurify.sanitize(this.projectName)}'`,
         },
         false,
       );
@@ -46,7 +47,7 @@ export default {
           and all related resources including issues, merge requests, etc..  Once you confirm and press
           %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered.`),
         {
-          projectName: `<strong>${_.escape(this.projectName)}</strong>`,
+          projectName: `<strong>${dompurify.sanitize(this.projectName)}</strong>`,
           strong_start: '<strong>',
           strong_end: '</strong>',
         },
@@ -57,7 +58,7 @@ export default {
       return sprintf(
         s__('AdminUsers|To confirm, type %{projectName}'),
         {
-          projectName: `<code>${_.escape(this.projectName)}</code>`,
+          projectName: `<code>${dompurify.sanitize(this.projectName)}</code>`,
         },
         false,
       );

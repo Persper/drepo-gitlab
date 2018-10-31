@@ -1,5 +1,6 @@
 <script>
 import _ from 'underscore';
+import dompurify from 'dompurify';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
@@ -48,7 +49,7 @@ export default {
       const label = `<span
           class="label color-label"
           style="background-color: ${this.labelColor}; color: ${this.labelTextColor};"
-        >${_.escape(this.labelTitle)}</span>`;
+        >${dompurify.sanitize(this.labelTitle)}</span>`;
 
       return sprintf(
         s__('Labels|<span>Promote label</span> %{labelTitle} <span>to Group Label?</span>'),

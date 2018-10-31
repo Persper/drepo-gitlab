@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import dompurify from 'dompurify';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import { s__, sprintf } from '~/locale';
 
@@ -47,7 +47,7 @@ export default {
       return sprintf(
         this.deleteContributions ? deleteContributionsTitle : keepContributionsTitle,
         {
-          username: `'${_.escape(this.username)}'`,
+          username: `'${dompurify.sanitize(this.username)}'`,
         },
         false,
       );
@@ -67,7 +67,7 @@ export default {
       return sprintf(
         this.deleteContributions ? deleteContributionsText : keepContributionsText,
         {
-          username: `<strong>${_.escape(this.username)}</strong>`,
+          username: `<strong>${dompurify.sanitize(this.username)}</strong>`,
           strong_start: '<strong>',
           strong_end: '</strong>',
         },
@@ -78,7 +78,7 @@ export default {
       return sprintf(
         s__('AdminUsers|To confirm, type %{username}'),
         {
-          username: `<code>${_.escape(this.username)}</code>`,
+          username: `<code>${dompurify.sanitize(this.username)}</code>`,
         },
         false,
       );
