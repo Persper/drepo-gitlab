@@ -218,7 +218,7 @@ MergeRequest::Metrics:
 - latest_build_started_at
 - latest_build_finished_at
 - first_deployed_to_production_at
-Ci::Context:
+Ci::Workspace:
 - id
 - project_id
 Ci::Pipeline:

@@ -34,13 +34,13 @@ describe CommitStatus do
         .in_array(%w(pending running failed success canceled))
     end
 
-    describe 'pipeline or context presence validation' do
+    describe 'pipeline or workspace presence validation' do
       let(:commit_status) { build(:commit_status, project: project) }
 
       context 'when commit status belongs to a pipeline' do
         it 'does not require context presence' do
           expect(commit_status.pipeline).to be_present
-          expect(commit_status.context).to be_nil
+          expect(commit_status.workspace).to be_nil
           expect(commit_status).to be_valid
         end
 
@@ -53,16 +53,16 @@ describe CommitStatus do
         end
       end
 
-      context 'when commit status belongs to a context' do
-        let(:status_context) { build(:ci_context, project: project) }
+      context 'when commit status belongs to a workspace' do
+        let(:workspace) { build(:ci_workspace, project: project) }
 
         before do
-          commit_status.update(pipeline: nil, context: status_context)
+          commit_status.update(pipeline: nil, workspace: workspace)
         end
 
         it 'does not require pipeline presence' do
           expect(commit_status.pipeline).to be_nil
-          expect(commit_status.context).to be_present
+          expect(commit_status.workspace).to be_present
           expect(commit_status).to be_valid
         end
 
@@ -72,17 +72,18 @@ describe CommitStatus do
           expect(commit_status).to be_persisted
           expect(commit_status.stage_id).to be_nil
           expect(commit_status.pipeline_id).to be_nil
+          expect(commit_status.workspace_id).not_to be_nil
         end
       end
 
-      context 'when commit status does not belong to pipeline or context' do
+      context 'when commit status does not belong to pipeline or workspace' do
         before do
-          commit_status.update(pipeline: nil, context: nil)
+          commit_status.update(pipeline: nil, workspace: nil)
         end
 
-        it 'requires either pipeline or context to be present' do
+        it 'requires either pipeline or workspace to be present' do
           expect(commit_status.pipeline).to be_nil
-          expect(commit_status.context).to be_nil
+          expect(commit_status.workspace).to be_nil
           expect(commit_status).not_to be_valid
         end
 
@@ -93,13 +94,13 @@ describe CommitStatus do
 
       context 'when commit status is being imported' do
         before do
-          commit_status.update(pipeline: nil, context: nil)
+          commit_status.update(pipeline: nil, workspace: nil)
           commit_status.importing = true
         end
 
-        it 'does not require pipeline or context to be present' do
+        it 'does not require pipeline or workspace to be present' do
           expect(commit_status.pipeline).to be_nil
-          expect(commit_status.context).to be_nil
+          expect(commit_status.workspace).to be_nil
           expect(commit_status).to be_valid
         end
 
@@ -631,13 +632,13 @@ describe CommitStatus do
     end
 
     context 'when commit status is a dangling status' do
-      let(:status_context) { build(:ci_context, project: project) }
+      let(:workspace) { build(:ci_workspace, project: project) }
 
       let(:commit_status) do
         create(:commit_status, name: 'rspec',
                                stage: 'test',
                                pipeline: nil,
-                               context: status_context)
+                               workspace: workspace)
       end
 
       it 'does not create a new stage' do
@@ -699,11 +700,11 @@ describe CommitStatus do
       end
     end
 
-    context 'when a commit status belongs to a context only' do
-      let(:status_context) { build(:ci_context, project: project) }
+    context 'when a commit status belongs to a workspace only' do
+      let(:workspace) { build(:ci_workspace, project: project) }
 
       before do
-        commit_status.update(pipeline: nil, context: status_context)
+        commit_status.update(pipeline: nil, workspace: workspace)
       end
 
       it 'is a dangling commit status' do

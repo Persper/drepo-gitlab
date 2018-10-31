@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe Ci::Context do
+describe Ci::Workspace do
   it { is_expected.to belong_to(:project) }
 end

@@ -2,7 +2,7 @@
 
 module Ci
   ##
-  # Abstract CI/CD Context interface for contexts and pipelines.
+  # Abstract CI/CD Workspace interface for workspaces and pipelines.
   #
   module Contextable
     extend ActiveSupport::Concern

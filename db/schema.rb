@@ -354,7 +354,7 @@ ActiveRecord::Schema.define(version: 20181030130113) do
     t.boolean "protected"
     t.integer "failure_reason"
     t.datetime_with_timezone "scheduled_at"
-    t.integer "context_id"
+    t.integer "workspace_id"
   end
 
   add_index "ci_builds", ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
@@ -374,6 +374,7 @@ ActiveRecord::Schema.define(version: 20181030130113) do
   add_index "ci_builds", ["token"], name: "index_ci_builds_on_token", unique: true, using: :btree
   add_index "ci_builds", ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
   add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
+  add_index "ci_builds", ["workspace_id"], name: "index_ci_builds_on_workspace_id", using: :btree
 
   create_table "ci_builds_metadata", force: :cascade do |t|
     t.integer "build_id", null: false
@@ -393,14 +394,6 @@ ActiveRecord::Schema.define(version: 20181030130113) do
   end
 
   add_index "ci_builds_runner_session", ["build_id"], name: "index_ci_builds_runner_session_on_build_id", unique: true, using: :btree
-
-  create_table "ci_contexts", id: :bigserial, force: :cascade do |t|
-    t.integer "project_id", null: false
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
-  end
-
-  add_index "ci_contexts", ["project_id"], name: "index_ci_contexts_on_project_id", using: :btree
 
   create_table "ci_group_variables", force: :cascade do |t|
     t.string "key", null: false
@@ -607,6 +600,14 @@ ActiveRecord::Schema.define(version: 20181030130113) do
   end
 
   add_index "ci_variables", ["project_id", "key", "environment_scope"], name: "index_ci_variables_on_project_id_and_key_and_environment_scope", unique: true, using: :btree
+
+  create_table "ci_workspaces", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "ci_workspaces", ["project_id"], name: "index_ci_workspaces_on_project_id", using: :btree
 
   create_table "cluster_groups", force: :cascade do |t|
     t.integer "cluster_id", null: false
@@ -2371,7 +2372,6 @@ ActiveRecord::Schema.define(version: 20181030130113) do
   add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "projects", on_delete: :cascade
   add_foreign_key "ci_builds_runner_session", "ci_builds", column: "build_id", on_delete: :cascade
-  add_foreign_key "ci_contexts", "projects", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade
@@ -2391,6 +2391,7 @@ ActiveRecord::Schema.define(version: 20181030130113) do
   add_foreign_key "ci_triggers", "projects", name: "fk_e3e63f966e", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade
+  add_foreign_key "ci_workspaces", "projects", on_delete: :cascade
   add_foreign_key "cluster_groups", "clusters", on_delete: :cascade
   add_foreign_key "cluster_groups", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "cluster_platforms_kubernetes", "clusters", on_delete: :cascade
