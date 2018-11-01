@@ -3307,12 +3307,5 @@ describe Ci::Build do
 
       it { expect(build.deployment_status).to eq(:creating) }
     end
-
-    context 'when build is successful but deployment is not ready yet' do
-      let(:build) { create(:ci_build, :success, environment: 'production') }
-      let(:environment) { create(:environment, name: 'production', project: build.project) }
-
-      it { expect(build.deployment_status).to eq(:creating) }
-    end
   end
 end
