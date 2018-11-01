@@ -156,12 +156,6 @@ class Deployment < ActiveRecord::Base
     finished_at
   end
 
-  def action
-    return 'start' if deployment.unknown_action?
-
-    super
-  end
-
   def formatted_deployment_time
     deployed_at&.to_time&.in_time_zone&.to_s(:medium)
   end
