@@ -132,7 +132,7 @@ describe Environment do
         expect(env.update_merge_request_metrics?).to eq(expected_value)
       end
     end
-  end 
+  end
 
   describe '#first_deployment_for' do
     let(:project)       { create(:project, :repository) }
