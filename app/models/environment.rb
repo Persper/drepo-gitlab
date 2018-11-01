@@ -103,12 +103,7 @@ class Environment < ActiveRecord::Base
   end
 
   def first_deployment_for(commit_sha)
-    ref = project.repository.ref_name_for_sha(ref_path, commit_sha)
-
-    return nil unless ref
-
-    deployment_iid = ref.split('/').last
-    deployments.find_by(iid: deployment_iid)
+    deployments.order(id: :desc).find_by_sha(commit_sha)
   end
 
   def ref_path

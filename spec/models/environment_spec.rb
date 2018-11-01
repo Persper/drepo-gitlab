@@ -132,25 +132,29 @@ describe Environment do
         expect(env.update_merge_request_metrics?).to eq(expected_value)
       end
     end
-  end
+  end 
 
   describe '#first_deployment_for' do
     let(:project)       { create(:project, :repository) }
-    let!(:deployment)   { create(:deployment, environment: environment, ref: commit.parent.id) }
-    let!(:deployment1)  { create(:deployment, environment: environment, ref: commit.id) }
+    let!(:deployment)   { create(:deployment, environment: environment, ref: 'master', sha: previous_commit.id) }
+    let!(:deployment1)  { create(:deployment, environment: environment, ref: 'master', sha: head_commit.id) }
+    let(:previous_commit) { project.commit.parent }
     let(:head_commit)   { project.commit }
-    let(:commit)        { project.commit.parent }
 
-    it 'returns deployment id for the environment' do
-      expect(environment.first_deployment_for(commit.id)).to eq deployment1
+    it 'returns the previous deployment with the commit' do
+      expect(environment.first_deployment_for(previous_commit.id)).to eq deployment
+    end
+
+    it 'returns the latest deployment with the commit' do
+      expect(environment.first_deployment_for(head_commit.id)).to eq deployment1
     end
 
     it 'return nil when no deployment is found' do
-      expect(environment.first_deployment_for(head_commit.id)).to eq nil
+      expect(environment.first_deployment_for('xxx')).to eq nil
     end
 
     it 'returns a UTF-8 ref' do
-      expect(environment.first_deployment_for(commit.id).ref).to be_utf8
+      expect(environment.first_deployment_for(head_commit.id).ref).to be_utf8
     end
   end
 
