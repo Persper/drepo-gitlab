@@ -419,7 +419,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       context 'deployment still not finished' do
-        let(:build) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
+        let(:build) { create(:ci_build, :running, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link to latest deployment' do
           expect(page).to have_link environment.name
