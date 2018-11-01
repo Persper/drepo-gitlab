@@ -47,12 +47,34 @@
     font-family: $monospace-font;
     white-space: pre-wrap;
     word-wrap: normal;
+
+    &.math:before {
+      content: 'math: ';
+      font-size: 80%;
+      position: relative;
+      top: -1px;
+    }
   }
 
   // Multi-line code blocks should scroll horizontally
   pre {
+    position: relative;
+
     code {
       white-space: pre;
+    }
+
+    &[lang]:not([lang='plaintext']):not(.js-syntax-highlight):before {
+      content: attr(lang);
+      display: block;
+      font-size: 80%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0 7px;
+      border: 1px solid #e5e5e5;
+      border-width: 0 0 1px 1px;
+      border-radius: 0 0 0 2px;
     }
   }
 

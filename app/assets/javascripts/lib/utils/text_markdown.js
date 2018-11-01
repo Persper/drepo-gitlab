@@ -161,7 +161,7 @@ export function insertMarkdownText({ textArea, text, tag, blockTag, selected, wr
   });
 }
 
-function updateText({ textArea, tag, blockTag, wrap, select }) {
+export function updateMarkdownText({ textArea, tag, blockTag, wrap, select }) {
   var $textArea, selected, text;
   $textArea = $(textArea);
   textArea = $textArea.get(0);
@@ -180,7 +180,7 @@ export function addMarkdownListeners(form) {
     .off('click')
     .on('click', function() {
       const $this = $(this);
-      return updateText({
+      return updateMarkdownText({
         textArea: $this.closest('.md-area').find('textarea'),
         tag: $this.data('mdTag'),
         blockTag: $this.data('mdBlock'),

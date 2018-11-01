@@ -38,22 +38,24 @@ export default {
       default: false,
     },
   },
+  methods: {
+    clicked() {
+      this.$emit('click', this);
+    },
+  },
 };
 </script>
 
 <template>
   <button
     v-gl-tooltip
-    :data-md-tag="tag"
-    :data-md-select="tagSelect"
-    :data-md-block="tagBlock"
-    :data-md-prepend="prepend"
     :title="buttonTitle"
     :aria-label="buttonTitle"
     type="button"
-    class="toolbar-btn js-md"
+    class="toolbar-btn"
     tabindex="-1"
     data-container="body"
+    @click="clicked"
   >
     <icon
       :name="icon"

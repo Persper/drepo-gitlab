@@ -1,4 +1,5 @@
 import { Mark } from 'tiptap'
+import { toggleMark, markInputRule } from 'tiptap-commands'
 
 export default class InlineDiffMark extends Mark {
   get name() {
@@ -27,5 +28,16 @@ export default class InlineDiffMark extends Mark {
         return mark.attrs.addition ? ['{+', '+}'] : ['{-', '-}'];
       },
     }
+  }
+
+  command({ type }) {
+    return toggleMark(type)
+  }
+
+  inputRules({ type }) {
+    return [
+      markInputRule(/(?:\[\+|\{\+)([^\+]+)(?:\+\]|\+\})$/, type, { addition: true }),
+      markInputRule(/(?:\[-|\{-)([^-]+)(?:-\]|-\})$/, type, { addition: false }),
+    ]
   }
 }

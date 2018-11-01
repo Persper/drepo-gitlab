@@ -1,4 +1,5 @@
 import { Node } from 'tiptap'
+import { setBlockType } from 'tiptap-commands'
 import { defaultMarkdownSerializer } from 'prosemirror-markdown';
 
 export default class ParagraphNode extends Node {
@@ -19,5 +20,9 @@ export default class ParagraphNode extends Node {
 
   toMarkdown(state, node) {
     defaultMarkdownSerializer.nodes.paragraph(state, node)
+  }
+
+  command({ type }) {
+    return setBlockType(type)
   }
 }

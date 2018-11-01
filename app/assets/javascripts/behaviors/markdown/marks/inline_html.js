@@ -1,4 +1,5 @@
 import { Mark } from 'tiptap'
+import { toggleMark, markInputRule } from 'tiptap-commands'
 
 const tags = 'sup sub kbd q samp var'.split(' ');
 
@@ -38,5 +39,15 @@ export default class InlineHTMLMark extends Mark {
         return `</${mark.attrs.tag}>`;
       }
     }
+  }
+
+  command({ type }) {
+    return toggleMark(type)
+  }
+
+  inputRules({ type }) {
+    return tags.map(tag =>
+      markInputRule(new RegExp(`(?:\\<${tag}\\>)([^\\<]+)(?:\\<\\/${tag}\\>)$`), type, { tag })
+    );
   }
 }

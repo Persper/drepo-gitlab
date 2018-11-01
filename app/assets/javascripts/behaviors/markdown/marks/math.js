@@ -1,4 +1,5 @@
 import { Mark } from 'tiptap'
+import { toggleMark, markInputRule } from 'tiptap-commands'
 import { defaultMarkdownSerializer } from 'prosemirror-markdown';
 
 export default class MathMark extends Mark {
@@ -27,5 +28,15 @@ export default class MathMark extends Mark {
         return ['$' + open, close + '$']
       }
     }
+  }
+
+  command({ type }) {
+    return toggleMark(type)
+  }
+
+  inputRules({ type }) {
+    return [
+      markInputRule(/(?:\$`)([^`]+)(?:`)$/, type),
+    ]
   }
 }

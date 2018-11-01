@@ -1,4 +1,5 @@
 import { Node } from 'tiptap'
+import { wrapInList, wrappingInputRule } from 'tiptap-commands'
 
 export default class TaskListNode extends Node {
   get name() {
@@ -21,5 +22,15 @@ export default class TaskListNode extends Node {
 
   toMarkdown(state, node) {
     state.renderList(node, '  ', () => "* ");
+  }
+
+  command({ type }) {
+    return wrapInList(type)
+  }
+
+  inputRules({ type }) {
+    return [
+      wrappingInputRule(/^\s*([-+*])\s(\[ \])\s$/, type),
+    ]
   }
 }
