@@ -723,7 +723,7 @@ module Ci
 
       if success?
         return successful_deployment_status
-      elsif complete? && !success?
+      elsif failed?
         return :failed
       end
 
@@ -740,13 +740,11 @@ module Ci
     end
 
     def successful_deployment_status
-      if success? && deployment&.last?
-        return :last
-      elsif success? && deployment.present?
-        return :out_of_date
+      if deployment&.last?
+        :last
+      else
+        :out_of_date
       end
-
-      :creating
     end
 
     def each_report(report_types)
