@@ -56,6 +56,18 @@ describe PipelineScheduleWorker do
         expect { subject }.not_to change { project.pipelines.count }
       end
     end
+
+    context 'when gitlab-ci.yml is corrupted' do
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(rspec: { variables: 'rspec' } ))
+      end
+
+      it 'creates a failed pipeline with the reason' do
+        expect { subject }.to change { project.pipelines.count }.by(1)
+        expect(Ci::Pipeline.last).to be_config_error
+        expect(Ci::Pipeline.last.yaml_errors).not_to be_nil
+      end
+    end
   end
 
   context 'when the schedule is not runnable by the user' do
