@@ -4,6 +4,7 @@ class Deployment < ActiveRecord::Base
   include AtomicInternalId
   include IidRoutes
   include AfterCommitQueue
+  include EnumWithNil
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
@@ -53,6 +54,12 @@ class Deployment < ActiveRecord::Base
     success: 2,
     failed: 3,
     canceled: 4
+  }
+
+  enum_with_nil action: {
+    unknown_action: nil,
+    start: 1,
+    stop: 2
   }
 
   def self.last_for_environment(environment)
@@ -147,6 +154,12 @@ class Deployment < ActiveRecord::Base
     return unless success?
 
     finished_at
+  end
+
+  def action
+    return 'start' if deployment.unknown_action?
+
+    super
   end
 
   def formatted_deployment_time

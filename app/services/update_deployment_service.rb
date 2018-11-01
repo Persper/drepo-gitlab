@@ -20,7 +20,7 @@ class UpdateDeploymentService
       environment.external_url = expanded_environment_url if
         expanded_environment_url
 
-      environment.fire_state_event(action)
+      environment.fire_state_event(deployment.action)
 
       break unless environment.save
       break if environment.stopped?
@@ -45,9 +45,5 @@ class UpdateDeploymentService
 
   def environment_url
     environment_options[:url]
-  end
-
-  def action
-    environment_options[:action] || 'start'
   end
 end
