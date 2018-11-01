@@ -12,7 +12,7 @@ describe API::Deployments do
     let(:project) { create(:project) }
     let!(:deployment_1) { create(:deployment, :success, project: project, iid: 11, ref: 'master', created_at: Time.now) }
     let!(:deployment_2) { create(:deployment, :success, project: project, iid: 12, ref: 'feature', created_at: 1.day.ago) }
-    let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'feature', created_at: 2.days.ago) }
+    let!(:deployment_3) { create(:deployment, :success, project: project, iid: 8, ref: 'patch', created_at: 2.days.ago) }
 
     context 'as member of the project' do
       it 'returns projects deployments sorted by id asc' do
@@ -53,8 +53,8 @@ describe API::Deployments do
           'id'         | 'desc' | [:deployment_3, :deployment_2, :deployment_1]
           'iid'        | 'asc'  | [:deployment_3, :deployment_1, :deployment_2]
           'iid'        | 'desc' | [:deployment_2, :deployment_1, :deployment_3]
-          'ref'        | 'asc'  | [:deployment_2, :deployment_3, :deployment_1]
-          'ref'        | 'desc' | [:deployment_1, :deployment_2, :deployment_3]
+          'ref'        | 'asc'  | [:deployment_2, :deployment_1, :deployment_3]
+          'ref'        | 'desc' | [:deployment_3, :deployment_1, :deployment_2]
         end
 
         with_them do

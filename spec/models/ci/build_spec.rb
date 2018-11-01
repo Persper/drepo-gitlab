@@ -813,33 +813,27 @@ describe Ci::Build do
   describe '.deployment' do
     subject { build.deployment }
 
-    context 'when there is an old deployment record' do
-      before do
-        create(:deployment, deployable: build, project: project)
+    context 'when there is a deployment record with created status' do
+      let!(:deployment) { create(:deployment, deployable: build, project: project) }
+
+      it 'returns the record' do
+        is_expected.to eq(deployment)
       end
+    end
 
-      context 'when there is a deployment record with created status' do
-        let!(:deployment) { create(:deployment, deployable: build, project: project) }
+    context 'when there is a deployment record with running status' do
+      let!(:deployment) { create(:deployment, :running, deployable: build, project: project) }
 
-        it 'returns the record' do
-          is_expected.to eq(deployment)
-        end
+      it 'returns the record' do
+        is_expected.to eq(deployment)
       end
+    end
 
-      context 'when there is a deployment record with running status' do
-        let!(:deployment) { create(:deployment, :running, deployable: build, project: project) }
+    context 'when there is a deployment record with success status' do
+      let!(:deployment) { create(:deployment, :success, deployable: build, project: project) }
 
-        it 'returns the record' do
-          is_expected.to eq(deployment)
-        end
-      end
-
-      context 'when there is a deployment record with success status' do
-        let!(:deployment) { create(:deployment, :success, deployable: build, project: project) }
-
-        it 'returns the record' do
-          is_expected.to eq(deployment)
-        end
+      it 'returns the record' do
+        is_expected.to eq(deployment)
       end
     end
   end
@@ -3310,13 +3304,6 @@ describe Ci::Build do
       let(:build) { create(:ci_build, environment: 'production') }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
       let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
-
-      it { expect(build.deployment_status).to eq(:creating) }
-    end
-
-    context 'when build is successful but deployment is not ready yet' do
-      let(:build) { create(:ci_build, :success, environment: 'production') }
-      let(:environment) { create(:environment, name: 'production', project: build.project) }
 
       it { expect(build.deployment_status).to eq(:creating) }
     end

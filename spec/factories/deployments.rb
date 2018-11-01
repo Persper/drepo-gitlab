@@ -23,21 +23,21 @@ FactoryBot.define do
     end
 
     trait :running do
-      status { Deployment.state_machine.states['running'].value }
+      status :running
     end
 
     trait :success do
-      status { Deployment.state_machine.states['success'].value }
+      status :success
       finished_at { Time.now }
     end
 
     trait :failed do
-      status { Deployment.state_machine.states['failed'].value }
+      status :failed
       finished_at { Time.now }
     end
 
     trait :canceled do
-      status { Deployment.state_machine.states['canceled'].value }
+      status :canceled
       finished_at { Time.now }
     end
 
