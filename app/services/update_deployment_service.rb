@@ -20,7 +20,7 @@ class UpdateDeploymentService
       environment.external_url = expanded_environment_url if
         expanded_environment_url
 
-        environment.fire_state_event(action)
+      environment.fire_state_event(action)
 
       break unless environment.save
       break if environment.stopped?

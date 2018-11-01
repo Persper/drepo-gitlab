@@ -829,7 +829,6 @@ ActiveRecord::Schema.define(version: 20181031190559) do
     t.integer "action", limit: 2
   end
 
-  add_index "deployments", ["action"], name: "index_deployments_on_action", using: :btree
   add_index "deployments", ["created_at"], name: "index_deployments_on_created_at", using: :btree
   add_index "deployments", ["deployable_type", "deployable_id"], name: "index_deployments_on_deployable_type_and_deployable_id", using: :btree
   add_index "deployments", ["environment_id", "id"], name: "index_deployments_on_environment_id_and_id", using: :btree
@@ -923,6 +922,35 @@ ActiveRecord::Schema.define(version: 20181031190559) do
   end
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
+
+  create_table "gcp_clusters", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "user_id"
+    t.integer "service_id"
+    t.integer "status"
+    t.integer "gcp_cluster_size", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.boolean "enabled", default: true
+    t.text "status_reason"
+    t.string "project_namespace"
+    t.string "endpoint"
+    t.text "ca_cert"
+    t.text "encrypted_kubernetes_token"
+    t.string "encrypted_kubernetes_token_iv"
+    t.string "username"
+    t.text "encrypted_password"
+    t.string "encrypted_password_iv"
+    t.string "gcp_project_id", null: false
+    t.string "gcp_cluster_zone", null: false
+    t.string "gcp_cluster_name", null: false
+    t.string "gcp_machine_type"
+    t.string "gcp_operation_id"
+    t.text "encrypted_gcp_token"
+    t.string "encrypted_gcp_token_iv"
+  end
+
+  add_index "gcp_clusters", ["project_id"], name: "index_gcp_clusters_on_project_id", unique: true, using: :btree
 
   create_table "gpg_key_subkeys", force: :cascade do |t|
     t.integer "gpg_key_id", null: false
@@ -2390,6 +2418,9 @@ ActiveRecord::Schema.define(version: 20181031190559) do
   add_foreign_key "fork_network_members", "projects", on_delete: :cascade
   add_foreign_key "fork_networks", "projects", column: "root_project_id", name: "fk_e7b436b2b5", on_delete: :nullify
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
+  add_foreign_key "gcp_clusters", "projects", on_delete: :cascade
+  add_foreign_key "gcp_clusters", "services", on_delete: :nullify
+  add_foreign_key "gcp_clusters", "users", on_delete: :nullify
   add_foreign_key "gpg_key_subkeys", "gpg_keys", on_delete: :cascade
   add_foreign_key "gpg_keys", "users", on_delete: :cascade
   add_foreign_key "gpg_signatures", "gpg_key_subkeys", on_delete: :nullify
