@@ -846,6 +846,7 @@
     }
 
     .btn {
+      margin-top: $gl-padding;
       padding: $gl-btn-vert-padding $gl-btn-horz-padding;
       line-height: $gl-btn-line-height;
 
@@ -856,6 +857,10 @@
 
     .btn-missing {
       @extend .btn-missing;
+    }
+
+    .icon {
+      margin-right: $gl-padding-4;
     }
   }
 }
