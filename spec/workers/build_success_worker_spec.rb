@@ -2,26 +2,40 @@ require 'spec_helper'
 
 describe BuildSuccessWorker do
   describe '#perform' do
+    subject { described_class.new.perform(build.id) }
+
     context 'when build exists' do
-      context 'when build belogs to the environment' do
-        let!(:build) { create(:ci_build, environment: 'production') }
-
-        it 'executes deployment service' do
-          expect_any_instance_of(CreateDeploymentService)
-            .to receive(:execute)
-
-          described_class.new.perform(build.id)
+      context 'when deployment was not created when build was created because of transition period' do
+        before do
+          allow_any_instance_of(Deployment).to receive(:create_ref)
         end
-      end
 
-      context 'when build is not associated with project' do
-        let!(:build) { create(:ci_build, project: nil) }
+        context 'when build belogs to the environment' do
+          let!(:build) { create(:ci_build, :deploy_to_production) }
 
-        it 'does not create deployment' do
-          expect_any_instance_of(CreateDeploymentService)
-            .not_to receive(:execute)
+          before do
+            Deployment.delete_all
+          end
 
-          described_class.new.perform(build.id)
+          it 'creates a successful deployment' do
+            expect(build).not_to be_has_deployment
+
+            subject
+
+            build.reload
+            expect(build).to be_has_deployment
+            expect(build.deployment).to be_success
+          end
+        end
+
+        context 'when build is not associated with project' do
+          let!(:build) { create(:ci_build, project: nil) }
+
+          it 'does not create deployment' do
+            subject
+
+            expect(build.reload).not_to be_has_deployment
+          end
         end
       end
     end
