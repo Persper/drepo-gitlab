@@ -396,8 +396,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       context 'job is successful and has deployment' do
-        let(:build) { create(:ci_build, :success, :trace_live, environment: environment.name, pipeline: pipeline) }
-        let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
+        let(:build) { create(:ci_build, :success, :trace_live, environment: environment.name, pipeline: pipeline, deployment: deployment) }
+        let(:deployment) { create(:deployment, :success, environment: environment, project: environment.project) }
 
         it 'shows a link for the job' do
           expect(page).to have_link environment.name
