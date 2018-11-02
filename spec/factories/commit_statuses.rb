@@ -46,7 +46,7 @@ FactoryBot.define do
     end
 
     after(:build) do |build, evaluator|
-      build.project = build.context.project
+      build.project = build.area.project
     end
 
     factory :generic_commit_status, class: GenericCommitStatus do

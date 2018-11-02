@@ -363,7 +363,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.concat(predefined_variables)
         variables.concat(project.predefined_variables)
-        variables.concat(context.predefined_variables)
+        variables.concat(area.predefined_variables)
         variables.concat(runner.predefined_variables) if runner
         variables.concat(project.deployment_variables(environment: environment)) if environment
         variables.concat(yaml_variables)

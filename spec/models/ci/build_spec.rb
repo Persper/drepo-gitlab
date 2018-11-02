@@ -573,7 +573,7 @@ describe Ci::Build do
     end
   end
 
-  describe '#context' do
+  describe '#area' do
     let(:workspace) { create(:ci_workspace, project: project) }
 
     context 'when a build has a pipeline' do
@@ -582,7 +582,7 @@ describe Ci::Build do
       end
 
       it 'returns a pipeline' do
-        expect(build.context).to eq pipeline
+        expect(build.area).to eq pipeline
       end
     end
 
@@ -592,7 +592,7 @@ describe Ci::Build do
       end
 
       it 'returns a workspace' do
-        expect(build.context).to eq workspace
+        expect(build.area).to eq workspace
       end
     end
   end

@@ -15,7 +15,7 @@ class CommitStatus < ActiveRecord::Base
   belongs_to :workspace, class_name: 'Ci::Workspace'
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
 
-  delegate :commit, :sha, :short_sha, to: :context
+  delegate :commit, :sha, :short_sha, to: :area
 
   validates :pipeline, presence: true, unless: -> { importing? || workspace.present? }
   validates :workspace, presence: true, unless: -> { importing? || pipeline.present? }
@@ -144,7 +144,7 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
-  def context
+  def area
     pipeline || workspace
   end
 
@@ -153,7 +153,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def before_sha
-    context.before_sha || Gitlab::Git::BLANK_SHA
+    area.before_sha || Gitlab::Git::BLANK_SHA
   end
 
   def group_name
