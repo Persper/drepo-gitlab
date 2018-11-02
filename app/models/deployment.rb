@@ -47,6 +47,12 @@ class Deployment < ActiveRecord::Base
     end
   end
 
+  enum_with_nil action: {
+    unknown_action: nil,
+    start: 1,
+    stop: 2
+  }
+
   enum status: {
     created: 0,
     running: 1,

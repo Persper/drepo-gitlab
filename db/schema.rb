@@ -826,6 +826,7 @@ ActiveRecord::Schema.define(version: 20181031190559) do
     t.string "on_stop"
     t.integer "status", limit: 2, default: 2, null: false
     t.datetime_with_timezone "finished_at"
+    t.integer "action", limit: 2
   end
 
   add_index "deployments", ["created_at"], name: "index_deployments_on_created_at", using: :btree
