@@ -22,8 +22,6 @@ class BuildSuccessWorker
   # Therefore we no longer need to create a deployment, after a build succeeded.
   # We're leaving this code for the transition period, but we can remove this code in 11.6.
   def create_deployment(build)
-    return if build.has_deployment?
-
     build.create_deployment.try do |deployment|
       deployment.succeed
     end
