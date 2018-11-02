@@ -9,21 +9,25 @@ export default {
           activeTab === 'diffs'
             ? `ul.notes[data-discussion-id="${id}"]`
             : `div.discussion[data-discussion-id="${id}"]`;
-        const el = document.querySelector(selector);
 
-        if (activeTab === 'commits' || activeTab === 'pipelines') {
-          window.mrTabs.activateTab('show');
-        }
+        this.expandDiscussion({ discussionId: id });
 
-        if (el) {
-          this.expandDiscussion({ discussionId: id });
+        this.$nextTick(() => {
+          const el = document.querySelector(selector);
 
-          scrollToElement(el);
-          return true;
-        }
+          if (activeTab === 'commits' || activeTab === 'pipelines') {
+            window.mrTabs.activateTab('show');
+          }
+
+          if (el) {
+            scrollToElement(el);
+
+            return true;
+          }
+
+          return false;
+        });
       }
-
-      return false;
     },
   },
 };
