@@ -12,7 +12,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Populate,
                 Gitlab::Ci::Pipeline::Chain::Create].freeze
 
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, &block)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, &block)
       @pipeline = Ci::Pipeline.new
 
       command = Gitlab::Ci::Pipeline::Chain::Command.new(
@@ -23,6 +23,7 @@ module Ci
         before_sha: params[:before],
         trigger_request: trigger_request,
         schedule: schedule,
+        merge_request: merge_request,
         ignore_skip_ci: ignore_skip_ci,
         save_incompleted: save_on_errors,
         seeds_block: block,
