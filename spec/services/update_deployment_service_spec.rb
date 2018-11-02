@@ -159,7 +159,7 @@ describe UpdateDeploymentService do
 
     context "while updating the 'first_deployed_to_production_at' time" do
       before do
-        merge_request.metrics.update!(merged_at: 10.minutes.ago)
+        merge_request.metrics.update!(merged_at: 1.hour.ago)
       end
 
       context "for merge requests merged before the current deploy" do
