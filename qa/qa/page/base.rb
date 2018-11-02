@@ -8,6 +8,7 @@ module QA
       prepend Support::Page::Logging if Runtime::Env.debug?
       include Capybara::DSL
       include Scenario::Actable
+      include Page::Performance
       extend SingleForwardable
 
       ElementNotFound = Class.new(RuntimeError)

@@ -26,7 +26,7 @@ module QA
         args.push(%w[--tag ~skip_signup_disabled]) if QA::Runtime::Env.signup_disabled?
 
         args.push(options)
-        args.push(DEFAULT_TEST_PATH_ARGS) unless options.any? { |opt| opt =~ %r{/features/} }
+        args.push(DEFAULT_TEST_PATH_ARGS) unless options.any? { |opt| opt =~ %r{/features|performance/} }
 
         Runtime::Browser.configure!
 

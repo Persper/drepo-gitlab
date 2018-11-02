@@ -156,7 +156,7 @@ export default {
     >
       {{ __('This diff is collapsed.') }}
       <a
-        class="click-to-expand js-click-to-expand"
+        class="click-to-expand js-click-to-expand qa-click-to-expand"
         href="#"
         @click.prevent="handleToggle"
       >

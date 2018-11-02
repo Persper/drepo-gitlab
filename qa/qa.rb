@@ -123,6 +123,7 @@ module QA
     autoload :View, 'qa/page/view'
     autoload :Element, 'qa/page/element'
     autoload :Validator, 'qa/page/validator'
+    autoload :Performance, 'qa/page/performance'
 
     module Main
       autoload :Login, 'qa/page/main/login'
