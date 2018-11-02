@@ -158,9 +158,10 @@ describe 'Environment' do
               end
 
               let(:deployment) do
-                create(:deployment, :success, environment: environment,
-                                              deployable: build,
-                                              on_stop: 'close_app')
+                create(:deployment, :success,
+                                    environment: environment,
+                                    deployable: build,
+                                    on_stop: 'close_app')
               end
 
               context 'when user has ability to stop environment' do

@@ -85,7 +85,7 @@ module CycleAnalyticsHelpers
         raise ArgumentError
       end
 
-    dummy_job.success!
+    dummy_job.success! # State machine automatically update associated deployment/environment record
   end
 
   def dummy_production_job(user, project)

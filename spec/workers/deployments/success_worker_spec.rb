@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Deployments::SuccessWorker do
   subject { described_class.new.perform(deployment&.id) }
 
-  context 'when deploy record exists' do
-    let(:deployment) { create(:deployment) }
+  context 'when successful deployment' do
+    let(:deployment) { create(:deployment, :success) }
 
     it 'executes UpdateDeploymentService' do
       expect(UpdateDeploymentService)
@@ -14,10 +14,20 @@ describe Deployments::SuccessWorker do
     end
   end
 
+  context 'when canceled deployment' do
+    let(:deployment) { create(:deployment, :canceled) }
+
+    it 'does not execute UpdateDeploymentService' do
+      expect(UpdateDeploymentService).not_to receive(:new)
+
+      subject
+    end
+  end
+
   context 'when deploy record does not exist' do
     let(:deployment) { nil }
 
-    it 'executes UpdateDeploymentService' do
+    it 'does not execute UpdateDeploymentService' do
       expect(UpdateDeploymentService).not_to receive(:new)
 
       subject
