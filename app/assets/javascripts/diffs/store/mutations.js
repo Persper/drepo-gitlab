@@ -110,9 +110,14 @@ export default {
         if (file.highlightedDiffLines) {
           file.highlightedDiffLines = file.highlightedDiffLines.map(line => {
             if (lineCheck(line)) {
+              const lineDiscussions =
+                line && line.discussions.indexOf(discussion) === -1
+                  ? line.discussions.concat(discussion)
+                  : line.discussions || [];
+
               return {
                 ...line,
-                discussions: line.discussions.concat(discussion),
+                discussions: lineDiscussions,
               };
             }
 
@@ -126,14 +131,24 @@ export default {
             const right = line.right && lineCheck(line.right);
 
             if (left || right) {
+              // Avoid setting the same discussion twice on the same line
+              const leftDiscussion =
+                line.left && line.left.discussions.indexOf(discussion) === -1
+                  ? line.left.discussions.concat(discussion)
+                  : (line.left && line.left.discussions) || [];
+              const rightDiscussion =
+                line.right && line.right.discussions.indexOf(discussion) === -1
+                  ? line.right.discussions.concat(discussion)
+                  : (line.right && line.right.discussions) || [];
+
               return {
                 left: {
                   ...line.left,
-                  discussions: left ? line.left.discussions.concat(discussion) : [],
+                  discussions: left ? leftDiscussion : [],
                 },
                 right: {
                   ...line.right,
-                  discussions: right && !left ? line.right.discussions.concat(discussion) : [],
+                  discussions: right && !left ? rightDiscussion : [],
                 },
               };
             }
