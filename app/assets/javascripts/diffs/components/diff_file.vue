@@ -3,6 +3,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
 import { __, sprintf } from '~/locale';
 import createFlash from '~/flash';
+import eventHub from '../../notes/event_hub';
 import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
 
@@ -55,6 +56,9 @@ export default {
     showLoadingIcon() {
       return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
     },
+  },
+  created() {
+    eventHub.$on(`loadCollapsedDiff/${this.file.fileHash}`, this.handleLoadCollapsedDiff);
   },
   methods: {
     ...mapActions('diffs', ['loadCollapsedDiff', 'assignDiscussionsToDiff']),

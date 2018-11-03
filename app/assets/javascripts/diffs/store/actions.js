@@ -3,8 +3,9 @@ import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
-import { handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
+import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
+import eventHub from '../../notes/event_hub';
 import { getDiffPositionByLineCode, getNoteFormData } from './utils';
 import * as types from './mutation_types';
 import {
@@ -47,11 +48,41 @@ export const assignDiscussionsToDiff = (
       diffPositionByLineCode,
     });
   });
+
+  Vue.nextTick(() => {
+    eventHub.$emit('completedAssigningDiscussionsToDiff');
+  });
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
   const { fileHash, line_code } = removeDiscussion;
   commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode: line_code });
+};
+
+export const renderFileForDiscussionId = ({ commit, rootGetters, state }, discussionId) => {
+  const discussion = rootGetters.allDiscussions.find(d => d.id === discussionId);
+
+  if (discussion) {
+    const file = state.diffFiles.find(f => f.fileHash === discussion.diff_file.file_hash);
+
+    if (!file) {
+      eventHub.$emit('scrollToDiscussion');
+    } else {
+      if (!file.renderIt) {
+        commit(types.RENDER_FILE, file);
+      }
+
+      if (file.collapsed) {
+        eventHub.$once('completedAssigningDiscussionsToDiff', () => {
+          eventHub.$emit('scrollToDiscussion');
+        });
+        eventHub.$emit(`loadCollapsedDiff/${file.fileHash}`);
+        scrollToElement(document.querySelector(`[id="${file.fileHash}"]`));
+      } else {
+        eventHub.$emit('scrollToDiscussion');
+      }
+    }
+  }
 };
 
 export const startRenderDiffsQueue = ({ state, commit }) => {
