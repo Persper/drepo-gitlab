@@ -54,6 +54,9 @@ module TestEnv
     'add_images_and_changes'             => '010d106',
     'update-gitlab-shell-v-6-0-1'        => '2f61d70',
     'update-gitlab-shell-v-6-0-3'        => 'de78448',
+    'merge-commit-analyze-before'        => '1adbdef',
+    'merge-commit-analyze-side-branch'   => '8a99451',
+    'merge-commit-analyze-after'         => '646ece5',
     '2-mb-file'                          => 'bf12d25',
     'with-codeowners'                    => '219560e'
   }.freeze
