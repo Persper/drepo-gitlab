@@ -156,7 +156,7 @@ stages:
     - export CI_NODE_INDEX=${JOB_NAME[-2]}
     - export CI_NODE_TOTAL=${JOB_NAME[-1]}
     - export RSPEC_TAG_ARG=${RSPEC_TAGS:-~migration}
-    - export KNAPSACK_SPEC_TEST_PATTERN=${RSPEC_PATTERN:-"**{,/*/**}/*_spec.rb"}
+    - export KNAPSACK_TEST_FILE_PATTERN=${RSPEC_PATTERN:-"**{,/*/**}/*_spec.rb"}
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - export SUITE_FLAKY_RSPEC_REPORT_PATH=${FLAKY_RSPEC_SUITE_REPORT_PATH}
@@ -169,7 +169,7 @@ stages:
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
     - echo $RSPEC_TAG_ARG
-    - echo "$KNAPSACK_SPEC_TEST_PATTERN"
+    - echo "$KNAPSACK_TEST_FILE_PATTERN"
     - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag $RSPEC_TAG_ARG"
   artifacts:
     expire_in: 31d
