@@ -158,7 +158,7 @@ export default {
         }
 
         if (!file.parallelDiffLines || !file.highlightedDiffLines) {
-          file.discussions = file.discussions.concat(discussion);
+          file.discussions = (file.discussions || []).concat(discussion);
         }
 
         return file;
