@@ -32,6 +32,10 @@ module QA
         dom_complete = page.execute_script("return window.performance.timing.domComplete")
         dom_complete - response_start
       end
+
+      def apdex(satisfied_count, tolerating_count, total_samples)
+        (satisfied_count + (tolerating_count/2)) / total_samples
+      end
     end
   end
 end
