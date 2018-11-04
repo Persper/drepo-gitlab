@@ -14,6 +14,7 @@
   install_runner_path: clusterable.install_applications_cluster_path(@cluster, :runner),
   install_jupyter_path: clusterable.install_applications_cluster_path(@cluster, :jupyter),
   toggle_status: @cluster.enabled? ? 'true': 'false',
+  cluster_type: @cluster.cluster_type,
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications'),

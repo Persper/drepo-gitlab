@@ -30,6 +30,7 @@ export default class Clusters {
       installJupyterPath,
       installPrometheusPath,
       managePrometheusPath,
+      clusterType,
       clusterStatus,
       clusterStatusReason,
       helpPath,
@@ -65,7 +66,7 @@ export default class Clusters {
     initDismissableCallout('.js-cluster-security-warning');
     initSettingsPanels();
     setupToggleButtons(document.querySelector('.js-cluster-enable-toggle-area'));
-    this.initApplications();
+    this.initApplications(clusterType);
 
     if (this.store.state.status !== 'created') {
       this.updateContainer(null, this.store.state.status, this.store.state.statusReason);
@@ -77,7 +78,7 @@ export default class Clusters {
     }
   }
 
-  initApplications() {
+  initApplications(type) {
     const { store } = this;
     const el = document.querySelector('#js-cluster-applications');
 
@@ -91,6 +92,7 @@ export default class Clusters {
       render(createElement) {
         return createElement(Applications, {
           props: {
+            type,
             applications: this.state.applications,
             helpPath: this.state.helpPath,
             ingressHelpPath: this.state.ingressHelpPath,

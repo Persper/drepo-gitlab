@@ -20,6 +20,11 @@ export default {
     clipboardButton,
   },
   props: {
+    type: {
+      type: String,
+      required: false,
+      default: 'project_type',
+    },
     applications: {
       type: Object,
       required: false,
@@ -57,6 +62,9 @@ export default {
     prometheusLogo,
   }),
   computed: {
+    isProjectCluster() {
+      return this.type === 'project_type';
+    },
     helmInstalled() {
       return (
         this.applications.helm.status === APPLICATION_STATUS.INSTALLED ||
@@ -276,6 +284,7 @@ export default {
         </div>
       </application-row>
       <application-row
+        v-if="isProjectCluster"
         id="prometheus"
         :logo-url="prometheusLogo"
         :title="applications.prometheus.title"
@@ -294,6 +303,7 @@ export default {
         </div>
       </application-row>
       <application-row
+        v-if="isProjectCluster"
         id="runner"
         :logo-url="gitlabLogo"
         :title="applications.runner.title"
@@ -312,6 +322,7 @@ export default {
         </div>
       </application-row>
       <application-row
+        v-if="isProjectCluster"
         id="jupyter"
         :logo-url="jupyterhubLogo"
         :title="applications.jupyter.title"
