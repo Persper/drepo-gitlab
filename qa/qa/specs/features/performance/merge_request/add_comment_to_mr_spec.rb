@@ -10,7 +10,7 @@ module QA
         @api_client = Runtime::API::Client.new(:gitlab)
         @group_id = create_group
         @project_id = create_project
-        @RESPONSE_THRESHOLD = 1.0 #1 second
+        @response_threshold = 1.0 # 1 second
       end
 
       def create_request(api_endpoint)
@@ -54,7 +54,7 @@ module QA
         content_arr = []
         5.times do |i|
           faker_line_arr = Faker::Lorem.sentences(1500)
-          content =  faker_line_arr.join("\n\r")
+          content = faker_line_arr.join("\n\r")
           upload_file('master', content, "Add testfile-#{i}.md", "testfile-#{i}.md")
           content_arr[i] = faker_line_arr
         end
@@ -84,20 +84,19 @@ module QA
           show_page.expand_diff
           show_page.add_comment_to_diff("Can you check this line of code?")
 
-          expect(show_page.response_time(:comment)).to be <= @RESPONSE_THRESHOLD
+          expect(show_page.response_time(:comment)).to be <= @response_threshold
 
           expect(show_page).to have_content("Can you check this line of code?")
           show_page.reply_to_discussion("And this syntax as well?")
 
-          expect(show_page.response_time(:comment)).to be <= @RESPONSE_THRESHOLD
+          expect(show_page.response_time(:comment)).to be <= @response_threshold
           expect(show_page).to have_content("And this syntax as well?")
 
           show_page.reply_to_discussion("Unresolving this discussion")
-          expect(show_page.response_time(:comment)).to be <= @RESPONSE_THRESHOLD
+          expect(show_page.response_time(:comment)).to be <= @response_threshold
           puts "PAGE_LOAD : " + show_page.page_load_time.to_s
         end
       end
-
     end
   end
 end
