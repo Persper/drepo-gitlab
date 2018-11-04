@@ -321,7 +321,6 @@ export default {
         :request-reason="applications.jupyter.requestReason"
         :install-application-request-params="{ hostname: applications.jupyter.hostname }"
         :disabled="!helmInstalled"
-        class="hide-bottom-border rounded-bottom"
         title-link="https://jupyterhub.readthedocs.io/en/stable/"
       >
         <div slot="description">
