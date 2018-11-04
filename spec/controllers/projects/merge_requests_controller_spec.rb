@@ -563,6 +563,7 @@ describe Projects::MergeRequestsController do
     it 'responds with serialized pipelines' do
       expect(json_response['pipelines']).not_to be_empty
       expect(json_response['count']['all']).to eq 1
+      expect(response).to include_pagination_headers
     end
   end
 
@@ -786,7 +787,7 @@ describe Projects::MergeRequestsController do
             merge_request.mark_as_merged!
           end
 
-          it 'returns the enviroment on the source project' do
+          it 'returns the environment on the source project' do
             get_ci_environments_status(environment_target: 'merge_commit')
 
             expect(response).to have_gitlab_http_status(:ok)
