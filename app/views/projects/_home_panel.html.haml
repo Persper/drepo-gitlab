@@ -13,18 +13,18 @@
             = @project.name
             %span.project-visibility.prepend-left-8.d-inline-flex.align-items-baseline.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
               = visibility_level_icon(@project.visibility_level, fw: false, options: {class: 'icon'})
-            - if @project.tag_list.present?
-              %span.project-tag-list.d-inline-flex.align-items-baseline.prepend-left-5.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_tags? ? @project.tag_list.join(', ') : nil }
-                = sprite_icon('tag', size: 16, css_class: 'icon')
-                = @project.tags_to_show
-                - if @project.has_extra_tags?
-                  = _("+ %{count} more") % { count: @project.count_of_extra_tags_not_shown  }
-        .project-metadata
+        .project-metadata.d-flex.align-items-center
           - if can?(current_user, :read_project, @project)
             %span.text-secondary
               = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
           %span.access-request-links
             = render 'shared/members/access_request_links', source: @project
+          - if @project.tag_list.present?
+            %span.project-tag-list.d-inline-flex.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_tags? ? @project.tag_list.join(', ') : nil }
+              = sprite_icon('tag', size: 16, css_class: 'icon append-right-4')
+              = @project.tags_to_show
+              - if @project.has_extra_tags?
+                = _("+ %{count} more") % { count: @project.count_of_extra_tags_not_shown  }
 
     .project-repo-buttons.col-sm-12.col-md-5.d-inline-flex.flex-wrap.justify-content-md-end
       - if current_user
@@ -47,7 +47,7 @@
       .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
         .fade-left= icon('angle-left')
         .fade-right= icon('angle-right')
-        .nav-links.scrolling-tabs
+        .nav-links.scrolling-tabs.quick-links
           = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
 
   .project-home-desc

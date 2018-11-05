@@ -21,11 +21,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def statistics_anchors(show_auto_devops_callout:)
     [
-      # license_anchor_data,
-      files_anchor_data,
+      license_anchor_data,
       commits_anchor_data,
       branches_anchor_data,
       tags_anchor_data,
+      files_anchor_data
     ].compact.select { |item| item.is_link }
   end
 
@@ -42,11 +42,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def empty_repo_statistics_anchors
     [
-      # license_anchor_data,
-      files_anchor_data,
+      license_anchor_data,
       commits_anchor_data,
       branches_anchor_data,
       tags_anchor_data,
+      files_anchor_data
     ].compact.select { |item| item.is_link }
   end
 
@@ -150,25 +150,45 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def files_anchor_data
     AnchorData.new(true,
-                   _('Files (%{human_size})') % { human_size: storage_counter(statistics.total_repository_size) },
+                   statistic_icon('doc-code') +
+                   _('%{strong_start}%{human_size}%{strong_end} Files').html_safe % {
+                     human_size: storage_counter(statistics.total_repository_size),
+                     strong_start: '<strong>'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
                    empty_repo? ? nil : project_tree_path(project))
   end
 
   def commits_anchor_data
     AnchorData.new(true,
-                   n_('Commit (%{commit_count})', 'Commits (%{commit_count})', statistics.commit_count) % { commit_count: number_with_delimiter(statistics.commit_count) },
+                   statistic_icon('commit') +
+                   n_('%{strong_start}%{commit_count}%{strong_end} Commit', '%{strong_start}%{commit_count}%{strong_end} Commits ', statistics.commit_count).html_safe % {
+                     commit_count: number_with_delimiter(statistics.commit_count),
+                     strong_start: '<strong>'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
                    empty_repo? ? nil : project_commits_path(project, repository.root_ref))
   end
 
   def branches_anchor_data
     AnchorData.new(true,
-                   n_('Branch (%{branch_count})', 'Branches (%{branch_count})', repository.branch_count) % { branch_count: number_with_delimiter(repository.branch_count) },
+                   statistic_icon('branch') +
+                   n_('%{strong_start}%{branch_count}%{strong_end} Branch ', '%{strong_start}%{branch_count}%{strong_end} Branches', repository.branch_count).html_safe % {
+                     branch_count: number_with_delimiter(repository.branch_count),
+                     strong_start: '<strong>'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
                    empty_repo? ? nil : project_branches_path(project))
   end
 
   def tags_anchor_data
     AnchorData.new(true,
-                   n_('Tag (%{tag_count})', 'Tags (%{tag_count})', repository.tag_count) % { tag_count: number_with_delimiter(repository.tag_count) },
+                   statistic_icon('label') +
+                   n_('%{strong_start}%{tag_count}%{strong_end} Tag', '%{strong_start}%{tag_count}%{strong_end} Tags', repository.tag_count).html_safe % {
+                     tag_count: number_with_delimiter(repository.tag_count),
+                     strong_start: '<strong>'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
                    empty_repo? ? nil : project_tags_path(project))
   end
 
@@ -209,18 +229,20 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def license_anchor_data
+    icon = statistic_icon('scale')
+
     if repository.license_blob.present?
       AnchorData.new(true,
-                     license_short_name,
+                     icon + content_tag(:strong, license_short_name),
                      license_path)
     else
       if current_user && can_current_user_push_to_default_branch?
         AnchorData.new(false,
-                       _('Add license'),
+                       icon + content_tag(:strong, _('Add license')),
                        add_license_path)
       else
         AnchorData.new(false,
-                       _('No license. All rights reserved'),
+                       icon + content_tag(:strong, _('No license. All rights reserved')),
                        nil)
       end
     end

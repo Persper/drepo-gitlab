@@ -836,6 +836,7 @@
 
     .stat-link {
       border-bottom: 0;
+      white-space: pre-wrap;
 
       &:hover,
       &:focus {
