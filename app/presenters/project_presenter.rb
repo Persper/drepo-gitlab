@@ -114,7 +114,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def add_contribution_guide_path
-    add_special_file_path(file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide')
+    add_special_file_path(file_name: 'CONTRIBUTING.md', commit_message: 'Add CONTRIBUTION')
   end
 
   def add_ci_yml_path
@@ -229,11 +229,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def contribution_guide_anchor_data
     if current_user && can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
       AnchorData.new(false,
-                     statistic_icon + _('Add Contribution guide'),
+                     statistic_icon + _('Add CONTRIBUTION'),
                      add_contribution_guide_path)
     elsif repository.contribution_guide.present?
       AnchorData.new(false,
-                     statistic_icon('doc-text') + _('Contribution guide'),
+                     statistic_icon('doc-text') + _('CONTRIBUTION'),
                      contribution_guide_path)
     end
   end
