@@ -127,6 +127,30 @@ describe ProjectWiki do
     it "returns the correct number of pages" do
       expect(@pages.count).to eq(1)
     end
+
+    it 'returns pages with content by default' do
+      @pages.each do |page|
+        expect(page.content).not_to be_empty
+      end
+    end
+
+    context 'when load_content param' do
+      context 'is false' do
+        it 'returns pages without content' do
+          subject.pages(load_content: false).each do |page|
+            expect(page.content).to be_empty
+          end
+        end
+      end
+
+      context 'is true' do
+        it 'returns pages with content' do
+          subject.pages(load_content: true).each do |page|
+            expect(page.content).not_to be_empty
+          end
+        end
+      end
+    end
   end
 
   describe "#find_page" do

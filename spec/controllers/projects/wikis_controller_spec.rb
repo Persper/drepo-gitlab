@@ -17,6 +17,18 @@ describe Projects::WikisController do
     destroy_page(wiki_title)
   end
 
+  describe 'GET #pages' do
+    subject { get :pages, namespace_id: project.namespace, project_id: project, id: wiki_title }
+
+    it 'does not load the pages content' do
+      expect(controller).to receive(:load_wiki).and_return(project_wiki)
+
+      expect(project_wiki).to receive(:pages).with(hash_including(load_content: false)).twice.and_call_original
+
+      subject
+    end
+  end
+
   describe 'GET #show' do
     render_views
 
@@ -26,14 +38,24 @@ describe Projects::WikisController do
       expect(controller).to receive(:load_wiki).and_return(project_wiki)
 
       # empty? call
-      expect(project_wiki).to receive(:pages).with(limit: 1).and_call_original
+      expect(project_wiki).to receive(:pages).with(hash_including(limit: 1)).and_call_original
       # Sidebar entries
-      expect(project_wiki).to receive(:pages).with(limit: 15).and_call_original
+      expect(project_wiki).to receive(:pages).with(hash_including(limit: 15)).and_call_original
 
       subject
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(wiki_title)
+    end
+
+    it 'loads the sidebar without loading the pages content' do
+      expect(controller).to receive(:load_wiki).and_return(project_wiki)
+
+      expect(project_wiki).to receive(:pages).with(hash_including(load_content: false)).twice.and_call_original
+
+      subject
+
+      expect(response).to have_http_status(:ok)
     end
 
     context 'when page content encoding is invalid' do

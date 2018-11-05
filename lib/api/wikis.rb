@@ -33,7 +33,7 @@ module API
         authorize! :read_wiki, user_project
 
         entity = params[:with_content] ? Entities::WikiPage : Entities::WikiPageBasic
-        present user_project.wiki.pages, with: entity
+        present user_project.wiki.pages(load_content: params[:with_content]), with: entity
       end
 
       desc 'Get a wiki page' do

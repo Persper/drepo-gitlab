@@ -84,9 +84,9 @@ module Gitlab
         end
       end
 
-      def pages(limit: 0)
+      def pages(limit: 0, load_content: true)
         wrapped_gitaly_errors do
-          gitaly_get_all_pages(limit: limit)
+          gitaly_get_all_pages(limit: limit, load_content: load_content)
         end
       end
 
@@ -166,8 +166,8 @@ module Gitlab
         Gitlab::Git::WikiFile.new(wiki_file)
       end
 
-      def gitaly_get_all_pages(limit: 0)
-        gitaly_wiki_client.get_all_pages(limit: limit).map do |wiki_page, version|
+      def gitaly_get_all_pages(limit: 0, load_content: true)
+        gitaly_wiki_client.get_all_pages(limit: limit, load_content: load_content).map do |wiki_page, version|
           Gitlab::Git::WikiPage.new(wiki_page, version)
         end
       end

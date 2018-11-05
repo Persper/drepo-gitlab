@@ -1,0 +1,5 @@
+---
+title: Added load_content option to avoid loading all wiki pages content
+merge_request: 22801
+author:
+type: performance
