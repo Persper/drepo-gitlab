@@ -138,6 +138,24 @@ msgstr ""
 msgid "%{percent}%% complete"
 msgstr ""
 
+msgid "%{strong_start}%{branch_count}%{strong_end} Branch "
+msgid_plural "%{strong_start}%{branch_count}%{strong_end} Branches"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{strong_start}%{commit_count}%{strong_end} Commit"
+msgid_plural "%{strong_start}%{commit_count}%{strong_end} Commits "
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{strong_start}%{human_size}%{strong_end} Files"
+msgstr ""
+
+msgid "%{strong_start}%{tag_count}%{strong_end} Tag"
+msgid_plural "%{strong_start}%{tag_count}%{strong_end} Tags"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{text} %{files}"
 msgid_plural "%{text} %{files} files"
 msgstr[0] ""
@@ -318,16 +336,16 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
-msgid "Add Changelog"
+msgid "Add CHANGELOG"
 msgstr ""
 
-msgid "Add Contribution guide"
+msgid "Add CONTRIBUTION"
 msgstr ""
 
 msgid "Add Kubernetes cluster"
 msgstr ""
 
-msgid "Add Readme"
+msgid "Add README"
 msgstr ""
 
 msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
@@ -906,11 +924,6 @@ msgstr ""
 msgid "Branch %{branchName} was not found in this project's repository."
 msgstr ""
 
-msgid "Branch (%{branch_count})"
-msgid_plural "Branches (%{branch_count})"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
 msgstr ""
 
@@ -1061,6 +1074,9 @@ msgstr ""
 msgid "ByAuthor|by"
 msgstr ""
 
+msgid "CHANGELOG"
+msgstr ""
+
 msgid "CI / CD"
 msgstr ""
 
@@ -1115,6 +1131,9 @@ msgstr ""
 msgid "CICD|instance enabled"
 msgstr ""
 
+msgid "CONTRIBUTION"
+msgstr ""
+
 msgid "Callback URL"
 msgstr ""
 
@@ -1152,9 +1171,6 @@ msgid "ChangeTypeAction|Revert"
 msgstr ""
 
 msgid "ChangeTypeAction|This will create a new commit in order to revert the existing changes."
-msgstr ""
-
-msgid "Changelog"
 msgstr ""
 
 msgid "Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision."
@@ -1334,7 +1350,16 @@ msgstr ""
 msgid "Clients"
 msgstr ""
 
+msgid "Clone"
+msgstr ""
+
 msgid "Clone repository"
+msgstr ""
+
+msgid "Clone with %{http_label}"
+msgstr ""
+
+msgid "Clone with SSH"
 msgstr ""
 
 msgid "Close"
@@ -1735,11 +1760,6 @@ msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Commit (%{commit_count})"
-msgid_plural "Commits (%{commit_count})"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Commit Message"
 msgstr ""
 
@@ -1920,9 +1940,6 @@ msgstr ""
 msgid "Contribution"
 msgstr ""
 
-msgid "Contribution guide"
-msgstr ""
-
 msgid "Contributions for <strong>%{calendar_date}</strong>"
 msgstr ""
 
@@ -1947,10 +1964,10 @@ msgstr ""
 msgid "ConvDev Index"
 msgstr ""
 
-msgid "Copy %{protocol} clone URL"
+msgid "Copy %{http_label} clone URL"
 msgstr ""
 
-msgid "Copy HTTPS clone URL"
+msgid "Copy %{protocol} clone URL"
 msgstr ""
 
 msgid "Copy ID to clipboard"
@@ -2799,9 +2816,6 @@ msgid "File templates"
 msgstr ""
 
 msgid "Files"
-msgstr ""
-
-msgid "Files (%{human_size})"
 msgstr ""
 
 msgid "Filter"
@@ -5061,13 +5075,13 @@ msgstr ""
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
+msgid "README"
+msgstr ""
+
 msgid "Read more"
 msgstr ""
 
 msgid "Read more about project permissions <strong>%{link_to_help}</strong>"
-msgstr ""
-
-msgid "Readme"
 msgstr ""
 
 msgid "Real-time features"
@@ -5903,11 +5917,6 @@ msgstr ""
 
 msgid "System metrics (Kubernetes)"
 msgstr ""
-
-msgid "Tag (%{tag_count})"
-msgid_plural "Tags (%{tag_count})"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Tags"
 msgstr ""
