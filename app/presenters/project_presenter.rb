@@ -16,7 +16,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   MAX_TAGS_TO_SHOW = 3
 
   def statistic_icon(icon_name = 'plus-square-o')
-    sprite_icon(icon_name, size: 16, css_class: 'icon')
+    sprite_icon(icon_name, size: 16, css_class: 'icon append-right-4')
   end
 
   def statistics_anchors(show_auto_devops_callout:)
@@ -26,7 +26,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       branches_anchor_data,
       tags_anchor_data,
       files_anchor_data
-    ].compact.select { |item| item.is_link }
+    ].compact.select(&:is_link)
   end
 
   def statistics_buttons(show_auto_devops_callout:)
@@ -37,7 +37,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data,
       gitlab_ci_anchor_data
-    ].compact.reject { |item| item.is_link }
+    ].compact.reject(&:is_link)
   end
 
   def empty_repo_statistics_anchors

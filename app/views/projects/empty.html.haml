@@ -43,17 +43,17 @@
       .prepend-top-20
       .empty_wrapper
         %h3#repo-command-line-instructions.page-title-empty
-          Command line instructions
+          _('Command line instructions')
         .git-empty.js-git-empty
           %fieldset
-            %h5 Git global setup
+            %h5 _('Git global setup')
             %pre.bg-light
               :preserve
                 git config --global user.name "#{h git_user_name}"
                 git config --global user.email "#{h git_user_email}"
 
           %fieldset
-            %h5 Create a new repository
+            %h5 _('Create a new repository')
             %pre.bg-light
               :preserve
                 git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
@@ -66,7 +66,7 @@
                   git push -u origin master
 
           %fieldset
-            %h5 Existing folder
+            %h5 _('Existing folder')
             %pre.bg-light
               :preserve
                 cd existing_folder
@@ -79,7 +79,7 @@
                   git push -u origin master
 
           %fieldset
-            %h5 Existing Git repository
+            %h5 _('Existing Git repository')
             %pre.bg-light
               :preserve
                 cd existing_repo
@@ -92,4 +92,4 @@
 
             - if can? current_user, :remove_project, @project
               .prepend-top-20
-                = link_to 'Remove project', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove float-right"
+                = link_to _('Remove project'), [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove float-right"

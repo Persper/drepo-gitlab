@@ -217,7 +217,7 @@
 
     .project-tag-list {
       font-size: $gl-font-size;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
 
       .icon {
         position: relative;
@@ -270,7 +270,6 @@
 
     .access-request-link,
     .project-tag-list {
-      margin-left: $gl-padding-8;
       padding-left: $gl-padding-8;
       border-left: 1px solid $gl-text-color-secondary;
     }
@@ -871,10 +870,6 @@
 
     .btn-missing {
       @extend .btn-missing;
-    }
-
-    .icon {
-      margin-right: $gl-padding-4;
     }
   }
 }
