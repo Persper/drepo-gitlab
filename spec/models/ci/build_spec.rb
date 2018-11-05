@@ -896,20 +896,6 @@ describe Ci::Build do
       end
     end
 
-    describe '#has_deployment?' do
-      subject { build.has_deployment? }
-
-      context 'when build has a deployment' do
-        let!(:deployment) { create(:deployment, deployable: build) }
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when build does not have a deployment' do
-        it { is_expected.to be_falsy }
-      end
-    end
-
     describe '#outdated_deployment?' do
       subject { build.outdated_deployment? }
 

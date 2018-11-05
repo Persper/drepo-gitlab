@@ -36,6 +36,7 @@ describe BuildSuccessWorker do
 
           expect { subject }.not_to change { Deployment.count }
         end
+      end
 
       context 'when build is not associated with project' do
         let!(:build) { create(:ci_build, project: nil) }
