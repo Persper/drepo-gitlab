@@ -2,7 +2,7 @@
 
 module QA
   context 'Create' do
-    describe 'Git push over HTTP', :ldap_no_tls do
+    describe 'Git push over HTTP', :ldap_no_tls, :ldap_tls do
       it 'user using a personal access token pushes code to the repository'  do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
