@@ -369,6 +369,36 @@ The result will then be:
 - The staging cluster will be used for the "deploy to staging" job.
 - The production cluster will be used for the "deploy to production" job.
 
+### Environment scopes and group level clusters
+
+When a project's group has Kubernetes clusters configured, the above evaluation for environment scope 
+will still take place first but firstly at the project level, followed by the closest ancestor group
+and followed by that groups' parent and so on.
+
+Extending the setup from the previous section, let's say we have the following Kubernetes clusters :
+
+| Cluster    | Environment scope   | Where     |
+| ---------- | ------------------- | ----------|
+| Development| `*`                 | Project 1 |
+| Staging    | `staging/*`         | Project 1 |
+| Production | `production/*`      | Project 1 |
+| Group      | `test`              | Group 1   |
+
+Given the above, the "test" job will still use the project's development cluster,
+as it matches `*` on the project level.
+
+If the Development cluster was deleted :
+
+| Cluster    | Environment scope   | Where     |
+| ---------- | ------------------- | ----------|
+| Staging    | `staging/*`         | Project 1 |
+| Production | `production/*`      | Project 1 |
+| Group      | `test`              | Group 1   |
+
+Then, the "test" job will fail to match any cluster on the project level. Evaluation now moves up to the group,
+where it matches the Group cluster. The Group cluster will be used for the "test" job.
+
+
 ## Multiple Kubernetes clusters
 
 > Introduced in [GitLab Premium][ee] 10.3.
