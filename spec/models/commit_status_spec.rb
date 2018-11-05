@@ -442,9 +442,9 @@ describe CommitStatus do
       end
     end
 
-    context 'when there is no pipeline associated with a commit status' do
+    context 'when commit status is a dangling build' do
       before do
-        commit_status.update(pipeline: nil)
+        commit_status.update(pipeline: nil, workspace: build(:ci_workspace))
       end
 
       it 'returns blank SHA' do
