@@ -762,14 +762,13 @@
   border-bottom: 1px solid $border-color;
 }
 
-.project-stats {
+.project-stats,
+.project-buttons {
   font-size: 0;
   text-align: center;
 
   .scrolling-tabs-container {
     .scrolling-tabs {
-      margin-top: $gl-padding-8;
-      margin-bottom: $gl-padding-8;
       flex-wrap: wrap;
       border-bottom: 0;
     }
@@ -831,18 +830,32 @@
       font-size: $gl-font-size;
       line-height: $gl-btn-line-height;
       color: $gl-text-color-secondary;
-      white-space: nowrap;
+      white-space: pre-wrap;
     }
 
     .stat-link {
       border-bottom: 0;
-      white-space: pre-wrap;
+      color: $black;
 
       &:hover,
       &:focus {
-        color: $gl-text-color;
         text-decoration: underline;
         border-bottom: 0;
+      }
+
+      .project-stat-value {
+        color: $gl-text-color;
+      }
+
+      .icon {
+        color: $gl-text-color-secondary;
+      }
+
+      .add-license-link {
+        &,
+        .icon {
+          color: $blue-600;
+        }
       }
     }
 
@@ -863,6 +876,13 @@
     .icon {
       margin-right: $gl-padding-4;
     }
+  }
+}
+
+.project-buttons {
+  .stat-text {
+    @extend .btn;
+    @extend .btn-default;
   }
 }
 

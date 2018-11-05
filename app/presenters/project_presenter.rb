@@ -153,7 +153,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                    statistic_icon('doc-code') +
                    _('%{strong_start}%{human_size}%{strong_end} Files').html_safe % {
                      human_size: storage_counter(statistics.total_repository_size),
-                     strong_start: '<strong>'.html_safe,
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
                      strong_end: '</strong>'.html_safe
                    },
                    empty_repo? ? nil : project_tree_path(project))
@@ -164,7 +164,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                    statistic_icon('commit') +
                    n_('%{strong_start}%{commit_count}%{strong_end} Commit', '%{strong_start}%{commit_count}%{strong_end} Commits ', statistics.commit_count).html_safe % {
                      commit_count: number_with_delimiter(statistics.commit_count),
-                     strong_start: '<strong>'.html_safe,
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
                      strong_end: '</strong>'.html_safe
                    },
                    empty_repo? ? nil : project_commits_path(project, repository.root_ref))
@@ -175,7 +175,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                    statistic_icon('branch') +
                    n_('%{strong_start}%{branch_count}%{strong_end} Branch ', '%{strong_start}%{branch_count}%{strong_end} Branches', repository.branch_count).html_safe % {
                      branch_count: number_with_delimiter(repository.branch_count),
-                     strong_start: '<strong>'.html_safe,
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
                      strong_end: '</strong>'.html_safe
                    },
                    empty_repo? ? nil : project_branches_path(project))
@@ -186,7 +186,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                    statistic_icon('label') +
                    n_('%{strong_start}%{tag_count}%{strong_end} Tag', '%{strong_start}%{tag_count}%{strong_end} Tags', repository.tag_count).html_safe % {
                      tag_count: number_with_delimiter(repository.tag_count),
-                     strong_start: '<strong>'.html_safe,
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
                      strong_end: '</strong>'.html_safe
                    },
                    empty_repo? ? nil : project_tags_path(project))
@@ -233,16 +233,16 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
     if repository.license_blob.present?
       AnchorData.new(true,
-                     icon + content_tag(:strong, license_short_name),
+                     icon + content_tag(:strong, license_short_name, class: 'project-stat-value'),
                      license_path)
     else
       if current_user && can_current_user_push_to_default_branch?
-        AnchorData.new(false,
-                       icon + content_tag(:strong, _('Add license')),
+        AnchorData.new(true,
+                       content_tag(:span, icon + _('Add license'), class: 'add-license-link d-flex'),
                        add_license_path)
       else
-        AnchorData.new(false,
-                       icon + content_tag(:strong, _('No license. All rights reserved')),
+        AnchorData.new(true,
+                       icon + content_tag(:strong, _('No license. All rights reserved'), class: 'project-stat-value'),
                        nil)
       end
     end

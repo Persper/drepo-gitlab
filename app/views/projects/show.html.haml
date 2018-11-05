@@ -17,8 +17,7 @@
   = render "home_panel"
 
   - if can?(current_user, :download_code, @project) && @project.repository_languages.present?
-    %nav.project-stats
-      = repository_languages_bar(@project.repository_languages)
+    = repository_languages_bar(@project.repository_languages)
 
   - if @project.archived?
     .text-warning.center.prepend-top-20

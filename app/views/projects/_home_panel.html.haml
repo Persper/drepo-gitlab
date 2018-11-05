@@ -44,13 +44,10 @@
 
   - if can?(current_user, :download_code, @project)
     %nav.project-stats
-      .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
-        .fade-left= icon('angle-left')
-        .fade-right= icon('angle-right')
-        .nav-links.scrolling-tabs.quick-links
-          = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
+      .nav-links.quick-links.mt-3
+        = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
 
-  .project-home-desc
+  .project-home-desc.mt-1
     - if @project.description.present?
       .project-description
         .project-description-markdown.read-more-container
@@ -69,7 +66,7 @@
           = deleted_message % { project_name: fork_source_name(@project) }
 
   - if @project.badges.present?
-    .project-badges.prepend-top-default.append-bottom-default
+    .project-badges.mb-2
       - @project.badges.each do |badge|
         %a.append-right-8{ href: badge.rendered_link_url(@project),
           target: '_blank',
