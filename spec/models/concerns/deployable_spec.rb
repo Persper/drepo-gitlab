@@ -22,6 +22,18 @@ describe Deployable do
         expect(deployment.on_stop).to eq('stop_review_app')
         expect(environment.name).to eq('review/master')
       end
+
+      it 'has a relevant value on action column' do
+        expect(deployment).to be_start
+      end
+    end
+
+    context 'when the deployable object will stop the production' do
+      let!(:job) { create(:ci_build, :stop_review_app) }
+
+      it 'has a relevant value on action column' do
+        expect(deployment).to be_stop
+      end
     end
 
     context 'when the deployable object has already had a deployment' do
