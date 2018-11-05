@@ -159,15 +159,14 @@ describe UpdateDeploymentService do
 
     context "while updating the 'first_deployed_to_production_at' time" do
       before do
-        merge_request.metrics.update!(merged_at: 10.minutes.ago)
+        merge_request.metrics.update!(merged_at: 1.hour.ago)
       end
 
       context "for merge requests merged before the current deploy" do
         it "sets the time if the deploy's environment is 'production'" do
-          time = Time.now
-          Timecop.freeze(time) { service.execute }
+          service.execute
 
-          expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(time)
+          expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(deployment.finished_at)
         end
 
         context 'when job deploys to staging' do

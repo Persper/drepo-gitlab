@@ -5,12 +5,12 @@ describe Deployable do
     let(:deployment) { job.deployment }
     let(:environment) { deployment&.environment }
 
+    before do
+      job.reload
+    end
+
     context 'when the deployable object will deploy to production' do
       let!(:job) { create(:ci_build, :start_review_app) }
-
-      before do
-        job.reload
-      end
 
       it 'creates a deployment and environment record' do
         expect(deployment.project).to eq(job.project)
@@ -21,6 +21,15 @@ describe Deployable do
         expect(deployment.deployable).to eq(job)
         expect(deployment.on_stop).to eq('stop_review_app')
         expect(environment.name).to eq('review/master')
+      end
+    end
+
+    context 'when the deployable object has already had a deployment' do
+      let!(:job) { create(:ci_build, :start_review_app, deployment: race_deployment) }
+      let!(:race_deployment) { create(:deployment, :success) }
+
+      it 'does not create a new deployment' do
+        expect(deployment).to eq(race_deployment)
       end
     end
 

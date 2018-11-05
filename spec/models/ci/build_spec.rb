@@ -18,6 +18,7 @@ describe Ci::Build do
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
   it { is_expected.to have_many(:trace_sections)}
+  it { is_expected.to have_one(:deployment) }
   it { is_expected.to have_one(:runner_session)}
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
@@ -215,14 +216,6 @@ describe Ci::Build do
       let(:build) { create(:ci_build, :created, :schedulable, project: project) }
 
       it { expect(subject).to be_truthy }
-
-      context 'when feature flag is diabled' do
-        before do
-          stub_feature_flags(ci_enable_scheduled_build: false)
-        end
-
-        it { expect(subject).to be_falsy }
-      end
     end
 
     context 'when build is not schedulable' do
@@ -325,10 +318,6 @@ describe Ci::Build do
 
   describe '#enqueue_scheduled' do
     subject { build.enqueue_scheduled }
-
-    before do
-      stub_feature_flags(ci_enable_scheduled_build: true)
-    end
 
     context 'when build is scheduled and the right time has not come yet' do
       let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
@@ -810,34 +799,6 @@ describe Ci::Build do
     end
   end
 
-  describe '.deployment' do
-    subject { build.deployment }
-
-    context 'when there is a deployment record with created status' do
-      let!(:deployment) { create(:deployment, deployable: build, project: project) }
-
-      it 'returns the record' do
-        is_expected.to eq(deployment)
-      end
-    end
-
-    context 'when there is a deployment record with running status' do
-      let!(:deployment) { create(:deployment, :running, deployable: build, project: project) }
-
-      it 'returns the record' do
-        is_expected.to eq(deployment)
-      end
-    end
-
-    context 'when there is a deployment record with success status' do
-      let!(:deployment) { create(:deployment, :success, deployable: build, project: project) }
-
-      it 'returns the record' do
-        is_expected.to eq(deployment)
-      end
-    end
-  end
-
   describe 'state transition as a deployable' do
     let!(:build) { create(:ci_build, :start_review_app) }
     let(:deployment) { build.deployment }
@@ -910,6 +871,7 @@ describe Ci::Build do
         is_expected.to eq('stop_review_app')
       end
     end
+<<<<<<< HEAD
   end
 
   describe 'deployment' do
@@ -922,6 +884,30 @@ describe Ci::Build do
         it 'returns the deployment' do
           is_expected.to eq(deployment)
         end
+=======
+
+    context 'when a job does not have environment information' do
+      let(:build) { create(:ci_build) }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe 'deployment' do
+    describe '#has_deployment?' do
+      subject { build.has_deployment? }
+
+      context 'when build has a deployment' do
+        let!(:deployment) { create(:deployment, deployable: build) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when build does not have a deployment' do
+        it { is_expected.to be_falsy }
+>>>>>>> stateful_deployments
       end
     end
 
