@@ -22,12 +22,16 @@ module QA
         visit(web_url)
       end
 
+      def populate(*attributes)
+        attributes.each(&method(:public_send))
+      end
+
       private
 
       def populate_attribute(name, block)
         value = attribute_value(name, block)
 
-        raise NoValueError, "No value was computed for product #{name} of factory #{self.class.name}." unless value
+        raise NoValueError, "No value was computed for #{name} of #{self.class.name}." unless value
 
         value
       end
@@ -84,7 +88,7 @@ module QA
         resource_web_url = yield
         factory.web_url = resource_web_url
 
-        Factory::Product.new(factory)
+        factory
       end
       private_class_method :do_fabricate!
 
@@ -96,7 +100,7 @@ module QA
         msg = [prefix]
         msg << "Built a #{name}"
         msg << "as a dependency of #{parents.last}" if parents.any?
-        msg << "via #{method} with args #{args}"
+        msg << "via #{method}"
 
         yield.tap do
           msg << "in #{Time.now - start} seconds"

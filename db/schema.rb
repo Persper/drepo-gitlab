@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181030130113) do
+ActiveRecord::Schema.define(version: 20181101144347) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -928,35 +928,6 @@ ActiveRecord::Schema.define(version: 20181030130113) do
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
-  create_table "gcp_clusters", force: :cascade do |t|
-    t.integer "project_id", null: false
-    t.integer "user_id"
-    t.integer "service_id"
-    t.integer "status"
-    t.integer "gcp_cluster_size", null: false
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
-    t.boolean "enabled", default: true
-    t.text "status_reason"
-    t.string "project_namespace"
-    t.string "endpoint"
-    t.text "ca_cert"
-    t.text "encrypted_kubernetes_token"
-    t.string "encrypted_kubernetes_token_iv"
-    t.string "username"
-    t.text "encrypted_password"
-    t.string "encrypted_password_iv"
-    t.string "gcp_project_id", null: false
-    t.string "gcp_cluster_zone", null: false
-    t.string "gcp_cluster_name", null: false
-    t.string "gcp_machine_type"
-    t.string "gcp_operation_id"
-    t.text "encrypted_gcp_token"
-    t.string "encrypted_gcp_token_iv"
-  end
-
-  add_index "gcp_clusters", ["project_id"], name: "index_gcp_clusters_on_project_id", unique: true, using: :btree
-
   create_table "gpg_key_subkeys", force: :cascade do |t|
     t.integer "gpg_key_id", null: false
     t.binary "keyid"
@@ -1177,6 +1148,7 @@ ActiveRecord::Schema.define(version: 20181030130113) do
     t.integer "file_store"
   end
 
+  add_index "lfs_objects", ["file_store"], name: "index_lfs_objects_on_file_store", using: :btree
   add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
 
   create_table "lfs_objects_projects", force: :cascade do |t|
@@ -1332,6 +1304,7 @@ ActiveRecord::Schema.define(version: 20181030130113) do
   add_index "merge_requests", ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
   add_index "merge_requests", ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "merge_requests", ["head_pipeline_id"], name: "index_merge_requests_on_head_pipeline_id", using: :btree
+  add_index "merge_requests", ["id", "merge_jid"], name: "index_merge_requests_on_id_and_merge_jid", where: "((merge_jid IS NOT NULL) AND ((state)::text = 'locked'::text))", using: :btree
   add_index "merge_requests", ["latest_merge_request_diff_id"], name: "index_merge_requests_on_latest_merge_request_diff_id", using: :btree
   add_index "merge_requests", ["merge_user_id"], name: "index_merge_requests_on_merge_user_id", where: "(merge_user_id IS NOT NULL)", using: :btree
   add_index "merge_requests", ["milestone_id"], name: "index_merge_requests_on_milestone_id", using: :btree
@@ -1558,7 +1531,7 @@ ActiveRecord::Schema.define(version: 20181030130113) do
 
   create_table "personal_access_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "token", null: false
+    t.string "token"
     t.string "name", null: false
     t.boolean "revoked", default: false
     t.date "expires_at"
@@ -1566,9 +1539,11 @@ ActiveRecord::Schema.define(version: 20181030130113) do
     t.datetime "updated_at", null: false
     t.string "scopes", default: "--- []\n", null: false
     t.boolean "impersonation", default: false, null: false
+    t.string "token_digest"
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
+  add_index "personal_access_tokens", ["token_digest"], name: "index_personal_access_tokens_on_token_digest", unique: true, using: :btree
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
   create_table "programming_languages", force: :cascade do |t|
@@ -1738,6 +1713,7 @@ ActiveRecord::Schema.define(version: 20181030130113) do
     t.integer "jobs_cache_index"
     t.boolean "pages_https_only", default: true
     t.boolean "remote_mirror_available_overridden"
+    t.integer "pool_repository_id", limit: 8
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1754,6 +1730,7 @@ ActiveRecord::Schema.define(version: 20181030130113) do
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
+  add_index "projects", ["pool_repository_id"], name: "index_projects_on_pool_repository_id", where: "(pool_repository_id IS NOT NULL)", using: :btree
   add_index "projects", ["repository_storage", "created_at"], name: "idx_project_repository_check_partial", where: "(last_repository_check_at IS NULL)", using: :btree
   add_index "projects", ["repository_storage"], name: "index_projects_on_repository_storage", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
@@ -1886,6 +1863,14 @@ ActiveRecord::Schema.define(version: 20181030130113) do
   add_index "remote_mirrors", ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
   add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
 
+  create_table "repositories", id: :bigserial, force: :cascade do |t|
+    t.integer "shard_id", null: false
+    t.string "disk_path", null: false
+  end
+
+  add_index "repositories", ["disk_path"], name: "index_repositories_on_disk_path", unique: true, using: :btree
+  add_index "repositories", ["shard_id"], name: "index_repositories_on_shard_id", using: :btree
+
   create_table "repository_languages", id: false, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "programming_language_id", null: false
@@ -1965,6 +1950,12 @@ ActiveRecord::Schema.define(version: 20181030130113) do
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
   add_index "services", ["template"], name: "index_services_on_template", using: :btree
+
+  create_table "shards", force: :cascade do |t|
+    t.string "name", null: false
+  end
+
+  add_index "shards", ["name"], name: "index_shards_on_name", unique: true, using: :btree
 
   create_table "site_statistics", force: :cascade do |t|
     t.integer "repositories_count", default: 0, null: false
@@ -2420,9 +2411,6 @@ ActiveRecord::Schema.define(version: 20181030130113) do
   add_foreign_key "fork_network_members", "projects", on_delete: :cascade
   add_foreign_key "fork_networks", "projects", column: "root_project_id", name: "fk_e7b436b2b5", on_delete: :nullify
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
-  add_foreign_key "gcp_clusters", "projects", on_delete: :cascade
-  add_foreign_key "gcp_clusters", "services", on_delete: :nullify
-  add_foreign_key "gcp_clusters", "users", on_delete: :nullify
   add_foreign_key "gpg_key_subkeys", "gpg_keys", on_delete: :cascade
   add_foreign_key "gpg_keys", "users", on_delete: :cascade
   add_foreign_key "gpg_signatures", "gpg_key_subkeys", on_delete: :nullify
@@ -2489,6 +2477,7 @@ ActiveRecord::Schema.define(version: 20181030130113) do
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
   add_foreign_key "project_mirror_data", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
+  add_foreign_key "projects", "repositories", column: "pool_repository_id", name: "fk_6e5c14658a", on_delete: :nullify
   add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade
@@ -2500,6 +2489,7 @@ ActiveRecord::Schema.define(version: 20181030130113) do
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "remote_mirrors", "projects", on_delete: :cascade
+  add_foreign_key "repositories", "shards", on_delete: :restrict
   add_foreign_key "repository_languages", "projects", on_delete: :cascade
   add_foreign_key "resource_label_events", "issues", on_delete: :cascade
   add_foreign_key "resource_label_events", "labels", on_delete: :nullify

@@ -216,14 +216,6 @@ describe Ci::Build do
       let(:build) { create(:ci_build, :created, :schedulable, project: project) }
 
       it { expect(subject).to be_truthy }
-
-      context 'when feature flag is diabled' do
-        before do
-          stub_feature_flags(ci_enable_scheduled_build: false)
-        end
-
-        it { expect(subject).to be_falsy }
-      end
     end
 
     context 'when build is not schedulable' do
@@ -326,10 +318,6 @@ describe Ci::Build do
 
   describe '#enqueue_scheduled' do
     subject { build.enqueue_scheduled }
-
-    before do
-      stub_feature_flags(ci_enable_scheduled_build: true)
-    end
 
     context 'when build is scheduled and the right time has not come yet' do
       let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
@@ -1547,11 +1535,11 @@ describe Ci::Build do
     end
   end
 
-  describe '#other_actions' do
+  describe '#other_manual_actions' do
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
     let!(:other_build) { create(:ci_build, :manual, pipeline: pipeline, name: 'other action') }
 
-    subject { build.other_actions }
+    subject { build.other_manual_actions }
 
     before do
       project.add_developer(user)
@@ -1578,6 +1566,48 @@ describe Ci::Build do
 
       it 'returns a retried build' do
         is_expected.to contain_exactly(retried_build)
+      end
+    end
+  end
+
+  describe '#other_scheduled_actions' do
+    let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+    subject { build.other_scheduled_actions }
+
+    before do
+      project.add_developer(user)
+    end
+
+    context "when other build's status is success" do
+      let!(:other_build) { create(:ci_build, :schedulable, :success, pipeline: pipeline, name: 'other action') }
+
+      it 'returns other actions' do
+        is_expected.to contain_exactly(other_build)
+      end
+    end
+
+    context "when other build's status is failed" do
+      let!(:other_build) { create(:ci_build, :schedulable, :failed, pipeline: pipeline, name: 'other action') }
+
+      it 'returns other actions' do
+        is_expected.to contain_exactly(other_build)
+      end
+    end
+
+    context "when other build's status is running" do
+      let!(:other_build) { create(:ci_build, :schedulable, :running, pipeline: pipeline, name: 'other action') }
+
+      it 'does not return other actions' do
+        is_expected.to be_empty
+      end
+    end
+
+    context "when other build's status is scheduled" do
+      let!(:other_build) { create(:ci_build, :scheduled, pipeline: pipeline, name: 'other action') }
+
+      it 'does not return other actions' do
+        is_expected.to contain_exactly(other_build)
       end
     end
   end
@@ -2051,17 +2081,17 @@ describe Ci::Build do
       it { is_expected.to include(tag_variable) }
     end
 
-    context 'when secret variable is defined' do
-      let(:secret_variable) do
+    context 'when CI variable is defined' do
+      let(:ci_variable) do
         { key: 'SECRET_KEY', value: 'secret_value', public: false }
       end
 
       before do
         create(:ci_variable,
-               secret_variable.slice(:key, :value).merge(project: project))
+               ci_variable.slice(:key, :value).merge(project: project))
       end
 
-      it { is_expected.to include(secret_variable) }
+      it { is_expected.to include(ci_variable) }
     end
 
     context 'when protected variable is defined' do
@@ -2096,17 +2126,17 @@ describe Ci::Build do
       end
     end
 
-    context 'when group secret variable is defined' do
-      let(:secret_variable) do
+    context 'when group CI variable is defined' do
+      let(:ci_variable) do
         { key: 'SECRET_KEY', value: 'secret_value', public: false }
       end
 
       before do
         create(:ci_group_variable,
-               secret_variable.slice(:key, :value).merge(group: group))
+               ci_variable.slice(:key, :value).merge(group: group))
       end
 
-      it { is_expected.to include(secret_variable) }
+      it { is_expected.to include(ci_variable) }
     end
 
     context 'when group protected variable is defined' do
@@ -2381,7 +2411,7 @@ describe Ci::Build do
             .to receive(:predefined_variables) { [project_pre_var] }
 
           allow_any_instance_of(Project)
-            .to receive(:secret_variables_for)
+            .to receive(:ci_variables_for)
             .with(ref: 'master', environment: nil) do
             [create(:ci_variable, key: 'secret', value: 'value')]
           end
@@ -2532,7 +2562,7 @@ describe Ci::Build do
   end
 
   describe '#scoped_variables_hash' do
-    context 'when overriding secret variables' do
+    context 'when overriding CI variables' do
       before do
         project.variables.create!(key: 'MY_VAR', value: 'my value 1')
         pipeline.variables.create!(key: 'MY_VAR', value: 'my value 2')

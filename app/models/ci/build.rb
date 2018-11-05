@@ -245,10 +245,14 @@ module Ci
         .fabricate!
     end
 
-    def other_actions
+    def other_manual_actions
       return [] if pipeline.nil?
 
       pipeline.manual_actions.where.not(name: name)
+    end
+
+    def other_scheduled_actions
+      pipeline.scheduled_actions.where.not(name: name)
     end
 
     def pages_generator?
@@ -261,8 +265,7 @@ module Ci
     end
 
     def schedulable?
-      Feature.enabled?('ci_enable_scheduled_build', default_enabled: true) &&
-        self.when == 'delayed' && options[:start_in].present?
+      self.when == 'delayed' && options[:start_in].present?
     end
 
     def options_scheduled_at
@@ -602,11 +605,11 @@ module Ci
     def secret_group_variables
       return [] unless project.group
 
-      project.group.secret_variables_for(ref, project)
+      project.group.ci_variables_for(ref, project)
     end
 
     def secret_project_variables(environment: persisted_environment)
-      project.secret_variables_for(ref: ref, environment: environment)
+      project.ci_variables_for(ref: ref, environment: environment)
     end
 
     def steps

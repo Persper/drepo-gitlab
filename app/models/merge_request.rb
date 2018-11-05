@@ -204,6 +204,12 @@ class MergeRequest < ActiveRecord::Base
     head_pipeline&.sha == diff_head_sha ? head_pipeline : nil
   end
 
+  def merge_pipeline
+    return unless merged?
+
+    target_project.pipeline_for(target_branch, merge_commit_sha)
+  end
+
   # Pattern used to extract `!123` merge request references from text
   #
   # This pattern supports cross-project references.
@@ -344,6 +350,15 @@ class MergeRequest < ActiveRecord::Base
       compare_commits.to_a.reverse.map(&:sha)
     else
       Array(diff_head_sha)
+    end
+  end
+
+  # Returns true if there are commits that match at least one commit SHA.
+  def includes_any_commits?(shas)
+    if persisted?
+      merge_request_diff.commits_by_shas(shas).exists?
+    else
+      (commit_shas & shas).present?
     end
   end
 

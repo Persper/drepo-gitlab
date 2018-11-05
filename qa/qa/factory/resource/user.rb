@@ -5,6 +5,7 @@ module QA
     module Resource
       class User < Factory::Base
         attr_reader :unique_id
+        attr_writer :username, :password
 
         def initialize
           @unique_id = SecureRandom.hex(8)
@@ -30,11 +31,6 @@ module QA
           defined?(@username) && defined?(@password)
         end
 
-        attribute :name
-        attribute :username
-        attribute :email
-        attribute :password
-
         def fabricate!
           # Don't try to log-out if we're not logged-in
           if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
@@ -53,6 +49,42 @@ module QA
               signup.sign_up!(self)
             end
           end
+        end
+
+        def fabricate_via_api!
+          resource_web_url(api_get)
+        rescue ResourceNotFoundError
+          super
+        end
+
+        def api_get_path
+          "/users/#{fetch_id(username)}"
+        end
+
+        def api_post_path
+          '/users'
+        end
+
+        def api_post_body
+          {
+            email: email,
+            password: password,
+            username: username,
+            name: name,
+            skip_confirmation: true
+          }
+        end
+
+        private
+
+        def fetch_id(username)
+          users = parse_body(api_get_from("/users?username=#{username}"))
+
+          unless users.size == 1 && users.first[:username] == username
+            raise ResourceNotFoundError, "Expected one user with username #{username} but found: `#{users}`."
+          end
+
+          users.first[:id]
         end
       end
     end
