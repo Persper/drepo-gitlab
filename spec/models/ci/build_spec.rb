@@ -871,20 +871,6 @@ describe Ci::Build do
         is_expected.to eq('stop_review_app')
       end
     end
-<<<<<<< HEAD
-  end
-
-  describe 'deployment' do
-    describe '#deployment' do
-      subject { build.deployment }
-
-      context 'when a deployment is created' do
-        let!(:deployment) { create(:deployment, deployable: build) }
-
-        it 'returns the deployment' do
-          is_expected.to eq(deployment)
-        end
-=======
 
     context 'when a job does not have environment information' do
       let(:build) { create(:ci_build) }
@@ -907,7 +893,6 @@ describe Ci::Build do
 
       context 'when build does not have a deployment' do
         it { is_expected.to be_falsy }
->>>>>>> stateful_deployments
       end
     end
 
