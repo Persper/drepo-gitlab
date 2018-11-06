@@ -63,6 +63,10 @@ module Ci
       where(file_type: types)
     end
 
+    scope :all_reports, -> do
+      with_file_types(self.report_file_types.keys)
+    end
+
     scope :test_reports, -> do
       with_file_types(TEST_REPORT_FILE_TYPES)
     end
@@ -113,6 +117,10 @@ module Ci
       gzip: Gitlab::Ci::Build::Artifacts::Adapters::GzipStream,
       raw: Gitlab::Ci::Build::Artifacts::Adapters::RawStream
     }.freeze
+
+    def self.report_file_types
+      file_types.except(:archive, :metadata, :trace)
+    end
 
     def valid_file_format?
       unless TYPE_AND_FORMAT_PAIRS[self.file_type&.to_sym] == self.file_format&.to_sym

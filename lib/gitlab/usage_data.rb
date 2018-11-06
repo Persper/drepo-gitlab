@@ -83,7 +83,7 @@ module Gitlab
             todos: count(Todo),
             uploads: count(Upload),
             web_hooks: count(WebHook)
-          }.merge(services_usage)
+          }.merge(services_usage).merge(reports_usage)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -124,6 +124,13 @@ module Gitlab
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
+      def reports_usage
+        results = count(::Ci::JobArtifact.all_reports.group(:file_type), fallback: Hash.new(-1))
+        ::Ci::JobArtifact.report_file_types.each_with_object({}) do |(type, id), response|
+          response[:"#{type}_reports"] = results[id] || 0
+        end
+      end
+
       def services_usage
         types = {
           JiraService: :projects_jira_active,
@@ -136,7 +143,11 @@ module Gitlab
         types.each_with_object({}) { |(klass, key), response| response[key] = results[klass.to_s] || 0 }
       end
 
-      def count(relation, fallback: -1)
+      def count(relation, fallback: -1, count_params: nil)
+        if count_params
+          return relation.count(count_params)
+        end
+
         relation.count
       rescue ActiveRecord::StatementInvalid
         fallback

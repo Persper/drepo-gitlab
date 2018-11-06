@@ -15,6 +15,24 @@ describe Ci::JobArtifact do
   it { is_expected.to delegate_method(:open).to(:file) }
   it { is_expected.to delegate_method(:exists?).to(:file) }
 
+  describe '.all_reports' do
+    subject { described_class.all_reports }
+
+    context 'when there are different reports' do
+      let!(:artifact1) { create(:ci_job_artifact, :junit) }
+      let!(:artifact2) { create(:ci_job_artifact, :sast) }
+      let!(:artifact3) { create(:ci_job_artifact, :dast) }
+
+      it { is_expected.to contain_exactly(artifact1, artifact2, artifact3) }
+    end
+
+    context 'when there are no reports' do
+      let!(:artifact) { create(:ci_job_artifact, :archive) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe '.test_reports' do
     subject { described_class.test_reports }
 
@@ -162,6 +180,29 @@ describe Ci::JobArtifact do
       it "expects #{file_type} to be included" do
         expect(described_class.file_formats).to include(subject[file_type.to_sym])
       end
+    end
+  end
+
+  describe '.report_file_types' do
+    EXPECTED_REPORT_TYPES =
+      %w[
+        junit
+        codequality
+        sast
+        dependency_scanning
+        container_scanning
+        dast
+        license_management
+        performance
+      ].freeze
+
+    subject { described_class.report_file_types }
+
+    it 'returns file types that correspond to reports' do
+      # If this test fails chances are you've added a new
+      # artifact file_type and must decide whether or not
+      # it's a report.
+      expect(subject.keys).to match_array(EXPECTED_REPORT_TYPES)
     end
   end
 

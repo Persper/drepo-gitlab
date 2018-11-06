@@ -106,6 +106,14 @@ describe Gitlab::UsageData do
         todos
         uploads
         web_hooks
+        junit_reports
+        codequality_reports
+        sast_reports
+        dependency_scanning_reports
+        container_scanning_reports
+        dast_reports
+        license_management_reports
+        performance_reports
       ))
     end
 
@@ -133,6 +141,38 @@ describe Gitlab::UsageData do
         .to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
 
       expect { subject }.not_to raise_error
+    end
+
+    context 'with reports' do
+      before do
+        create(:ci_empty_pipeline, project: projects[0]) do |pipeline|
+          create(:ci_build, pipeline: pipeline) do |build|
+            create(:ci_job_artifact, :junit, job: build)
+            create(:ci_job_artifact, :codequality, job: build)
+            create(:ci_job_artifact, :sast, job: build)
+            create(:ci_job_artifact, :dependency_scanning, job: build)
+            create(:ci_job_artifact, :container_scanning, job: build)
+            create(:ci_job_artifact, :dast, job: build)
+            create(:ci_job_artifact, :license_management, job: build)
+          end
+
+          create(:ci_build, pipeline: pipeline) do |build|
+            create(:ci_job_artifact, :junit, job: build)
+          end
+        end
+      end
+
+      it 'gathers reports usage data correctly' do
+        count_data = subject[:counts]
+        expect(count_data[:junit_reports]).to eq(2)
+        expect(count_data[:codequality_reports]).to eq(1)
+        expect(count_data[:sast_reports]).to eq(1)
+        expect(count_data[:dependency_scanning_reports]).to eq(1)
+        expect(count_data[:container_scanning_reports]).to eq(1)
+        expect(count_data[:dast_reports]).to eq(1)
+        expect(count_data[:license_management_reports]).to eq(1)
+        expect(count_data[:performance_reports]).to eq(0)
+      end
     end
   end
 

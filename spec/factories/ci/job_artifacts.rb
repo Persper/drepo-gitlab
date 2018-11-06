@@ -132,5 +132,35 @@ FactoryBot.define do
         artifact.file_sha256 = Digest::SHA256.file(artifact.file.path).hexdigest
       end
     end
+
+    trait :sast do
+      file_type :sast
+      file_format :raw
+    end
+
+    trait :dependency_scanning do
+      file_type :dependency_scanning
+      file_format :raw
+    end
+
+    trait :container_scanning do
+      file_type :container_scanning
+      file_format :raw
+    end
+
+    trait :dast do
+      file_type :dast
+      file_format :raw
+    end
+
+    trait :license_management do
+      file_type :license_management
+      file_format :raw
+    end
+
+    trait :performance do
+      file_type :performance
+      file_format :raw
+    end
   end
 end
