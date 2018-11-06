@@ -8,10 +8,10 @@ class AddIndexToNamespaceTrialEndsOn < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :namespaces, :trial_ends_on
+    add_concurrent_index :namespaces, :trial_ends_on, where: "trial_ends_on IS NOT NULL"
   end
 
   def down
-    remove_index(:namespaces, :trial_ends_on) if index_exists?(:namespaces, :trial_ends_on)
+    remove_concurrent_index(:namespaces, :trial_ends_on) if index_exists?(:namespaces, :trial_ends_on)
   end
 end
