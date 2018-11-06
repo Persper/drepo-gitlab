@@ -111,45 +111,66 @@ describe ProjectWiki do
   end
 
   describe "#pages" do
+    let(:content) { "This is an awesome new Gollum Wiki" }
+
     before do
-      create_page("index", "This is an awesome new Gollum Wiki")
+      create_page("index", content)
+      create_page("index2", content)
       @pages = subject.pages
     end
 
     after do
       destroy_page(@pages.first.page)
+      destroy_page(@pages.second.page)
     end
 
     it "returns an array of WikiPage instances" do
       expect(@pages.first).to be_a WikiPage
     end
 
-    it "returns the correct number of pages" do
-      expect(@pages.count).to eq(1)
-    end
-
-    it 'returns pages with content by default' do
+    it 'loads WikiPage content' do
       @pages.each do |page|
-        expect(page.content).not_to be_empty
+        expect(page.content).to eq content
       end
     end
 
-    context 'when load_content param' do
-      context 'is false' do
-        it 'returns pages without content' do
-          subject.pages(load_content: false).each do |page|
-            expect(page.content).to be_empty
-          end
-        end
-      end
+    it 'returns all pages by default' do
+      expect(@pages.count).to eq(2)
+    end
 
-      context 'is true' do
-        it 'returns pages with content' do
-          subject.pages(load_content: true).each do |page|
-            expect(page.content).not_to be_empty
-          end
-        end
+    it 'returns limited set of pages' do
+      expect(subject.pages(limit: 1).count).to eq(1)
+    end
+  end
+
+  describe "#list_pages" do
+    before do
+      create_page("index", "This is an awesome new Gollum Wiki")
+      create_page("index2", "This is an awesome new Gollum Wiki")
+      @pages = subject.list_pages
+    end
+
+    after do
+      destroy_page(@pages.first.page)
+      destroy_page(@pages.second.page)
+    end
+
+    it "returns an array of WikiPage instances" do
+      expect(@pages.first).to be_a WikiPage
+    end
+
+    it 'does not load WikiPage content' do
+      @pages.each do |page|
+        expect(page.content).to be_empty
       end
+    end
+
+    it 'returns all pages by default' do
+      expect(@pages.count).to eq(2)
+    end
+
+    it 'returns limited set of pages' do
+      expect(subject.list_pages(limit: 1).count).to eq(1)
     end
   end
 

@@ -77,13 +77,20 @@ class ProjectWiki
   end
 
   def empty?
-    pages(limit: 1, load_content: false).empty?
+    list_pages(limit: 1).empty?
   end
 
   # Returns an Array of GitLab WikiPage instances or an
   # empty Array if this Wiki has no pages.
-  def pages(limit: 0, load_content: true)
-    wiki.pages(limit: limit, load_content: load_content).map { |page| WikiPage.new(self, page, true) }
+  def pages(limit: 0)
+    wiki.pages(limit: limit).map { |page| WikiPage.new(self, page, true) }
+  end
+
+  # Returns an Array of GitLab WikiPage instances or an
+  # empty Array if this Wiki has no pages.
+  # This method will not load the content inside the WikiPage
+  def list_pages(limit: 0)
+    wiki.list_pages(limit: limit).map { |page| WikiPage.new(self, page, true) }
   end
 
   # Finds a page within the repository based on a tile

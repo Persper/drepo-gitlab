@@ -23,7 +23,7 @@ describe Projects::WikisController do
     it 'does not load the pages content' do
       expect(controller).to receive(:load_wiki).and_return(project_wiki)
 
-      expect(project_wiki).to receive(:pages).with(hash_including(load_content: false)).twice.and_call_original
+      expect(project_wiki).to receive(:list_pages).twice.and_call_original
 
       subject
     end
@@ -38,9 +38,9 @@ describe Projects::WikisController do
       expect(controller).to receive(:load_wiki).and_return(project_wiki)
 
       # empty? call
-      expect(project_wiki).to receive(:pages).with(hash_including(limit: 1)).and_call_original
+      expect(project_wiki).to receive(:list_pages).with(limit: 1).and_call_original
       # Sidebar entries
-      expect(project_wiki).to receive(:pages).with(hash_including(limit: 15)).and_call_original
+      expect(project_wiki).to receive(:list_pages).with(limit: 15).and_call_original
 
       subject
 

@@ -16,7 +16,7 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def pages
-    @wiki_pages = Kaminari.paginate_array(@project_wiki.pages(load_content: false)).page(params[:page])
+    @wiki_pages = Kaminari.paginate_array(@project_wiki.list_pages).page(params[:page])
     @wiki_entries = WikiPage.group_by_directory(@wiki_pages)
   end
 
@@ -115,7 +115,7 @@ class Projects::WikisController < Projects::ApplicationController
     @sidebar_page = @project_wiki.find_sidebar(params[:version_id])
 
     unless @sidebar_page # Fallback to default sidebar
-      @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.pages(limit: 15, load_content: false))
+      @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.list_pages(limit: 15))
     end
   rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
