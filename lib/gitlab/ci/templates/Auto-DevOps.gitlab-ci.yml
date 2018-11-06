@@ -107,7 +107,8 @@ code_quality:
     - setup_docker
     - code_quality
   artifacts:
-    paths: [gl-code-quality-report.json]
+    reports:
+      codequality: gl-code-quality-report.json
   only:
     - branches
   except:
@@ -121,7 +122,8 @@ license_management:
   script:
     - license_management
   artifacts:
-    paths: [gl-license-management-report.json]
+    reports:
+      license_management: gl-license-management-report.json
   only:
     refs:
       - branches
@@ -142,8 +144,9 @@ performance:
     - performance
   artifacts:
     paths:
-    - performance.json
     - sitespeed-results/
+    reports:
+      performance: performance.json
   only:
     refs:
       - branches
@@ -162,7 +165,8 @@ sast:
     - setup_docker
     - sast
   artifacts:
-    paths: [gl-sast-report.json]
+    reports:
+      sast: gl-sast-report.json
   only:
     refs:
       - branches
@@ -182,7 +186,8 @@ dependency_scanning:
     - setup_docker
     - dependency_scanning
   artifacts:
-    paths: [gl-dependency-scanning-report.json]
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
   only:
     refs:
       - branches
@@ -202,7 +207,8 @@ container_scanning:
     - setup_docker
     - container_scanning
   artifacts:
-    paths: [gl-container-scanning-report.json]
+    reports:
+      container_scanning: gl-container-scanning-report.json
   only:
     refs:
       - branches
@@ -221,7 +227,8 @@ dast:
   script:
     - dast
   artifacts:
-    paths: [gl-dast-report.json]
+    reports:
+      dast: gl-dast-report.json
   only:
     refs:
       - branches
