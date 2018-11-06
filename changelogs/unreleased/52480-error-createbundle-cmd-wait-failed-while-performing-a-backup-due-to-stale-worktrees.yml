@@ -1,0 +1,5 @@
+---
+title: Clean stale worktrees before backup
+merge_request: 22701
+author:
+type: fixed

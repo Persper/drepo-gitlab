@@ -85,6 +85,7 @@ module Backup
         restore_repo_success = nil
         if File.exist?(path_to_project_bundle)
           begin
+            project.repository.clean_stale_repository_files
             project.repository.create_from_bundle(path_to_project_bundle)
             restore_custom_hooks(project)
             restore_repo_success = true
