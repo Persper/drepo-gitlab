@@ -1,6 +1,6 @@
 GIT
   remote: https://gitlab.com/gitlab-org/gitaly-proto
-  revision: 3cd0d45aeeec8712d2f4295d337bdb1c1f4958d0
+  revision: db54006ff1c999fd485af44581dabe9b6c85a701
   ref: fj-add-option-avoid-loading-wiki-page-content
   specs:
     gitaly-proto (0.122.0)
