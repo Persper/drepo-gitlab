@@ -13,9 +13,10 @@ import TerminalButtonComponent from './environment_terminal_button.vue';
 import MonitoringButtonComponent from './environment_monitoring.vue';
 import CommitComponent from '../../vue_shared/components/commit.vue';
 import eventHub from '../event_hub';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 /**
- * Envrionment Item Component
+ * Environment Item Component
  *
  * Renders a table row for each environment.
  */
@@ -60,7 +61,7 @@ export default {
 
   computed: {
     /**
-     * Verifies if `last_deployment` key exists in the current Envrionment.
+     * Verifies if `last_deployment` key exists in the current Environment.
      * This key is required to render most of the html - this method works has
      * an helper.
      *
@@ -71,21 +72,6 @@ export default {
         return true;
       }
       return false;
-    },
-
-    /**
-     * Verifies is the given environment has manual actions.
-     * Used to verify if we should render them or nor.
-     *
-     * @returns {Boolean|Undefined}
-     */
-    hasManualActions() {
-      return (
-        this.model &&
-        this.model.last_deployment &&
-        this.model.last_deployment.manual_actions &&
-        this.model.last_deployment.manual_actions.length > 0
-      );
     },
 
     /**
@@ -154,23 +140,20 @@ export default {
       return '';
     },
 
-    /**
-     * Returns the manual actions with the name parsed.
-     *
-     * @returns {Array.<Object>|Undefined}
-     */
-    manualActions() {
-      if (this.hasManualActions) {
-        return this.model.last_deployment.manual_actions.map(action => {
-          const parsedAction = {
-            name: humanize(action.name),
-            play_path: action.play_path,
-            playable: action.playable,
-          };
-          return parsedAction;
-        });
+    actions() {
+      if (!this.model || !this.model.last_deployment || !this.canCreateDeployment) {
+        return [];
       }
-      return [];
+
+      const { manualActions, scheduledActions } = convertObjectPropsToCamelCase(
+        this.model.last_deployment,
+        { deep: true },
+      );
+      const combinedActions = (manualActions || []).concat(scheduledActions || []);
+      return combinedActions.map(action => ({
+        ...action,
+        name: humanize(action.name),
+      }));
     },
 
     /**
@@ -443,7 +426,7 @@ export default {
 
     displayEnvironmentActions() {
       return (
-        this.hasManualActions ||
+        this.actions.length > 0 ||
         this.externalURL ||
         this.monitoringUrl ||
         this.canStopEnvironment ||
@@ -619,8 +602,8 @@ export default {
         />
 
         <actions-component
-          v-if="hasManualActions && canCreateDeployment"
-          :actions="manualActions"
+          v-if="actions.length > 0"
+          :actions="actions"
         />
 
         <terminal-button-component

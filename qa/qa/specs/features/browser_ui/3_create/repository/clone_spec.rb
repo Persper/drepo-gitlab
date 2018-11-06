@@ -2,7 +2,7 @@
 
 module QA
   context 'Create' do
-    describe 'Git clone over HTTP', :ldap do
+    describe 'Git clone over HTTP', :ldap_no_tls do
       let(:location) do
         Page::Project::Show.act do
           choose_repository_clone_http
@@ -14,7 +14,7 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        project = Factory::Resource::Project.fabricate! do |scenario|
+        project = Resource::Project.fabricate! do |scenario|
           scenario.name = 'project-with-code'
           scenario.description = 'project for git clone tests'
         end

@@ -216,14 +216,6 @@ describe Ci::Build do
       let(:build) { create(:ci_build, :created, :schedulable, project: project) }
 
       it { expect(subject).to be_truthy }
-
-      context 'when feature flag is diabled' do
-        before do
-          stub_feature_flags(ci_enable_scheduled_build: false)
-        end
-
-        it { expect(subject).to be_falsy }
-      end
     end
 
     context 'when build is not schedulable' do
@@ -326,10 +318,6 @@ describe Ci::Build do
 
   describe '#enqueue_scheduled' do
     subject { build.enqueue_scheduled }
-
-    before do
-      stub_feature_flags(ci_enable_scheduled_build: true)
-    end
 
     context 'when build is scheduled and the right time has not come yet' do
       let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
@@ -1326,6 +1314,14 @@ describe Ci::Build do
 
           it { is_expected.not_to be_retryable }
         end
+
+        context 'when build is degenerated' do
+          before do
+            build.degenerate!
+          end
+
+          it { is_expected.not_to be_retryable }
+        end
       end
     end
 
@@ -1403,6 +1399,14 @@ describe Ci::Build do
 
       context 'when max retries value is not defined' do
         subject { create(:ci_build) }
+
+        it 'returns zero' do
+          expect(subject.retries_max).to eq 0
+        end
+      end
+
+      context 'when build is degenerated' do
+        subject { create(:ci_build, :degenerated) }
 
         it 'returns zero' do
           expect(subject.retries_max).to eq 0
@@ -1523,11 +1527,11 @@ describe Ci::Build do
     end
   end
 
-  describe '#other_actions' do
+  describe '#other_manual_actions' do
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
     let!(:other_build) { create(:ci_build, :manual, pipeline: pipeline, name: 'other action') }
 
-    subject { build.other_actions }
+    subject { build.other_manual_actions }
 
     before do
       project.add_developer(user)
@@ -1554,6 +1558,48 @@ describe Ci::Build do
 
       it 'returns a retried build' do
         is_expected.to contain_exactly(retried_build)
+      end
+    end
+  end
+
+  describe '#other_scheduled_actions' do
+    let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+    subject { build.other_scheduled_actions }
+
+    before do
+      project.add_developer(user)
+    end
+
+    context "when other build's status is success" do
+      let!(:other_build) { create(:ci_build, :schedulable, :success, pipeline: pipeline, name: 'other action') }
+
+      it 'returns other actions' do
+        is_expected.to contain_exactly(other_build)
+      end
+    end
+
+    context "when other build's status is failed" do
+      let!(:other_build) { create(:ci_build, :schedulable, :failed, pipeline: pipeline, name: 'other action') }
+
+      it 'returns other actions' do
+        is_expected.to contain_exactly(other_build)
+      end
+    end
+
+    context "when other build's status is running" do
+      let!(:other_build) { create(:ci_build, :schedulable, :running, pipeline: pipeline, name: 'other action') }
+
+      it 'does not return other actions' do
+        is_expected.to be_empty
+      end
+    end
+
+    context "when other build's status is scheduled" do
+      let!(:other_build) { create(:ci_build, :scheduled, pipeline: pipeline, name: 'other action') }
+
+      it 'does not return other actions' do
+        is_expected.to contain_exactly(other_build)
       end
     end
   end
@@ -1628,6 +1674,12 @@ describe Ci::Build do
         subject { build_stubbed(:ci_build, :manual, status: :manual) }
 
         it { is_expected.to be_playable }
+      end
+
+      context 'when build is a manual and degenerated' do
+        subject { build_stubbed(:ci_build, :manual, :degenerated, status: :manual) }
+
+        it { is_expected.not_to be_playable }
       end
     end
 
@@ -2027,17 +2079,17 @@ describe Ci::Build do
       it { is_expected.to include(tag_variable) }
     end
 
-    context 'when secret variable is defined' do
-      let(:secret_variable) do
+    context 'when CI variable is defined' do
+      let(:ci_variable) do
         { key: 'SECRET_KEY', value: 'secret_value', public: false }
       end
 
       before do
         create(:ci_variable,
-               secret_variable.slice(:key, :value).merge(project: project))
+               ci_variable.slice(:key, :value).merge(project: project))
       end
 
-      it { is_expected.to include(secret_variable) }
+      it { is_expected.to include(ci_variable) }
     end
 
     context 'when protected variable is defined' do
@@ -2072,17 +2124,17 @@ describe Ci::Build do
       end
     end
 
-    context 'when group secret variable is defined' do
-      let(:secret_variable) do
+    context 'when group CI variable is defined' do
+      let(:ci_variable) do
         { key: 'SECRET_KEY', value: 'secret_value', public: false }
       end
 
       before do
         create(:ci_group_variable,
-               secret_variable.slice(:key, :value).merge(group: group))
+               ci_variable.slice(:key, :value).merge(group: group))
       end
 
-      it { is_expected.to include(secret_variable) }
+      it { is_expected.to include(ci_variable) }
     end
 
     context 'when group protected variable is defined' do
@@ -2357,7 +2409,7 @@ describe Ci::Build do
             .to receive(:predefined_variables) { [project_pre_var] }
 
           allow_any_instance_of(Project)
-            .to receive(:secret_variables_for)
+            .to receive(:ci_variables_for)
             .with(ref: 'master', environment: nil) do
             [create(:ci_variable, key: 'secret', value: 'value')]
           end
@@ -2508,7 +2560,7 @@ describe Ci::Build do
   end
 
   describe '#scoped_variables_hash' do
-    context 'when overriding secret variables' do
+    context 'when overriding CI variables' do
       before do
         project.variables.create!(key: 'MY_VAR', value: 'my value 1')
         pipeline.variables.create!(key: 'MY_VAR', value: 'my value 2')
@@ -3195,6 +3247,56 @@ describe Ci::Build do
       let(:environment) { create(:environment, name: 'production', project: build.project) }
 
       it { expect(build.deployment_status).to eq(:creating) }
+    end
+  end
+
+  describe '#degenerated?' do
+    context 'when build is degenerated' do
+      subject { create(:ci_build, :degenerated) }
+
+      it { is_expected.to be_degenerated }
+    end
+
+    context 'when build is valid' do
+      subject { create(:ci_build) }
+
+      it { is_expected.not_to be_degenerated }
+
+      context 'and becomes degenerated' do
+        before do
+          subject.degenerate!
+        end
+
+        it { is_expected.to be_degenerated }
+      end
+    end
+  end
+
+  describe '#archived?' do
+    context 'when build is degenerated' do
+      subject { create(:ci_build, :degenerated) }
+
+      it { is_expected.to be_archived }
+    end
+
+    context 'for old build' do
+      subject { create(:ci_build, created_at: 1.day.ago) }
+
+      context 'when archive_builds_in is set' do
+        before do
+          stub_application_setting(archive_builds_in_seconds: 3600)
+        end
+
+        it { is_expected.to be_archived }
+      end
+
+      context 'when archive_builds_in is not set' do
+        before do
+          stub_application_setting(archive_builds_in_seconds: nil)
+        end
+
+        it { is_expected.not_to be_archived }
+      end
     end
   end
 end

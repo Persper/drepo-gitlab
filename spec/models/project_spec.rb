@@ -8,6 +8,7 @@ describe Project do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:creator).class_name('User') }
+    it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
     it { is_expected.to have_many(:services) }
     it { is_expected.to have_many(:events) }
@@ -87,6 +88,10 @@ describe Project do
     it { is_expected.to have_many(:lfs_file_locks) }
     it { is_expected.to have_many(:project_deploy_tokens) }
     it { is_expected.to have_many(:deploy_tokens).through(:project_deploy_tokens) }
+
+    it 'has an inverse relationship with merge requests' do
+      expect(described_class.reflect_on_association(:merge_requests).has_inverse?).to eq(:target_project)
+    end
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -2401,11 +2406,23 @@ describe Project do
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
 
-      context 'when user configured kubernetes from CI/CD > Clusters' do
+      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has not been executed' do
         let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
 
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has been executed' do
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace) }
+        let!(:cluster) { kubernetes_namespace.cluster }
+        let(:project) { kubernetes_namespace.project }
+
+        it 'should return token from kubernetes namespace' do
+          expect(project.deployment_variables).to include(
+            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+          )
+        end
       end
     end
   end
@@ -2432,10 +2449,10 @@ describe Project do
     end
   end
 
-  describe '#secret_variables_for' do
+  describe '#ci_variables_for' do
     let(:project) { create(:project) }
 
-    let!(:secret_variable) do
+    let!(:ci_variable) do
       create(:ci_variable, value: 'secret', project: project)
     end
 
@@ -2443,7 +2460,7 @@ describe Project do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    subject { project.reload.secret_variables_for(ref: 'ref') }
+    subject { project.reload.ci_variables_for(ref: 'ref') }
 
     before do
       stub_application_setting(
@@ -2452,13 +2469,13 @@ describe Project do
 
     shared_examples 'ref is protected' do
       it 'contains all the variables' do
-        is_expected.to contain_exactly(secret_variable, protected_variable)
+        is_expected.to contain_exactly(ci_variable, protected_variable)
       end
     end
 
     context 'when the ref is not protected' do
-      it 'contains only the secret variables' do
-        is_expected.to contain_exactly(secret_variable)
+      it 'contains only the CI variables' do
+        is_expected.to contain_exactly(ci_variable)
       end
     end
 
@@ -2746,7 +2763,7 @@ describe Project do
         .to raise_error(ActiveRecord::RecordNotSaved, error_message)
     end
 
-    it 'updates the project succesfully' do
+    it 'updates the project successfully' do
       merge_request = create(:merge_request, target_project: project, source_project: project)
 
       expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }
@@ -3314,7 +3331,7 @@ describe Project do
       end
     end
 
-    context 'when explicitely enabled' do
+    context 'when explicitly enabled' do
       context 'when domain is empty' do
         before do
           create(:project_auto_devops, project: project, domain: nil)

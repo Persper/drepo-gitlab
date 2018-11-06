@@ -55,7 +55,11 @@ class Deployment < ActiveRecord::Base
   end
 
   def manual_actions
-    @manual_actions ||= deployable.try(:other_actions)
+    @manual_actions ||= deployable.try(:other_manual_actions)
+  end
+
+  def scheduled_actions
+    @scheduled_actions ||= deployable.try(:other_scheduled_actions)
   end
 
   def includes_commit?(commit)
@@ -125,6 +129,10 @@ class Deployment < ActiveRecord::Base
 
     metrics = prometheus_adapter.query(:additional_metrics_deployment, self)
     metrics&.merge(deployment_time: created_at.to_i) || {}
+  end
+
+  def status
+    'success'
   end
 
   private

@@ -95,8 +95,7 @@ class Project < ActiveRecord::Base
     unless: :ci_cd_settings,
     if: proc { ProjectCiCdSetting.available? }
 
-  after_create :set_last_activity_at
-  after_create :set_last_repository_updated_at
+  after_create :set_timestamps_for_create
   after_update :update_forks_visibility_level
 
   before_destroy :remove_private_deploy_keys
@@ -124,6 +123,7 @@ class Project < ActiveRecord::Base
   alias_attribute :title, :name
 
   # Relations
+  belongs_to :pool_repository
   belongs_to :creator, class_name: 'User'
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
@@ -181,7 +181,7 @@ class Project < ActiveRecord::Base
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Merge Requests for target project should be removed with it
-  has_many :merge_requests, foreign_key: 'target_project_id'
+  has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project
   has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues
   has_many :labels, class_name: 'ProjectLabel'
@@ -665,7 +665,7 @@ class Project < ActiveRecord::Base
     remove_import_data
   end
 
-  # This method is overriden in EE::Project model
+  # This method is overridden in EE::Project model
   def remove_import_data
     import_data&.destroy
   end
@@ -1811,7 +1811,7 @@ class Project < ActiveRecord::Base
       .first
   end
 
-  def secret_variables_for(ref:, environment: nil)
+  def ci_variables_for(ref:, environment: nil)
     # EE would use the environment
     if protected_for?(ref)
       variables
@@ -1829,7 +1829,7 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_variables(environment: nil)
-    deployment_platform(environment: environment)&.predefined_variables || []
+    deployment_platform(environment: environment)&.predefined_variables(project: self) || []
   end
 
   def auto_devops_variables
@@ -2102,13 +2102,8 @@ class Project < ActiveRecord::Base
     gitlab_shell.exists?(repository_storage, "#{disk_path}.git")
   end
 
-  # set last_activity_at to the same as created_at
-  def set_last_activity_at
-    update_column(:last_activity_at, self.created_at)
-  end
-
-  def set_last_repository_updated_at
-    update_column(:last_repository_updated_at, self.created_at)
+  def set_timestamps_for_create
+    update_columns(last_activity_at: self.created_at, last_repository_updated_at: self.created_at)
   end
 
   def cross_namespace_reference?(from)

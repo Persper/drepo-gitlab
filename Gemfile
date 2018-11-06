@@ -153,6 +153,11 @@ group :unicorn do
   gem 'unicorn-worker-killer', '~> 0.4.4'
 end
 
+group :puma do
+  gem 'puma', '~> 3.12', require: false
+  gem 'puma_worker_killer', require: false
+end
+
 # State machine
 gem 'state_machines-activerecord', '~> 0.5.1'
 
@@ -238,9 +243,6 @@ gem 'rack-attack', '~> 4.4.1'
 
 # Ace editor
 gem 'ace-rails-ap', '~> 4.1.0'
-
-# Keyboard shortcuts
-gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.5'

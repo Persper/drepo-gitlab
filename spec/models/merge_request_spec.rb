@@ -13,6 +13,20 @@ describe MergeRequest do
     it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:merge_request_diffs) }
+
+    context 'for forks' do
+      let!(:project) { create(:project) }
+      let!(:fork) { fork_project(project) }
+      let!(:merge_request) { create(:merge_request, target_project: project, source_project: fork) }
+
+      it 'does not load another project due to inverse relationship' do
+        expect(project.merge_requests.first.target_project.object_id).to eq(project.object_id)
+      end
+
+      it 'finds the associated merge request' do
+        expect(project.merge_requests.find(merge_request.id)).to eq(merge_request)
+      end
+    end
   end
 
   describe '#squash_in_progress?' do
@@ -538,9 +552,9 @@ describe MergeRequest do
       it 'delegates to the MR diffs' do
         merge_request.save
 
-        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options))
+        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options)).and_call_original
 
-        merge_request.diffs(options)
+        merge_request.diffs(options).diff_files
       end
     end
 
@@ -1054,6 +1068,26 @@ describe MergeRequest do
         allow(subject).to receive(:source_project).and_return(nil)
 
         expect(subject.actual_head_pipeline).to be_nil
+      end
+    end
+  end
+
+  describe '#merge_pipeline' do
+    it 'returns nil when not merged' do
+      expect(subject.merge_pipeline).to be_nil
+    end
+
+    context 'when the MR is merged' do
+      let(:sha)      { subject.target_project.commit.id }
+      let(:pipeline) { create(:ci_empty_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project) }
+
+      before do
+        subject.mark_as_merged!
+        subject.update_attribute(:merge_commit_sha, pipeline.sha)
+      end
+
+      it 'returns the post-merge pipeline' do
+        expect(subject.merge_pipeline).to eq(pipeline)
       end
     end
   end
@@ -2574,6 +2608,32 @@ describe MergeRequest do
                                    .and_return(true)
 
       expect(merge_request.collaborative_push_possible?).to be_falsy
+    end
+  end
+
+  describe '#includes_any_commits?' do
+    it 'returns false' do
+      expect(subject.includes_any_commits?([Gitlab::Git::BLANK_SHA])).to be_falsey
+    end
+
+    it 'returns true' do
+      expect(subject.includes_any_commits?([subject.merge_request_diff.head_commit_sha])).to be_truthy
+    end
+
+    it 'returns true even when there is a non-existent comit' do
+      expect(subject.includes_any_commits?([Gitlab::Git::BLANK_SHA, subject.merge_request_diff.head_commit_sha])).to be_truthy
+    end
+
+    context 'unpersisted merge request' do
+      let(:new_mr) { build(:merge_request) }
+
+      it 'returns false' do
+        expect(new_mr.includes_any_commits?([Gitlab::Git::BLANK_SHA])).to be_falsey
+      end
+
+      it 'returns true' do
+        expect(new_mr.includes_any_commits?([subject.merge_request_diff.head_commit_sha])).to be_truthy
+      end
     end
   end
 
