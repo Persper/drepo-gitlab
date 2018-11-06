@@ -122,7 +122,7 @@ module Gitlab
           old_pos = from_blob_line
           new_pos = from_blob_line + offset
 
-          build_match_line(old_pos, new_pos)
+          build_match_line(old_pos: old_pos, new_pos: new_pos)
         end
       end
 
@@ -133,19 +133,37 @@ module Gitlab
           next if bottom?
           next unless @generate_bottom_match_line
 
-          position = line_after_unfold_position.old_pos
+          line_after_unfold = line_after(unfold_line)
+          position = line_after_unfold.old_pos
 
+          # The following calculations exists in order to generate the correct
+          # match line header, e.g.:
+          # @@ +<old_pos>,<old_lines_length> -<new_pos>,<new_lines_length> @@
           old_pos = position
           new_pos = position + offset
 
-          build_match_line(old_pos, new_pos)
+          next_match = next_match_line(line_after_unfold)
+          line_before_next_match = line_before(next_match) || last_line
+
+          old_lines_length = (line_before_next_match.old_pos - old_pos) + 1
+          new_lines_length = (line_before_next_match.new_pos - new_pos) + 1
+
+          build_match_line(old_pos: old_pos,
+                           new_pos: new_pos,
+                           old_lines_length: old_lines_length,
+                           new_lines_length: new_lines_length)
         end
       end
 
-      def build_match_line(old_pos, new_pos)
+      def build_match_line(old_pos:, new_pos:, old_lines_length: nil, new_lines_length: nil)
         blob_lines_length = blob_lines.length
-        old_line_ref = [old_pos, blob_lines_length].join(',')
-        new_line_ref = [new_pos, blob_lines_length].join(',')
+
+        old_lines_length ||= blob_lines_length
+        new_lines_length ||= blob_lines_length
+
+        old_line_ref = [old_pos, old_lines_length].join(',')
+        new_line_ref = [new_pos, new_lines_length].join(',')
+
         new_match_line_str = "@@ -#{old_line_ref}+#{new_line_ref} @@"
 
         Gitlab::Diff::Line.new(new_match_line_str, 'match', nil, old_pos, new_pos)
@@ -160,7 +178,7 @@ module Gitlab
 
         # There's no line before the match if it's in the top-most
         # position.
-        prev_line_number = line_before_unfold_position&.old_pos || 0
+        prev_line_number = line_before(unfold_line)&.old_pos || 0
 
         if from <= prev_line_number + 1
           @generate_top_match_line = false
@@ -179,7 +197,7 @@ module Gitlab
 
         return to if bottom?
 
-        next_line_number = line_after_unfold_position.old_pos
+        next_line_number = line_after(unfold_line).old_pos
 
         if to >= next_line_number - 1
           @generate_bottom_match_line = false
@@ -193,16 +211,20 @@ module Gitlab
         unfold_line.new_pos - unfold_line.old_pos
       end
 
-      def line_before_unfold_position
-        return unless index = unfold_line&.index
+      def line_before(line)
+        return unless index = line&.index
 
         @diff_file.diff_lines[index - 1] if index > 0
       end
 
-      def line_after_unfold_position
-        return unless index = unfold_line&.index
+      def line_after(line)
+        return unless index = line&.index
 
         @diff_file.diff_lines[index + 1] if index >= 0
+      end
+
+      def next_match_line(line)
+        @diff_file.diff_lines.find { |l| l.index > line.index && l.type == 'match' }
       end
 
       def bottom?
