@@ -123,7 +123,7 @@ describe('Actions Notes Store', () => {
         { discussionId: discussionMock.id },
         { notes: [discussionMock] },
         [{ type: 'EXPAND_DISCUSSION', payload: { discussionId: discussionMock.id } }],
-        [],
+        [{ type: 'diffs/renderFileForDiscussionId', payload: discussionMock.id }],
         done,
       );
     });
