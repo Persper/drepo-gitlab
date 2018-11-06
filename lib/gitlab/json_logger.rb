@@ -10,6 +10,7 @@ module Gitlab
       data = {}
       data[:severity] = severity
       data[:time] = timestamp.utc.iso8601(3)
+      data[:correlation_id] = Gitlab::CorrelationId.current_id
 
       case message
       when String

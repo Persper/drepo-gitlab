@@ -31,7 +31,7 @@ module Gitlab
     def self.track_exception(exception, issue_url: nil, extra: {})
       track_acceptable_exception(exception, issue_url: issue_url, extra: extra)
 
-      raise exception if should_raise?
+      raise exception if should_raise_for_dev?
     end
 
     # This should be used when you do not want to raise an exception in
@@ -55,7 +55,7 @@ module Gitlab
       end
     end
 
-    def self.should_raise?
+    def self.should_raise_for_dev?
       Rails.env.development? || Rails.env.test?
     end
   end

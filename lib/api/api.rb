@@ -80,7 +80,6 @@ module API
     content_type :txt, "text/plain"
 
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
-    helpers ::SentryHelper
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
 

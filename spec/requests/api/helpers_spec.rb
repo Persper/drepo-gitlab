@@ -5,7 +5,6 @@ require_relative '../../../config/initializers/sentry'
 describe API::Helpers do
   include API::APIGuard::HelperMethods
   include described_class
-  include SentryHelper
   include TermsHelper
 
   let(:user) { create(:user) }
@@ -211,7 +210,6 @@ describe API::Helpers do
 
   describe '.handle_api_exception' do
     before do
-      allow_any_instance_of(self.class).to receive(:sentry_enabled?).and_return(true)
       allow_any_instance_of(self.class).to receive(:rack_response)
     end
 
@@ -228,7 +226,6 @@ describe API::Helpers do
       exception = RuntimeError.new('test error')
       allow(exception).to receive(:backtrace).and_return(caller)
 
-      expect_any_instance_of(self.class).to receive(:sentry_context)
       expect(Raven).to receive(:capture_exception).with(exception, extra: {})
 
       handle_api_exception(exception)
