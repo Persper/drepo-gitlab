@@ -1,3 +1,5 @@
-> All UX documentation has been moved to the GitLab Design System.
-
+---
 redirect_to: 'https://design.gitlab.com/'
+---
+
+The content of this documented was moved into the new [GitLab Design System](https://design.gitlab.com/).
