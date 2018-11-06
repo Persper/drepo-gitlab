@@ -312,6 +312,7 @@ export default {
       :key="`pre-merge-deploy-${deployment.id}`"
       class="js-pre-merge-deploy"
       :deployment="deployment"
+      :show-metrics="mr.isMergedState"
     />
     <div class="mr-section-container">
       <grouped-test-reports-app
