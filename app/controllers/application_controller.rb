@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
-  include SafeParamsHelpers
+  include SafeParamsHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
