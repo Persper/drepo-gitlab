@@ -88,19 +88,16 @@ function deploy() {
   replicas="1"
   service_enabled="false"
   postgres_enabled="$POSTGRES_ENABLED"
-  gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ce"
-  gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ce"
-  gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-unicorn-ce"
-  gitlab_gitaly_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly"
-  gitlab_shell_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell"
-  gitlab_workhorse_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ce"
 
-  if [[ "$CI_PROJECT_NAME" == "gitlab-ee" ]]; then
-    gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ee"
-    gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ee"
-    gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-unicorn-ee"
-    gitlab_workhorse_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ee"
-  fi
+  IMAGE_REPOSITORY="registry.gitlab.com/gitlab-org/build/cng-mirror"
+  IMAGE_VERSION="${CI_PROJECT_NAME#gitlab-}"
+  gitlab_migrations_image_repository="${IMAGE_REPOSITORY}/gitlab-rails-${IMAGE_VERSION}"
+  gitlab_sidekiq_image_repository="${IMAGE_REPOSITORY}/gitlab-sidekiq-${IMAGE_VERSION}"
+  gitlab_unicorn_image_repository="${IMAGE_REPOSITORY}/gitlab-unicorn-${IMAGE_VERSION}"
+  gitlab_task_runner_image_repository="${IMAGE_REPOSITORY}/gitlab-task-runner-${IMAGE_VERSION}"
+  gitlab_gitaly_image_repository="${IMAGE_REPOSITORY}/gitaly"
+  gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
+  gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-${IMAGE_VERSION}"
 
   # canary uses stable db
   [[ "$track" == "canary" ]] && postgres_enabled="false"
@@ -155,6 +152,8 @@ HELM_CMD=$(cat << EOF
     --set gitlab.sidekiq.image.tag="$CI_COMMIT_REF_NAME" \
     --set gitlab.unicorn.image.repository="$gitlab_unicorn_image_repository" \
     --set gitlab.unicorn.image.tag="$CI_COMMIT_REF_NAME" \
+    --set gitlab.task-runner.image.repository="$gitlab_task_runner_image_repository" \
+    --set gitlab.task-runner.image.tag="$CI_COMMIT_REF_NAME" \
     --set gitlab.gitaly.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly" \
     --set gitlab.gitaly.image.tag="v$GITALY_VERSION" \
     --set gitlab.gitlab-shell.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell" \
