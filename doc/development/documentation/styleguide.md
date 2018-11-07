@@ -14,10 +14,10 @@ For help adhering to the guidelines, see [Linting](index.md#linting).
 
 ## Files
 
-- [Directory structure](index.md#location-and-naming-documents): place the docs
+1. [Directory structure](index.md#location-and-naming-documents): place the docs
 in the correct location.
-- [Documentation files](index.md#documentation-files): name the files accordingly.
-- [Markdown](../../user/markdown.md): use the GitLab Flavored Markdown in the
+1. [Documentation files](index.md#documentation-files): name the files accordingly.
+1. [Markdown](../../user/markdown.md): use the GitLab Flavored Markdown in the
 documentation.
 
 NOTE: **Note:**
@@ -30,21 +30,21 @@ a test that will fail if it spots a new `README.md` file.
 
 ## Text
 
-- Split up long lines (wrap text), this makes it much easier to review and edit. Only
+1. Split up long lines (wrap text), this makes it much easier to review and edit. Only
   double line breaks are shown as a full line break in [GitLab markdown][gfm].
   80-100 characters is a good line length.
-- Make sure that the documentation is added in the correct
+1. Make sure that the documentation is added in the correct
   [directory](index.md#documentation-directory-structure) and that
   there's a link to it somewhere useful.
-- Do not duplicate information.
-- Be brief and clear.
-- Unless there's a logical reason not to, add documents in alphabetical order.
-- Write in US English.
-- Use [single spaces][] instead of double spaces.
-- Jump a line between different markups (e.g., after every paragraph, header, list, etc)
-- Capitalize "G" and "L" in GitLab.
-- Use sentence case for titles, headings, labels, menu items, and buttons.
-- Use title case when referring to [features](https://about.gitlab.com/features/) or
+1. Do not duplicate information.
+1. Be brief and clear.
+1. Unless there's a logical reason not to, add documents in alphabetical order.
+1. Write in US English.
+1. Use [single spaces][] instead of double spaces.
+1. Jump a line between different markups (e.g., after every paragraph, header, list, etc)
+1. Capitalize "G" and "L" in GitLab.
+1. Use sentence case for titles, headings, labels, menu items, and buttons.
+1. Use title case when referring to [features](https://about.gitlab.com/features/) or
 [products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
 Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
 (e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
@@ -52,9 +52,9 @@ some features are also objects (e.g. "Merge Requests" and "merge requests").
 
 ## Formatting
 
-- Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
-- Use undescore (`_`) for text in italics (`_italic_`).
-- Put an empty line between different markups. For example:
+1. Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
+1. Use undescore (`_`) for text in italics (`_italic_`).
+1. Put an empty line between different markups. For example:
     ```md
     ## Header
 
@@ -70,48 +70,48 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
 
 ### Ordered and unordered lists
 
-- Use dashes (`-`) for unordered lists instead of asterisks (`*`).
-- Use the number one (`1`) for ordered lists.
-- Separate list items from explanatory text with a colon (`:`). For example:
+1. Use dashes (`-`) for unordered lists instead of asterisks (`*`).
+1. Use the number one (`1`) for ordered lists.
+1. Separate list items from explanatory text with a colon (`:`). For example:
     ```md
     The list is as follows:
 
     - First item: This explains the first item.
     - Second item: This explains the second item.
     ```
-- For further guidance on punctuation in bullet lists, please refer to the [GitLab UX guide](https://design.gitlab.com/content/punctuation/).
+1. For further guidance on punctuation in bullet lists, please refer to the [GitLab UX guide](https://design.gitlab.com/content/punctuation/).
 
 ## Headings
 
-- Add **only one H1** in each document, by adding `#` at the beginning of
+1. Add **only one H1** in each document, by adding `#` at the beginning of
   it (when using markdown). The `h1` will be the document `<title>`.
-- Start with an h2 (`##`), and respect the order h2 > h3 > h4 > h5 > h6.
+1. Start with an h2 (`##`), and respect the order h2 > h3 > h4 > h5 > h6.
   Never skip the hierarchy level, such as h2 > h4
-- Avoid putting numbers in headings. Numbers shift, hence documentation anchor
+1. Avoid putting numbers in headings. Numbers shift, hence documentation anchor
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
   someone in the Merge Request.
-- [Avoid using symbols and special chars](https://gitlab.com/gitlab-com/gitlab-docs/issues/84)
+1. [Avoid using symbols and special chars](https://gitlab.com/gitlab-com/gitlab-docs/issues/84)
   in headers. Whenever possible, they should be plain and short text.
-- Avoid adding things that show ephemeral statuses. For example, if a feature is
+1. Avoid adding things that show ephemeral statuses. For example, if a feature is
   considered beta or experimental, put this info in a note, not in the heading.
-- When introducing a new document, be careful for the headings to be
+1. When introducing a new document, be careful for the headings to be
   grammatically and syntactically correct. Mention one or all
   of the following GitLab members for a review: `@axil` or `@marcia`.
   This is to ensure that no document with wrong heading is going
   live without an audit, thus preventing dead links and redirection issues when
   corrected.
-- Leave exactly one new line after a heading.
+1. Leave exactly one new line after a heading.
 
 ## Links
 
-- Use the regular inline link markdown markup `[Text](https://example.com)`.
+1. Use the regular inline link markdown markup `[Text](https://example.com)`.
   It's easier to read, review, and maintain.
-- If there's a link that repeats several times through the same document,
+1. If there's a link that repeats several times through the same document,
   you can use `[Text][identifier]` and at the bottom of the section or the
   document add: `[identifier]: https://example.com`, in which case, we do
   encourage you to also add an alternative text: `[identifier]: https://example.com "Alternative text"` that appears when hovering your mouse on a link.
-- To link to internal documentation, use relative links, not full URLs. Use `../` to
+1. To link to internal documentation, use relative links, not full URLs. Use `../` to
   navigate tp high-level directories, and always add the file name `file.md` at the
   end of the link with the `.md` extension, not `.html`.
   Example: instead of `[text](../../merge_requests/)`, use
@@ -119,8 +119,8 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
   for anchor links, `[text](../../ci/README.md#examples)`.
   Using the markdown extension is necessary for the [`/help`](index.md#gitlab-help)
   section of GitLab.
-- To link from CE to EE-only documentation, use the EE-only doc full URL.
-- Use [meaningful anchor texts](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
+1. To link from CE to EE-only documentation, use the EE-only doc full URL.
+1. Use [meaningful anchor texts](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
   E.g., instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,
   write `Read more about [GitLab Issue Boards](LINK)`.
 
@@ -128,40 +128,40 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
 
 To indicate the steps of navigation through the UI:
 
-- Use the exact word as shown in the UI, including any capital letters as-is.
-- Use bold text for navigation items and the char `>` as separator
+1. Use the exact word as shown in the UI, including any capital letters as-is.
+1. Use bold text for navigation items and the char `>` as separator
 (e.g., `Navigate to your project's **Settings > CI/CD**` ).
-- If there are any expandable menus, make sure to mention that the user
+1. If there are any expandable menus, make sure to mention that the user
 needs to expand the tab to find the settings you're referring to.
 
 ## Images
 
-- Place images in a separate directory named `img/` in the same directory where
+1. Place images in a separate directory named `img/` in the same directory where
   the `.md` document that you're working on is located. Always prepend their
   names with the name of the document that they will be included in. For
   example, if there is a document called `twitter.md`, then a valid image name
   could be `twitter_login_screen.png`.
-- Images should have a specific, non-generic name that will differentiate them.
-- Keep all file names in lower case.
-- Consider using PNG images instead of JPEG.
-- Compress all images with <https://tinypng.com/> or similar tool.
-- Compress gifs with <https://ezgif.com/optimize> or similar tool.
-- Images should be used (only when necessary) to _illustrate_ the description
+1. Images should have a specific, non-generic name that will differentiate them.
+1. Keep all file names in lower case.
+1. Consider using PNG images instead of JPEG.
+1. Compress all images with <https://tinypng.com/> or similar tool.
+1. Compress gifs with <https://ezgif.com/optimize> or similar tool.
+1. Images should be used (only when necessary) to _illustrate_ the description
 of a process, not to _replace_ it.
-- Max image size: 100KB (gifs included).
-- The GitLab docs do not support videos yet.
+1. Max image size: 100KB (gifs included).
+1. The GitLab docs do not support videos yet.
 
 Inside the document:
 
-- The Markdown way of using an image inside a document is:
+1. The Markdown way of using an image inside a document is:
   `![Proper description what the image is about](img/document_image_title.png)`
-- Always use a proper description for what the image is about. That way, when a
+1. Always use a proper description for what the image is about. That way, when a
   browser fails to show the image, this text will be used as an alternative
   description.
-- If there are consecutive images with little text between them, always add
+1. If there are consecutive images with little text between them, always add
   three dashes (`---`) between the image and the text to create a horizontal
   line for better clarity.
-- If a heading is placed right after an image, always add three dashes (`---`)
+1. If a heading is placed right after an image, always add three dashes (`---`)
   between the image and the heading.
 
 ## Alert boxes
@@ -241,7 +241,7 @@ below.
 
 ### GitLab versions and tiers
 
-- Every piece of documentation that comes with a new feature should declare the
+1. Every piece of documentation that comes with a new feature should declare the
   GitLab version that feature got introduced. Right below the heading add a
   blockquote:
 
@@ -249,14 +249,14 @@ below.
     > Introduced in GitLab 8.3.
     ```
 
-- Whenever possible, every feature should have a link to the issue, MR or epic
+1. Whenever possible, every feature should have a link to the issue, MR or epic
   (in that order) that introduced it. The above quote would be then transformed to:
 
     ```md
     > [Introduced](<link-to-issue>) in GitLab 8.3.
     ```
 
-- If the feature is only available in GitLab Enterprise Edition, don't forget to mention
+1. If the feature is only available in GitLab Enterprise Edition, don't forget to mention
   the [paid tier](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers)
   the feature is available in:
 
@@ -268,8 +268,8 @@ below.
 
 If the feature was created before GitLab 9.2 (before [different EE tiers were introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1851)):
 
-- Declare it as "Introduced in GitLab Enterprise Edition X.Y".
-- Note which tier the feature is available in.
+1. Declare it as "Introduced in GitLab Enterprise Edition X.Y".
+1. Note which tier the feature is available in.
 
 For example:
 
@@ -386,13 +386,13 @@ the style below as a guide:
 
 In this case:
 
-- before each step list the installation method is declared in bold
-- three dashes (`---`) are used to create a horizontal line and separate the
+1. before each step list the installation method is declared in bold
+1. three dashes (`---`) are used to create a horizontal line and separate the
   two methods
-- the code blocks are indented one or more spaces under the list item to render
+1. the code blocks are indented one or more spaces under the list item to render
   correctly
-- different highlighting languages are used for each config in the code block
-- the [references](#references) guide is used for reconfigure/restart
+1. different highlighting languages are used for each config in the code block
+1. the [references](#references) guide is used for reconfigure/restart
 
 ### Fake tokens
 
@@ -422,16 +422,16 @@ You can use the following fake tokens as examples.
 Here is a list of must-have items. Use them in the exact order that appears
 on this document. Further explanation is given below.
 
-- Every method must have the REST API request. For example:
+1. Every method must have the REST API request. For example:
 
     ```
     GET /projects/:id/repository/branches
     ```
 
-- Every method must have a detailed
+1. Every method must have a detailed
   [description of the parameters](#method-description).
-- Every method must have a cURL example.
-- Every method must have a response body (in JSON format).
+1. Every method must have a cURL example.
+1. Every method must have a response body (in JSON format).
 
 #### Method description
 
@@ -451,12 +451,12 @@ Rendered example:
 
 #### cURL commands
 
-- Use `https://gitlab.example.com/api/v4/` as an endpoint.
-- Wherever needed use this personal access token: `9koXpg98eAheJpvBs5tK`.
-- Always put the request first. `GET` is the default so you don't have to
+1. Use `https://gitlab.example.com/api/v4/` as an endpoint.
+1. Wherever needed use this personal access token: `9koXpg98eAheJpvBs5tK`.
+1. Always put the request first. `GET` is the default so you don't have to
   include it.
-- Use double quotes to the URL when it includes additional parameters.
-- Prefer to use examples using the personal access token and don't pass data of
+1. Use double quotes to the URL when it includes additional parameters.
+1. Prefer to use examples using the personal access token and don't pass data of
   username and password.
 
 | Methods | Description |
