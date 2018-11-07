@@ -13,7 +13,7 @@ module Gitlab
   #     |     |
   #     +->G--+
   #
-  # (See merge-commit-analyze-after branch)
+  # (See merge-commit-analyze-after branch in gitlab-test)
   #
   # Assuming
   # - A is already in remote
