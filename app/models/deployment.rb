@@ -10,9 +10,7 @@ class Deployment < ActiveRecord::Base
   belongs_to :user
   belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
-  has_internal_id :iid, scope: :project, init: ->(s) do
-    Deployment.where(project: s.project).maximum(:iid) if s&.project
-  end
+  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.deployments&.maximum(:iid) }
 
   validates :sha, presence: true
   validates :ref, presence: true
@@ -20,6 +18,8 @@ class Deployment < ActiveRecord::Base
   delegate :name, to: :environment, prefix: true
 
   scope :for_environment, -> (environment) { where(environment_id: environment) }
+  scope :deployed, -> { success.start }
+  scope :stopped, -> { success.stop }
 
   state_machine :status, initial: :created do
     event :run do
@@ -55,6 +55,11 @@ class Deployment < ActiveRecord::Base
     success: 2,
     failed: 3,
     canceled: 4
+  }
+
+  enum action: {
+    start: 1,
+    stop: 2
   }
 
   def self.last_for_environment(environment)
@@ -132,7 +137,7 @@ class Deployment < ActiveRecord::Base
 
   def previous_deployment
     @previous_deployment ||=
-      project.deployments.success.joins(:environment)
+      project.deployments.deployed.joins(:environment)
       .where(environments: { name: self.environment.name }, ref: self.ref)
       .where.not(id: self.id)
       .take
@@ -175,6 +180,14 @@ class Deployment < ActiveRecord::Base
 
     metrics = prometheus_adapter.query(:additional_metrics_deployment, self)
     metrics&.merge(deployment_time: finished_at.to_i) || {}
+  end
+
+  def deployed?
+    success? && start?
+  end
+
+  def stopped?
+    success? && stop?
   end
 
   private

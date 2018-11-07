@@ -28,7 +28,7 @@ class EnvironmentStatus
 
   def deployment
     strong_memoize(:deployment) do
-      Deployment.where(environment: environment).find_by_sha(sha)
+      environment.deployments.start.find_by_sha(sha)
     end
   end
 
