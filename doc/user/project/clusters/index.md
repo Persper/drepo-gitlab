@@ -17,6 +17,10 @@ your account with Google Kubernetes Engine (GKE) so that you can [create new
 clusters](#adding-and-creating-a-new-gke-cluster-via-gitlab) from within GitLab,
 or provide the credentials to an [existing Kubernetes cluster](#adding-an-existing-kubernetes-cluster).
 
+NOTE: **Note:**
+From [11.5](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) you can also associate a Kubernetes cluster to your groups. Learn more about [group Kubernetes clusters]
+
+
 ## Adding and creating a new GKE cluster via GitLab
 
 TIP: **Tip:**
@@ -369,36 +373,6 @@ The result will then be:
 - The staging cluster will be used for the "deploy to staging" job.
 - The production cluster will be used for the "deploy to production" job.
 
-### Environment scopes and group level clusters
-
-When a project's group has Kubernetes clusters configured, the above evaluation for environment scope 
-will still take place first but firstly at the project level, followed by the closest ancestor group
-and followed by that groups' parent and so on.
-
-Extending the setup from the previous section, let's say we have the following Kubernetes clusters :
-
-| Cluster    | Environment scope   | Where     |
-| ---------- | ------------------- | ----------|
-| Development| `*`                 | Project 1 |
-| Staging    | `staging/*`         | Project 1 |
-| Production | `production/*`      | Project 1 |
-| Group      | `test`              | Group 1   |
-
-Given the above, the "test" job will still use the project's development cluster,
-as it matches `*` on the project level.
-
-If the Development cluster was deleted :
-
-| Cluster    | Environment scope   | Where     |
-| ---------- | ------------------- | ----------|
-| Staging    | `staging/*`         | Project 1 |
-| Production | `production/*`      | Project 1 |
-| Group      | `test`              | Group 1   |
-
-Then, the "test" job will fail to match any cluster on the project level. Evaluation now moves up to the group,
-where it matches the Group cluster. The Group cluster will be used for the "test" job.
-
-
 ## Multiple Kubernetes clusters
 
 > Introduced in [GitLab Premium][ee] 10.3.
@@ -520,3 +494,4 @@ the deployment variables above, ensuring any pods you create are labelled with
 [permissions]: ../../permissions.md
 [ee]: https://about.gitlab.com/pricing/
 [Auto DevOps]: ../../../topics/autodevops/index.md
+[group Kubernetes clusters]: ../../group/clusters/index.md
