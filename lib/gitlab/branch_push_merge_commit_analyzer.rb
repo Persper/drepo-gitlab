@@ -63,7 +63,7 @@ module Gitlab
         # If child commit belongs to target branch, its first parent is assumed to belong to target branch.
         # This assumption is correct most of the time, but there are exception cases which can't be solved.
         # See https://stackoverflow.com/a/49754723/474597
-        @target_branch = (first_parent && child_commit.target_branch?)
+        @target_branch = first_parent && child_commit.target_branch?
 
         @merge_commit = target_branch? ? self : child_commit.merge_commit
       end
