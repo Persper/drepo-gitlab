@@ -51,21 +51,22 @@ module Gitlab
   class BranchPushMergeCommitAnalyzer
     class CommitDecorator < SimpleDelegator
       attr_accessor :merge_commit
-      attr_writer :target_branch # boolean
+      attr_writer :direct_ancestor # boolean
 
-      def target_branch?
-        @target_branch
+      def direct_ancestor?
+        @direct_ancestor
       end
 
       # @param child_commit [CommitDecorator]
       # @param first_parent [Boolean] whether `self` is the first parent of `child_commit`
       def set_merge_commit(child_commit, first_parent:)
-        # If child commit belongs to target branch, its first parent is assumed to belong to target branch.
-        # This assumption is correct most of the time, but there are exception cases which can't be solved.
-        # See https://stackoverflow.com/a/49754723/474597
-        @target_branch = first_parent && child_commit.target_branch?
+        # If child commit is a direct ancestor, its first parent is also the direct ancestor.
+        # We assume direct ancestors matches the trail of the target branch over time,
+        # This assumption is correct most of the time, especially for gitlab managed merges,
+        # but there are exception cases which can't be solved (https://stackoverflow.com/a/49754723/474597)
+        @direct_ancestor = first_parent && child_commit.direct_ancestor?
 
-        @merge_commit = target_branch? ? self : child_commit.merge_commit
+        @merge_commit = direct_ancestor? ? self : child_commit.merge_commit
       end
     end
 
@@ -83,7 +84,7 @@ module Gitlab
 
     def analyze
       head_commit = get_commit(@commits.first.id)
-      head_commit.target_branch = true
+      head_commit.direct_ancestor = true
       head_commit.merge_commit = head_commit
 
       # Analyzing a commit requires its child commit be analyzed first,
