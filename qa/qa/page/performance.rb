@@ -8,8 +8,7 @@ module QA
         response_time = Benchmark.realtime do
           public_send(callback)
         end
-        puts "response_time: #{response_time} for #{callback}"
-        response_time
+        ( response_time * 1000 )
       end
 
       # Total Time taken to load page
@@ -33,8 +32,17 @@ module QA
         dom_complete - response_start
       end
 
-      def apdex(satisfied_count, tolerating_count, total_samples)
-        (satisfied_count + (tolerating_count/2)) / total_samples
+      def apdex(samples_arr, response_threshold)
+        satisfied_count = 0
+        tolerating_count = 0
+        samples_arr.each do |sample|
+          if(sample <= response_threshold.to_f)
+            satisfied_count += 1
+          elsif(sample <= (4 * response_threshold.to_f))
+            tolerating_count += 1
+          end
+        end
+        (satisfied_count + (tolerating_count/2)) / samples_arr.length.to_f
       end
     end
   end

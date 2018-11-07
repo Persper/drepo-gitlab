@@ -151,11 +151,11 @@ module QA
           click_element :comment_button
         end
 
-        def add_comment_to_diff(text)
+        def add_comment_to_diff(text, line_number = 0)
           wait(time: 5) do
             page.has_text?("No newline at end of file")
           end
-          all_elements(:new_diff_line).first.hover
+          all_elements(:new_diff_line)[line_number].hover
           click_element :diff_comment
           fill_element :reply_input, text
         end
