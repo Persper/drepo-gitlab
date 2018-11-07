@@ -7,8 +7,8 @@ module QA
   context :performance do
     describe 'merge request' do
       let(:api_client) do
-         Runtime::API::Client.new(:gitlab)
-       end
+        Runtime::API::Client.new(:gitlab)
+      end
       let(:response_threshold) { 270 } # milliseconds
       let(:page_load_threshold) { 5000 } # milliseconds
       let(:project) do
@@ -55,7 +55,6 @@ module QA
           content = missed_line_array.join("\n\rIm new!:D \n\r ")
           push_new_file('perf-testing', content, "Update testfile-#{i}.md", "testfile-#{i}.md", true)
         end
-
       end
 
       def create_merge_request
@@ -92,7 +91,6 @@ module QA
         expect(page_load_time < page_load_threshold).to be true
         expect((apdex_score >= 0.5) && (apdex_score <= 1.0)).to be true
       end
-
     end
   end
 end

@@ -36,13 +36,13 @@ module QA
         satisfied_count = 0
         tolerating_count = 0
         samples_arr.each do |sample|
-          if(sample <= response_threshold.to_f)
+          if sample <= response_threshold.to_f
             satisfied_count += 1
-          elsif(sample <= (4 * response_threshold.to_f))
+          elsif sample <= (4 * response_threshold.to_f)
             tolerating_count += 1
           end
         end
-        (satisfied_count + (tolerating_count/2)) / samples_arr.length.to_f
+        (satisfied_count + (tolerating_count / 2)) / samples_arr.length.to_f
       end
     end
   end
