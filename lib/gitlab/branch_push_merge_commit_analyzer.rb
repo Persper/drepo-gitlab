@@ -70,8 +70,17 @@ module Gitlab
       end
     end
 
-    def initialize(commits)
+    def initialize(commits, relevant_commit_ids: nil)
       @commits = commits.reverse
+      @id_to_commit = {}
+      @commits.each do |commit|
+        @id_to_commit[commit.id] = CommitDecorator.new(commit)
+
+        if relevant_commit_ids
+          relevant_commit_ids.delete(commit.id)
+          break if relevant_commit_ids.empty? # Only limit the analyze up to relevant_commit_ids
+        end
+      end
 
       analyze
     end
@@ -89,7 +98,7 @@ module Gitlab
 
       # Analyzing a commit requires its child commit be analyzed first,
       # which is the case here since commits are ordered from child to parent.
-      id_to_commit.each_value do |commit|
+      @id_to_commit.each_value do |commit|
         analyze_parents(commit)
       end
     end
@@ -105,13 +114,7 @@ module Gitlab
     end
 
     def get_commit(id)
-      id_to_commit[id]
-    end
-
-    def id_to_commit
-      @id_to_commit ||= @commits.each_with_object({}) do |commit, hash|
-        hash[commit.id] = CommitDecorator.new(commit)
-      end
+      @id_to_commit[id]
     end
   end
 end
