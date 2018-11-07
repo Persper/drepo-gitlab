@@ -46,6 +46,11 @@ export default {
       required: false,
       default: false,
     },
+    cssClasses: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     cssClass() {
@@ -63,6 +68,7 @@ export default {
     <icon
       :name="icon"
       :size="size"
+      :css-classes="cssClasses"
     />
   </span>
 </template>

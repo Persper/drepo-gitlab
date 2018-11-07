@@ -26,11 +26,22 @@ class Import::GithubController < Import::BaseController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def status
-    @repos = client.repos
-    @already_added_projects = find_already_added_projects(provider)
-    already_added_projects_names = @already_added_projects.pluck(:import_source)
+    repos = client.repos
 
-    @repos.reject! { |repo| already_added_projects_names.include? repo.full_name }
+    respond_to do |format|
+      format.json do
+        already_added_projects = find_already_added_projects(provider)
+        already_added_projects_names = already_added_projects.pluck(:import_source)
+        repos.reject! { |repo| already_added_projects_names.include? repo.full_name }
+        repos.map! { |repo| repo.to_h }
+        namespaces = current_user.manageable_groups.eager_load(:route).order('routes.path')
+
+        render json: { imported_projects: ProjectSerializer.new.represent(already_added_projects, serializer: :import, provider: provider, host_url: host_url),
+                       provider_repos: ProviderRepoSerializer.new(current_user: current_user).represent(repos, provider: provider, host_url: host_url),
+                       namespaces: NamespaceSerializer.new.represent(namespaces) }
+      end
+      format.html
+    end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -50,7 +61,7 @@ class Import::GithubController < Import::BaseController
                   .execute(extra_project_attrs)
 
       if project.persisted?
-        render json: ProjectSerializer.new.represent(project)
+        render json: ProjectSerializer.new.represent(project, serializer: :import, provider: provider, host_url: host_url)
       else
         render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
@@ -103,7 +114,11 @@ class Import::GithubController < Import::BaseController
     { github_access_token: session[access_token_key] }
   end
 
-  # The following methods are overridden in subclasses
+  # The following methods are overriden in subclasses
+  def host_url
+    nil
+  end
+
   def provider
     :github
   end

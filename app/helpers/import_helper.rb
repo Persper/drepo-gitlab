@@ -16,8 +16,12 @@ module ImportHelper
     "#{namespace}/#{name}"
   end
 
+  def provider_project_link_url(provider, full_path, host_url = nil)
+    __send__("#{provider}_project_url", full_path, host_url) # rubocop:disable GitlabSecurity/PublicSend
+  end
+
   def provider_project_link(provider, full_path)
-    url = __send__("#{provider}_project_url", full_path) # rubocop:disable GitlabSecurity/PublicSend
+    url = provider_project_link_url(provider, full_path)
 
     link_to full_path, url, target: '_blank', rel: 'noopener noreferrer'
   end
@@ -44,10 +48,6 @@ module ImportHelper
     _('Please wait while we import the repository for you. Refresh at will.')
   end
 
-  def import_github_title
-    _('Import repositories from GitHub')
-  end
-
   def import_github_authorize_message
     _('To import GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:')
   end
@@ -72,18 +72,12 @@ module ImportHelper
     end
   end
 
-  def import_githubish_choose_repository_message
-    _('Choose which repositories you want to import.')
-  end
-
-  def import_all_githubish_repositories_button_label
-    _('Import all repositories')
-  end
-
   private
 
-  def github_project_url(full_path)
-    URI.join(github_root_url, full_path).to_s
+  def github_project_url(full_path, host_url = nil)
+    host_url = github_root_url if host_url.nil?
+
+    URI.join(host_url, full_path).to_s
   end
 
   def github_root_url
@@ -94,7 +88,9 @@ module ImportHelper
     end
   end
 
-  def gitea_project_url(full_path)
-    URI.join(@gitea_host_url, full_path).to_s
+  def gitea_project_url(full_path, host_url = nil)
+    host_url = @gitea_host_url if host_url.nil?
+
+    URI.join(host_url, full_path).to_s
   end
 end

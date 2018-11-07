@@ -13,7 +13,6 @@ class Import::GiteaController < Import::GithubController
   end
 
   def status
-    @gitea_host_url = session[host_key]
     super
   end
 
@@ -24,6 +23,10 @@ class Import::GiteaController < Import::GithubController
   end
 
   # Overridden methods
+  def host_url
+    session[host_key]
+  end
+
   def provider
     :gitea
   end

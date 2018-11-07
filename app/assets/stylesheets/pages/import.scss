@@ -1,20 +1,26 @@
 .import-jobs-from-col,
 .import-jobs-to-col {
-  width: 40%;
+  width: 50%;
 }
 
-.import-jobs-status-col {
-  width: 20%;
+.import-jobs-status-col,
+.import-jobs-cta-col {
+  min-width: 160px;
 }
 
-.btn-import {
-  .loading-icon {
-    display: none;
-  }
+.import-project-name-input {
+  border-radius: 0 $border-radius-default $border-radius-default 0;
+}
 
-  &.is-loading {
-    .loading-icon {
-      display: inline-block;
-    }
+.import-namespace-select {
+  width: auto !important;
+
+  > .select2-choice {
+    border-radius: $border-radius-default 0 0 $border-radius-default;
   }
+}
+
+.import-slash-divider {
+  background-color: $theme-gray-50;
+  border: 1px solid $border-color;
 }
