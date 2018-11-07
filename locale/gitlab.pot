@@ -6567,6 +6567,9 @@ msgstr ""
 msgid "Tip:"
 msgstr ""
 
+msgid "Title"
+msgstr ""
+
 msgid "To GitLab"
 msgstr ""
 
