@@ -1,14 +1,15 @@
 <script>
-import { mapState } from 'vuex';
-import { GlLink } from '@gitlab-org/gitlab-ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { mapGetters, mapState } from 'vuex';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import Suggestion from './item.vue';
 
 export default {
   components: {
-    Icon,
-    GlLink,
+    GlLoadingIcon,
+    Suggestion,
   },
   computed: {
+    ...mapGetters(['showSuggestionsHolder', 'showSuggestions']),
     ...mapState(['suggestions', 'isLoading']),
   },
 };
@@ -16,89 +17,47 @@ export default {
 
 <template>
   <div
-    v-if="suggestions.length || isLoading"
+    v-if="showSuggestionsHolder"
     class="md-area prepend-top-default"
   >
-    <template v-if="suggestions.length && !isLoading">
-      <p class="bold">
+    <div v-show="showSuggestions">
+      <p class="bold mt-0">
         {{ __('Possible related issues') }}
       </p>
-      <ul>
+      <ul class="issuable-suggestion-list">
         <li
           v-for="suggestion in suggestions"
           :key="suggestion.id"
+          class="issuable-suggestion-list-item"
         >
-          <gl-link
-            :href="suggestion.web_url"
-            target="_blank"
-          >
-            <span class="suggestion-title">
-              #{{ suggestion.iid }}
-              {{ suggestion.title }}
-            </span>
-            <span class="suggestion-counts">
-              <span class="ml-2">
-                <icon
-                  name="thumb-up"
-                />
-                {{ suggestion.upvotes }}
-              </span>
-              <span class="ml-2">
-                <icon
-                  name="comment"
-                />
-                {{ suggestion.user_notes_count }}
-              </span>
-            </span>
-          </gl-link>
+          <suggestion
+            :suggestion="suggestion"
+          />
         </li>
       </ul>
-    </template>
+    </div>
     <p
-      v-else-if="isLoading"
-      class="bold mb-0"
+      v-show="isLoading"
+      class="bold mb-0 mt-0"
     >
       {{ __('Searching for possible related issues') }}
-      <i class="fa fa-spinner fa-spin"></i>
+      <gl-loading-icon
+        inline
+      />
     </p>
   </div>
 </template>
 
 <style scoped>
-ul {
+.issuable-suggestion-list {
   margin: 0;
   padding: 0;
 }
 
-ul li {
+.issuable-suggestion-list-item {
   display: flex;
   margin: 0 -6px 4px;
   padding: 0;
   list-style: none;
-}
-
-ul li a {
-  display: flex;
-  width: 100%;
-  color: initial;
-  padding: 4px 6px;
-}
-
-ul li a:hover,
-ul li a:focus {
-  background-color: #eee;
-  text-decoration: none;
-}
-
-.suggestion-title {
-  max-width: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.suggestion-counts {
-  display: flex;
-  white-space: nowrap;
 }
 </style>
