@@ -8,6 +8,7 @@ describe Project do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:creator).class_name('User') }
+    it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
     it { is_expected.to have_many(:services) }
     it { is_expected.to have_many(:events) }
@@ -3972,6 +3973,40 @@ describe Project do
       project = create(:project, namespace: group)
 
       expect(described_class.for_group(group)).to eq([project])
+    end
+  end
+
+  describe '.deployments' do
+    subject { project.deployments }
+
+    let(:project) { create(:project) }
+
+    before do
+      allow_any_instance_of(Deployment).to receive(:create_ref)
+    end
+
+    context 'when there is a deployment record with created status' do
+      let(:deployment) { create(:deployment, :created, project: project) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with running status' do
+      let(:deployment) { create(:deployment, :running, project: project) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with success status' do
+      let(:deployment) { create(:deployment, :success, project: project) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
     end
   end
 

@@ -1,10 +1,13 @@
 <script>
 import _ from 'underscore';
 import { mapGetters, mapState, mapActions } from 'vuex';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
+import { polyfillSticky } from '~/lib/utils/sticky';
 import bp from '~/breakpoints';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import Callout from '~/vue_shared/components/callout.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import createStore from '../store';
 import EmptyState from './empty_state.vue';
 import EnvironmentsBlock from './environments_block.vue';
@@ -23,6 +26,8 @@ export default {
     EmptyState,
     EnvironmentsBlock,
     ErasedBlock,
+    GlLoadingIcon,
+    Icon,
     Log,
     LogTopBar,
     StuckBlock,
@@ -95,6 +100,14 @@ export default {
       if (_.isEmpty(oldVal) && !_.isEmpty(newVal.pipeline)) {
         this.fetchStages();
       }
+
+      if (newVal.archived) {
+        this.$nextTick(() => {
+          if (this.$refs.sticky) {
+            polyfillSticky(this.$refs.sticky);
+          }
+        });
+      }
     },
   },
   created() {
@@ -112,16 +125,13 @@ export default {
     window.addEventListener('resize', this.onResize);
     window.addEventListener('scroll', this.updateScroll);
   },
-
   mounted() {
     this.updateSidebar();
   },
-
   destroyed() {
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('scroll', this.updateScroll);
   },
-
   methods: {
     ...mapActions([
       'setJobEndpoint',
@@ -216,14 +226,28 @@ export default {
           :erased-at="job.erased_at"
         />
 
+        <div 
+          v-if="job.archived"
+          ref="sticky"
+          class="js-archived-job prepend-top-default archived-sticky sticky-top"
+        >
+          <icon 
+            name="lock"
+            class="align-text-bottom"
+          />
+                
+          {{ __('This job is archived. Only the complete pipeline can be retried.') }}
+        </div>
         <!--job log -->
         <div
           v-if="hasTrace"
-          class="build-trace-container prepend-top-default">
+          class="build-trace-container"
+        >
           <log-top-bar
             :class="{
               'sidebar-expanded': isSidebarOpen,
-              'sidebar-collapsed': !isSidebarOpen
+              'sidebar-collapsed': !isSidebarOpen,
+              'has-archived-block': job.archived
             }"
             :erase-path="job.erase_path"
             :size="traceSize"
