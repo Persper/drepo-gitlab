@@ -1,4 +1,4 @@
-# GitLab
+# GitLab Knative Testing
 
 ## Test coverage
 
