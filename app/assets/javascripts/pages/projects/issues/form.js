@@ -17,5 +17,7 @@ export default () => {
   new MilestoneSelect();
   new IssuableTemplateSelectors();
 
-  initSuggestions();
+  if (gon.features.issueSuggestions) {
+    initSuggestions();
+  }
 };

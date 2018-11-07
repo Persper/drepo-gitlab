@@ -3,10 +3,11 @@
 - form = local_assigns.fetch(:form)
 - no_issuable_templates = issuable_templates(issuable).empty?
 - div_class = no_issuable_templates ? 'col-sm-10' : 'col-sm-7 col-lg-8'
+- placeholder = Feature.enabled?(:issue_suggestions) && issuable.is_a?(Issue) ? _('What is your issue about?') : _('Title')
 
-%div{ class: div_class }
+%div{ class: [div_class, "#{Feature.enabled?(:issue_suggestions) && !no_issuable_templates ? 'order-1' : ''}"] }
   = form.text_field :title, required: true, maxlength: 255, autofocus: true,
-      autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: _('What is your issue about?')
+      autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: placeholder
 
   - if issuable.respond_to?(:work_in_progress?)
     .form-text.text-muted
@@ -32,4 +33,5 @@
   - if no_issuable_templates && can?(current_user, :push_code, issuable.project)
     = render 'shared/issuable/form/default_templates'
   
-  #js-suggestions{ data: { project_id: @project.id }}
+  - if Feature.enabled?(:issue_suggestions)
+    #js-suggestions{ data: { project_id: @project.id }}

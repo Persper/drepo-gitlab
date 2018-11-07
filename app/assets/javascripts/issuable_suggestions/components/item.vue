@@ -15,14 +15,17 @@ export default {
   },
   computed: {
     counts() {
-      return [{
-        icon: 'thumb-up',
-        count: this.suggestion.upvotes,
-      }, {
-        icon: 'comment',
-        count: this.suggestion.user_notes_count,
-      }];
-    }
+      return [
+        {
+          icon: 'thumb-up',
+          count: this.suggestion.upvotes,
+        },
+        {
+          icon: 'comment',
+          count: this.suggestion.user_notes_count,
+        },
+      ];
+    },
   },
 };
 </script>
