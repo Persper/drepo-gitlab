@@ -27,25 +27,25 @@ module Gitlab
   # First we determine if commit belongs to the target branch (i.e. A, B, C, D),
   # and then determine its merge commit.
   #
-  # +--------+----------------+--------------+
-  # | Commit | Target branch? | Merge commit |
-  # +--------+----------------+--------------+
-  # | D      | Y              | D            |
-  # +--------+----------------+--------------+
-  # | C      | Y              | C            |
-  # +--------+----------------+--------------+
-  # | F      |                | C            |
-  # +--------+----------------+--------------+
-  # | B      | Y              | B            |
-  # +--------+----------------+--------------+
-  # | E      |                | C            |
-  # +--------+----------------+--------------+
-  # | G      |                | C            |
-  # +--------+----------------+--------------+
+  # +--------+-----------------+--------------+
+  # | Commit | Direct ancestor | Merge commit |
+  # +--------+-----------------+--------------+
+  # | D      | Y               | D            |
+  # +--------+-----------------+--------------+
+  # | C      | Y               | C            |
+  # +--------+-----------------+--------------+
+  # | F      |                 | C            |
+  # +--------+-----------------+--------------+
+  # | B      | Y               | B            |
+  # +--------+-----------------+--------------+
+  # | E      |                 | C            |
+  # +--------+-----------------+--------------+
+  # | G      |                 | C            |
+  # +--------+-----------------+--------------+
   #
   # By examining the result, it can be said that
   #
-  # - If commit belongs to target branch, its merge commit is itself.
+  # - If commit is direct ancestor of HEAD, its merge commit is itself.
   # - Otherwise, the merge commit is the same as its child's merge commit.
   #
   class BranchPushMergeCommitAnalyzer
