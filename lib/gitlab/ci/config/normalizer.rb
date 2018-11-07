@@ -31,33 +31,40 @@ module Gitlab
         end
 
         def parallelize_jobs
-          @jobs_config.each_with_object({}) do |(job_name, config), hash|
-            if @parallelized_jobs.key?(job_name)
-              @parallelized_jobs[job_name].each { |name, index| hash[name.to_sym] = config.merge(name: name, instance: index) }
-            else
-              hash[job_name] = config
-            end
-
-            hash
+          condition = lambda { |job_name, _| @parallelized_jobs.key?(job_name) }
+          replacement = lambda do |job_name, config, hash|
+            @parallelized_jobs[job_name].each { |name, index| hash[name.to_sym] = config.merge(name: name, instance: index) }
           end
+
+          self.class.replace(@jobs_config, condition, replacement)
         end
 
         def parallelize_dependencies(parallelized_config)
           parallelized_job_names = @parallelized_jobs.keys.map(&:to_s)
-          parallelized_config.each_with_object({}) do |(job_name, config), hash|
-            if config[:dependencies] && (intersection = config[:dependencies] & parallelized_job_names).any?
-              deps = intersection.map { |dep| @parallelized_jobs[dep.to_sym].map(&:first) }.flatten
-              hash[job_name] = config.merge(dependencies: deps)
-            else
-              hash[job_name] = config
-            end
-
-            hash
+          condition = lambda { |_, config| config[:dependencies] && (config[:dependencies] & parallelized_job_names).any? }
+          replacement = lambda do |job_name, config, hash|
+            intersection = config[:dependencies] & parallelized_job_names
+            deps = intersection.map { |dep| @parallelized_jobs[dep.to_sym].map(&:first) }.flatten
+            hash[job_name] = config.merge(dependencies: deps)
           end
+
+          self.class.replace(parallelized_config, condition, replacement)
         end
 
         def self.parallelize_job_names(name, total)
           Array.new(total) { |index| ["#{name} #{index + 1}/#{total}", index + 1] }
+        end
+
+        def self.replace(original_hash, condition_predicate, replacement_predicate)
+          original_hash.each_with_object({}) do |(key, value), hash|
+            if condition_predicate.call(key, value)
+              replacement_predicate.call(key, value, hash)
+            else
+              hash[key] = value
+            end
+
+            hash
+          end
         end
       end
     end
