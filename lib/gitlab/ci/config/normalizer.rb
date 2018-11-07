@@ -36,7 +36,7 @@ module Gitlab
             @parallelized_jobs[job_name].each { |name, index| hash[name.to_sym] = config.merge(name: name, instance: index) }
           end
 
-          self.class.replace(@jobs_config, condition, replacement)
+          self.class.replace_in_hash(@jobs_config, condition, replacement)
         end
 
         def parallelize_dependencies(parallelized_config)
@@ -48,14 +48,14 @@ module Gitlab
             hash[job_name] = config.merge(dependencies: deps)
           end
 
-          self.class.replace(parallelized_config, condition, replacement)
+          self.class.replace_in_hash(parallelized_config, condition, replacement)
         end
 
         def self.parallelize_job_names(name, total)
           Array.new(total) { |index| ["#{name} #{index + 1}/#{total}", index + 1] }
         end
 
-        def self.replace(original_hash, condition_predicate, replacement_predicate)
+        def self.replace_in_hash(original_hash, condition_predicate, replacement_predicate)
           original_hash.each_with_object({}) do |(key, value), hash|
             if condition_predicate.call(key, value)
               replacement_predicate.call(key, value, hash)
