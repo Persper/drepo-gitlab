@@ -6,7 +6,7 @@
 
 %div{ class: div_class }
   = form.text_field :title, required: true, maxlength: 255, autofocus: true,
-      autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: _('Title')
+      autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: _('What is your issue about?')
 
   - if issuable.respond_to?(:work_in_progress?)
     .form-text.text-muted
@@ -31,3 +31,5 @@
 
   - if no_issuable_templates && can?(current_user, :push_code, issuable.project)
     = render 'shared/issuable/form/default_templates'
+  
+  #js-suggestions{ data: { project_id: @project.id }}

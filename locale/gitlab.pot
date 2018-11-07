@@ -4650,6 +4650,9 @@ msgstr ""
 msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
+msgid "Possible related issues"
+msgstr ""
+
 msgid "Preferences"
 msgstr ""
 
@@ -5498,6 +5501,9 @@ msgid "SearchAutocomplete|in this group"
 msgstr ""
 
 msgid "SearchAutocomplete|in this project"
+msgstr ""
+
+msgid "Searching for possible related issues"
 msgstr ""
 
 msgid "Secret"
@@ -6561,9 +6567,6 @@ msgstr ""
 msgid "Tip:"
 msgstr ""
 
-msgid "Title"
-msgstr ""
-
 msgid "To GitLab"
 msgstr ""
 
@@ -6955,6 +6958,9 @@ msgid "Web IDE"
 msgstr ""
 
 msgid "Web terminal"
+msgstr ""
+
+msgid "What is your issue about?"
 msgstr ""
 
 msgid "When a runner is locked, it cannot be assigned to other projects"

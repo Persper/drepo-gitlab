@@ -7,6 +7,7 @@ import LabelsSelect from '~/labels_select';
 import MilestoneSelect from '~/milestone_select';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import IssuableTemplateSelectors from '~/templates/issuable_template_selectors';
+import initSuggestions from '~/issuable_suggestions';
 
 export default () => {
   new ShortcutsNavigation();
@@ -15,4 +16,6 @@ export default () => {
   new LabelsSelect();
   new MilestoneSelect();
   new IssuableTemplateSelectors();
+
+  initSuggestions();
 };

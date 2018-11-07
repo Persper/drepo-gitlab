@@ -14,6 +14,7 @@ const Api = {
   mergeRequestsPath: '/api/:version/merge_requests',
   mergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
   mergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
+  issuesPath: '/api/:version/projects/:id/issues',
   groupLabelsPath: '/groups/:namespace_path/-/labels',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   projectTemplatePath: '/api/:version/projects/:id/templates/:type/:key',
@@ -271,6 +272,12 @@ const Api = {
       emoji,
       message,
     });
+  },
+
+  getIssues(id, params = {}) {
+    const url = Api.buildUrl(this.issuesPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url, { params });
   },
 
   buildUrl(url) {
