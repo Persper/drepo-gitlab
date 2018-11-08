@@ -22,7 +22,7 @@ export default {
         },
         {
           icon: 'comment',
-          count: this.suggestion.user_notes_count,
+          count: this.suggestion.userNotesCount,
         },
       ];
     },
@@ -41,7 +41,7 @@ export default {
       #{{ suggestion.iid }}
       {{ suggestion.title }}
     </span>
-    <span class="suggestion-counts">
+    <span class="suggestion-counts ml-auto">
       <span
         v-for="({ count, icon }, index) in counts"
         :key="index"

@@ -1,51 +1,81 @@
 <script>
-import { mapGetters, mapState } from 'vuex';
 import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import Suggestion from './item.vue';
+import issuesQuery from '../queries/issues';
 
 export default {
   components: {
     GlLoadingIcon,
     Suggestion,
   },
-  computed: {
-    ...mapGetters(['showSuggestionsHolder', 'showSuggestions']),
-    ...mapState(['suggestions', 'isLoading']),
+  props: {
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    search: {
+      type: String,
+      required: true,
+    },
   },
+  computed: {
+    isSearchEmpty() {
+      return this.search.trim() === '';
+    }
+  },
+  methods: {
+    hasIssues(data) {
+      if (!data || !data.project) return false;
+
+      return data.project.issues.length;
+    },
+  },
+  issuesQuery,
 };
 </script>
 
 <template>
-  <div
-    v-if="showSuggestionsHolder"
-    class="md-area prepend-top-default"
+  <apollo-query
+    :query="$options.issuesQuery"
+    :variables="{
+      fullPath: projectPath,
+      search
+    }"
+    :skip="isSearchEmpty"
   >
-    <div v-show="showSuggestions">
-      <p class="bold mt-0">
-        {{ __('Possible related issues') }}
-      </p>
-      <ul class="issuable-suggestion-list">
-        <li
-          v-for="suggestion in suggestions"
-          :key="suggestion.id"
-          class="issuable-suggestion-list-item"
+    <template slot-scope="{ result: { loading, error, data } }">
+      <div
+        v-if="!isSearchEmpty && (loading || hasIssues(data))"
+        class="md-area prepend-top-default"
+      >
+        <p
+          v-if="loading"
+          class="bold mb-0 mt-0"
         >
-          <suggestion
-            :suggestion="suggestion"
+          {{ __('Searching for possible related issues') }}
+          <gl-loading-icon
+            inline
           />
-        </li>
-      </ul>
-    </div>
-    <p
-      v-show="isLoading"
-      class="bold mb-0 mt-0"
-    >
-      {{ __('Searching for possible related issues') }}
-      <gl-loading-icon
-        inline
-      />
-    </p>
-  </div>
+        </p>
+        <div v-else-if="hasIssues(data)">
+          <p class="bold mt-0">
+            {{ __('Possible related issues') }}
+          </p>
+          <ul class="issuable-suggestion-list">
+            <li
+              v-for="suggestion in data.project.issues"
+              :key="suggestion.id"
+              class="issuable-suggestion-list-item"
+            >
+              <suggestion
+                :suggestion="suggestion"
+              />
+            </li>
+          </ul>
+        </div>
+      </div>
+    </template>
+  </apollo-query>
 </template>
 
 <style scoped>
@@ -59,5 +89,9 @@ export default {
   margin: 0 -6px 4px;
   padding: 0;
   list-style: none;
+}
+
+.issuable-suggestion-list-item:last-child {
+  margin-bottom: 0;
 }
 </style>

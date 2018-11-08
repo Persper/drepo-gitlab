@@ -40,6 +40,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:issue_suggestions)
+    push_frontend_feature_flag(:graphql)
   end
 
   respond_to :html

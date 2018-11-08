@@ -17,7 +17,7 @@ export default () => {
   new MilestoneSelect();
   new IssuableTemplateSelectors();
 
-  if (gon.features.issueSuggestions) {
+  if (gon.features.issueSuggestions && gon.features.graphql) {
     initSuggestions();
   }
 };

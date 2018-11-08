@@ -1,37 +1,48 @@
 import _ from 'underscore';
 import Vue from 'vue';
-import { mapActions } from 'vuex';
-import createStore from './store';
+import VueApollo from 'vue-apollo';
+import ApolloClient from 'apollo-boost';
 import App from './components/app.vue';
+import csrf from '~/lib/utils/csrf';
+
+Vue.use(VueApollo);
 
 export default function() {
-  const store = createStore();
   const el = document.getElementById('js-suggestions');
   const issueTitle = document.getElementById('issue_title');
-  const { projectId } = el.dataset;
+  const { projectPath } = el.dataset;
+  const apolloProvider = new VueApollo({
+    defaultClient: new ApolloClient({
+      uri: '/api/graphql',
+      headers: {
+        [csrf.headerKey]: csrf.token,
+      },
+    }),
+  });
 
   return new Vue({
     el,
-    store,
-    mounted() {
-      this.sendSearchRequest();
-
-      issueTitle.addEventListener('input', this.search);
+    apolloProvider,
+    data() {
+      return {
+        search: issueTitle.value,
+      };
     },
-    methods: {
-      ...mapActions(['fetchSuggestions']),
-      sendSearchRequest() {
-        this.fetchSuggestions({
-          projectId,
-          search: issueTitle.value,
-        });
-      },
-      search: _.debounce(function searchDebouned(e) {
-        this.sendSearchRequest(e.target.value);
-      }, 250),
+    mounted() {
+      issueTitle.addEventListener(
+        'input',
+        _.debounce(() => {
+          this.search = issueTitle.value;
+        }, 250),
+      );
     },
     render(h) {
-      return h(App);
+      return h(App, {
+        props: {
+          projectPath,
+          search: this.search,
+        },
+      });
     },
   });
 }

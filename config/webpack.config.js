@@ -84,7 +84,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js'],
+    extensions: ['.mjs', '.js'],
     alias: {
       '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
       emojis: path.join(ROOT_PATH, 'fixtures/emojis'),

@@ -73,6 +73,11 @@ module Types
       authorize :read_merge_request
     end
 
+    field :issues,
+          [Types::IssueType, null: true],
+          null: true,
+          resolver: Resolvers::IssuesResolver
+
     field :pipelines,
           Types::Ci::PipelineType.connection_type,
           null: false,

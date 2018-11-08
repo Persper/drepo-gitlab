@@ -33,5 +33,5 @@
   - if no_issuable_templates && can?(current_user, :push_code, issuable.project)
     = render 'shared/issuable/form/default_templates'
   
-  - if Feature.enabled?(:issue_suggestions)
-    #js-suggestions{ data: { project_id: @project.id }}
+  - if Feature.enabled?(:issue_suggestions) && Feature.enabled?(:graphql)
+    #js-suggestions{ data: { project_path: @project.full_path } }
