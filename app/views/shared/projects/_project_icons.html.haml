@@ -1,0 +1,27 @@
+- project = local_assigns.fetch(:project)
+- stars = true unless local_assigns[:stars] == false
+- forks = false unless local_assigns[:forks] == true
+- updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
+
+%span.d-inline-flex.align-items-center.flex-wrap.justify-content-end
+  - if project.archived
+    %span.d-inline-flex.align-items-center.prepend-left-10.badge.badge-warning archived
+  - if can?(current_user, :read_cross_project) && project.pipeline_status.has_status?
+    %span.d-inline-flex.align-items-center.prepend-left-10.pipeline-state
+      = render_project_pipeline_status(project.pipeline_status)
+  - if stars
+    %span.d-inline-flex.align-items-center.prepend-left-10.stars.has-tooltip{ data: { container: 'body', placement: 'left' }, title: _('Stars') }
+      = sprite_icon('star', size: 14, css_class: 'append-right-4')
+      = number_with_delimiter(project.star_count)
+  - if forks
+    %span.d-inline-flex.align-items-center.prepend-left-10.forks.has-tooltip{ data: { container: 'body', placement: 'left' }, title: _('Forks') }
+      = sprite_icon('fork', size: 14, css_class: 'append-right-4')
+      = number_with_delimiter(project.forks_count)
+  -#%span.d-none.d-sm-inline-flex.align-items-center.prepend-left-10.merge-requests.has-tooltip{ data: { container: 'body', placement: 'left' }, title: _('Merge Requests') }
+    -#= sprite_icon('git-merge', size: 14, css_class: 'append-right-4')
+    -#= number_with_delimiter(project.open_merge_requests_count)
+  -#%span.d-none.d-sm-inline-flex.align-items-center.prepend-left-10.issues.has-tooltip{ data: { container: 'body', placement: 'left' }, title: _('Issues') }
+    -#= sprite_icon('issues', size: 14, css_class: 'append-right-4')
+    -#= number_with_delimiter(project.open_issues_count)
+%span.prepend-top-8.updated-note
+  Updated #{updated_tooltip}
