@@ -16,7 +16,7 @@ class Projects::ImportsController < Projects::ApplicationController
     @project.import_url = params[:project][:import_url]
 
     if @project.save
-      @project.reload.import_schedule
+      @project.import_state.reload.schedule
     end
 
     redirect_to project_import_path(@project)
@@ -24,7 +24,7 @@ class Projects::ImportsController < Projects::ApplicationController
 
   def show
     if @project.import_finished?
-      if continue_params
+      if continue_params && continue_params[:to]
         redirect_to continue_params[:to], notice: continue_params[:notice]
       else
         redirect_to project_path(@project), notice: finished_notice

@@ -104,7 +104,6 @@ excluded_attributes:
     - :repository_storage
     - :repository_read_only
     - :lfs_enabled
-    - :import_jid
     - :created_at
     - :updated_at
     - :id

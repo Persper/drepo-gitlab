@@ -30,6 +30,7 @@ FactoryBot.define do
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
       group_runners_enabled nil
+      import_state_status nil
     end
 
     after(:create) do |project, evaluator|
@@ -64,6 +65,12 @@ FactoryBot.define do
 
       # assign the delegated `#ci_cd_settings` attributes after create
       project.reload.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
+
+      if evaluator.import_state_status
+        import_state = project.import_state || project.build_import_state
+        import_state.status = evaluator.import_state_status
+        import_state.save
+      end
     end
 
     trait :public do
@@ -79,19 +86,27 @@ FactoryBot.define do
     end
 
     trait :import_scheduled do
-      import_status :scheduled
+      transient do
+        import_state_status :scheduled
+      end
     end
 
     trait :import_started do
-      import_status :started
+      transient do
+        import_state_status :started
+      end
     end
 
     trait :import_finished do
-      import_status :finished
+      transient do
+        import_state_status :finished
+      end
     end
 
     trait :import_failed do
-      import_status :failed
+      transient do
+        import_state_status :failed
+      end
     end
 
     trait :archived do
