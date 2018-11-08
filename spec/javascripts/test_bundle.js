@@ -106,6 +106,18 @@ afterEach(() => {
   clearTimeout(longRunningTestTimeoutHandle);
 });
 
+beforeEach(done => {
+  const originalWarn = console.warn;
+  spyOn(console, 'warn').and.callFake(message => {
+    if (message.startsWith('[Bootstrap-Vue warn]:')) {
+      done.fail(message);
+    } else {
+      originalWarn(message);
+    }
+  });
+  done();
+});
+
 const axiosDefaultAdapter = getDefaultAdapter();
 
 // render all of our tests
