@@ -9,6 +9,9 @@ export default class LazyLoader {
     this.intersectionObserver = null;
     this.lazyImages = [];
     this.observerNode = options.observerNode || '#content-body';
+    this.requestAnimationFrame = (
+      options.requestAnimationFrame || window.requestAnimationFrame
+    ).bind(window);
 
     const scrollContainer = options.scrollContainer || window;
     scrollContainer.addEventListener('load', () => this.register());
@@ -107,7 +110,7 @@ export default class LazyLoader {
   }
 
   scrollCheck() {
-    requestAnimationFrame(() => this.checkElementsInView());
+    this.requestAnimationFrame(() => this.checkElementsInView());
   }
 
   checkElementsInView() {
@@ -122,7 +125,7 @@ export default class LazyLoader {
         const imgBound = imgTop + imgBoundRect.height;
 
         if (scrollTop <= imgBound && visHeight >= imgTop) {
-          requestAnimationFrame(() => {
+          this.requestAnimationFrame(() => {
             LazyLoader.loadImage(selectedImage);
           });
           return false;
