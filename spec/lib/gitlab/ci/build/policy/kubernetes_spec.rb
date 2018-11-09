@@ -3,11 +3,17 @@ require 'spec_helper'
 describe Gitlab::Ci::Build::Policy::Kubernetes do
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
+  let(:ci_build) do
+    create(:ci_build, pipeline: pipeline, project: project, ref: 'master')
+  end
+
+  let(:seed) { double('build seed', to_resource: ci_build) }
+
   context 'when kubernetes service is active' do
     shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
       it 'is satisfied by a kubernetes pipeline' do
         expect(described_class.new('active'))
-          .to be_satisfied_by(pipeline)
+          .to be_satisfied_by(pipeline, seed)
       end
     end
 
@@ -25,12 +31,22 @@ describe Gitlab::Ci::Build::Policy::Kubernetes do
     end
   end
 
-  context 'when kubernetes service is inactive' do
+  context 'when kubernetes platform does not exist' do
     set(:project) { create(:project) }
 
     it 'is not satisfied by a pipeline without kubernetes available' do
       expect(described_class.new('active'))
-        .not_to be_satisfied_by(pipeline)
+        .not_to be_satisfied_by(pipeline, seed)
+    end
+  end
+
+  context 'when inactive kubernetes platform exists' do
+    let!(:cluster) { create(:cluster, :project, :disabled, :provided_by_gcp) }
+      let(:project) { cluster.project }
+
+    it 'is not satisfied by a pipeline without kubernetes available' do
+      expect(described_class.new('active'))
+        .not_to be_satisfied_by(pipeline, seed)
     end
   end
 

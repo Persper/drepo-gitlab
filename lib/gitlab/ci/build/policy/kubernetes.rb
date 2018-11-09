@@ -12,7 +12,8 @@ module Gitlab
           end
 
           def satisfied_by?(pipeline, seed = nil)
-            pipeline.has_kubernetes_active?
+            build = seed.to_resource
+            build.project.deployment_platform(environment: build.environment)&.active?
           end
         end
       end
