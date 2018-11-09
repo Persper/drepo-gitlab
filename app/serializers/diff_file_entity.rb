@@ -143,9 +143,6 @@ class DiffFileEntity < Grape::Entity
     diff_file.diff_lines_for_serializer
   end
 
-  # Used for parallel diffs
-  expose :parallel_diff_lines, using: DiffLineParallelEntity, if: -> (diff_file, _) { diff_file.text? }
-
   def current_user
     request.current_user
   end
