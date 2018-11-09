@@ -215,7 +215,9 @@ function parallelize(diffFile) {
   const lines = [];
   let freeRightIndex = null;
 
-  if (!diffFile.highlightedDiffLines) return;
+  if (!diffFile.highlightedDiffLines) {
+    return null;
+  }
 
   diffFile.highlightedDiffLines.forEach(line => {
     if (removed(line)) {
@@ -230,7 +232,7 @@ function parallelize(diffFile) {
       if (freeRightIndex) {
         lines[freeRightIndex].right = line;
 
-        let nextFreeRightIndex = freeRightIndex + 1;
+        const nextFreeRightIndex = freeRightIndex + 1;
         freeRightIndex = nextFreeRightIndex < i ? nextFreeRightIndex : null;
       } else {
         lines.push({
