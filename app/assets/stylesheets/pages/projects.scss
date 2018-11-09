@@ -896,16 +896,26 @@ pre.light-well {
     @include media-breakpoint-up(lg) {
       padding: $gl-padding-32 0;
     }
+
+    &.no-description {
+      .avatar-container {
+        @include media-breakpoint-up(sm) {
+          align-self: center;
+        }
+      }
+    }
   }
 
   h2 {
     font-size: 20px;
     font-weight: $gl-font-weight-normal;
 
+    /*
     @include media-breakpoint-down(sm) {
       width: 100%;
       margin-bottom: $gl-padding-8;
     }
+    */
 
     .project-name {
       font-weight: $gl-font-weight-bold;
@@ -924,6 +934,11 @@ pre.light-well {
   .project-details {
     min-width: 0;
     line-height: 16px;
+    flex: 1;
+    
+    .flex-wrapper {
+      flex: 1;
+    }
 
     p,
     .commit-row-message {
@@ -962,15 +977,32 @@ pre.light-well {
 
     .icon-wrapper {
       margin-right: $gl-padding;
-    }
 
-    @include media-breakpoint-down(sm) {
-      .icon-wrapper {
+      @include media-breakpoint-down(md) {
         margin-right: $gl-padding-8;
+      }
+
+      @include media-breakpoint-down(sm) {
+        margin-right: 0;
+        margin-left: $gl-padding-8;
+      }
+
+      @include media-breakpoint-down(xs) {
+        &:first-child {
+          margin-left: 0;
+        }
       }
     }
 
     @include media-breakpoint-down(md) {
+      margin-top: $gl-padding-8;
+    }
+
+    @include media-breakpoint-down(sm) {
+      margin-top: 0;
+    }
+
+    @include media-breakpoint-down(xs) {
       margin-top: $gl-padding-8;
     }
 
@@ -982,6 +1014,20 @@ pre.light-well {
   .star-button {
     .icon {
       top: 0;
+    }
+  }
+
+  .icon-container {
+    @include media-breakpoint-down(md) {
+      margin-right: 0;
+    }
+
+    @include media-breakpoint-down(sm) {
+      margin-right: 0;
+    }
+
+    @include media-breakpoint-down(xs) {
+      margin-right: $gl-padding-8;
     }
   }
 
@@ -999,6 +1045,31 @@ pre.light-well {
       min-height: 40px;
       min-width: 40px;
     }
+
+    .inline-controls {
+      margin-top: 0;
+
+      @include media-breakpoint-up(xs) {
+        margin-top: $gl-padding-8;
+      }
+    }
+
+    .updated-note {
+      @include media-breakpoint-up(sm) {
+        margin-top: $gl-padding-8;
+      }
+    }
+
+    .icon-wrapper {
+      margin-left: $gl-padding-8;
+      margin-right: 0;
+
+      @include media-breakpoint-down(xs) {
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
   }
 
   @include media-breakpoint-down(md) {
@@ -1014,6 +1085,11 @@ pre.light-well {
   }
 
   @include media-breakpoint-down(sm) {
+    .updated-note {
+      margin-top: $gl-padding-8;
+      text-align: right;
+    }
+
     &:not(.explore) {
       .forks {
         display: none !important;
@@ -1025,6 +1101,13 @@ pre.light-well {
       .updated-note {
         display: none !important;
       }
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .updated-note {
+      margin-top: 0;
+      text-align: left;
     }
   }
 }
