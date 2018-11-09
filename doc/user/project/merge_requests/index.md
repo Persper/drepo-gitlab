@@ -1,7 +1,6 @@
 ---
 category: create
 nav_title: 'Create 3'
-kind: article
 ---
 
 # Merge requests

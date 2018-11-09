@@ -1,7 +1,6 @@
 ---
 category: create
 nav_title: 'Create 2'
-kind: article
 ---
 
 # Issue Boards

@@ -1,7 +1,6 @@
 ---
 category: create
 nav_title: 'Create 1'
-kind: article
 ---
 
 # Projects

@@ -2,7 +2,6 @@
 description: 'Read through the GitLab User documentation to learn how to use, configure, and customize GitLab and GitLab.com to your own needs.'
 category: plan
 nav_title: 'Plan 2'
-kind: article
 ---
 
 # User documentation
