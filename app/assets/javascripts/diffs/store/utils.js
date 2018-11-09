@@ -198,6 +198,63 @@ export function trimFirstCharOfLineContent(line = {}) {
   return parsedLine;
 }
 
+function unchanged(line) {
+  return !line.type || ['match', 'new-nonewline', 'old-nonewline'].includes(line.type);
+}
+
+function added(line) {
+  return ['new', 'new-nonewline'].includes(line.type);
+}
+
+function removed(line) {
+  return ['old', 'old-nonewline'].includes(line.type);
+}
+
+function parallelize(diffFile) {
+  let i = 0;
+  const lines = [];
+  let freeRightIndex = null;
+
+  if (!diffFile.highlightedDiffLines) return;
+
+  diffFile.highlightedDiffLines.forEach(line => {
+    if (removed(line)) {
+      lines.push({
+        left: line,
+        right: null,
+      });
+
+      freeRightIndex = i; // TODO: this was ||= in ruby
+      i += 1;
+    } else if (added(line)) {
+      if (freeRightIndex) {
+        lines[freeRightIndex].right = line;
+
+        let nextFreeRightIndex = freeRightIndex + 1
+        freeRightIndex = nextFreeRightIndex < i ? nextFreeRightIndex : null;
+      } else {
+        lines.push({
+          left: null,
+          right: line,
+        });
+
+        freeRightIndex = null;
+        i += 1;
+      }
+    } else if (unchanged(line)) {
+      lines.push({
+        left: line,
+        right: line,
+      });
+
+      freeRightIndex = null;
+      i += 1;
+    }
+  })
+
+  return lines;
+}
+
 // This prepares and optimizes the incoming diff data from the server
 // by setting up incremental rendering and removing unneeded data
 export function prepareDiffData(diffData) {
@@ -206,25 +263,16 @@ export function prepareDiffData(diffData) {
   for (let i = 0; i < filesLength; i += 1) {
     const file = diffData.diffFiles[i];
 
-    if (file.parallelDiffLines) {
-      const linesLength = file.parallelDiffLines.length;
-      for (let u = 0; u < linesLength; u += 1) {
-        const line = file.parallelDiffLines[u];
-        if (line.left) {
-          line.left = trimFirstCharOfLineContent(line.left);
-        }
-        if (line.right) {
-          line.right = trimFirstCharOfLineContent(line.right);
-        }
-      }
-    }
-
     if (file.highlightedDiffLines) {
       const linesLength = file.highlightedDiffLines.length;
       for (let u = 0; u < linesLength; u += 1) {
         const line = file.highlightedDiffLines[u];
         Object.assign(line, { ...trimFirstCharOfLineContent(line) });
       }
+    }
+
+    file.parallelDiffLines = parallelize(file);
+    if (file.parallelDiffLines) {
       showingLines += file.parallelDiffLines.length;
     }
 
