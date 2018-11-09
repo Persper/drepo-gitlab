@@ -32,8 +32,8 @@ module Gitlab
 
         def parallelize_jobs
           condition = lambda { |job_name, _| @parallelized_jobs.key?(job_name) }
-          replacement = lambda do |job_name, config, hash|
-            @parallelized_jobs[job_name].each { |name, index| hash[name.to_sym] = config.merge(name: name, instance: index) }
+          replacement = lambda do |job_name, config|
+            @parallelized_jobs[job_name].collect { |name, index| [name.to_sym, config.merge(name: name, instance: index)] }
           end
 
           self.class.replace_in_hash(@jobs_config, condition, replacement)
@@ -42,10 +42,11 @@ module Gitlab
         def parallelize_dependencies(parallelized_config)
           parallelized_job_names = @parallelized_jobs.keys.map(&:to_s)
           condition = lambda { |_, config| config[:dependencies] && (config[:dependencies] & parallelized_job_names).any? }
-          replacement = lambda do |job_name, config, hash|
+          replacement = lambda do |job_name, config|
             intersection = config[:dependencies] & parallelized_job_names
             deps = intersection.map { |dep| @parallelized_jobs[dep.to_sym].map(&:first) }.flatten
-            hash[job_name] = config.merge(dependencies: deps)
+
+            [[job_name, config.merge(dependencies: deps)]]
           end
 
           self.class.replace_in_hash(parallelized_config, condition, replacement)
@@ -58,7 +59,7 @@ module Gitlab
         def self.replace_in_hash(original_hash, condition_predicate, replacement_predicate)
           original_hash.each_with_object({}) do |(key, value), hash|
             if condition_predicate.call(key, value)
-              replacement_predicate.call(key, value, hash)
+              replacement_predicate.call(key, value).each { |repl_key, repl_value| hash[repl_key] = repl_value }
             else
               hash[key] = value
             end
