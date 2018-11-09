@@ -224,13 +224,13 @@ function parallelize(diffFile) {
         right: null,
       });
 
-      freeRightIndex = i; // TODO: this was ||= in ruby
+      freeRightIndex = i;
       i += 1;
     } else if (added(line)) {
       if (freeRightIndex) {
         lines[freeRightIndex].right = line;
 
-        let nextFreeRightIndex = freeRightIndex + 1
+        let nextFreeRightIndex = freeRightIndex + 1;
         freeRightIndex = nextFreeRightIndex < i ? nextFreeRightIndex : null;
       } else {
         lines.push({
@@ -250,7 +250,7 @@ function parallelize(diffFile) {
       freeRightIndex = null;
       i += 1;
     }
-  })
+  });
 
   return lines;
 }
