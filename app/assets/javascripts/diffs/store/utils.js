@@ -229,13 +229,18 @@ function parallelize(diffFile) {
       });
 
       if (freeRightIndex === null) {
+        // Once we come upon a new line it can be put on the right of this old line
         freeRightIndex = i;
       }
       i += 1;
     } else if (added(line)) {
       if (freeRightIndex !== null) {
+        // If an old line came before this without a line on the right, this
+        // line can be put to the right of it.
         lines[freeRightIndex].right = line;
 
+        // If there are any other old lines on the left that don't yet have
+        // a new counterpart on the right, update the freeRightIndex
         const nextFreeRightIndex = freeRightIndex + 1;
         freeRightIndex = nextFreeRightIndex < i ? nextFreeRightIndex : null;
       } else {
@@ -248,6 +253,7 @@ function parallelize(diffFile) {
         i += 1;
       }
     } else if (unchanged(line)) {
+      // line in the right panel is the same as in the left one
       lines.push({
         left: line,
         right: line,
