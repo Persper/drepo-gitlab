@@ -21,7 +21,7 @@
             = image_tag avatar_icon_for_user(project.creator, 64), class: "avatar s65", alt:''
           - else
             = project_icon(project, alt: '', class: 'avatar project-avatar s64', width: 64, height: 64)
-    .project-details.d-flex.flex-column.flex-sm-row.align-items-start.align-items-sm-center{ class: css_details_class }
+    .project-details.d-flex.flex-column.flex-sm-row.align-items-start.align-items-sm-center.flex-grow{ class: css_details_class }
       %div.flex-wrapper
         .d-flex.align-items-center.flex-wrap
           %h2.prepend-top-0.append-bottom-0
@@ -54,7 +54,7 @@
           .description.d-none.d-sm-block.prepend-top-8
             = markdown_field(project, :description)
 
-      .inline-controls.d-flex.flex-row.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap{ class: css_controls_class }
+      .controls.d-flex.flex-row.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap{ class: css_controls_class }
         %div.icon-container.d-flex
           - if project.archived
             %span.d-flex.icon-wrapper.badge.badge-warning archived
@@ -80,20 +80,18 @@
         %div.d-flex.updated-note
           %span Updated #{updated_tooltip}
 
-    .controls.d-none.d-md-flex.d-lg-flex
+    .d-none.d-md-flex.d-lg-flex.align-item-stretch
       - unless compact_mode
         - if current_user
-          .d-flex.align-item-stretch
-            %button.star-button.btn.btn-default.d-flex.align-items-center.star-btn.toggle-star{ type: "button", data: { endpoint: toggle_star_project_path(project, :json) } }
-              - if current_user.starred?(project)
-                = sprite_icon('star', { css_class: 'icon' })
-                %span.starred= s_('ProjectOverview|Unstar')
-              - else
-                = sprite_icon('star-o', { css_class: 'icon' })
-                %span= s_('ProjectOverview|Star')
-
-        - else
-          .d-flex.align-item-stretch
-            = link_to new_user_session_path, class: 'btn btn-default has-tooltip count-badge-button d-flex align-items-center star-btn', title: s_('ProjectOverview|You must sign in to star a project') do
+          %button.star-button.btn.btn-default.d-flex.align-items-center.star-btn.toggle-star{ type: "button", data: { endpoint: toggle_star_project_path(project, :json) } }
+            - if current_user.starred?(project)
+              = sprite_icon('star', { css_class: 'icon' })
+              %span.starred= s_('ProjectOverview|Unstar')
+            - else
               = sprite_icon('star-o', { css_class: 'icon' })
               %span= s_('ProjectOverview|Star')
+
+        - else
+          = link_to new_user_session_path, class: 'btn btn-default has-tooltip count-badge-button d-flex align-items-center star-btn', title: s_('ProjectOverview|You must sign in to star a project') do
+            = sprite_icon('star-o', { css_class: 'icon' })
+            %span= s_('ProjectOverview|Star')

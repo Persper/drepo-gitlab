@@ -543,7 +543,7 @@ module ProjectsHelper
 
   def explore_projects_tab?
     current_page?(explore_root_path) ||
-    current_page?(trending_explore_projects_path) ||
-    current_page?(starred_explore_projects_path)
+      current_page?(trending_explore_projects_path) ||
+      current_page?(starred_explore_projects_path)
   end
 end

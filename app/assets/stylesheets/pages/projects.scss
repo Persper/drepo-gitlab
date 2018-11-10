@@ -922,8 +922,7 @@ pre.light-well {
     }
   }
 
-  .avatar-container,
-  .controls {
+  .avatar-container {
     flex: 0 0 auto;
   }
 
@@ -934,7 +933,6 @@ pre.light-well {
   .project-details {
     min-width: 0;
     line-height: 16px;
-    flex: 1;
     
     .flex-wrapper {
       flex: 1;
@@ -957,11 +955,6 @@ pre.light-well {
     }
   }
 
-  .controls {
-    margin-left: auto;
-    text-align: right;
-  }
-
   .ci-status-link {
     display: inline-block;
     line-height: 17px;
@@ -972,7 +965,7 @@ pre.light-well {
     }
   }
 
-  .inline-controls {
+  .controls {
     margin-top: $gl-padding;
 
     .icon-wrapper {
@@ -1046,7 +1039,7 @@ pre.light-well {
       min-width: 40px;
     }
 
-    .inline-controls {
+    .controls {
       margin-top: 0;
 
       @include media-breakpoint-up(xs) {
