@@ -10,7 +10,7 @@ class RemoveRestrictedTodos < ActiveRecord::Migration
   BATCH_SIZE = 1000
   DELAY_INTERVAL = 5.minutes.to_i
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     include EachBatch
 
     self.table_name = 'projects'

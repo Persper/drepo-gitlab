@@ -4,14 +4,14 @@
 module Gitlab
   module BackgroundMigration
     class DeleteDiffFiles
-      class MergeRequestDiff < ActiveRecord::Base
+      class MergeRequestDiff < ApplicationRecord
         self.table_name = 'merge_request_diffs'
 
         belongs_to :merge_request
         has_many :merge_request_diff_files
       end
 
-      class MergeRequestDiffFile < ActiveRecord::Base
+      class MergeRequestDiffFile < ApplicationRecord
         self.table_name = 'merge_request_diff_files'
       end
 
@@ -70,7 +70,7 @@ module Gitlab
       end
 
       def execute_statement(sql)
-        ActiveRecord::Base.connection.execute(sql)
+        ApplicationRecord.connection.execute(sql)
       end
 
       def log_info(message)

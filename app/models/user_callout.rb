@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserCallout < ActiveRecord::Base
+class UserCallout < ApplicationRecord
   belongs_to :user
 
   enum feature_name: {

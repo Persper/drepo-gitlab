@@ -220,7 +220,7 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def create_comments(comments)
-        ActiveRecord::Base.no_touching do
+        ApplicationRecord.no_touching do
           comments.each do |raw|
             begin
               comment = CommentFormatter.new(project, raw, client)

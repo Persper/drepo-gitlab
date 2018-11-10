@@ -14,11 +14,11 @@ class GenerateMissingRoutes < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class User < ActiveRecord::Base
+  class User < ApplicationRecord
     self.table_name = 'users'
   end
 
-  class Route < ActiveRecord::Base
+  class Route < ApplicationRecord
     self.table_name = 'routes'
   end
 
@@ -63,7 +63,7 @@ class GenerateMissingRoutes < ActiveRecord::Migration
     end
   end
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     self.table_name = 'projects'
 
     include EachBatch
@@ -96,7 +96,7 @@ class GenerateMissingRoutes < ActiveRecord::Migration
     end
   end
 
-  class Namespace < ActiveRecord::Base
+  class Namespace < ApplicationRecord
     self.table_name = 'namespaces'
 
     include EachBatch

@@ -8,13 +8,13 @@ class DropDuplicateProtectedTags < ActiveRecord::Migration
 
   BATCH_SIZE = 1000
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     self.table_name = 'projects'
 
     include ::EachBatch
   end
 
-  class ProtectedTag < ActiveRecord::Base
+  class ProtectedTag < ApplicationRecord
     self.table_name = 'protected_tags'
   end
 

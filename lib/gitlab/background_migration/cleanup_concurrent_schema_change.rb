@@ -31,7 +31,7 @@ module Gitlab
       # These methods are necessary so we can re-use the migration helpers in
       # this class.
       def connection
-        ActiveRecord::Base.connection
+        ApplicationRecord.connection
       end
 
       def method_missing(name, *args, &block)
@@ -43,7 +43,7 @@ module Gitlab
       end
 
       def define_model_for(table)
-        Class.new(ActiveRecord::Base) do
+        Class.new(ApplicationRecord) do
           self.table_name = table
         end
       end

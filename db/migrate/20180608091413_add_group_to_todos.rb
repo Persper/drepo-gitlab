@@ -5,7 +5,7 @@ class AddGroupToTodos < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Todo < ActiveRecord::Base
+  class Todo < ApplicationRecord
     self.table_name = 'todos'
 
     include ::EachBatch

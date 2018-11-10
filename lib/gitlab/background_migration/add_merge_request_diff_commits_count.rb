@@ -4,7 +4,7 @@
 module Gitlab
   module BackgroundMigration
     class AddMergeRequestDiffCommitsCount
-      class MergeRequestDiff < ActiveRecord::Base
+      class MergeRequestDiff < ApplicationRecord
         self.table_name = 'merge_request_diffs'
       end
 

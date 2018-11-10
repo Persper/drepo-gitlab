@@ -696,7 +696,7 @@ module Gitlab
 
         install_rename_triggers(table, old_column, new_column)
 
-        model = Class.new(ActiveRecord::Base) do
+        model = Class.new(ApplicationRecord) do
           self.table_name = table
 
           include ::EachBatch

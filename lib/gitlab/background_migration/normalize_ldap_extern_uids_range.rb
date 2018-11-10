@@ -7,7 +7,7 @@
 module Gitlab
   module BackgroundMigration
     class NormalizeLdapExternUidsRange
-      class Identity < ActiveRecord::Base
+      class Identity < ApplicationRecord
         self.table_name = 'identities'
       end
 

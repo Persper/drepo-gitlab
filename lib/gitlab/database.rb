@@ -12,7 +12,7 @@ module Gitlab
     MAX_TIMESTAMP_VALUE = Time.at((1 << 31) - 1).freeze
 
     def self.config
-      ActiveRecord::Base.configurations[Rails.env]
+      ApplicationRecord.configurations[Rails.env]
     end
 
     def self.username
@@ -47,7 +47,7 @@ module Gitlab
     # check whether the underlying database is in read-only mode
     def self.db_read_only?
       if postgresql?
-        ActiveRecord::Base.connection.execute('SELECT pg_is_in_recovery()')
+        ApplicationRecord.connection.execute('SELECT pg_is_in_recovery()')
           .first
           .fetch('pg_is_in_recovery') == 't'
       else
@@ -207,7 +207,7 @@ module Gitlab
     def self.create_connection_pool(pool_size, host = nil)
       # See activerecord-4.2.7.1/lib/active_record/connection_adapters/connection_specification.rb
       env = Rails.env
-      original_config = ActiveRecord::Base.configurations
+      original_config = ApplicationRecord.configurations
 
       env_config = original_config[env].merge('pool' => pool_size)
       env_config['host'] = host if host
@@ -223,7 +223,7 @@ module Gitlab
     end
 
     def self.connection
-      ActiveRecord::Base.connection
+      ApplicationRecord.connection
     end
 
     def self.cached_column_exists?(table_name, column_name)

@@ -1,6 +1,6 @@
 module MigrationsHelpers
   def active_record_base
-    ActiveRecord::Base
+    ApplicationRecord
   end
 
   def table(name)
@@ -29,7 +29,7 @@ module MigrationsHelpers
   end
 
   def foreign_key_exists?(source, target = nil, column: nil)
-    ActiveRecord::Base.connection.foreign_keys(source).any? do |key|
+    ApplicationRecord.connection.foreign_keys(source).any? do |key|
       if column
         key.options[:column].to_s == column.to_s
       else

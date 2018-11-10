@@ -6,7 +6,7 @@ class FillEmptyFinishedAtInDeployments < ActiveRecord::Migration
   DOWNTIME = false
   DEPLOYMENT_STATUS_SUCCESS = 2 # Equivalent to Deployment.statuses[:success]
 
-  class Deployments < ActiveRecord::Base
+  class Deployments < ApplicationRecord
     self.table_name = 'deployments'
 
     include EachBatch

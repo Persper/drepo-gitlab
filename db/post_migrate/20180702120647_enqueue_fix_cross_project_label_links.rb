@@ -8,11 +8,11 @@ class EnqueueFixCrossProjectLabelLinks < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Label < ActiveRecord::Base
+  class Label < ApplicationRecord
     self.table_name = 'labels'
   end
 
-  class Namespace < ActiveRecord::Base
+  class Namespace < ApplicationRecord
     self.table_name = 'namespaces'
 
     include ::EachBatch

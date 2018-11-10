@@ -389,7 +389,7 @@ describe Gitlab::Database do
 
   describe '.cached_column_exists?' do
     it 'only retrieves data once' do
-      expect(ActiveRecord::Base.connection).to receive(:columns).once.and_call_original
+      expect(ApplicationRecord.connection).to receive(:columns).once.and_call_original
 
       2.times do
         expect(described_class.cached_column_exists?(:projects, :id)).to be_truthy
@@ -401,11 +401,11 @@ describe Gitlab::Database do
   describe '.cached_table_exists?' do
     it 'only retrieves data once per table' do
       if Gitlab.rails5?
-        expect(ActiveRecord::Base.connection).to receive(:data_source_exists?).with(:projects).once.and_call_original
-        expect(ActiveRecord::Base.connection).to receive(:data_source_exists?).with(:bogus_table_name).once.and_call_original
+        expect(ApplicationRecord.connection).to receive(:data_source_exists?).with(:projects).once.and_call_original
+        expect(ApplicationRecord.connection).to receive(:data_source_exists?).with(:bogus_table_name).once.and_call_original
       else
-        expect(ActiveRecord::Base.connection).to receive(:table_exists?).with(:projects).once.and_call_original
-        expect(ActiveRecord::Base.connection).to receive(:table_exists?).with(:bogus_table_name).once.and_call_original
+        expect(ApplicationRecord.connection).to receive(:table_exists?).with(:projects).once.and_call_original
+        expect(ApplicationRecord.connection).to receive(:table_exists?).with(:bogus_table_name).once.and_call_original
       end
 
       2.times do
@@ -446,18 +446,18 @@ describe Gitlab::Database do
   describe '.db_read_only?' do
     context 'when using PostgreSQL' do
       before do
-        allow(ActiveRecord::Base.connection).to receive(:execute).and_call_original
+        allow(ApplicationRecord.connection).to receive(:execute).and_call_original
         expect(described_class).to receive(:postgresql?).and_return(true)
       end
 
       it 'detects a read only database' do
-        allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "t" }])
+        allow(ApplicationRecord.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "t" }])
 
         expect(described_class.db_read_only?).to be_truthy
       end
 
       it 'detects a read write database' do
-        allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "f" }])
+        allow(ApplicationRecord.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "f" }])
 
         expect(described_class.db_read_only?).to be_falsey
       end

@@ -2,7 +2,7 @@
 
 module Clusters
   module Applications
-    class Knative < ActiveRecord::Base
+    class Knative < ApplicationRecord
       VERSION = '0.1.3'.freeze
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
 

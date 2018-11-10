@@ -16,7 +16,7 @@ class UpdateDeploymentService
     deployment.create_ref
     deployment.invalidate_cache
 
-    ActiveRecord::Base.transaction do
+    ApplicationRecord.transaction do
       environment.external_url = expanded_environment_url if
         expanded_environment_url
 

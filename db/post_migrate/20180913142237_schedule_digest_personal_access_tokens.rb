@@ -9,7 +9,7 @@ class ScheduleDigestPersonalAccessTokens < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class PersonalAccessToken < ActiveRecord::Base
+  class PersonalAccessToken < ApplicationRecord
     include EachBatch
 
     self.table_name = 'personal_access_tokens'

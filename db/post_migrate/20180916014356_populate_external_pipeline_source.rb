@@ -13,7 +13,7 @@ class PopulateExternalPipelineSource < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Pipeline < ActiveRecord::Base
+  class Pipeline < ApplicationRecord
     include EachBatch
     self.table_name = 'ci_pipelines'
   end

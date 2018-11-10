@@ -5,7 +5,7 @@ class FillFileStore < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class JobArtifact < ActiveRecord::Base
+  class JobArtifact < ApplicationRecord
     include EachBatch
     self.table_name = 'ci_job_artifacts'
     BATCH_SIZE = 10_000
@@ -15,7 +15,7 @@ class FillFileStore < ActiveRecord::Migration
     end
   end
 
-  class LfsObject < ActiveRecord::Base
+  class LfsObject < ApplicationRecord
     include EachBatch
     self.table_name = 'lfs_objects'
     BATCH_SIZE = 10_000
@@ -25,7 +25,7 @@ class FillFileStore < ActiveRecord::Migration
     end
   end
 
-  class Upload < ActiveRecord::Base
+  class Upload < ApplicationRecord
     include EachBatch
     self.table_name = 'uploads'
     self.inheritance_column = :_type_disabled # Disable STI

@@ -6,28 +6,28 @@ module Gitlab
     class FixCrossProjectLabelLinks
       GROUP_NESTED_LEVEL = 10.freeze
 
-      class Project < ActiveRecord::Base
+      class Project < ApplicationRecord
         self.table_name = 'projects'
       end
 
-      class Label < ActiveRecord::Base
+      class Label < ApplicationRecord
         self.inheritance_column = :_type_disabled
         self.table_name = 'labels'
       end
 
-      class LabelLink < ActiveRecord::Base
+      class LabelLink < ApplicationRecord
         self.table_name = 'label_links'
       end
 
-      class Issue < ActiveRecord::Base
+      class Issue < ApplicationRecord
         self.table_name = 'issues'
       end
 
-      class MergeRequest < ActiveRecord::Base
+      class MergeRequest < ApplicationRecord
         self.table_name = 'merge_requests'
       end
 
-      class Namespace < ActiveRecord::Base
+      class Namespace < ApplicationRecord
         self.inheritance_column = :_type_disabled
         self.table_name = 'namespaces'
 

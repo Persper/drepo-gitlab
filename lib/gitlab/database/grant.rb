@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     # Model that can be used for querying permissions of a SQL user.
-    class Grant < ActiveRecord::Base
+    class Grant < ApplicationRecord
       include FromUnion
 
       self.table_name =

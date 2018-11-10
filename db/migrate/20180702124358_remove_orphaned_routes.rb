@@ -8,7 +8,7 @@ class RemoveOrphanedRoutes < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Route < ActiveRecord::Base
+  class Route < ApplicationRecord
     self.table_name = 'routes'
     include EachBatch
 

@@ -23,7 +23,7 @@ class DeleteInconsistentInternalIdRecords < ActiveRecord::Migration
     end
   end
 
-  class InternalId < ActiveRecord::Base
+  class InternalId < ApplicationRecord
     self.table_name = 'internal_ids'
     enum usage: { issues: 0, merge_requests: 1, deployments: 2, milestones: 3, epics: 4, ci_pipelines: 5 }
   end

@@ -1,13 +1,13 @@
 class AddForeignKeyFromNotificationSettingsToUsers < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  class NotificationSetting < ActiveRecord::Base
+  class NotificationSetting < ApplicationRecord
     self.table_name = 'notification_settings'
 
     include EachBatch
   end
 
-  class User < ActiveRecord::Base
+  class User < ApplicationRecord
     self.table_name = 'users'
   end
 
