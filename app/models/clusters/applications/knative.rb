@@ -42,7 +42,7 @@ module Clusters
       end
 
       def client
-        cluster&.platform_kubernetes&.kubeclient.knative_client
+        cluster&.platform_kubernetes&.kubeclient&.knative_client
       end
 
       private
