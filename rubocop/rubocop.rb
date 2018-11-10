@@ -40,3 +40,7 @@ require_relative 'cop/code_reuse/presenter'
 require_relative 'cop/code_reuse/serializer'
 require_relative 'cop/code_reuse/active_record'
 require_relative 'cop/group_public_or_visible_to_user'
+
+# rails5 specific cops.
+# Remove them when upgraded to rails 5.0.
+require_relative 'cop/gitlab/rails5/application_record'
