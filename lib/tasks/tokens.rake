@@ -1,3 +1,4 @@
+require_relative "../../app/models/application_record.rb"
 require_relative '../../app/models/concerns/token_authenticatable.rb'
 require_relative '../../app/models/concerns/token_authenticatable_strategies/base.rb'
 require_relative '../../app/models/concerns/token_authenticatable_strategies/insecure.rb'

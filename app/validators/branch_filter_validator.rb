@@ -8,7 +8,7 @@
 #
 # Example:
 #
-#   class Webhook < ActiveRecord::Base
+#   class Webhook < ApplicationRecord
 #     validates :push_events_branch_filter, branch_name: true
 #   end
 #

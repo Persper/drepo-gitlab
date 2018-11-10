@@ -4,7 +4,7 @@
 #
 # Custom validator for private keys.
 #
-#   class Project < ActiveRecord::Base
+#   class Project < ApplicationRecord
 #     validates :certificate_key, certificate_key: true
 #   end
 #
