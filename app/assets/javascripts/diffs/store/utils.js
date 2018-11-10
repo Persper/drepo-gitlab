@@ -212,16 +212,12 @@ function removed(line) {
   return [OLD_LINE_TYPE, OLD_NO_NEW_LINE_TYPE].includes(line.type);
 }
 
-function parallelize(diffFile) {
+export function parallelize(highlightedDiffLines = []) {
   let i = 0;
   const lines = [];
   let freeRightIndex = null;
 
-  if (!diffFile.highlightedDiffLines) {
-    return null;
-  }
-
-  diffFile.highlightedDiffLines.forEach(line => {
+  highlightedDiffLines.forEach(line => {
     if (removed(line)) {
       lines.push({
         left: line,
@@ -283,7 +279,7 @@ export function prepareDiffData(diffData) {
       }
     }
 
-    file.parallelDiffLines = parallelize(file);
+    file.parallelDiffLines = parallelize(file.highlightedDiffLines);
     if (file.parallelDiffLines) {
       showingLines += file.parallelDiffLines.length;
     }

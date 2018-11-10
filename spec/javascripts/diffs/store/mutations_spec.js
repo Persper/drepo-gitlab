@@ -1,5 +1,6 @@
 import createState from '~/diffs/store/modules/diff_state';
 import mutations from '~/diffs/store/mutations';
+import { parallelize } from '~/diffs/store/utils';
 import * as types from '~/diffs/store/mutation_types';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import diffFileMockData from '../mock_data/diff_file';
@@ -134,7 +135,7 @@ describe('DiffsStoreMutations', () => {
 
       expect(addContextLinesSpy).toHaveBeenCalledWith({
         inlineLines: diffFile.highlightedDiffLines,
-        parallelLines: diffFile.parallelDiffLines,
+        parallelLines: parallelize(diffFile.highlightedDiffLines),
         contextLines: options.contextLines,
         bottom: options.params.bottom,
         lineNumbers: options.lineNumbers,

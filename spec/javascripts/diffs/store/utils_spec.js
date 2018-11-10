@@ -14,7 +14,9 @@ import { MERGE_REQUEST_NOTEABLE_TYPE } from '~/notes/constants';
 import diffFileMockData from '../mock_data/diff_file';
 import { noteableDataMock } from '../../notes/mock_data';
 
-const getDiffFileMock = () => Object.assign({}, diffFileMockData);
+const getDiffFileMock = () => Object.assign({}, diffFileMockData, {
+  parallelDiffLines: utils.parallelize(diffFileMockData.highlightedDiffLines),
+});
 
 describe('DiffsStoreUtils', () => {
   describe('findDiffFile', () => {
