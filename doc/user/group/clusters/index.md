@@ -1,6 +1,6 @@
 # Group-level clusters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) in GitLab 10.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) in GitLab 11.6.
 
 ## Overview
 
@@ -44,37 +44,66 @@ RBAC support was introduced on
 Project namespace restriction was introduced on
 [11.5](https://gitlab.com/gitlab-org/gitlab-ce/issues/51716)
 
+## Cluster precedence
+
+GitLab will use the project's cluster if it is available and not disabled first before
+using any cluster belonging to the group containing the project.
+
+In the case of sub-groups, GitLab will use the cluster of the closest ancestor group
+to the project, provided the cluster is not disabled.
+
 ## Environment scopes
+
+NOTE: **Note:**
+This is only available for [GitLab Premium][ee] where you can add more than
+one Kubernetes cluster.
 
 When a project's group has Kubernetes clusters configured, the [project
 environment evaluation] for environment scope will still take place
 first but firstly at the project level, followed by the closest ancestor
 group and followed by that group's parent and so on.
 
-Extending the setup from the previous section, let's say we have the
-following Kubernetes clusters:
+For example, let's say we have the following Kubernetes clusters:
 
 | Cluster    | Environment scope   | Where     |
 | ---------- | ------------------- | ----------|
-| Development| `*`                 | Project 1 |
-| Staging    | `staging/*`         | Project 1 |
-| Production | `production/*`      | Project 1 |
-| Group      | `test`              | Group 1   |
+| Project    | `*`                 | Project   |
+| Staging    | `staging/*`         | Project   |
+| Production | `production/*`      | Project   |
+| Test       | `test`              | Group     |
+| Development| `*`                 | Group     | 
 
-Given the above, the "test" job will still use the project's development
-cluster, as it matches `*` on the project level.
 
-If the Development cluster was deleted :
+And the following environments are set in [`.gitlab-ci.yml`](../../../ci/yaml/README.md):
 
-| Cluster    | Environment scope   | Where     |
-| ---------- | ------------------- | ----------|
-| Staging    | `staging/*`         | Project 1 |
-| Production | `production/*`      | Project 1 |
-| Group      | `test`              | Group 1   |
+```yaml
+stages:
+- test
+- deploy
 
-Then, the "test" job will fail to match any cluster on the project
-level. Evaluation now moves up to the group, where it matches the Group
-cluster. The Group cluster will be used for the "test" job.
+test:
+  stage: test
+  script: sh test
+
+deploy to staging:
+  stage: deploy
+  script: make deploy
+  environment:
+    name: staging/$CI_COMMIT_REF_NAME
+    url: https://staging.example.com/
+
+deploy to production:
+  stage: deploy
+  script: make deploy
+  environment:
+    name: production/$CI_COMMIT_REF_NAME
+    url: https://example.com/
+```
+The result will then be:
+
+- The Project cluster will be used for the "test" job.
+- The Staging cluster will be used for the "deploy to staging" job.
+- The Production cluster will be used for the "deploy to production" job.
 
 [Helm Tiller]: https://docs.helm.sh/
 [Ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
