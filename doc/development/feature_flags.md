@@ -49,7 +49,7 @@ To use feature gates based on actors, the model needs to respond to
 `flipper_id`. For example, to enable for the Foo model:
 
 ```ruby
-class Foo < ActiveRecord::Base
+class Foo < ApplicationRecord
   include FeatureGate
 end
 ```
