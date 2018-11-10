@@ -226,10 +226,12 @@ function parallelize(diffFile) {
         right: null,
       });
 
-      freeRightIndex = i;
+      if (freeRightIndex === null) {
+        freeRightIndex = i;
+      }
       i += 1;
     } else if (added(line)) {
-      if (freeRightIndex) {
+      if (freeRightIndex !== null) {
         lines[freeRightIndex].right = line;
 
         const nextFreeRightIndex = freeRightIndex + 1;
