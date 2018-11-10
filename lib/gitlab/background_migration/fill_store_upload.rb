@@ -4,7 +4,7 @@
 module Gitlab
   module BackgroundMigration
     class FillStoreUpload
-      class Upload < ActiveRecord::Base
+      class Upload < ApplicationRecord
         self.table_name = 'uploads'
         self.inheritance_column = :_type_disabled
       end

@@ -7,7 +7,7 @@ class MigrateNullWikiAccessLevels < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class ProjectFeature < ActiveRecord::Base
+  class ProjectFeature < ApplicationRecord
     include EachBatch
 
     self.table_name = 'project_features'

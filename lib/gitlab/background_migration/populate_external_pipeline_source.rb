@@ -5,7 +5,7 @@ module Gitlab
   module BackgroundMigration
     class PopulateExternalPipelineSource
       module Migratable
-        class Pipeline < ActiveRecord::Base
+        class Pipeline < ApplicationRecord
           self.table_name = 'ci_pipelines'
 
           def self.sources
@@ -21,7 +21,7 @@ module Gitlab
           end
         end
 
-        class CommitStatus < ActiveRecord::Base
+        class CommitStatus < ApplicationRecord
           self.table_name = 'ci_builds'
           self.inheritance_column = :_type_disabled
 

@@ -2,7 +2,7 @@
 # rubocop:disable Style/Documentation
 
 class Gitlab::BackgroundMigration::CreateGpgKeySubkeysFromGpgKeys
-  class GpgKey < ActiveRecord::Base
+  class GpgKey < ApplicationRecord
     self.table_name = 'gpg_keys'
 
     include EachBatch
@@ -14,7 +14,7 @@ class Gitlab::BackgroundMigration::CreateGpgKeySubkeysFromGpgKeys
     has_many :subkeys, class_name: 'GpgKeySubkey'
   end
 
-  class GpgKeySubkey < ActiveRecord::Base
+  class GpgKeySubkey < ApplicationRecord
     self.table_name = 'gpg_key_subkeys'
 
     include ShaAttribute

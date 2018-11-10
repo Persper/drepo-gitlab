@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe OptionallySearch do
   let(:model) do
-    Class.new(ActiveRecord::Base) do
+    Class.new(ApplicationRecord) do
       self.table_name = 'users'
 
       include OptionallySearch

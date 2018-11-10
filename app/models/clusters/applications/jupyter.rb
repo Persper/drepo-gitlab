@@ -2,7 +2,7 @@
 
 module Clusters
   module Applications
-    class Jupyter < ActiveRecord::Base
+    class Jupyter < ApplicationRecord
       VERSION = 'v0.6'.freeze
 
       self.table_name = 'clusters_applications_jupyter'

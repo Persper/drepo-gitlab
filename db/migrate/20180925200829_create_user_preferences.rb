@@ -3,7 +3,7 @@
 class CreateUserPreferences < ActiveRecord::Migration
   DOWNTIME = false
 
-  class UserPreference < ActiveRecord::Base
+  class UserPreference < ApplicationRecord
     self.table_name = 'user_preferences'
 
     NOTES_FILTERS = { all_notes: 0, comments: 1 }.freeze

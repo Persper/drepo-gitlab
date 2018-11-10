@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SiteStatistic < ActiveRecord::Base
+class SiteStatistic < ApplicationRecord
   # prevents the creation of multiple rows
   default_value_for :id, 1
 

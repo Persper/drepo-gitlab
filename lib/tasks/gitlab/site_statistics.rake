@@ -6,7 +6,7 @@ namespace :gitlab do
     print '* Repositories... '
     SiteStatistic.transaction do
       # see https://gitlab.com/gitlab-org/gitlab-ce/issues/48967
-      ActiveRecord::Base.connection.execute('SET LOCAL statement_timeout TO 0') if Gitlab::Database.postgresql?
+      ApplicationRecord.connection.execute('SET LOCAL statement_timeout TO 0') if Gitlab::Database.postgresql?
       SiteStatistic.update_all('repositories_count = (SELECT COUNT(*) FROM projects)')
     end
     puts 'OK!'.color(:green)

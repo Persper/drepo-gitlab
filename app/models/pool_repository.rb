@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PoolRepository < ActiveRecord::Base
+class PoolRepository < ApplicationRecord
   POOL_PREFIX = '@pools'
 
   belongs_to :shard

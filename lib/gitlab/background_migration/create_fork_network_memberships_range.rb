@@ -6,7 +6,7 @@ module Gitlab
     class CreateForkNetworkMembershipsRange
       RESCHEDULE_DELAY = 15
 
-      class ForkedProjectLink < ActiveRecord::Base
+      class ForkedProjectLink < ApplicationRecord
         self.table_name = 'forked_project_links'
       end
 
@@ -21,7 +21,7 @@ module Gitlab
       end
 
       def insert_members(start_id, end_id)
-        ActiveRecord::Base.connection.execute <<~INSERT_MEMBERS
+        ApplicationRecord.connection.execute <<~INSERT_MEMBERS
           INSERT INTO fork_network_members (fork_network_id, project_id, forked_from_project_id)
 
           SELECT fork_network_members.fork_network_id,

@@ -5,7 +5,7 @@ require 'spec_helper'
 describe FromUnion do
   describe '.from_union' do
     let(:model) do
-      Class.new(ActiveRecord::Base) do
+      Class.new(ApplicationRecord) do
         self.table_name = 'users'
 
         include FromUnion

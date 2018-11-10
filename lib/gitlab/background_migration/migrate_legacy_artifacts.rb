@@ -12,7 +12,7 @@ module Gitlab
       LEGACY_PATH_FILE_LOCATION = 1 # equal to Ci::JobArtifact.file_location['legacy_path']
 
       def perform(start_id, stop_id)
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           insert_archives(start_id, stop_id)
           insert_metadatas(start_id, stop_id)
           delete_legacy_artifacts(start_id, stop_id)
@@ -22,7 +22,7 @@ module Gitlab
       private
 
       def insert_archives(start_id, stop_id)
-        ActiveRecord::Base.connection.execute <<~SQL
+        ApplicationRecord.connection.execute <<~SQL
           INSERT INTO
               ci_job_artifacts (
                   project_id,
@@ -64,7 +64,7 @@ module Gitlab
       end
 
       def insert_metadatas(start_id, stop_id)
-        ActiveRecord::Base.connection.execute <<~SQL
+        ApplicationRecord.connection.execute <<~SQL
           INSERT INTO
               ci_job_artifacts (
                   project_id,
@@ -107,7 +107,7 @@ module Gitlab
       end
 
       def delete_legacy_artifacts(start_id, stop_id)
-        ActiveRecord::Base.connection.execute <<~SQL
+        ApplicationRecord.connection.execute <<~SQL
           UPDATE
               ci_builds
           SET

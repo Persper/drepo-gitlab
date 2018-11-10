@@ -10,11 +10,11 @@ module Gitlab
       BATCH_SIZE = 1_000
 
       module Migratable
-        class KubernetesNamespace < ActiveRecord::Base
+        class KubernetesNamespace < ApplicationRecord
           self.table_name = 'clusters_kubernetes_namespaces'
         end
 
-        class ClusterProject < ActiveRecord::Base
+        class ClusterProject < ApplicationRecord
           include EachBatch
 
           self.table_name = 'cluster_projects'
@@ -35,7 +35,7 @@ module Gitlab
           end
         end
 
-        class Project < ActiveRecord::Base
+        class Project < ApplicationRecord
           self.table_name = 'projects'
         end
       end

@@ -14,7 +14,7 @@ module Gitlab
         end
       end
 
-      class MergeRequestDiff < ActiveRecord::Base
+      class MergeRequestDiff < ApplicationRecord
         self.table_name = 'merge_request_diffs'
       end
 

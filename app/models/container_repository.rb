@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ContainerRepository < ActiveRecord::Base
+class ContainerRepository < ApplicationRecord
   belongs_to :project
 
   validates :name, length: { minimum: 0, allow_nil: false }

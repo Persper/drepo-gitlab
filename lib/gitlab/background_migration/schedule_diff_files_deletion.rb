@@ -4,7 +4,7 @@
 module Gitlab
   module BackgroundMigration
     class ScheduleDiffFilesDeletion
-      class MergeRequestDiff < ActiveRecord::Base
+      class MergeRequestDiff < ApplicationRecord
         self.table_name = 'merge_request_diffs'
 
         belongs_to :merge_request

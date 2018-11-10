@@ -20,7 +20,7 @@ module Issues
       # Using transaction because of a high resources footprint
       # on rewriting notes (unfolding references)
       #
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         @new_issue = create_new_issue
 
         update_new_issue

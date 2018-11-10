@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe CaseSensitivity do
   describe '.iwhere' do
-    let(:connection) { ActiveRecord::Base.connection }
+    let(:connection) { ApplicationRecord.connection }
     let(:model) do
-      Class.new(ActiveRecord::Base) do
+      Class.new(ApplicationRecord) do
         include CaseSensitivity
         self.table_name = 'namespaces'
       end

@@ -6,7 +6,7 @@ module Gitlab
       module EncryptColumns
         # This model is shared between synchronous and background migrations to
         # encrypt the `token` and `url` columns
-        class WebHook < ActiveRecord::Base
+        class WebHook < ApplicationRecord
           include ::EachBatch
 
           self.table_name = 'web_hooks'

@@ -7,7 +7,7 @@ class RemoveOrphanedLabelLinks < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class LabelLinks < ActiveRecord::Base
+  class LabelLinks < ApplicationRecord
     self.table_name = 'label_links'
     include EachBatch
 

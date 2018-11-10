@@ -8,25 +8,25 @@ module Gitlab
       PRIVATE_FEATURE = 10
       PRIVATE_PROJECT = 0
 
-      class Project < ActiveRecord::Base
+      class Project < ApplicationRecord
         self.table_name = 'projects'
       end
 
-      class ProjectAuthorization < ActiveRecord::Base
+      class ProjectAuthorization < ApplicationRecord
         self.table_name = 'project_authorizations'
       end
 
-      class ProjectFeature < ActiveRecord::Base
+      class ProjectFeature < ApplicationRecord
         self.table_name = 'project_features'
       end
 
-      class Todo < ActiveRecord::Base
+      class Todo < ApplicationRecord
         include EachBatch
 
         self.table_name = 'todos'
       end
 
-      class Issue < ActiveRecord::Base
+      class Issue < ApplicationRecord
         include EachBatch
 
         self.table_name = 'issues'

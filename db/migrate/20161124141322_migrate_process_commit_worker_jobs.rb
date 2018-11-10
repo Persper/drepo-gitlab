@@ -14,7 +14,7 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
     end
   end
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     def self.find_including_path(id)
       select("projects.*, CONCAT(namespaces.path, '/', projects.path) AS path_with_namespace")
         .joins('INNER JOIN namespaces ON namespaces.id = projects.namespace_id')

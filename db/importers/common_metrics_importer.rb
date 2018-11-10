@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Importers
-  class PrometheusMetric < ActiveRecord::Base
+  class PrometheusMetric < ApplicationRecord
     enum group: {
       # built-in groups
       nginx_ingress: -1,

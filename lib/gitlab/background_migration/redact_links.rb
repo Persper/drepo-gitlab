@@ -6,7 +6,7 @@ require_relative 'redact_links/redactable'
 module Gitlab
   module BackgroundMigration
     class RedactLinks
-      class Note < ActiveRecord::Base
+      class Note < ApplicationRecord
         include EachBatch
         include ::Gitlab::BackgroundMigration::RedactLinks::Redactable
 
@@ -14,7 +14,7 @@ module Gitlab
         self.inheritance_column = :_type_disabled
       end
 
-      class Issue < ActiveRecord::Base
+      class Issue < ApplicationRecord
         include EachBatch
         include ::Gitlab::BackgroundMigration::RedactLinks::Redactable
 
@@ -22,7 +22,7 @@ module Gitlab
         self.inheritance_column = :_type_disabled
       end
 
-      class MergeRequest < ActiveRecord::Base
+      class MergeRequest < ApplicationRecord
         include EachBatch
         include ::Gitlab::BackgroundMigration::RedactLinks::Redactable
 
@@ -30,7 +30,7 @@ module Gitlab
         self.inheritance_column = :_type_disabled
       end
 
-      class Snippet < ActiveRecord::Base
+      class Snippet < ApplicationRecord
         include EachBatch
         include ::Gitlab::BackgroundMigration::RedactLinks::Redactable
 

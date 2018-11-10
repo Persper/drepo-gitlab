@@ -8,7 +8,7 @@ class StealFillStoreUpload < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Upload < ActiveRecord::Base
+  class Upload < ApplicationRecord
     include EachBatch
 
     self.table_name = 'uploads'

@@ -4,7 +4,7 @@
 module Gitlab
   module BackgroundMigration
     class DigestColumn
-      class PersonalAccessToken < ActiveRecord::Base
+      class PersonalAccessToken < ApplicationRecord
         self.table_name = 'personal_access_tokens'
       end
 

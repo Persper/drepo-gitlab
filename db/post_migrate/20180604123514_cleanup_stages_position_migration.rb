@@ -6,7 +6,7 @@ class CleanupStagesPositionMigration < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Stages < ActiveRecord::Base
+  class Stages < ApplicationRecord
     include EachBatch
     self.table_name = 'ci_stages'
   end
