@@ -8,7 +8,9 @@ import {
   LEGACY_DIFF_NOTE_TYPE,
   DIFF_NOTE_TYPE,
   NEW_LINE_TYPE,
+  NEW_NO_NEW_LINE_TYPE,
   OLD_LINE_TYPE,
+  OLD_NO_NEW_LINE_TYPE,
   MATCH_LINE_TYPE,
   LINES_TO_BE_RENDERED_DIRECTLY,
   MAX_LINES_TO_BE_RENDERED,
@@ -199,15 +201,15 @@ export function trimFirstCharOfLineContent(line = {}) {
 }
 
 function unchanged(line) {
-  return !line.type || ['match', 'new-nonewline', 'old-nonewline'].includes(line.type);
+  return !line.type || [MATCH_LINE_TYPE, NEW_NO_NEW_LINE_TYPE, OLD_NO_NEW_LINE_TYPE].includes(line.type);
 }
 
 function added(line) {
-  return ['new', 'new-nonewline'].includes(line.type);
+  return [NEW_LINE_TYPE, NEW_NO_NEW_LINE_TYPE].includes(line.type);
 }
 
 function removed(line) {
-  return ['old', 'old-nonewline'].includes(line.type);
+  return [OLD_LINE_TYPE, OLD_NO_NEW_LINE_TYPE].includes(line.type);
 }
 
 function parallelize(diffFile) {
