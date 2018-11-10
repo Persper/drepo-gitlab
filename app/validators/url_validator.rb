@@ -9,7 +9,7 @@
 #
 # Example:
 #
-#   class User < ActiveRecord::Base
+#   class User < ApplicationRecord
 #     validates :personal_url, url: true
 #
 #     validates :ftp_url, url: { protocols: %w(ftp) }
@@ -28,7 +28,7 @@
 # - enforce_user: Validate user format. Default: false
 #
 # Example:
-#   class User < ActiveRecord::Base
+#   class User < ApplicationRecord
 #     validates :personal_url, url: { allow_localhost: false, allow_local_network: false}
 #
 #     validates :web_url, url: { ports: [80, 443] }
