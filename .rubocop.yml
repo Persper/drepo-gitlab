@@ -67,6 +67,7 @@ RSpec/FilePath:
 Naming/FileName:
   ExpectMatchingDefinition: true
   Exclude:
+    - 'bin/rails'
     - 'db/**/*'
     - 'ee/db/**/*'
     - 'spec/**/*'
