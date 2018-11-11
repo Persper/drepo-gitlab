@@ -1,5 +1,6 @@
 import { Node } from 'tiptap'
 
+// Transforms generated HTML back to GFM for Banzai::Filter::ReferenceFilter and subclasses
 export default class ReferenceNode extends Node {
   get name() {
     return 'reference'

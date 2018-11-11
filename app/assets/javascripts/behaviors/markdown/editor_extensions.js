@@ -47,9 +47,9 @@ import CodeMark from './marks/code';
 import MathMark from './marks/math';
 import InlineHTMLMark from './marks/inline_html';
 
-// The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert
+// The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb transform
 // GitLab Flavored Markdown (GFM) to HTML.
-// The nodes and marks referenced here convert that same HTML to GFM to be copied to the clipboard.
+// The nodes and marks referenced here transform that same HTML to GFM to be copied to the clipboard.
 // Every filter in lib/banzai/pipeline/gfm_pipeline.rb that generates HTML
 // from GFM should have a node or mark here.
 // The GFM-to-HTML-to-GFM cycle is tested in spec/features/copy_as_gfm_spec.rb.

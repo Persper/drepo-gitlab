@@ -1,6 +1,7 @@
 import { Node } from 'tiptap'
 import { defaultMarkdownSerializer } from 'prosemirror-markdown';
 
+// Transforms generated HTML back to GFM for Banzai::Filter::VideoLinkFilter
 export default class VideoNode extends Node {
   get name() {
     return 'video'

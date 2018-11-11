@@ -1,5 +1,6 @@
 import { Node } from 'tiptap'
 
+// Transforms generated HTML back to GFM for Banzai::Filter::TaskListFilter
 export default class OrderedTaskListNode extends Node {
   get name() {
     return 'ordered_task_list'

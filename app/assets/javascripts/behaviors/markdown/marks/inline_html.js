@@ -1,6 +1,7 @@
 import { Mark } from 'tiptap'
 import _ from 'underscore'
 
+// Transforms generated HTML back to GFM for Banzai::Filter::MarkdownFilter
 export default class InlineHTMLMark extends Mark {
   get name() {
     return 'inline_html'

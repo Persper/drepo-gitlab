@@ -1,5 +1,6 @@
 import { Node } from 'tiptap'
 
+// Transforms generated HTML back to GFM for Banzai::Filter::TableOfContentsFilter
 export default class TableOfContentsNode extends Node {
   get name() {
     return 'table_of_contents'

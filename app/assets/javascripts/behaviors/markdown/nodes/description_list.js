@@ -1,5 +1,6 @@
 import { Node } from 'tiptap'
 
+// Transforms generated HTML back to GFM for Banzai::Filter::MarkdownFilter
 export default class DescriptionListNode extends Node {
   get name() {
     return 'description_list'

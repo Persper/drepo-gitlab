@@ -2,6 +2,7 @@ import TableRowNode from './table_row'
 
 const CENTER_ALIGN = 'center';
 
+// Transforms generated HTML back to GFM for Banzai::Filter::MarkdownFilter
 export default class TableHeaderRowNode extends TableRowNode {
   get name() {
     return 'table_header_row'

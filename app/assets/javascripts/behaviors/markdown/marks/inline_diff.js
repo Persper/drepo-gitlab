@@ -1,5 +1,6 @@
 import { Mark } from 'tiptap'
 
+// Transforms generated HTML back to GFM for Banzai::Filter::InlineDiffFilter
 export default class InlineDiffMark extends Mark {
   get name() {
     return 'inline_diff'

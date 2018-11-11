@@ -3,9 +3,9 @@
 module Banzai
   module Pipeline
     class GfmPipeline < BasePipeline
-      # These filters convert GitLab Flavored Markdown (GFM) to HTML.
+      # These filters transform GitLab Flavored Markdown (GFM) to HTML.
       # The nodes and marks referenced in app/assets/javascripts/behaviors/markdown/editor_extensions.js
-      # consequently convert that same HTML to GFM to be copied to the clipboard.
+      # consequently transform that same HTML to GFM to be copied to the clipboard.
       # Every filter that generates HTML from GFM should have a node or mark in
       # app/assets/javascripts/behaviors/markdown/editor_extensions.js.
       # The GFM-to-HTML-to-GFM cycle is tested in spec/features/copy_as_gfm_spec.rb.

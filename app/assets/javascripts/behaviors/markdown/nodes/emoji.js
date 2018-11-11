@@ -1,5 +1,6 @@
 import { Node } from 'tiptap'
 
+// Transforms generated HTML back to GFM for Banzai::Filter::EmojiFilter
 export default class EmojiNode extends Node {
   get name() {
     return 'emoji'
