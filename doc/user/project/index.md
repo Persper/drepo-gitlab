@@ -1,6 +1,7 @@
 ---
 category: create
 nav: devops
+layout: default-copy
 ---
 
 # Projects

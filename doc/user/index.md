@@ -3,6 +3,7 @@ description: 'Read through the GitLab User documentation to learn how to use, co
 category: user
 nav: user
 nav_title: "User docs"
+layout: default-copy
 nav_position: 2
 doc_position: 1
 ---

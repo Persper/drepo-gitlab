@@ -2,6 +2,7 @@
 description: 'Understand and explore the user permission levels in GitLab, and what features each of them grants you access to.'
 category: user
 nav: user
+layout: default-copy
 doc_position: 2
 ---
 

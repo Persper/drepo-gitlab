@@ -1,6 +1,7 @@
 ---
 comments: false
 description: 'Learn how to use and administer GitLab, the most scalable Git-based fully integrated platform for software development.'
+layout: default-copy
 ---
 
 # GitLab Documentation

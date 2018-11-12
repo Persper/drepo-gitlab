@@ -1,5 +1,6 @@
 ---
 category: create
+layout: default-copy
 nav: devops
 ---
 

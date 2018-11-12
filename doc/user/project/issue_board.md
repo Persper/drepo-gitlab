@@ -1,6 +1,7 @@
 ---
 category: plan
 nav: devops
+layout: default-copy
 ---
 
 # Issue Boards

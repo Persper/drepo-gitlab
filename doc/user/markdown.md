@@ -1,6 +1,7 @@
 ---
 category: user
 nav: user
+layout: default-copy
 doc_position: 4
 ---
 

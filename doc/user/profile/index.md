@@ -2,6 +2,7 @@
 category: user
 nav: user
 nav_title: "Account and profile"
+layout: default-copy
 doc_position: 4
 ---
 
