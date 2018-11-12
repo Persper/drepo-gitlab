@@ -201,7 +201,9 @@ export function trimFirstCharOfLineContent(line = {}) {
 }
 
 function unchanged(line) {
-  return !line.type || [MATCH_LINE_TYPE, NEW_NO_NEW_LINE_TYPE, OLD_NO_NEW_LINE_TYPE].includes(line.type);
+  return (
+    !line.type || [MATCH_LINE_TYPE, NEW_NO_NEW_LINE_TYPE, OLD_NO_NEW_LINE_TYPE].includes(line.type)
+  );
 }
 
 function added(line) {
