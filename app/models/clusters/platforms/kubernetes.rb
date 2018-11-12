@@ -133,6 +133,11 @@ module Clusters
 
       private
 
+      # DEPRECATED
+      #
+      # On 11.4 Clusters::KubernetesNamespace was introduced, this model will allow to
+      # have multiple namespaces per project. This method will be removed after migration
+      # has been completed.
       def kubeconfig
         to_kubeconfig(
           url: api_url,
