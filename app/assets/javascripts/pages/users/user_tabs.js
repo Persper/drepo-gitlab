@@ -79,6 +79,7 @@ const CALENDAR_TEMPLATES = {
 
 const CALENDAR_PERIOD_6_MONTHS = 6;
 const CALENDAR_PERIOD_12_MONTHS = 12;
+const OVERVIEW_CALENDAR_BREAKPOINT = 918;
 
 export default class UserTabs {
   constructor({ defaultAction, action, parentEl }) {
@@ -97,6 +98,9 @@ export default class UserTabs {
       this.action = this.defaultAction;
     }
 
+    // caches data for activity calendar (based on tab)
+    this.activityCalendarData = { overview: null, activity: null };
+
     this.activateTab(this.action);
   }
 
@@ -105,6 +109,15 @@ export default class UserTabs {
       .off('shown.bs.tab', '.nav-links a[data-toggle="tab"]')
       .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', event => this.tabShown(event))
       .on('click', '.gl-pagination a', event => this.changeProjectsPage(event));
+
+    window.addEventListener('resize', () => this.onResize());
+  }
+
+  onResize() {
+    const action = this.getCurrentAction();
+    if (action === 'overview') {
+      this.loadActivityCalendar(action);
+    }
   }
 
   changeProjectsPage(e) {
@@ -203,48 +216,58 @@ export default class UserTabs {
   }
 
   loadActivityCalendar(action) {
-    const monthsAgo = action === 'overview' ? CALENDAR_PERIOD_6_MONTHS : CALENDAR_PERIOD_12_MONTHS;
     const $calendarWrap = this.$parentEl.find('.tab-pane.active .user-calendar');
     const calendarPath = $calendarWrap.data('calendarPath');
+
+    if (!this.activityCalendarData[action]) {
+      axios
+        .get(calendarPath)
+        .then(({ data }) => {
+          this.activityCalendarData[action] = data;
+          UserTabs.renderActivityCalendar(data, action, $calendarWrap);
+        })
+        .catch(() => flash(__('There was an error loading users activity calendar.')));
+    } else {
+      UserTabs.renderActivityCalendar(this.activityCalendarData[action], action, $calendarWrap);
+    }
+  }
+
+  static renderActivityCalendar(data, action, $calendarWrap) {
+    const monthsAgo = UserTabs.getVisibleCalendarPeriod(action, $calendarWrap);
     const calendarActivitiesPath = $calendarWrap.data('calendarActivitiesPath');
-    const utcOffset = $calendarWrap.data('utcOffset');
     let utcFormatted = 'UTC';
+    const utcOffset = $calendarWrap.data('utcOffset');
     if (utcOffset !== 0) {
       utcFormatted = `UTC${utcOffset > 0 ? '+' : ''}${utcOffset / 3600}`;
     }
 
-    axios
-      .get(calendarPath)
-      .then(({ data }) => {
-        $calendarWrap.html(CALENDAR_TEMPLATES[action]);
+    $calendarWrap.html(CALENDAR_TEMPLATES[action]);
 
-        let calendarHint = '';
+    let calendarHint = '';
 
-        if (action === 'activity') {
-          calendarHint = sprintf(
-            __(
-              'Summary of issues, merge requests, push events, and comments (Timezone: %{utcFormatted})',
-            ),
-            { utcFormatted },
-          );
-        } else if (action === 'overview') {
-          calendarHint = __('Issues, merge requests, pushes and comments.');
-        }
+    if (action === 'activity') {
+      calendarHint = sprintf(
+        __(
+          'Summary of issues, merge requests, push events, and comments (Timezone: %{utcFormatted})',
+        ),
+        { utcFormatted },
+      );
+    } else if (action === 'overview') {
+      calendarHint = __('Issues, merge requests, pushes and comments.');
+    }
 
-        $calendarWrap.find('.calendar-hint').text(calendarHint);
+    $calendarWrap.find('.calendar-hint').text(calendarHint);
 
-        // eslint-disable-next-line no-new
-        new ActivityCalendar(
-          '.tab-pane.active .js-contrib-calendar',
-          '.tab-pane.active .user-calendar-activities',
-          data,
-          calendarActivitiesPath,
-          utcOffset,
-          0,
-          monthsAgo,
-        );
-      })
-      .catch(() => flash(__('There was an error loading users activity calendar.')));
+    // eslint-disable-next-line no-new
+    new ActivityCalendar(
+      '.tab-pane.active .js-contrib-calendar',
+      '.tab-pane.active .user-calendar-activities',
+      data,
+      calendarActivitiesPath,
+      utcOffset,
+      0,
+      monthsAgo,
+    );
   }
 
   toggleLoading(status) {
@@ -267,5 +290,15 @@ export default class UserTabs {
 
   getCurrentAction() {
     return this.$parentEl.find('.nav-links a.active').data('action');
+  }
+
+  static getVisibleCalendarPeriod(action, $calendarWrap) {
+    let monthsAgo = CALENDAR_PERIOD_12_MONTHS;
+
+    if (action === 'overview' && $calendarWrap.width() < OVERVIEW_CALENDAR_BREAKPOINT) {
+      monthsAgo = CALENDAR_PERIOD_6_MONTHS;
+    }
+
+    return monthsAgo;
   }
 }
