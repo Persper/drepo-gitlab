@@ -72,34 +72,79 @@ describe Projects::ArtifactsController do
             create(:ci_job_artifact, :codequality, job: job)
           end
 
-          it 'sends the codequality report' do
-            expect(controller).to receive(:send_file).with(job.job_artifacts_codequality.file.path, hash_including(disposition: 'attachment')).and_call_original
+          context 'when feature flag workhorse_set_content_type is enabled' do
+            before do
+              stub_feature_flags(workhorse_set_content_type: true)
+            end
 
-            download_artifact(file_type: file_type)
+            it 'sends the codequality report' do
+              expect(controller).to receive(:send_file).with(job.job_artifacts_codequality.file.path, hash_including(:filename)).and_call_original
+
+              download_artifact(file_type: file_type)
+            end
+          end
+
+          context 'when feature flag workhorse_set_content_type is disabled' do
+            before do
+              stub_feature_flags(workhorse_set_content_type: false)
+            end
+
+            it 'sends the codequality report' do
+              expect(controller).to receive(:send_file).with(job.job_artifacts_codequality.file.path, hash_including(:filename, disposition: 'attachment')).and_call_original
+
+              download_artifact(file_type: file_type)
+            end
           end
         end
 
-        context 'when feature flag workhorse_set_content_type is enabled' do
+        context 'when file is stored remotely' do
+          let(:expected_params) { %r(response-content-disposition=attachment%3Bfilename%3D%22codequality.json%22&response-content-type=application/json) }
+
           before do
-            stub_feature_flags(workhorse_set_content_type: true)
+            stub_artifacts_object_storage
+            create(:ci_job_artifact, :remote_store, :codequality, job: job)
           end
 
-          it 'sends the codequality report' do
-            expect(controller).to receive(:send_file).with(job.job_artifacts_codequality.file.path, hash_including(:filename)).and_call_original
+          context 'when feature flag workhorse_set_content_type is enabled' do
+            before do
+              stub_feature_flags(workhorse_set_content_type: true)
+            end
 
-            download_artifact(file_type: file_type)
+            it 'sends the codequality report' do
+              expect(controller).not_to receive(:redirect_to).with(expected_params)
+              expect(controller).to receive(:redirect_to).and_call_original
+
+              download_artifact(file_type: file_type)
+            end
+
+            context 'when proxied' do
+              it 'sends the codequality report' do
+                expect(Gitlab::Workhorse).not_to receive(:send_url).with(expected_params)
+                expect(Gitlab::Workhorse).to receive(:send_url).and_call_original
+
+                download_artifact(file_type: file_type, proxy: true)
+              end
+            end
           end
-        end
 
-        context 'when feature flag workhorse_set_content_type is disabled' do
-          before do
-            stub_feature_flags(workhorse_set_content_type: false)
-          end
+          context 'when feature flag workhorse_set_content_type is disabled' do
+            before do
+              stub_feature_flags(workhorse_set_content_type: false)
+            end
 
-          it 'sends the codequality report' do
-            expect(controller).to receive(:send_file).with(job.job_artifacts_codequality.file.path, hash_including(:filename, disposition: 'attachment')).and_call_original
+            it 'sends the codequality report' do
+              expect(controller).to receive(:redirect_to).with(expected_params).and_call_original
 
-            download_artifact(file_type: file_type)
+              download_artifact(file_type: file_type)
+            end
+
+            context 'when proxied' do
+              it 'sends the codequality report' do
+                expect(Gitlab::Workhorse).to receive(:send_url).with(expected_params).and_call_original
+
+                download_artifact(file_type: file_type, proxy: true)
+              end
+            end
           end
         end
       end
