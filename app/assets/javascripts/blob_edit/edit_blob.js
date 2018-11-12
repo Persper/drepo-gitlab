@@ -13,6 +13,7 @@ export default class EditBlob {
     this.initModePanesAndLinks();
     this.initSoftWrap();
     this.initFileSelectors(currentAction, projectId);
+    this.preventAccidentalNavigation();
   }
 
   configureAceEditor(filePath, assetsPath) {
@@ -89,5 +90,9 @@ export default class EditBlob {
     this.isSoftWrapped = !this.isSoftWrapped;
     this.$toggleButton.toggleClass('soft-wrap-active', this.isSoftWrapped);
     this.editor.getSession().setUseWrapMode(this.isSoftWrapped);
+  }
+
+  preventAccidentalNavigation() {
+    window.onbeforeunload = () => 'Are you sure you want to exit?';
   }
 }
