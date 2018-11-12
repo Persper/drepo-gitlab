@@ -1,23 +1,23 @@
 <script>
-import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
+import { GlSkeletonLoading } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'SkeletonNote',
   components: {
-    SkeletonLoading,
+    GlSkeletonLoading,
   },
 };
 </script>
 
 <template>
-  <li class="timeline-entry note">
+  <li class="timeline-entry note note-wrapper">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
       </div>
       <div class="timeline-content">
         <div class="note-header"></div>
         <div class="note-body">
-          <skeleton-loading />
+          <gl-skeleton-loading />
         </div>
       </div>
     </div>

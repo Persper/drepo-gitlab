@@ -98,7 +98,7 @@ describe('DiffsStoreMutations', () => {
     it('should call utils.addContextLines with proper params', () => {
       const options = {
         lineNumbers: { oldLineNumber: 1, newLineNumber: 2 },
-        contextLines: [{ oldLine: 1 }],
+        contextLines: [{ oldLine: 1, newLine: 1, lineCode: 'ff9200_1_1', discussions: [] }],
         fileHash: 'ff9200',
         params: {
           bottom: true,
@@ -110,7 +110,7 @@ describe('DiffsStoreMutations', () => {
         parallelDiffLines: [],
       };
       const state = { diffFiles: [diffFile] };
-      const lines = [{ oldLine: 1 }];
+      const lines = [{ oldLine: 1, newLine: 1 }];
 
       const findDiffFileSpy = spyOnDependency(mutations, 'findDiffFile').and.returnValue(diffFile);
       const removeMatchLineSpy = spyOnDependency(mutations, 'removeMatchLine');
@@ -221,6 +221,7 @@ describe('DiffsStoreMutations', () => {
 
       expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(1);
       expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[0].id).toEqual(1);
+      expect(state.diffFiles[0].parallelDiffLines[0].right.discussions).toEqual([]);
 
       expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(1);
       expect(state.diffFiles[0].highlightedDiffLines[0].discussions[0].id).toEqual(1);

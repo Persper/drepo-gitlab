@@ -1,6 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import { sprintf, __ } from '../../../locale';
 import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
@@ -17,6 +18,7 @@ export default {
     Tab,
     JobsList,
     EmptyState,
+    GlLoadingIcon,
   },
   computed: {
     ...mapState(['pipelinesEmptyStateSvgPath', 'links']),
@@ -25,7 +27,7 @@ export default {
     ...mapState('pipelines', ['isLoadingPipeline', 'latestPipeline', 'stages', 'isLoadingJobs']),
     ciLintText() {
       return sprintf(
-        __('You can also test your .gitlab-ci.yml in the %{linkStart}Lint%{linkEnd}'),
+        __('You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}.'),
         {
           linkStart: `<a href="${_.escape(this.currentProject.web_url)}/-/ci/lint">`,
           linkEnd: '</a>',
