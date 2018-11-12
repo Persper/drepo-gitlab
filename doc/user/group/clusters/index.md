@@ -27,14 +27,10 @@ twice, which can lead to confusion during deployments.
 
 ## RBAC compatibility
 
-After a Kubernetes cluster is created or added on a project, an RBAC
-authorization is automatically enforced by generating a restricted
-service account to the project's namespace on the Cluster side.
-
-Unlike project clusters, group clusters currently uses the super-user
-role
-([`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles))
-to perform its operations. It is planned in a [future
+When a project deploys into a group cluster, GitLab currently uses the
+admin service account
+([`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)).
+It is planned in a [future
 release](https://gitlab.com/gitlab-org/gitlab-ce/issues/53592) to
 similarly use a restricted service account for group clusters.
 
