@@ -64,7 +64,7 @@ export default {
         />
       </div>
       <button
-        class="btn btn-link js-replies-text"
+        class="btn btn-link js-replies-text qa-expand-replies"
         type="button"
         @click="toggle"
       >
@@ -84,7 +84,7 @@ export default {
     </template>
     <span
       v-else
-      class="collapse-replies-btn js-collapse-replies"
+      class="collapse-replies-btn js-collapse-replies qa-collapse-replies"
       @click="toggle"
     >
       <icon name="chevron-down" />
