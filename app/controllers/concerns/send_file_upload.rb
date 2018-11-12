@@ -15,7 +15,7 @@ module SendFileUpload
       # By default, Rails will send uploads with an extension of .js with a
       # content-type of text/javascript, which will trigger Rails'
       # cross-origin JavaScript protection.
-      send_params[:content_type] = 'text/plain' if File.extname(attachment) == '.js'
+      send_params[:content_type] = 'text/plain' if javascript_file?(attachment)
       send_params[:filename] = attachment
 
       if Feature.disabled?(:workhorse_set_content_type)
@@ -34,6 +34,8 @@ module SendFileUpload
   end
 
   def guess_content_type(filename)
+    return 'text/plain' if javascript_file?(filename)
+
     types = MIME::Types.type_for(filename)
 
     if types.present?
@@ -41,5 +43,9 @@ module SendFileUpload
     else
       "application/octet-stream"
     end
+  end
+
+  def javascript_file?(filename)
+    File.extname(filename) == '.js'
   end
 end

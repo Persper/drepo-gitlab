@@ -153,7 +153,7 @@ describe SendFileUpload do
 
             context 'disabled' do
               let(:flag_value) { false }
-              let(:expected_headers) { %r(response-content-disposition=attachment%3Bfilename%3D%22test.js%22&response-content-type=application/javascript) }
+              let(:expected_headers) { %r(response-content-disposition=attachment%3Bfilename%3D%22test.js%22&response-content-type=text/plain) }
 
               it 'sends a file with a custom type' do
                 expect(Gitlab::Workhorse).to receive(:send_url).with(expected_headers).and_call_original
