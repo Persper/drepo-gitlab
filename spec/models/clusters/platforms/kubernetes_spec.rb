@@ -13,7 +13,6 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   it { is_expected.to validate_presence_of(:api_url) }
   it { is_expected.to validate_presence_of(:token) }
 
-  it { is_expected.to delegate_method(:project).to(:cluster) }
   it { is_expected.to delegate_method(:enabled?).to(:cluster) }
   it { is_expected.to delegate_method(:managed?).to(:cluster) }
   it { is_expected.to delegate_method(:kubernetes_namespace).to(:cluster) }
@@ -133,6 +132,15 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
         it { is_expected.not_to be_valid }
       end
     end
+  end
+
+  describe '#project' do
+    let(:cluster) { create(:cluster, :project) }
+    let(:kubernetes) { build(:cluster_platform_kubernetes, cluster: cluster) }
+
+    subject { kubernetes.project }
+
+    it { is_expected.to eq cluster.project }
   end
 
   describe '#kubeclient' do

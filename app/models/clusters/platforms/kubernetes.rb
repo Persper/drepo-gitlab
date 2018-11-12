@@ -51,7 +51,6 @@ module Clusters
 
       alias_attribute :ca_pem, :ca_cert
 
-      delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
       delegate :managed?, to: :cluster, allow_nil: true
       delegate :allow_user_defined_namespace?, to: :cluster, allow_nil: true
@@ -64,6 +63,13 @@ module Clusters
         rbac: 1,
         abac: 2
       }
+
+      # DEPRECATED - please use Clusters::KubernetesNamespace
+      def project
+        raise "Cluster type does not support #project" if cluster && !cluster.project_type?
+
+        cluster&.project
+      end
 
       def actual_namespace
         if namespace.present?
