@@ -1,6 +1,6 @@
 ---
 category: create
-nav_title: 'Create 3'
+nav: devops
 ---
 
 # Merge requests

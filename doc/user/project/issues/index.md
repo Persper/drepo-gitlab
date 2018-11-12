@@ -1,3 +1,8 @@
+---
+category: plan
+nav: devops
+---
+
 # Issues
 
 The GitLab Issue Tracker is an advanced and complete tool

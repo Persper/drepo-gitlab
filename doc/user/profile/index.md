@@ -1,3 +1,9 @@
+---
+category: user
+nav: user
+nav_title: "Account and profile"
+---
+
 # User account
 
 When signed into their GitLab account, users can customize their

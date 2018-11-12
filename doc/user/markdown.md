@@ -1,3 +1,8 @@
+---
+category: user
+nav: user
+---
+
 # Markdown
 
 ## GitLab Flavored Markdown (GFM)

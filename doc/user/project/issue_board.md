@@ -1,6 +1,6 @@
 ---
-category: create
-nav_title: 'Create 2'
+category: plan
+nav: devops
 ---
 
 # Issue Boards

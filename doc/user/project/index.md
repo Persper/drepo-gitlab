@@ -1,6 +1,6 @@
 ---
 category: create
-nav_title: 'Create 1'
+nav: devops
 ---
 
 # Projects
