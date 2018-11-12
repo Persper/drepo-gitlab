@@ -186,7 +186,7 @@ export default class UserTabs {
       requestParams: { limit: 5 },
     });
     UserTabs.renderMostRecentBlocks('#js-overview .projects-block', {
-      requestParams: { limit: 10, skip_pagination: true },
+      requestParams: { limit: 10, skip_pagination: true, compact_mode: true },
     });
 
     this.loaded.overview = true;
@@ -198,6 +198,7 @@ export default class UserTabs {
       container,
       url: $(`${container} .overview-content-list`).data('href'),
       ...options,
+      renderCb: () => localTimeAgo($('.js-timeago', container)),
     });
   }
 
