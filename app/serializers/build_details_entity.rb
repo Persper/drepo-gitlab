@@ -10,8 +10,9 @@ class BuildDetailsEntity < JobEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity
 
-  expose :deployment_status, if: -> (*) { build.starts_environment? } do
+  expose :deployment_status, if: -> (*) { build.has_deployment? } do
     expose :deployment_status, as: :status
+    expose :latest_deployment?, as: :latest
 
     expose :persisted_environment, as: :environment, with: EnvironmentEntity
   end
@@ -109,5 +110,13 @@ class BuildDetailsEntity < JobEntity
 
   def can_admin_build?
     can?(request.current_user, :admin_build, project)
+  end
+
+  def deployment_status
+    build.deployment.status
+  end
+
+  def latest_deployment?
+    build.deployment.last?
   end
 end

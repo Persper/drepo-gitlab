@@ -745,19 +745,6 @@ module Ci
       end
     end
 
-    # Virtual deployment status depending on the environment status.
-    def deployment_status
-      return nil unless starts_environment?
-
-      if success?
-        return successful_deployment_status
-      elsif failed?
-        return :failed
-      end
-
-      :creating
-    end
-
     private
 
     def erase_old_artifacts!
@@ -765,14 +752,6 @@ module Ci
       remove_artifacts_file!
       remove_artifacts_metadata!
       save
-    end
-
-    def successful_deployment_status
-      if deployment&.last?
-        :last
-      else
-        :out_of_date
-      end
     end
 
     def each_report(report_types)

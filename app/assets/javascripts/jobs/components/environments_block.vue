@@ -21,15 +21,14 @@ export default {
     environment() {
       let environmentText;
       switch (this.deploymentStatus.status) {
-        case 'last':
-          environmentText = sprintf(
-            __('This job is the most recent deployment to %{link}.'),
-            { link: this.environmentLink },
-            false,
-          );
-          break;
-        case 'out_of_date':
-          if (this.hasLastDeployment) {
+        case 'success':
+          if (this.deploymentStatus.latest) {
+            environmentText = sprintf(
+              __('This job is the most recent deployment to %{link}.'),
+              { link: this.environmentLink },
+              false,
+            );
+          } else {
             environmentText = sprintf(
               __(
                 'This job is an out-of-date deployment to %{environmentLink}. View the most recent deployment %{deploymentLink}.',
@@ -40,14 +39,7 @@ export default {
               },
               false,
             );
-          } else {
-            environmentText = sprintf(
-              __('This job is an out-of-date deployment to %{environmentLink}.'),
-              { environmentLink: this.environmentLink },
-              false,
-            );
           }
-
           break;
         case 'failed':
           environmentText = sprintf(
@@ -56,7 +48,7 @@ export default {
             false,
           );
           break;
-        case 'creating':
+        case 'created':
           if (this.hasLastDeployment) {
             environmentText = sprintf(
               __(
