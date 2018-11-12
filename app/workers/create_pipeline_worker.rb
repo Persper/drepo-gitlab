@@ -13,6 +13,10 @@ class CreatePipelineWorker
 
     Ci::CreatePipelineService
       .new(project, user, ref: ref)
-      .execute(source, **params)
+      .execute(source, **params).tap do
+        Ci::CreateMergeRequestPipelinesService
+          .new(project, user, ref: ref)
+          .execute(source, **params)
+      end
   end
 end
