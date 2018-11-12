@@ -36,7 +36,7 @@ role
 ([`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles))
 to perform its operations. It is planned in a [future
 release](https://gitlab.com/gitlab-org/gitlab-ce/issues/53592) to
-similarly use a restrcited service account for group clusters.
+similarly use a restricted service account for group clusters.
 
 NOTE: **Note:**
 RBAC support was introduced on
