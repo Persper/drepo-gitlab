@@ -2,6 +2,7 @@
 category: user
 nav: user
 nav_title: "Account and profile"
+doc_position: 4
 ---
 
 # User account
