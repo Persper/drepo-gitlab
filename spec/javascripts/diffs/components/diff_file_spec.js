@@ -1,15 +1,20 @@
 import Vue from 'vue';
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import store from '~/mr_notes/stores';
+import { parallelize } from '~/diffs/store/utils';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffFile', () => {
   let vm;
+  const diffFileMock = {
+    ...diffFileMockData,
+    parallelDiffLines: parallelize(diffFileMockData.highlightedDiffLines),
+  };
 
   beforeEach(() => {
     vm = createComponentWithStore(Vue.extend(DiffFileComponent), store, {
-      file: JSON.parse(JSON.stringify(diffFileMockData)),
+      file: JSON.parse(JSON.stringify(diffFileMock)),
       canCurrentUserFork: false,
     }).$mount();
   });
