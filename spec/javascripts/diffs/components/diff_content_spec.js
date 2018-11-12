@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import DiffContentComponent from '~/diffs/components/diff_content.vue';
+import { parallelize } from '~/diffs/store/utils';
 import { createStore } from '~/mr_notes/stores';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { GREEN_BOX_IMAGE_URL, RED_BOX_IMAGE_URL } from 'spec/test_constants';
@@ -10,6 +11,11 @@ import discussionsMockData from '../mock_data/diff_discussions';
 describe('DiffContent', () => {
   const Component = Vue.extend(DiffContentComponent);
   let vm;
+
+  const mockDiffFile = {
+    ...diffFileMockData,
+    parallelDiffLines: parallelize(diffFileMockData.highlightedDiffLines),
+  };
 
   beforeEach(() => {
     const store = createStore();
@@ -22,7 +28,7 @@ describe('DiffContent', () => {
     vm = mountComponentWithStore(Component, {
       store,
       props: {
-        diffFile: JSON.parse(JSON.stringify(diffFileMockData)),
+        diffFile: JSON.parse(JSON.stringify(mockDiffFile)),
       },
     });
   });

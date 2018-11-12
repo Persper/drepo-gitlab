@@ -277,10 +277,8 @@ export function prepareDiffData(diffData) {
         const line = file.highlightedDiffLines[u];
         Object.assign(line, { ...trimFirstCharOfLineContent(line) });
       }
-    }
 
-    file.parallelDiffLines = parallelize(file.highlightedDiffLines);
-    if (file.parallelDiffLines) {
+      file.parallelDiffLines = parallelize(file.highlightedDiffLines);
       showingLines += file.parallelDiffLines.length;
     }
 
