@@ -115,46 +115,12 @@ Within GitLab, D3 has been used for the following notable features
 * [Prometheus graphs](https://docs.gitlab.com/ee/user/project/integrations/prometheus.html)
 * Contribution calendars
 
-## Modals
+## Component Library
 
-In Vue, we have created a reusable component to handle modals. All you have to do is import [gl-modal component][gl-modal]
+For other Vue components, see the [gitlab-ui docs](https://gitlab.com/gitlab-org/gitlab-ui).
 
-```
-<gl-modal
-  id="dogs-out-modal"
-  :header-title-text="'Let the dogs out?'"
-  footer-primary-button-variant="danger"
-  :footer-primary-button-text="'Let them out'"
-  @submit="letOut(theDogs)"
-/>
-```
-
-> Note: See the [corresponding UX guide][ux-modals] for more details about modals.
-
-## Tooltips
-
-In HTML, we initialize tooltips on elements by adding the `.has-tooltip` CSS class and by adding an attribute `title`. The underlying implementation of these tooltips uses Bootstrap Tooltips.
-
-```
-<!-- Tooltip will read: Hello world -->
-<span class="has-tooltip" title="Hello world"></span>
-```
-
-In Vue, we initialize tooltips by importing our [tooltip directive][tooltip-directive] to our desired Vue file and by adding the `v-tooltip` and `title` attributes to the desired element.
-
-```
-<!-- Tooltip will read: Hello world -->
-<span
-  v-gl-tooltip
-  title="Hello world"
->
-</span>
-```
 
 [gitlab-svgs-project]: https://gitlab.com/gitlab-org/gitlab-svgs
 [svg-previewer]: http://gitlab-org.gitlab.io/gitlab-svgs/
 [icon-vue]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/vue_shared/components/icon.vue
 [common-utils]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/lib/utils/common_utils.js
-[gl-modal]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/vue_shared/components/gl_modal.vue
-[ux-modals]: https://docs.gitlab.com/ce/development/ux_guide/components.html#modals
-[tooltip-directive]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/vue_shared/directives/tooltip.js
