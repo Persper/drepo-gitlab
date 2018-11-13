@@ -6,17 +6,15 @@ import {
   LEGACY_DIFF_NOTE_TYPE,
   DIFF_NOTE_TYPE,
   NEW_LINE_TYPE,
+  NEW_NO_NEW_LINE_TYPE,
   OLD_LINE_TYPE,
+  OLD_NO_NEW_LINE_TYPE,
   MATCH_LINE_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
 } from '~/diffs/constants';
 import { MERGE_REQUEST_NOTEABLE_TYPE } from '~/notes/constants';
 import diffFileMockData from '../mock_data/diff_file';
 import { noteableDataMock } from '../../notes/mock_data';
-import {
-  OLD_NO_NEW_LINE_TYPE,
-  NEW_NO_NEW_LINE_TYPE,
-} from '../../../../app/assets/javascripts/diffs/constants';
 
 const getDiffFileMock = () =>
   Object.assign({}, diffFileMockData, {
