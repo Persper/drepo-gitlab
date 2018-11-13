@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-# Blob is a Rails-specific wrapper around Gitlab::Git::Blob objects
+# Blob is a Rails-specific wrapper around Gitlab::Git::Blob, SnippetBlob and Ci::ArtifactBlob
 class Blob < SimpleDelegator
+  include Presentable
+  include BlobLanguageFromGitAttributes
+
   CACHE_TIME = 60 # Cache raw blobs referred to by a (mutable) ref for 1 minute
   CACHE_TIME_IMMUTABLE = 3600 # Cache blobs referred to by an immutable reference for 1 hour
-
-  MAXIMUM_TEXT_HIGHLIGHT_SIZE = 1.megabyte
 
   # Finding a viewer for a blob happens based only on extension and whether the
   # blob is binary or text, which means 1 blob should only be matched by 1 viewer,
@@ -121,10 +122,6 @@ class Blob < SimpleDelegator
     end
   end
 
-  def no_highlighting?
-    raw_size && raw_size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
-  end
-
   def empty?
     raw_size == 0
   end
@@ -162,7 +159,7 @@ class Blob < SimpleDelegator
     if stored_externally?
       if rich_viewer
         rich_viewer.binary?
-      elsif Linguist::Language.find_by_extension(name).any?
+      elsif known_extension?
         false
       elsif _mime_type
         _mime_type.binary?

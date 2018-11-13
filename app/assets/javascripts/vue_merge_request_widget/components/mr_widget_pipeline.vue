@@ -1,8 +1,10 @@
 <script>
 /* eslint-disable vue/require-default-prop */
+import { sprintf, __ } from '~/locale';
 import PipelineStage from '~/pipelines/components/stage.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 
 export default {
   name: 'MRWidgetPipeline',
@@ -10,6 +12,7 @@ export default {
     PipelineStage,
     CiIcon,
     Icon,
+    TooltipOnTruncate,
   },
   props: {
     pipeline: {
@@ -29,6 +32,14 @@ export default {
     sourceBranchLink: {
       type: String,
       required: false,
+    },
+    sourceBranch: {
+      type: String,
+      required: false,
+    },
+    troubleshootingDocsPath: {
+      type: String,
+      required: true,
     },
   },
   computed: {
@@ -51,6 +62,18 @@ export default {
     hasCommitInfo() {
       return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
     },
+    errorText() {
+      return sprintf(
+        __(
+          'Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation.%{linkEnd}',
+        ),
+        {
+          linkStart: `<a href="${this.troubleshootingDocsPath}">`,
+          linkEnd: '</a>',
+        },
+        false,
+      );
+    },
   },
 };
 </script>
@@ -71,8 +94,10 @@ export default {
             name="status_failed_borderless"
           />
         </div>
-        <div class="media-body">
-          Could not connect to the CI server. Please check your settings and try again
+        <div
+          class="media-body"
+          v-html="errorText"
+        >
         </div>
       </template>
       <template v-else-if="hasPipeline">
@@ -107,11 +132,12 @@ export default {
                   >
                     {{ pipeline.commit.short_id }}</a>
                   on
-                  <span
-                    class="label-branch"
+                  <tooltip-on-truncate
+                    :title="sourceBranch"
+                    truncate-target="child"
+                    class="label-branch label-truncate"
                     v-html="sourceBranchLink"
-                  >
-                  </span>
+                  />
                 </template>
               </div>
               <div

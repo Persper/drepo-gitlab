@@ -3,7 +3,7 @@ import { mapActions, mapState } from 'vuex';
 import _ from 'underscore';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import Item from './item.vue';
 import TokenedInput from '../shared/tokened_input.vue';
 
@@ -14,10 +14,10 @@ const SEARCH_TYPES = [
 
 export default {
   components: {
-    LoadingIcon,
     TokenedInput,
     Item,
     Icon,
+    GlLoadingIcon,
   },
   data() {
     return {
@@ -39,14 +39,10 @@ export default {
       return this.hasSearchFocus && !this.search && !this.currentSearchType;
     },
     type() {
-      return this.currentSearchType
-        ? this.currentSearchType.type
-        : '';
+      return this.currentSearchType ? this.currentSearchType.type : '';
     },
     searchTokens() {
-      return this.currentSearchType
-        ? [this.currentSearchType]
-        : [];
+      return this.currentSearchType ? [this.currentSearchType] : [];
     },
   },
   watch: {
@@ -98,10 +94,10 @@ export default {
       </div>
     </div>
     <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
-      <loading-icon
+      <gl-loading-icon
         v-if="isLoading"
+        :size="2"
         class="mt-3 mb-3 align-self-center ml-auto mr-auto"
-        size="2"
       />
       <template v-else>
         <ul

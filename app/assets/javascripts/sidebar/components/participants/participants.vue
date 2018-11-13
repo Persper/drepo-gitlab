@@ -1,80 +1,80 @@
 <script>
-  import { __, n__, sprintf } from '~/locale';
-  import tooltip from '~/vue_shared/directives/tooltip';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-  import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
+import { __, n__, sprintf } from '~/locale';
+import tooltip from '~/vue_shared/directives/tooltip';
+import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 
-  export default {
-    directives: {
-      tooltip,
+export default {
+  directives: {
+    tooltip,
+  },
+  components: {
+    userAvatarImage,
+    GlLoadingIcon,
+  },
+  props: {
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    components: {
-      loadingIcon,
-      userAvatarImage,
+    participants: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
-    props: {
-      loading: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      participants: {
-        type: Array,
-        required: false,
-        default: () => [],
-      },
-      numberOfLessParticipants: {
-        type: Number,
-        required: false,
-        default: 7,
-      },
+    numberOfLessParticipants: {
+      type: Number,
+      required: false,
+      default: 7,
     },
-    data() {
-      return {
-        isShowingMoreParticipants: false,
-      };
+  },
+  data() {
+    return {
+      isShowingMoreParticipants: false,
+    };
+  },
+  computed: {
+    lessParticipants() {
+      return this.participants.slice(0, this.numberOfLessParticipants);
     },
-    computed: {
-      lessParticipants() {
-        return this.participants.slice(0, this.numberOfLessParticipants);
-      },
-      visibleParticipants() {
-        return this.isShowingMoreParticipants ? this.participants : this.lessParticipants;
-      },
-      hasMoreParticipants() {
-        return this.participants.length > this.numberOfLessParticipants;
-      },
-      toggleLabel() {
-        let label = '';
-        if (this.isShowingMoreParticipants) {
-          label = __('- show less');
-        } else {
-          label = sprintf(__('+ %{moreCount} more'), {
-            moreCount: this.participants.length - this.numberOfLessParticipants,
-          });
-        }
+    visibleParticipants() {
+      return this.isShowingMoreParticipants ? this.participants : this.lessParticipants;
+    },
+    hasMoreParticipants() {
+      return this.participants.length > this.numberOfLessParticipants;
+    },
+    toggleLabel() {
+      let label = '';
+      if (this.isShowingMoreParticipants) {
+        label = __('- show less');
+      } else {
+        label = sprintf(__('+ %{moreCount} more'), {
+          moreCount: this.participants.length - this.numberOfLessParticipants,
+        });
+      }
 
-        return label;
-      },
-      participantLabel() {
-        return sprintf(
-          n__('%{count} participant', '%{count} participants', this.participants.length),
-          { count: this.loading ? '' : this.participantCount },
-        );
-      },
-      participantCount() {
-        return this.participants.length;
-      },
+      return label;
     },
-    methods: {
-      toggleMoreParticipants() {
-        this.isShowingMoreParticipants = !this.isShowingMoreParticipants;
-      },
-      onClickCollapsedIcon() {
-        this.$emit('toggleSidebar');
-      },
+    participantLabel() {
+      return sprintf(
+        n__('%{count} participant', '%{count} participants', this.participants.length),
+        { count: this.loading ? '' : this.participantCount },
+      );
     },
-  };
+    participantCount() {
+      return this.participants.length;
+    },
+  },
+  methods: {
+    toggleMoreParticipants() {
+      this.isShowingMoreParticipants = !this.isShowingMoreParticipants;
+    },
+    onClickCollapsedIcon() {
+      this.$emit('toggleSidebar');
+    },
+  },
+};
 </script>
 
 <template>
@@ -93,7 +93,7 @@
         aria-hidden="true"
       >
       </i>
-      <loading-icon
+      <gl-loading-icon
         v-if="loading"
         class="js-participants-collapsed-loading-icon"
       />
@@ -105,7 +105,7 @@
       </span>
     </div>
     <div class="title hide-collapsed">
-      <loading-icon
+      <gl-loading-icon
         v-if="loading"
         :inline="true"
         class="js-participants-expanded-loading-icon"

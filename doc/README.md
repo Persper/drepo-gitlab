@@ -33,7 +33,7 @@ provides solutions for all the stages of the DevOps lifecycle:
 [plan](#plan), [create](#create), [verify](#verify), [package](#package),
 [release](#release), [configure](#configure), [monitor](#monitor).
 
-![DevOps Lifecycle](img/devops_lifecycle.png)
+<img class="image-noshadow" src="img/devops_lifecycle.png" alt="DevOps Lifecycle">
 
 ### Plan
 
@@ -133,6 +133,7 @@ scales to run your tests faster.
 - [GitLab CI/CD](ci/README.md): Explore the features and capabilities of Continuous Integration, Continuous Delivery, and Continuous Deployment with GitLab.
 - [Review Apps](ci/review_apps/index.md): Preview changes to your app right from a merge request.
 - [Pipeline Graphs](ci/pipelines.md#pipeline-graphs)
+- [JUnit test reports](ci/junit_test_reports.md)
 
 ### Package
 
@@ -164,6 +165,7 @@ configuration. Then customize everything from buildpacks to CI/CD.
 - [Deployment of Helm, Ingress, and Prometheus on Kubernetes](user/project/clusters/index.md#installing-applications)
 - [Protected variables](ci/variables/README.md#protected-variables)
 - [Easy creation of Kubernetes clusters on GKE](user/project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab)
+- [Executable Runbooks](user/project/clusters/runbooks/index.md)
 
 ### Monitor
 
@@ -190,7 +192,7 @@ instant how code changes impact your production environment.
 ### User account
 
 - [User account](user/profile/index.md): Manage your account
-  - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
+  - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, set up your ssh keys and deploy keys for secure access to your projects.
   - [Profile settings](user/profile/index.md#profile-settings): Manage your profile settings, two factor authentication and more.
 - [User permissions](user/permissions.md): Learn what each role in a project (external/guest/reporter/developer/maintainer/owner) can do.
 

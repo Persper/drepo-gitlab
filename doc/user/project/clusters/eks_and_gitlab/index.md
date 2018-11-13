@@ -13,11 +13,13 @@ date: 2018-06-05
 In this tutorial, we will show how easy it is to integrate an [Amazon EKS](https://aws.amazon.com/eks/) cluster with GitLab, and begin deploying applications.
 
 For an end-to-end walkthrough we will:
+
 1. Start with a new project based on the sample Ruby on Rails template
 1. Integrate an EKS cluster
 1. Utilize [Auto DevOps](../../../../topics/autodevops/) to build, test, and deploy our application
 
 You will need:
+
 1. An account on GitLab, like [GitLab.com](https://gitlab.com)
 1. An Amazon EKS cluster
 1. `kubectl` [installed and configured for access to the EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl)
@@ -43,17 +45,18 @@ From the left side bar, hover over `Operations` and select `Kubernetes`, then cl
 A few details from the EKS cluster will be required to connect it to GitLab.
 
 1. A valid Kubernetes certificate and token are needed to authenticate to the EKS cluster. A pair is created by default, which can be used. Open a shell and use `kubectl` to retrieve them:
-  * List the secrets with `kubectl get secrets`, and one should named similar to `default-token-xxxxx`. Copy that token name for use below.
-  * Get the certificate with `kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 -D`
-  * Retrieve the token with `kubectl get secret <secret name> -o jsonpath="{['data']['token']}" | base64 -D`.
+   * List the secrets with `kubectl get secrets`, and one should named similar to `default-token-xxxxx`. Copy that token name for use below.
+   * Get the certificate with `kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 -D`
+   * Retrieve the token with `kubectl get secret <secret name> -o jsonpath="{['data']['token']}" | base64 -D`.
 1. The API server endpoint is also required, so GitLab can connect to the cluster. This is displayed on the AWS EKS console, when viewing the EKS cluster details.
 
 You now have all the information needed to connect the EKS cluster:
+
 * Kubernetes cluster name: Provide a name for the cluster to identify it within GitLab.
 * Environment scope: Leave this as `*` for now, since we are only connecting a single cluster.
 * API URL: Paste in the API server endpoint retrieved above.
 * CA Certificate: Paste the certificate data from the earlier step, as-is.
-* Paste the token value. Note on some versions of Kubernetes a trailing `%` is output, do not include it.
+* Paste the token value.
 * Project namespace: This can be left blank to accept the default namespace, based on the project name.
 
 ![Add Cluster](img/add_cluster.png)

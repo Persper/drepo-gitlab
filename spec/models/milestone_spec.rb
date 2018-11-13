@@ -95,6 +95,24 @@ describe Milestone do
     end
   end
 
+  describe '.order_by_name_asc' do
+    it 'sorts by name ascending' do
+      milestone1 = create(:milestone, title: 'Foo')
+      milestone2 = create(:milestone, title: 'Bar')
+
+      expect(described_class.order_by_name_asc).to eq([milestone2, milestone1])
+    end
+  end
+
+  describe '.reorder_by_due_date_asc' do
+    it 'reorders the input relation' do
+      milestone1 = create(:milestone, due_date: Date.new(2018, 9, 30))
+      milestone2 = create(:milestone, due_date: Date.new(2018, 10, 20))
+
+      expect(described_class.reorder_by_due_date_asc).to eq([milestone1, milestone2])
+    end
+  end
+
   describe "#percent_complete" do
     it "does not count open issues" do
       milestone.issues << issue
@@ -327,6 +345,43 @@ describe Milestone do
       it 'sorts by title descending' do
         expect(described_class.sort_by_attribute('name_desc'))
           .to eq([milestone_3, milestone_1, milestone_2])
+      end
+    end
+  end
+
+  describe '.states_count' do
+    context 'when the projects have milestones' do
+      before do
+        project_1 = create(:project)
+        project_2 = create(:project)
+        group_1 = create(:group)
+        group_2 = create(:group)
+
+        create(:active_milestone, title: 'Active Group Milestone', project: project_1)
+        create(:closed_milestone, title: 'Closed Group Milestone', project: project_1)
+        create(:active_milestone, title: 'Active Group Milestone', project: project_2)
+        create(:closed_milestone, title: 'Closed Group Milestone', project: project_2)
+        create(:closed_milestone, title: 'Active Group Milestone', group: group_1)
+        create(:closed_milestone, title: 'Closed Group Milestone', group: group_1)
+        create(:closed_milestone, title: 'Active Group Milestone', group: group_2)
+        create(:closed_milestone, title: 'Closed Group Milestone', group: group_2)
+      end
+
+      it 'returns the quantity of milestones in each possible state' do
+        expected_count = { opened: 5, closed: 6, all: 11 }
+
+        count = described_class.states_count(Project.all, Group.all)
+        expect(count).to eq(expected_count)
+      end
+    end
+
+    context 'when the projects do not have milestones' do
+      it 'returns 0 as the quantity of global milestones in each state' do
+        expected_count = { opened: 0, closed: 0, all: 0 }
+
+        count = described_class.states_count([project])
+
+        expect(count).to eq(expected_count)
       end
     end
   end

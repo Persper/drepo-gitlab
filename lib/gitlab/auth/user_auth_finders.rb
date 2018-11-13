@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Auth
     AuthenticationError = Class.new(StandardError)
@@ -79,7 +81,7 @@ module Gitlab
         return unless token
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
-        PersonalAccessToken.find_by(token: token) || raise(UnauthorizedError)
+        PersonalAccessToken.find_by_token(token) || raise(UnauthorizedError)
       end
 
       def find_oauth_access_token

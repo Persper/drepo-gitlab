@@ -44,11 +44,6 @@
       margin: 0;
     }
 
-    .icon-play {
-      height: 13px;
-      width: 12px;
-    }
-
     .external-url,
     .dropdown-new {
       color: $gl-text-color-secondary;
@@ -90,6 +85,7 @@
       margin-right: 3px;
       color: $gl-text-color-secondary;
       display: inline-block;
+      vertical-align: text-top;
 
       .fa:nth-child(1) {
         margin-right: 3px;
@@ -153,7 +149,7 @@
 
 .x-axis path,
 .y-axis path {
-  stroke: $stat-graph-axis-fill;
+  stroke: $gl-gray-350;
 }
 
 .label-x-axis-line,
@@ -163,7 +159,7 @@
 
 .y-axis {
   line {
-    stroke: $stat-graph-axis-fill;
+    stroke: $gl-gray-350;
     stroke-width: 1;
   }
 }
@@ -365,7 +361,7 @@
     }
 
     .arrow-shadow {
-      content: "";
+      content: '';
       position: absolute;
       width: 7px;
       height: 7px;
@@ -479,10 +475,10 @@
 
     .deploy-info-text-link {
       font-family: $monospace-font;
-      fill: $gl-link-color;
+      fill: $blue-600;
 
       &:hover {
-        fill: $gl-link-hover-color;
+        fill: $blue-800;
       }
     }
 
@@ -501,5 +497,5 @@
 }
 
 .prometheus-table-row-highlight {
-  background-color: $prometheus-table-row-highlight-color;
+  background-color: $theme-gray-100;
 }

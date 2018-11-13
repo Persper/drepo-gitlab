@@ -41,6 +41,9 @@ class Group < Namespace
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
 
+  has_many :cluster_groups, class_name: 'Clusters::Group'
+  has_many :clusters, through: :cluster_groups, class_name: 'Clusters::Cluster'
+
   has_many :todos
 
   accepts_nested_attributes_for :variables, allow_destroy: true
@@ -82,8 +85,17 @@ class Group < Namespace
       User.reference_pattern
     end
 
-    def visible_to_user(user)
-      where(id: user.authorized_groups.select(:id).reorder(nil))
+    # WARNING: This method should never be used on its own
+    # please do make sure the number of rows you are filtering is small
+    # enough for this query
+    def public_or_visible_to_user(user)
+      return public_to_user unless user
+
+      public_for_user = public_to_user_arel(user)
+      visible_for_user = visible_to_user_arel(user)
+      public_or_visible = public_for_user.or(visible_for_user)
+
+      where(public_or_visible)
     end
 
     def select_for_project_authorization
@@ -94,6 +106,23 @@ class Group < Namespace
       else
         super
       end
+    end
+
+    private
+
+    def public_to_user_arel(user)
+      self.arel_table[:visibility_level]
+        .in(Gitlab::VisibilityLevel.levels_for_user(user))
+    end
+
+    def visible_to_user_arel(user)
+      groups_table = self.arel_table
+      authorized_groups = user.authorized_groups.as('authorized')
+
+      groups_table.project(1)
+        .from(authorized_groups)
+        .where(authorized_groups[:id].eq(groups_table[:id]))
+        .exists
     end
   end
 
@@ -236,14 +265,18 @@ class Group < Namespace
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def system_hook_service
     SystemHooksService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def refresh_members_authorized_projects(blocking: true)
     UserProjectAccessChangedService.new(user_ids_for_project_authorizations)
       .execute(blocking: blocking)
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def user_ids_for_project_authorizations
     members_with_parents.pluck(:user_id)
@@ -300,14 +333,12 @@ class Group < Namespace
   # 3. They belong to a sub-group or project in such sub-group
   # 4. They belong to an ancestor group
   def direct_and_indirect_users
-    union = Gitlab::SQL::Union.new([
+    User.from_union([
       User
         .where(id: direct_and_indirect_members.select(:user_id))
         .reorder(nil),
       project_users_with_descendants
     ])
-
-    User.from("(#{union.to_sql}) #{User.table_name}")
   end
 
   # Returns all users that are members of projects
@@ -338,7 +369,7 @@ class Group < Namespace
     }
   end
 
-  def secret_variables_for(ref, project)
+  def ci_variables_for(ref, project)
     list_of_ids = [self] + ancestors
     variables = Ci::GroupVariable.where(group: list_of_ids)
     variables = variables.unprotected unless project.protected_for?(ref)

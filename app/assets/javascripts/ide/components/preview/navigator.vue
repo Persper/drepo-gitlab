@@ -1,12 +1,12 @@
 <script>
 import { listen } from 'codesandbox-api';
 import Icon from '~/vue_shared/components/icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     Icon,
-    LoadingIcon,
+    GlLoadingIcon,
   },
   props: {
     manager: {
@@ -138,7 +138,7 @@ export default {
         class="ide-navigator-location form-control bg-white"
         readonly
       />
-      <loading-icon
+      <gl-loading-icon
         v-if="loading"
         class="position-absolute ide-preview-loading-icon"
       />

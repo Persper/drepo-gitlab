@@ -2,8 +2,7 @@
 /* global ListLabel */
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-
-const Store = gl.issueBoards.BoardsStore;
+import boardsStore from '../stores/boards_store';
 
 export default {
   data() {
@@ -19,7 +18,7 @@ export default {
       this.clearBlankState();
 
       this.predefinedLabels.forEach((label, i) => {
-        Store.addList({
+        boardsStore.addList({
           title: label.title,
           position: i,
           list_type: 'label',
@@ -30,35 +29,34 @@ export default {
         });
       });
 
-      Store.state.lists = _.sortBy(Store.state.lists, 'position');
+      boardsStore.state.lists = _.sortBy(boardsStore.state.lists, 'position');
 
       // Save the labels
-      gl.boardService.generateDefaultLists()
+      gl.boardService
+        .generateDefaultLists()
         .then(res => res.data)
-        .then((data) => {
-          data.forEach((listObj) => {
-            const list = Store.findList('title', listObj.title);
+        .then(data => {
+          data.forEach(listObj => {
+            const list = boardsStore.findList('title', listObj.title);
 
             list.id = listObj.id;
             list.label.id = listObj.label.id;
-            list.getIssues()
-              .catch(() => {
-                // TODO: handle request error
-              });
+            list.getIssues().catch(() => {
+              // TODO: handle request error
+            });
           });
         })
         .catch(() => {
-          Store.removeList(undefined, 'label');
+          boardsStore.removeList(undefined, 'label');
           Cookies.remove('issue_board_welcome_hidden', {
             path: '',
           });
-          Store.addBlankState();
+          boardsStore.addBlankState();
         });
     },
-    clearBlankState: Store.removeBlankState.bind(Store),
+    clearBlankState: boardsStore.removeBlankState.bind(boardsStore),
   },
 };
-
 </script>
 
 <template>
@@ -83,7 +81,7 @@ export default {
       right on the way to making the most of your board.
     </p>
     <button
-      class="btn btn-create btn-inverted btn-block"
+      class="btn btn-success btn-inverted btn-block"
       type="button"
       @click.stop="addDefaultLists">
       Add default lists

@@ -76,7 +76,7 @@ export default {
   <li
     :id="noteAnchorId"
     :class="{ target: isTargetNote }"
-    class="note system-note timeline-entry">
+    class="note system-note timeline-entry note-wrapper">
     <div class="timeline-entry-inner">
       <div
         class="timeline-icon"
@@ -109,7 +109,7 @@ export default {
               class="system-note-commit-list-toggler flex-row"
               @click="expanded = !expanded"
             >
-              <Icon
+              <icon
                 :name="toggleIcon"
                 :size="8"
                 class="append-right-5"

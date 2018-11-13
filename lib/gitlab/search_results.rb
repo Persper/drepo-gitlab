@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 module Gitlab
   class SearchResults
     class FoundBlob
       include EncodingHelper
+      include Presentable
+      include BlobLanguageFromGitAttributes
 
-      attr_reader :id, :filename, :basename, :ref, :startline, :data, :project_id
+      attr_reader :id, :filename, :basename, :ref, :startline, :data, :project
 
       def initialize(opts = {})
         @id = opts.fetch(:id, nil)
@@ -13,6 +17,11 @@ module Gitlab
         @startline = opts.fetch(:startline, nil)
         @data = encode_utf8(opts.fetch(:data, nil))
         @per_page = opts.fetch(:per_page, 20)
+        @project = opts.fetch(:project, nil)
+        # Some caller does not have project object (e.g. elastic search),
+        # yet they can trigger many calls in one go,
+        # causing duplicated queries.
+        # Allow those to just pass project_id instead.
         @project_id = opts.fetch(:project_id, nil)
       end
 
@@ -20,8 +29,12 @@ module Gitlab
         filename
       end
 
-      def no_highlighting?
-        false
+      def project_id
+        @project_id || @project&.id
+      end
+
+      def present
+        super(presenter_class: BlobPresenter)
       end
     end
 
@@ -62,10 +75,13 @@ module Gitlab
       without_count ? collection.without_count : collection
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def limited_projects_count
       @limited_projects_count ||= projects.limit(count_limit).count
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def limited_issues_count
       return @limited_issues_count if @limited_issues_count
 
@@ -77,14 +93,19 @@ module Gitlab
       sum = issues(public_only: true).limit(count_limit).count
       @limited_issues_count = sum < count_limit ? issues.limit(count_limit).count : sum
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def limited_merge_requests_count
       @limited_merge_requests_count ||= merge_requests.limit(count_limit).count
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def limited_milestones_count
       @limited_milestones_count ||= milestones.limit(count_limit).count
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def single_commit_result?
       false
@@ -100,6 +121,7 @@ module Gitlab
       limit_projects.search(query)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def issues(finder_params = {})
       issues = IssuesFinder.new(current_user, finder_params).execute
       unless default_project_filter
@@ -115,13 +137,17 @@ module Gitlab
 
       issues.reorder('updated_at DESC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def milestones
       milestones = Milestone.where(project_id: project_ids_relation)
       milestones = milestones.search(query)
       milestones.reorder('updated_at DESC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def merge_requests
       merge_requests = MergeRequestsFinder.new(current_user).execute
       unless default_project_filter
@@ -137,13 +163,16 @@ module Gitlab
 
       merge_requests.reorder('updated_at DESC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def default_scope
       'projects'
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def project_ids_relation
       limit_projects.select(:id).reorder(nil)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import Flash from '../flash';
 import PerformanceBarService from './services/performance_bar_service';
 import PerformanceBarStore from './stores/performance_bar_store';
 
@@ -10,8 +9,7 @@ export default ({ container }) =>
       performanceBarApp: () => import('./components/performance_bar_app.vue'),
     },
     data() {
-      const performanceBarData = document.querySelector(this.$options.el)
-        .dataset;
+      const performanceBarData = document.querySelector(this.$options.el).dataset;
       const store = new PerformanceBarStore();
 
       return {
@@ -46,7 +44,8 @@ export default ({ container }) =>
             this.store.addRequestDetails(requestId, res.data.data);
           })
           .catch(() =>
-            Flash(`Error getting performance bar results for ${requestId}`),
+            // eslint-disable-next-line no-console
+            console.warn(`Error getting performance bar results for ${requestId}`),
           );
       },
     },

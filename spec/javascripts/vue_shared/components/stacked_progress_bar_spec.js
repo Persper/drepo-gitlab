@@ -4,16 +4,20 @@ import stackedProgressBarComponent from '~/vue_shared/components/stacked_progres
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-const createComponent = (config) => {
+const createComponent = config => {
   const Component = Vue.extend(stackedProgressBarComponent);
-  const defaultConfig = Object.assign({}, {
-    successLabel: 'Synced',
-    failureLabel: 'Failed',
-    neutralLabel: 'Out of sync',
-    successCount: 25,
-    failureCount: 10,
-    totalCount: 5000,
-  }, config);
+  const defaultConfig = Object.assign(
+    {},
+    {
+      successLabel: 'Synced',
+      failureLabel: 'Failed',
+      neutralLabel: 'Out of sync',
+      successCount: 25,
+      failureCount: 10,
+      totalCount: 5000,
+    },
+    config,
+  );
 
   return mountComponent(Component, defaultConfig);
 };
@@ -44,7 +48,11 @@ describe('StackedProgressBarComponent', () => {
       });
 
       it('returns percentage with decimal place from provided count based on `totalCount`', () => {
-        expect(vm.getPercent(10)).toBe(0.2);
+        expect(vm.getPercent(67)).toBe(1.3);
+      });
+
+      it('returns percentage as `< 1` from provided count based on `totalCount` when evaluated value is less than 1', () => {
+        expect(vm.getPercent(10)).toBe('< 1');
       });
     });
 
@@ -68,6 +76,7 @@ describe('StackedProgressBarComponent', () => {
 
     it('renders empty state when count is unavailable', () => {
       const vmX = createComponent({ totalCount: 0, successCount: 0, failureCount: 0 });
+
       expect(vmX.$el.querySelectorAll('.status-unavailable').length).not.toBe(0);
       vmX.$destroy();
     });

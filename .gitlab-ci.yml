@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git-2.18-chrome-67.0-node-8.x-yarn-1.2-postgresql-9.6-graphicsmagick-1.3.29"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.5-golang-1.9-git-2.18-chrome-69.0-node-8.x-yarn-1.2-postgresql-9.6-graphicsmagick-1.3.29"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -6,7 +6,7 @@ image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git
     - gitlab-org
 
 .default-cache: &default-cache
-  key: "ruby-2.4.4-debian-stretch-with-yarn"
+  key: "ruby-2.4.5-debian-stretch-with-yarn"
   paths:
     - vendor/ruby
     - .yarn-cache/
@@ -67,21 +67,13 @@ stages:
 
 .use-pg: &use-pg
   services:
-    # As of Jan 2018, we don't have a strong reason to upgrade to 9.6 for CI yet,
-    # so using the least common denominator ensures backwards compatibility
-    # (as many users are still using 9.2).
-    - postgres:9.2
+    - postgres:9.6
     - redis:alpine
 
 .use-mysql: &use-mysql
   services:
     - mysql:5.7
     - redis:alpine
-
-.rails5-variables: &rails5-variables
-  script:
-    - export RAILS5=${RAILS5}
-    - export BUNDLE_GEMFILE=${BUNDLE_GEMFILE}
 
 .rails5: &rails5
   allow_failure: true
@@ -95,7 +87,7 @@ stages:
 
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
-# https://docs.gitlab.com/ce/development/writing_documentation.html#testing
+# https://docs.gitlab.com/ce/development/documentation/#testing
 .except-docs: &except-docs
   except:
     - /(^docs[\/-].*|.*-docs$)/
@@ -130,8 +122,7 @@ stages:
 
 .single-script-job: &single-script-job
   image: ruby:2.4-alpine
-  before_script: []
-  stage: build
+  stage: test
   cache: {}
   dependencies: []
   variables: &single-script-job-variables
@@ -143,7 +134,7 @@ stages:
     - export SCRIPT_NAME="${SCRIPT_NAME:-$CI_JOB_NAME}"
     - apk add --update openssl
     - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/$SCRIPT_NAME
-    - chmod 755 $SCRIPT_NAME
+    - chmod 755 $(basename $SCRIPT_NAME)
 
 .rake-exec: &rake-exec
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -154,7 +145,6 @@ stages:
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
-  <<: *rails5-variables
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -171,7 +161,7 @@ stages:
     - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
-    - knapsack rspec "--color --format documentation"
+    - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml"
   artifacts:
     expire_in: 31d
     when: always
@@ -180,6 +170,8 @@ stages:
       - knapsack/
       - rspec_flaky/
       - tmp/capybara/
+    reports:
+      junit: junit_rspec.xml
 
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
@@ -257,6 +249,7 @@ package-and-qa:
     SCRIPT_NAME: trigger-build
   retry: 0
   script:
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME omnibus
   when: manual
   only:
@@ -272,7 +265,7 @@ package-and-qa:
     SCRIPT_NAME: trigger-build-docs
   environment:
     name: review-docs/$CI_COMMIT_REF_SLUG
-    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
+    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are CI variables
     # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
     url: http://$CI_ENVIRONMENT_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
@@ -283,7 +276,7 @@ review-docs-deploy-manual:
   <<: *review-docs
   stage: build
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME deploy
   when: manual
   only:
@@ -297,7 +290,7 @@ review-docs-deploy:
   <<: *review-docs
   stage: post-test
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME deploy
   only:
     - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ce
@@ -311,10 +304,13 @@ review-docs-cleanup:
   environment:
     name: review-docs/$CI_COMMIT_REF_SLUG
     action: stop
-  when: manual
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME cleanup
+  when: manual
+  only:
+    - branches@gitlab-org/gitlab-ce
+    - branches@gitlab-org/gitlab-ee
 
 ##
 # Trigger a docker image build in CNG (Cloud Native GitLab) repository
@@ -322,14 +318,14 @@ review-docs-cleanup:
 cloud-native-image:
   image: ruby:2.4-alpine
   before_script: []
-  stage: build
+  stage: test
   allow_failure: true
   variables:
     GIT_DEPTH: "1"
   cache: {}
   script:
-    - gem install gitlab --no-ri --no-rdoc
-    - BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN scripts/trigger-build cng
+    - gem install gitlab --no-document
+    - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng
   only:
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab-org/gitlab-ee
@@ -361,7 +357,7 @@ update-tests-metadata:
       - rspec_flaky/
     policy: push
   script:
-    - retry gem install fog-aws mime-types activesupport --no-ri --no-rdoc
+    - retry gem install fog-aws mime-types activesupport --no-document
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
@@ -439,10 +435,10 @@ setup-test-env:
       - vendor/gitaly-ruby
 
 danger-review:
+  <<: *pull-cache
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   allow_failure: true
-  cache: {}
   dependencies: []
   before_script: []
   only:
@@ -456,6 +452,8 @@ danger-review:
       - $CI_COMMIT_REF_NAME =~ /.*-stable(-ee)?-prepare-.*/
   script:
     - git version
+    - node --version
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - danger --fail-on-errors=true
 
 rspec-pg 0 30: *rspec-metadata-pg
@@ -590,7 +588,7 @@ static-analysis:
   script:
     - scripts/static-analysis
   cache:
-    key: "ruby-2.4.4-debian-stretch-with-yarn-and-rubocop"
+    key: "ruby-2.4.5-debian-stretch-with-yarn-and-rubocop"
     paths:
       - vendor/ruby
       - .yarn-cache/
@@ -602,7 +600,7 @@ static-analysis:
 docs lint:
   <<: *dedicated-runner
   <<: *except-qa
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-docs-lint"
   stage: test
   cache: {}
   dependencies: []
@@ -610,8 +608,8 @@ docs lint:
   script:
     - scripts/lint-doc.sh
     - scripts/lint-changelog-yaml
-    - mv doc/ /nanoc/content/
-    - cd /nanoc
+    - mv doc/ /tmp/gitlab-docs/content/
+    - cd /tmp/gitlab-docs
     # Build HTML from Markdown
     - bundle exec nanoc
     # Check the internal links
@@ -696,34 +694,45 @@ gitlab:setup-mysql:
 # Frontend-related jobs
 gitlab:assets:compile:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
+  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-git-2.18-chrome-69.0-node-8.x-yarn-1.2-graphicsmagick-1.3.29-docker-18.06.1
   dependencies: []
+  services:
+    - docker:stable-dind
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"
     SETUP_DB: "false"
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
-    NO_COMPRESSION: "true"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
   script:
     - date
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
     - date
     - free -m
     - bundle exec rake gitlab:assets:compile
+    - scripts/build_assets_image
   artifacts:
     name: webpack-report
     expire_in: 31d
     paths:
       - webpack-report/
+      - public/assets/
+  tags:
+    - docker
 
 karma:
-  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
+  <<: *dedicated-no-docs-pull-cache-job
   <<: *use-pg
   dependencies:
     - compile-assets
     - setup-test-env
+  variables:
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
   script:
     - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
     - date
@@ -738,8 +747,10 @@ karma:
     paths:
       - chrome_debug.log
       - coverage-javascript/
+    reports:
+      junit: junit_karma.xml
 
-codequality:
+code_quality:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   image: docker:stable
   allow_failure: true
@@ -757,9 +768,13 @@ codequality:
   script:
     # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run --env SOURCE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+    - docker run
+        --env SOURCE_CODE="$PWD"
+        --volume "$PWD":/code
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
   artifacts:
-    paths: [codeclimate.json]
+    paths: [gl-code-quality-report.json]
     expire_in: 1 week
 
 sast:
@@ -916,3 +931,92 @@ no_ee_check:
     - scripts/no-ee-check
   only:
     - //@gitlab-org/gitlab-ce
+
+# GitLab Review apps
+review:
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: test
+  allow_failure: true
+  before_script:
+    - gem install gitlab --no-document
+  variables:
+    GIT_DEPTH: "1"
+    HOST_SUFFIX: "$CI_ENVIRONMENT_SLUG"
+    DOMAIN: "-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN"
+    GITLAB_HELM_CHART_REF: "master"
+  script:
+    - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
+    - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
+    - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
+    - source ./scripts/review_apps/review-apps.sh
+    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
+    - check_kube_domain
+    - download_gitlab_chart
+    - ensure_namespace
+    - install_tiller
+    - install_external_dns
+    - deploy
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://gitlab-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN
+    on_stop: stop_review
+  only:
+    refs:
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
+    kubernetes: active
+  except:
+    refs:
+      - master
+      - /(^docs[\/-].*|.*-docs$)/
+
+stop_review:
+  <<: *single-script-job
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: test
+  allow_failure: true
+  cache: {}
+  dependencies: []
+  variables:
+    SCRIPT_NAME: "review_apps/review-apps.sh"
+  script:
+    - source $(basename "${SCRIPT_NAME}")
+    - delete
+    - cleanup
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  only:
+    refs:
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
+    kubernetes: active
+  except:
+    - master
+    - /(^docs[\/-].*|.*-docs$)/
+
+schedule:review_apps_cleanup:
+  <<: *dedicated-no-docs-pull-cache-job
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: build
+  allow_failure: true
+  cache: {}
+  dependencies: []
+  before_script:
+    - gem install gitlab --no-document
+  variables:
+    GIT_DEPTH: "1"
+  script:
+    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+  environment:
+    name: review/auto-cleanup
+    action: stop
+  only:
+    refs:
+      - schedules@gitlab-org/gitlab-ce
+      - schedules@gitlab-org/gitlab-ee
+    kubernetes: active
+  except:
+    - tags
+    - /(^docs[\/-].*|.*-docs$)/

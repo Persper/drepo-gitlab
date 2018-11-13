@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class YamlProcessor
@@ -16,7 +18,7 @@ module Gitlab
         end
 
         initial_parsing
-      rescue Gitlab::Ci::Config::Loader::FormatError => e
+      rescue Gitlab::Ci::Config::ConfigError => e
         raise ValidationError, e.message
       end
 
@@ -49,7 +51,10 @@ module Gitlab
             script: job[:script],
             after_script: job[:after_script],
             environment: job[:environment],
-            retry: job[:retry]
+            retry: job[:retry],
+            parallel: job[:parallel],
+            instance: job[:instance],
+            start_in: job[:start_in]
           }.compact }
       end
 
@@ -101,7 +106,7 @@ module Gitlab
         ##
         # Jobs
         #
-        @jobs = @ci_config.jobs
+        @jobs = Ci::Config::Normalizer.new(@ci_config.jobs).normalize_jobs
 
         @jobs.each do |name, job|
           # logical validation for job

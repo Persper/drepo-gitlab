@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitaly note: SSH key operations are not part of Gitaly so will never be migrated.
 
 require 'securerandom'
@@ -106,23 +108,6 @@ module Gitlab
       success
     end
 
-    # Fetch remote for repository
-    #
-    # repository - an instance of Git::Repository
-    # remote - remote name
-    # ssh_auth - SSH known_hosts data and a private key to use for public-key authentication
-    # forced - should we use --force flag?
-    # no_tags - should we use --no-tags flag?
-    #
-    # Ex.
-    #   fetch_remote(my_repo, "upstream")
-    #
-    def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
-      wrapped_gitaly_errors do
-        repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout, prune: prune)
-      end
-    end
-
     # Move repository reroutes to mv_directory which is an alias for
     # mv_namespace. Given the underlying implementation is a move action,
     # indescriminate of what the folders might be.
@@ -225,6 +210,7 @@ module Gitlab
     # Ex.
     #   remove_keys_not_found_in_db
     #
+    # rubocop: disable CodeReuse/ActiveRecord
     def remove_keys_not_found_in_db
       return unless self.authorized_keys_enabled?
 
@@ -243,6 +229,7 @@ module Gitlab
         end
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Iterate over all ssh key IDs from gitlab shell, in batches
     #
@@ -326,9 +313,11 @@ module Gitlab
     #   exists?(storage, 'gitlab')
     #   exists?(storage, 'gitlab/cookies.git')
     #
+    # rubocop: disable CodeReuse/ActiveRecord
     def exists?(storage, dir_name)
       Gitlab::GitalyClient::NamespaceService.new(storage).exists?(dir_name)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     protected
 
@@ -367,15 +356,6 @@ module Gitlab
     end
 
     private
-
-    def gitlab_projects(shard_name, disk_path)
-      Gitlab::Git::GitlabProjects.new(
-        shard_name,
-        disk_path,
-        global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
-        logger: Rails.logger
-      )
-    end
 
     def gitlab_shell_fast_execute(cmd)
       output, status = gitlab_shell_fast_execute_helper(cmd)

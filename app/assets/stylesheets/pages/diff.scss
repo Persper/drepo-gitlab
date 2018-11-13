@@ -25,17 +25,13 @@
     color: $gl-text-color;
     border-radius: 0 0 3px 3px;
 
-    .code {
-      padding: 0;
-    }
-
     .unfold {
       cursor: pointer;
     }
 
     .file-mode-changed {
       padding: 10px;
-      color: $file-mode-changed;
+      color: $gl-gray-500;
     }
 
     .suppressed-container {
@@ -63,6 +59,7 @@
       margin: 0;
       padding: 0;
       table-layout: fixed;
+      border-radius: 0 0 $border-radius-default $border-radius-default;
 
       .diff-line-num {
         width: 50px;
@@ -76,6 +73,7 @@
       .line_holder td {
         line-height: $code-line-height;
         font-size: $code-font-size;
+        vertical-align: top;
 
         &.noteable_line {
           position: relative;
@@ -186,7 +184,7 @@
   }
 
   .image {
-    background: $file-image-bg;
+    background: $gray-darker;
     text-align: center;
     padding: 30px;
 
@@ -248,7 +246,7 @@
 
       .swipe-wrap {
         overflow: hidden;
-        border-left: 1px solid $diff-swipe-border;
+        border-left: 1px solid $gl-gray-400;
         position: absolute;
         display: block;
         top: 13px;
@@ -424,21 +422,13 @@
 
   .diff-file-container {
     .frame.deleted {
-      border: 0;
+      border: 1px solid $deleted;
       background-color: inherit;
-
-      .image_file img {
-        border: 1px solid $deleted;
-      }
     }
 
     .frame.added {
-      border: 0;
+      border: 1px solid $added;
       background-color: inherit;
-
-      .image_file img {
-        border: 1px solid $added;
-      }
     }
 
     .swipe.view,
@@ -484,6 +474,11 @@
       bottom: -25px;
     }
   }
+
+  .discussion-notes .discussion-notes {
+    margin-left: 0;
+    border-left: 0;
+  }
 }
 
 .file-content .diff-file {
@@ -511,13 +506,13 @@
   padding: 0;
   background-color: transparent;
   border: 0;
-  color: $gl-link-color;
+  color: $blue-600;
   font-weight: $gl-font-weight-bold;
 
   &:hover,
   &:focus {
     outline: none;
-    color: $gl-link-hover-color;
+    color: $blue-800;
   }
 
   .caret-icon {
@@ -574,8 +569,6 @@
 }
 
 .files {
-  margin-top: 1px;
-
   .diff-file:last-child {
     margin-bottom: 0;
   }
@@ -753,6 +746,10 @@
     left: $gl-padding;
   }
 
+  .dropdown-input .dropdown-input-search {
+    pointer-events: all;
+  }
+
   .diff-changed-file {
     display: flex;
     padding-top: 8px;
@@ -805,7 +802,7 @@
 
   // double jagged line divider
   .discussion-notes + .discussion-notes::before,
-  .discussion-notes + .discussion-form::before {
+  .diff-file-discussions + .discussion-form::before {
     content: '';
     position: relative;
     display: block;
@@ -845,6 +842,13 @@
     background-repeat: repeat;
   }
 
+  .diff-file-discussions + .discussion-form::before {
+    width: auto;
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-bottom: 16px;
+  }
+
   .notes {
     position: relative;
   }
@@ -856,7 +860,7 @@
 }
 
 .diff-file .note-container > .new-note,
-.note-container .discussion-notes {
+.note-container .discussion-notes.diff-discussions {
   margin-left: 100px;
   border-left: 1px solid $white-normal;
 }
@@ -871,11 +875,13 @@
   }
 }
 
-.files:not([data-can-create-note]) .frame {
+.files:not([data-can-create-note="true"]) .frame {
   cursor: auto;
 }
 
-.frame.click-to-comment {
+.frame,
+.frame.click-to-comment,
+.btn-transparent.image-diff-overlay-add-comment {
   position: relative;
   cursor: image-url('illustrations/image_comment_light_cursor.svg')
       $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
@@ -911,6 +917,7 @@
 
 .frame .badge.badge-pill,
 .image-diff-avatar-link .badge.badge-pill,
+.user-avatar-link .badge.badge-pill,
 .notes > .badge.badge-pill {
   position: absolute;
   background-color: $blue-400;
@@ -945,7 +952,8 @@
   }
 }
 
-.image-diff-avatar-link {
+.image-diff-avatar-link,
+.user-avatar-link {
   position: relative;
 
   .badge.badge-pill,
@@ -985,4 +993,103 @@
 
 .discussion-body .image .frame {
   position: relative;
+}
+
+.diff-tree-list {
+  width: 320px;
+}
+
+.diff-files-holder {
+  flex: 1;
+  min-width: 0;
+}
+
+.compare-versions-container {
+  min-width: 0;
+}
+
+.tree-list-holder {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 100px);
+  padding-right: $gl-padding;
+
+  .file-row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .with-performance-bar & {
+    top: 135px;
+    max-height: calc(100vh - 135px);
+  }
+}
+
+.tree-list-scroll {
+  max-height: 100%;
+  padding-top: $grid-size;
+  padding-bottom: $grid-size;
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+  overflow-y: scroll;
+  overflow-x: auto;
+}
+
+.tree-list-search {
+  flex: 0 0 34px;
+
+  .form-control {
+    padding-left: 30px;
+  }
+}
+
+.tree-list-icon {
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+
+  &,
+  svg {
+    fill: $gl-text-color-tertiary;
+  }
+}
+
+.tree-list-clear-icon {
+  right: 10px;
+  left: auto;
+  line-height: 0;
+}
+
+@media (max-width: map-get($grid-breakpoints, md)-1) {
+  .diffs .files {
+    @include fixed-width-container;
+    flex-direction: column;
+
+    .diff-tree-list {
+      width: 100%;
+    }
+
+    .tree-list-holder {
+      max-height: calc(50px + 50vh);
+      padding-right: 0;
+    }
+  }
+}
+
+.tree-list-view-toggle {
+  svg {
+    top: 0;
+  }
+}
+
+.image-diff-overlay,
+.image-diff-overlay-add-comment {
+  top: 0;
+  left: 0;
+
+  &:active,
+  &:focus {
+    outline: 0;
+  }
 }

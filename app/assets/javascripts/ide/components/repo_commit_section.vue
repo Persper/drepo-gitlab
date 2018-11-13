@@ -27,10 +27,10 @@ export default {
       'unusedSeal',
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges', 'activeFile']),
+    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommittedChanges', 'activeFile']),
     ...mapGetters('commit', ['discardDraftButtonDisabled']),
     showStageUnstageArea() {
-      return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
+      return !!(this.someUncommittedChanges || this.lastCommitMsg || !this.unusedSeal);
     },
     activeFileKey() {
       return this.activeFile ? this.activeFile.key : null;
@@ -95,8 +95,9 @@ export default {
         :file-list="changedFiles"
         :action-btn-text="__('Stage all changes')"
         :active-file-key="activeFileKey"
+        :empty-state-text="__('There are no unstaged changes')"
         action="stageAllChanges"
-        action-btn-icon="mobile-issue-close"
+        action-btn-icon="stage-all"
         item-action-component="stage-button"
         class="is-first"
         icon-name="unstaged"
@@ -108,8 +109,9 @@ export default {
         :action-btn-text="__('Unstage all changes')"
         :staged-list="true"
         :active-file-key="activeFileKey"
+        :empty-state-text="__('There are no staged changes')"
         action="unstageAllChanges"
-        action-btn-icon="history"
+        action-btn-icon="unstage-all"
         item-action-component="unstage-button"
         icon-name="staged"
       />

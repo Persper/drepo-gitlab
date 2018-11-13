@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import AccessorUtilities from '~/lib/utils/accessor';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import eventHub from '../event_hub';
 import store from '../store/';
 import { FREQUENT_ITEMS, STORAGE_KEY } from '../constants';
@@ -13,9 +13,9 @@ import frequentItemsMixin from './frequent_items_mixin';
 export default {
   store,
   components: {
-    LoadingIcon,
     FrequentItemsSearchInput,
     FrequentItemsList,
+    GlLoadingIcon,
   },
   mixins: [frequentItemsMixin],
   props: {
@@ -98,11 +98,11 @@ export default {
     <frequent-items-search-input
       :namespace="namespace"
     />
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoadingItems"
       :label="translations.loadingMessage"
+      :size="2"
       class="loading-animation prepend-top-20"
-      size="2"
     />
     <div
       v-if="!isLoadingItems && !hasSearchQuery"

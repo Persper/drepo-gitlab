@@ -1,4 +1,6 @@
 module CycleAnalyticsHelpers
+  include GitHelpers
+
   def create_commit_referencing_issue(issue, branch_name: generate(:branch))
     project.repository.add_branch(user, branch_name, 'master')
     create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
@@ -9,7 +11,7 @@ module CycleAnalyticsHelpers
     oldrev = repository.commit(branch_name)&.sha || Gitlab::Git::BLANK_SHA
 
     if Timecop.frozen? && Gitlab::GitalyClient.feature_enabled?(:operation_user_commit_files)
-      mock_gitaly_multi_action_dates(repository.raw, commit_time)
+      mock_gitaly_multi_action_dates(repository, commit_time)
     end
 
     commit_shas = Array.new(count) do |index|
@@ -65,7 +67,9 @@ module CycleAnalyticsHelpers
   end
 
   def merge_merge_requests_closing_issue(user, project, issue)
-    merge_requests = issue.closed_by_merge_requests(user)
+    merge_requests = Issues::ReferencedMergeRequestsService
+                       .new(project, user)
+                       .closed_by_merge_requests(issue)
 
     merge_requests.each { |merge_request| MergeRequests::MergeService.new(project, user).execute(merge_request) }
   end
@@ -81,7 +85,7 @@ module CycleAnalyticsHelpers
         raise ArgumentError
       end
 
-    CreateDeploymentService.new(dummy_job).execute
+    dummy_job.success! # State machine automatically update associated deployment/environment record
   end
 
   def dummy_production_job(user, project)
@@ -93,7 +97,7 @@ module CycleAnalyticsHelpers
   end
 
   def dummy_pipeline(project)
-    Ci::Pipeline.new(
+    create(:ci_pipeline,
       sha: project.repository.commit('master').sha,
       ref: 'master',
       source: :push,
@@ -102,9 +106,7 @@ module CycleAnalyticsHelpers
   end
 
   def new_dummy_job(user, project, environment)
-    project.environments.find_or_create_by(name: environment)
-
-    Ci::Build.new(
+    create(:ci_build,
       project: project,
       user: user,
       environment: environment,
@@ -116,18 +118,15 @@ module CycleAnalyticsHelpers
       protected: false)
   end
 
-  def mock_gitaly_multi_action_dates(raw_repository, commit_time)
-    allow(raw_repository).to receive(:multi_action).and_wrap_original do |m, *args|
+  def mock_gitaly_multi_action_dates(repository, commit_time)
+    allow(repository.raw).to receive(:multi_action).and_wrap_original do |m, *args|
       new_date = commit_time || Time.now
       branch_update = m.call(*args)
 
       if branch_update.newrev
         _, opts = args
 
-        commit = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          rugged = raw_repository.rugged
-          rugged.rev_parse(branch_update.newrev)
-        end
+        commit = rugged_repo(repository).rev_parse(branch_update.newrev)
 
         branch_update.newrev = commit.amend(
           update_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{opts[:branch_name]}",

@@ -46,7 +46,7 @@ export default {
       }
     },
     basePath() {
-      // We might get the project path from rails with the relative url already setup
+      // We might get the project path from rails with the relative url already set up
       return this.projectPath.indexOf('/') === 0 ? '' : `${gon.relative_url_root}/`;
     },
     fullOldPath() {
@@ -69,6 +69,13 @@ export default {
       :new-path="fullNewPath"
       :old-path="fullOldPath"
       :project-path="projectPath"
-    />
+    >
+      <slot
+        slot="image-overlay"
+        name="image-overlay"
+      >
+      </slot>
+    </component>
+    <slot></slot>
   </div>
 </template>

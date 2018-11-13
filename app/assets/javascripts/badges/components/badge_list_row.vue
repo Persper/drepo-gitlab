@@ -2,7 +2,7 @@
 import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import { PROJECT_BADGE } from '../constants';
 import Badge from './badge.vue';
 
@@ -11,7 +11,7 @@ export default {
   components: {
     Badge,
     Icon,
-    LoadingIcon,
+    GlLoadingIcon,
   },
   props: {
     badge: {
@@ -43,13 +43,13 @@ export default {
     <badge
       :image-url="badge.renderedImageUrl"
       :link-url="badge.renderedLinkUrl"
-      class="table-section section-30"
+      class="table-section section-40"
     />
-    <span class="table-section section-50 str-truncated">{{ badge.linkUrl }}</span>
-    <div class="table-section section-10">
-      <span class="badge">{{ badgeKindText }}</span>
+    <span class="table-section section-30 str-truncated">{{ badge.linkUrl }}</span>
+    <div class="table-section section-15">
+      <span class="badge badge-pill">{{ badgeKindText }}</span>
     </div>
-    <div class="table-section section-10 table-button-footer">
+    <div class="table-section section-15 table-button-footer">
       <div
         v-if="canEditBadge"
         class="table-action-buttons">
@@ -79,7 +79,7 @@ export default {
             name="remove"
           />
         </button>
-        <loading-icon
+        <gl-loading-icon
           v-show="badge.isDeleting"
           :inline="true"
         />

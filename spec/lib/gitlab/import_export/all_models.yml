@@ -117,6 +117,7 @@ pipelines:
 - retryable_builds
 - cancelable_statuses
 - manual_actions
+- scheduled_actions
 - artifacts
 - pipeline_schedule
 - merge_requests
@@ -210,7 +211,6 @@ project:
 - flowdock_service
 - assembla_service
 - asana_service
-- gemnasium_service
 - slack_service
 - microsoft_teams_service
 - mattermost_service
@@ -229,9 +229,8 @@ project:
 - mock_ci_service
 - mock_deployment_service
 - mock_monitoring_service
-- forked_project_link
+- forked_to_members
 - forked_from_project
-- forked_project_links
 - forks
 - merge_requests
 - fork_merge_requests
@@ -289,6 +288,7 @@ project:
 - fork_network_member
 - fork_network
 - custom_attributes
+- prometheus_metrics
 - lfs_file_locks
 - project_badges
 - source_of_merge_requests
@@ -299,11 +299,14 @@ project:
 - ci_cd_settings
 - import_export_upload
 - repository_languages
+- pool_repository
 award_emoji:
 - awardable
 - user
 priorities:
 - label
+prometheus_metrics:
+- project
 timelogs:
 - issue
 - merge_request
@@ -322,3 +325,9 @@ metrics:
 - latest_closed_by
 - merged_by
 - pipeline
+resource_label_events:
+- user
+- issue
+- merge_request
+- epic
+- label

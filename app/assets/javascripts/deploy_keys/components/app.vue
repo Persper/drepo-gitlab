@@ -1,18 +1,18 @@
 <script>
 import { s__ } from '~/locale';
 import Flash from '~/flash';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import eventHub from '../eventhub';
 import DeployKeysService from '../service';
 import DeployKeysStore from '../store';
 import KeysPanel from './keys_panel.vue';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     KeysPanel,
-    LoadingIcon,
     NavigationTabs,
+    GlLoadingIcon,
   },
   props: {
     endpoint: {
@@ -97,8 +97,10 @@ export default {
         .catch(() => new Flash(s__('DeployKeys|Error enabling deploy key')));
     },
     disableKey(deployKey, callback) {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(s__('DeployKeys|You are going to remove this deploy key. Are you sure?'))) {
+      if (
+        // eslint-disable-next-line no-alert
+        window.confirm(s__('DeployKeys|You are going to remove this deploy key. Are you sure?'))
+      ) {
         this.service
           .disableKey(deployKey.id)
           .then(this.fetchKeys)
@@ -114,10 +116,10 @@ export default {
 
 <template>
   <div class="append-bottom-default deploy-keys">
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading && !hasKeys"
       :label="s__('DeployKeys|Loading deploy keys')"
-      size="2"
+      :size="2"
     />
     <template v-else-if="hasKeys">
       <div class="top-area scrolling-tabs-container inner-page-scroll-tabs">

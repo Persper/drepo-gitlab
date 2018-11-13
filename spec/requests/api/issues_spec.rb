@@ -55,7 +55,8 @@ describe API::Issues do
   end
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
-  let(:no_milestone_title) { URI.escape(Milestone::None.title) }
+  let(:no_milestone_title) { "None" }
+  let(:any_milestone_title) { "Any" }
 
   before(:all) do
     project.add_reporter(user)
@@ -168,14 +169,51 @@ describe API::Issues do
         expect(first_issue['id']).to eq(issue2.id)
       end
 
-      it 'returns issues reacted by the authenticated user by the given emoji' do
-        issue2 = create(:issue, project: project, author: user, assignees: [user])
-        award_emoji = create(:award_emoji, awardable: issue2, user: user2, name: 'star')
+      it 'returns issues with no assignee' do
+        issue2 = create(:issue, author: user2, project: project)
 
-        get api('/issues', user2), my_reaction_emoji: award_emoji.name, scope: 'all'
+        get api('/issues', user), assignee_id: 0, scope: 'all'
 
         expect_paginated_array_response(size: 1)
         expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues with no assignee' do
+        issue2 = create(:issue, author: user2, project: project)
+
+        get api('/issues', user), assignee_id: 'None', scope: 'all'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues with any assignee' do
+        # This issue without assignee should not be returned
+        create(:issue, author: user2, project: project)
+
+        get api('/issues', user), assignee_id: 'Any', scope: 'all'
+
+        expect_paginated_array_response(size: 3)
+      end
+
+      it 'returns issues reacted by the authenticated user' do
+        issue2 = create(:issue, project: project, author: user, assignees: [user])
+        create(:award_emoji, awardable: issue2, user: user2, name: 'star')
+
+        create(:award_emoji, awardable: issue, user: user2, name: 'thumbsup')
+
+        get api('/issues', user2), my_reaction_emoji: 'Any', scope: 'all'
+
+        expect_paginated_array_response(size: 2)
+      end
+
+      it 'returns issues not reacted by the authenticated user' do
+        issue2 = create(:issue, project: project, author: user, assignees: [user])
+        create(:award_emoji, awardable: issue2, user: user2, name: 'star')
+
+        get api('/issues', user2), my_reaction_emoji: 'None', scope: 'all'
+
+        expect_paginated_array_response(size: 2)
       end
 
       it 'returns issues matching given search string for title' do
@@ -802,6 +840,15 @@ describe API::Issues do
       expect(json_response.first['id']).to eq(confidential_issue.id)
     end
 
+    it 'returns an array of issues with any milestone' do
+      get api("#{base_url}/issues?milestone=#{any_milestone_title}", user)
+
+      response_ids = json_response.map { |issue| issue['id'] }
+
+      expect_paginated_array_response(size: 2)
+      expect(response_ids).to contain_exactly(closed_issue.id, issue.id)
+    end
+
     it 'sorts by created_at descending by default' do
       get api("#{base_url}/issues", user)
 
@@ -1023,6 +1070,20 @@ describe API::Issues do
         end
       end
 
+      context 'by a group owner' do
+        let(:group) { create(:group) }
+        let(:group_project) { create(:project, :public, namespace: group) }
+
+        it 'sets the internal ID on the new issue' do
+          group.add_owner(user2)
+          post api("/projects/#{group_project.id}/issues", user2),
+            title: 'new issue', iid: 9001
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['iid']).to eq 9001
+        end
+      end
+
       context 'by another user' do
         it 'ignores the given internal ID' do
           post api("/projects/#{project.id}/issues", user2),
@@ -1154,14 +1215,47 @@ describe API::Issues do
       end
     end
 
-    context 'when an admin or owner makes the request' do
-      it 'accepts the creation date to be set' do
-        creation_time = 2.weeks.ago
-        post api("/projects/#{project.id}/issues", user),
-          title: 'new issue', labels: 'label, label2', created_at: creation_time
+    context 'setting created_at' do
+      let(:creation_time) { 2.weeks.ago }
+      let(:params) { { title: 'new issue', labels: 'label, label2', created_at: creation_time } }
 
-        expect(response).to have_gitlab_http_status(201)
-        expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+      context 'by an admin' do
+        it 'sets the creation time on the new issue' do
+          post api("/projects/#{project.id}/issues", admin), params
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+        end
+      end
+
+      context 'by a project owner' do
+        it 'sets the creation time on the new issue' do
+          post api("/projects/#{project.id}/issues", user), params
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+        end
+      end
+
+      context 'by a group owner' do
+        it 'sets the creation time on the new issue' do
+          group = create(:group)
+          group_project = create(:project, :public, namespace: group)
+          group.add_owner(user2)
+          post api("/projects/#{group_project.id}/issues", user2), params
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+        end
+      end
+
+      context 'by another user' do
+        it 'ignores the given creation time' do
+          post api("/projects/#{project.id}/issues", user2), params
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(Time.parse(json_response['created_at'])).not_to be_like_time(creation_time)
+        end
       end
     end
 
@@ -1702,6 +1796,74 @@ describe API::Issues do
 
     it "returns 404 when issue doesn't exists" do
       get api("/projects/#{project.id}/issues/9999/closed_by", user)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+  end
+
+  describe 'GET :id/issues/:issue_iid/related_merge_requests' do
+    def get_related_merge_requests(project_id, issue_iid, user = nil)
+      get api("/projects/#{project_id}/issues/#{issue_iid}/related_merge_requests", user)
+    end
+
+    def create_referencing_mr(user, project, issue)
+      attributes = {
+        author: user,
+        source_project: project,
+        target_project: project,
+        source_branch: "master",
+        target_branch: "test",
+        description: "See #{issue.to_reference}"
+      }
+      create(:merge_request, attributes).tap do |merge_request|
+        create(:note, :system, project: project, noteable: issue, author: user, note: merge_request.to_reference(full: true))
+      end
+    end
+
+    let!(:related_mr) { create_referencing_mr(user, project, issue) }
+
+    context 'when unauthenticated' do
+      it 'return list of referenced merge requests from issue' do
+        get_related_merge_requests(project.id, issue.iid)
+
+        expect_paginated_array_response(size: 1)
+      end
+
+      it 'renders 404 if project is not visible' do
+        private_project = create(:project, :private)
+        private_issue = create(:issue, project: private_project)
+        create_referencing_mr(user, private_project, private_issue)
+
+        get_related_merge_requests(private_project.id, private_issue.iid)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    it 'returns merge requests that mentioned a issue' do
+      create(:merge_request,
+            :simple,
+            author: user,
+            source_project: project,
+            target_project: project,
+            description: "Some description")
+
+      get_related_merge_requests(project.id, issue.iid, user)
+
+      expect_paginated_array_response(size: 1)
+      expect(json_response.first['id']).to eq(related_mr.id)
+    end
+
+    context 'no merge request mentioned a issue' do
+      it 'returns empty array' do
+        get_related_merge_requests(project.id, closed_issue.iid, user)
+
+        expect_paginated_array_response(size: 0)
+      end
+    end
+
+    it "returns 404 when issue doesn't exists" do
+      get_related_merge_requests(project.id, 999999, user)
 
       expect(response).to have_gitlab_http_status(404)
     end

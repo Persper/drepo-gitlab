@@ -12,20 +12,34 @@ module Awardable
     end
   end
 
-  module ClassMethods
-    def awarded(user, name)
+  class_methods do
+    def awarded(user, name = nil)
       sql = <<~EOL
         EXISTS (
           SELECT TRUE
           FROM award_emoji
           WHERE user_id = :user_id AND
-                name = :name AND
+                #{"name = :name AND" if name.present?}
                 awardable_type = :awardable_type AND
                 awardable_id = #{self.arel_table.name}.id
         )
       EOL
 
       where(sql, user_id: user.id, name: name, awardable_type: self.name)
+    end
+
+    def not_awarded(user)
+      sql = <<~EOL
+        NOT EXISTS (
+          SELECT TRUE
+          FROM award_emoji
+          WHERE user_id = :user_id AND
+                awardable_type = :awardable_type AND
+                awardable_id = #{self.arel_table.name}.id
+        )
+      EOL
+
+      where(sql, user_id: user.id, awardable_type: self.name)
     end
 
     def order_upvotes_desc
@@ -76,12 +90,8 @@ module Awardable
     true
   end
 
-  def awardable_votes?(name)
-    AwardEmoji::UPVOTE_NAME == name || AwardEmoji::DOWNVOTE_NAME == name
-  end
-
-  def user_can_award?(current_user, name)
-    awardable_by_user?(current_user, name) && Ability.allowed?(current_user, :award_emoji, self)
+  def user_can_award?(current_user)
+    Ability.allowed?(current_user, :award_emoji, self)
   end
 
   def user_authored?(current_user)
@@ -101,7 +111,7 @@ module Awardable
   end
 
   def remove_award_emoji(name, current_user)
-    award_emoji.where(name: name, user: current_user).destroy_all
+    award_emoji.where(name: name, user: current_user).destroy_all # rubocop: disable DestroyAll
   end
 
   def toggle_award_emoji(emoji_name, current_user)
@@ -116,13 +126,5 @@ module Awardable
 
   def normalize_name(name)
     Gitlab::Emoji.normalize_emoji_name(name)
-  end
-
-  def awardable_by_user?(current_user, name)
-    if user_authored?(current_user)
-      !awardable_votes?(normalize_name(name))
-    else
-      true
-    end
   end
 end

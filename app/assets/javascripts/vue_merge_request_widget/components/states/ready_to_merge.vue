@@ -6,7 +6,7 @@ import MergeRequest from '../../../merge_request';
 import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
-import SquashBeforeMerge from './mr_widget_squash_before_merge.vue';
+import SquashBeforeMerge from './squash_before_merge.vue';
 
 export default {
   name: 'ReadyToMerge',
@@ -71,7 +71,12 @@ export default {
       return defaultClass;
     },
     iconClass() {
-      if (this.status === 'failed' || !this.commitMessage.length || !this.mr.isMergeAllowed || this.mr.preventMerge) {
+      if (
+        this.status === 'failed' ||
+        !this.commitMessage.length ||
+        !this.mr.isMergeAllowed ||
+        this.mr.preventMerge
+      ) {
         return 'warning';
       }
       return 'success';
@@ -90,10 +95,12 @@ export default {
     },
     isMergeButtonDisabled() {
       const { commitMessage } = this;
-      return Boolean(!commitMessage.length
-        || !this.shouldShowMergeControls()
-        || this.isMakingRequest
-        || this.mr.preventMerge);
+      return Boolean(
+        !commitMessage.length ||
+          !this.shouldShowMergeControls() ||
+          this.isMakingRequest ||
+          this.mr.preventMerge,
+      );
     },
     isRemoveSourceBranchButtonDisabled() {
       return this.isMergeButtonDisabled;
@@ -140,9 +147,10 @@ export default {
       };
 
       this.isMakingRequest = true;
-      this.service.merge(options)
+      this.service
+        .merge(options)
         .then(res => res.data)
-        .then((data) => {
+        .then(data => {
           const hasError = data.status === 'failed' || data.status === 'hook_validation_error';
 
           if (data.status === 'merge_when_pipeline_succeeds') {
@@ -167,9 +175,10 @@ export default {
       });
     },
     handleMergePolling(continuePolling, stopPolling) {
-      this.service.poll()
+      this.service
+        .poll()
         .then(res => res.data)
-        .then((data) => {
+        .then(data => {
           if (data.state === 'merged') {
             // If state is merged we should update the widget and stop the polling
             eventHub.$emit('MRWidgetUpdateRequested');
@@ -205,9 +214,10 @@ export default {
       });
     },
     handleRemoveBranchPolling(continuePolling, stopPolling) {
-      this.service.poll()
+      this.service
+        .poll()
         .then(res => res.data)
-        .then((data) => {
+        .then(data => {
           // If source branch exists then we should continue polling
           // because removing a source branch is a background task and takes time
           if (data.source_branch_exists) {
@@ -255,7 +265,7 @@ export default {
             data-toggle="dropdown"
             aria-label="Select merge moment">
             <i
-              class="fa fa-chevron-down"
+              class="fa fa-chevron-down qa-merge-moment-dropdown"
               aria-hidden="true"
             ></i>
           </button>
@@ -265,7 +275,7 @@ export default {
             role="menu">
             <li>
               <a
-                class="merge_when_pipeline_succeeds"
+                class="merge_when_pipeline_succeeds qa-merge-when-pipeline-succeeds-option"
                 href="#"
                 @click.prevent="handleMergeButtonClick(true)">
                 <span class="media">
@@ -279,7 +289,7 @@ export default {
             </li>
             <li>
               <a
-                class="accept-merge-request"
+                class="accept-merge-request qa-merge-immediately-option"
                 href="#"
                 @click.prevent="handleMergeButtonClick(false, true)">
                 <span class="media">

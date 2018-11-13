@@ -52,17 +52,15 @@ describe('ImageDiffViewer', () => {
     });
 
     setTimeout(() => {
-      expect(vm.$el.querySelector('.added .image_file img').getAttribute('src')).toBe(
-        GREEN_BOX_IMAGE_URL,
-      );
-      expect(vm.$el.querySelector('.deleted .image_file img').getAttribute('src')).toBe(
-        RED_BOX_IMAGE_URL,
-      );
+      expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
+
+      expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(RED_BOX_IMAGE_URL);
 
       expect(vm.$el.querySelector('.view-modes-menu li.active').textContent.trim()).toBe('2-up');
       expect(vm.$el.querySelector('.view-modes-menu li:nth-child(2)').textContent.trim()).toBe(
         'Swipe',
       );
+
       expect(vm.$el.querySelector('.view-modes-menu li:nth-child(3)').textContent.trim()).toBe(
         'Onion skin',
       );
@@ -79,9 +77,7 @@ describe('ImageDiffViewer', () => {
     });
 
     setTimeout(() => {
-      expect(vm.$el.querySelector('.added .image_file img').getAttribute('src')).toBe(
-        GREEN_BOX_IMAGE_URL,
-      );
+      expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
 
       done();
     });
@@ -95,9 +91,7 @@ describe('ImageDiffViewer', () => {
     });
 
     setTimeout(() => {
-      expect(vm.$el.querySelector('.deleted .image_file img').getAttribute('src')).toBe(
-        RED_BOX_IMAGE_URL,
-      );
+      expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(RED_BOX_IMAGE_URL);
 
       done();
     });

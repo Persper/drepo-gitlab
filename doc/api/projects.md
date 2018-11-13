@@ -451,6 +451,7 @@ GET /projects/:id
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `statistics` | boolean | no | Include project statistics |
+| `license` | boolean | no | Include project license data |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 ```json
@@ -508,6 +509,14 @@ GET /projects/:id
   },
   "archived": false,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "license_url": "http://example.com/diaspora/diaspora-client/blob/master/LICENSE",
+  "license": {
+    "key": "lgpl-3.0",
+    "name": "GNU Lesser General Public License v3.0",
+    "nickname": "GNU LGPLv3",
+    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
+    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
+  },
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
@@ -572,6 +581,14 @@ If the project is a fork, and you provide a valid token to authenticate, the
       "http_url_to_repo":"https://gitlab.com/gitlab-org/gitlab-ce.git",
       "web_url":"https://gitlab.com/gitlab-org/gitlab-ce",
       "avatar_url":"https://assets.gitlab-static.net/uploads/-/system/project/avatar/13083/logo-extra-whitespace.png",
+      "license_url": "https://gitlab.com/gitlab-org/gitlab-ce/blob/master/LICENSE",
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "nickname": null,
+        "html_url": "http://choosealicense.com/licenses/mit/",
+        "source_url": "https://opensource.org/licenses/MIT",
+      },
       "star_count":3812,
       "forks_count":3561,
       "last_activity_at":"2018-01-02T11:40:26.570Z",
@@ -661,6 +678,7 @@ POST /projects
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `ci_config_path` | string | no | The path to CI config file |
+| `initialize_with_readme` | boolean | no | `false` by default |
 
 ## Create project for user
 
@@ -710,7 +728,7 @@ PUT /projects/:id
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `name` | string | yes | The name of the project |
+| `name` | string | no | The name of the project |
 | `path` | string | no | Custom repository name for the project. By default generated based on name |
 | `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
@@ -904,6 +922,14 @@ Example response:
   "import_status": "none",
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "license_url": "http://example.com/diaspora/diaspora-client/blob/master/LICENSE",
+  "license": {
+    "key": "lgpl-3.0",
+    "name": "GNU Lesser General Public License v3.0",
+    "nickname": "GNU LGPLv3",
+    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
+    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
+  },
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 1,
@@ -982,6 +1008,14 @@ Example response:
   "import_status": "none",
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "license_url": "http://example.com/diaspora/diaspora-client/blob/master/LICENSE",
+  "license": {
+    "key": "lgpl-3.0",
+    "name": "GNU Lesser General Public License v3.0",
+    "nickname": "GNU LGPLv3",
+    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
+    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
+  },
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
@@ -1100,6 +1134,14 @@ Example response:
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "license_url": "http://example.com/diaspora/diaspora-client/blob/master/LICENSE",
+  "license": {
+    "key": "lgpl-3.0",
+    "name": "GNU Lesser General Public License v3.0",
+    "nickname": "GNU LGPLv3",
+    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
+    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
+  },
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
@@ -1196,6 +1238,14 @@ Example response:
   },
   "archived": false,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "license_url": "http://example.com/diaspora/diaspora-client/blob/master/LICENSE",
+  "license": {
+    "key": "lgpl-3.0",
+    "name": "GNU Lesser General Public License v3.0",
+    "nickname": "GNU LGPLv3",
+    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
+    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
+  },
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
@@ -1334,6 +1384,7 @@ GET /projects/:id/hooks/:hook_id
   "url": "http://example.com/hook",
   "project_id": 3,
   "push_events": true,
+  "push_events_branch_filter": "",
   "issues_events": true,
   "confidential_issues_events": true,
   "merge_requests_events": true,
@@ -1360,6 +1411,7 @@ POST /projects/:id/hooks
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `url` | string | yes | The hook URL |
 | `push_events` | boolean | no | Trigger hook on push events |
+| `push_events_branch_filter` | string | no | Trigger hook on push events for matching branches only |
 | `issues_events` | boolean | no | Trigger hook on issues events |
 | `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
@@ -1385,6 +1437,7 @@ PUT /projects/:id/hooks/:hook_id
 | `hook_id` | integer | yes | The ID of the project hook |
 | `url` | string | yes | The hook URL |
 | `push_events` | boolean | no | Trigger hook on push events |
+| `push_events_branch_filter` | string | no | Trigger hook on push events for matching branches only |
 | `issues_events` | boolean | no | Trigger hook on issues events |
 | `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
@@ -1413,11 +1466,16 @@ DELETE /projects/:id/hooks/:hook_id
 Note the JSON response differs if the hook is available or not. If the project hook
 is available before it is returned in the JSON response or an empty response is returned.
 
-## Admin fork relation
+## Fork relationship
 
-Allows modification of the forked relationship between existing projects. Available only for admins.
+Allows modification of the forked relationship between existing projects. Available only for project owners and admins.
 
 ### Create a forked from/to relation between existing projects
+
+CAUTION: **Warning:**
+This will destroy the LFS objects stored in the fork.
+So to retain the LFS objects, make sure you've pulled them **before** creating the fork relation,
+and push them again **after** creating the fork relation.
 
 ```
 POST /projects/:id/fork/:forked_from_id

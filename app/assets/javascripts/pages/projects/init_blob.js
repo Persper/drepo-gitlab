@@ -1,7 +1,7 @@
 import LineHighlighter from '~/line_highlighter';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
-import ShortcutsNavigation from '~/shortcuts_navigation';
-import ShortcutsBlob from '~/shortcuts_blob';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
+import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
 import BlobForkSuggestion from '~/blob/blob_fork_suggestion';
 import initBlobBundle from '~/blob_edit/blob_bundle';
 
@@ -16,7 +16,8 @@ export default () => {
   );
 
   const fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
-  const fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
+  const fileBlobPermalinkUrl =
+    fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
 
   new ShortcutsNavigation(); // eslint-disable-line no-new
 

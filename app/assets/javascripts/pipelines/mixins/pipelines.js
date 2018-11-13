@@ -1,10 +1,10 @@
 import Visibility from 'visibilityjs';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import { __ } from '../../locale';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import EmptyState from '../components/empty_state.vue';
 import SvgBlankState from '../components/blank_state.vue';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import PipelinesTableComponent from '../components/pipelines_table.vue';
 import eventHub from '../event_hub';
 import { CANCEL_REQUEST } from '../constants';
@@ -14,7 +14,7 @@ export default {
     PipelinesTableComponent,
     SvgBlankState,
     EmptyState,
-    LoadingIcon,
+    GlLoadingIcon,
   },
   data() {
     return {
@@ -24,6 +24,15 @@ export default {
       updateGraphDropdown: false,
       hasMadeRequest: false,
     };
+  },
+  computed: {
+    shouldRenderPagination() {
+      return (
+        !this.isLoading &&
+        this.state.pipelines.length &&
+        this.state.pageInfo.total > this.state.pageInfo.perPage
+      );
+    },
   },
   beforeMount() {
     this.poll = new Poll({
@@ -67,6 +76,35 @@ export default {
     this.poll.stop();
   },
   methods: {
+    /**
+     * Handles URL and query parameter changes.
+     * When the user uses the pagination or the tabs,
+     *  - update URL
+     *  - Make API request to the server with new parameters
+     *  - Update the polling function
+     *  - Update the internal state
+     */
+    updateContent(parameters) {
+      this.updateInternalState(parameters);
+
+      // fetch new data
+      return this.service
+        .getPipelines(this.requestData)
+        .then(response => {
+          this.isLoading = false;
+          this.successCallback(response);
+
+          // restart polling
+          this.poll.restart({ data: this.requestData });
+        })
+        .catch(() => {
+          this.isLoading = false;
+          this.errorCallback();
+
+          // restart polling
+          this.poll.restart({ data: this.requestData });
+        });
+    },
     updateTable() {
       // Cancel ongoing request
       if (this.isMakingRequest) {

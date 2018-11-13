@@ -10,34 +10,51 @@ GitLab documentation. Check the
 
 Check the GitLab handbook for the [writing styles guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
 
+For help adhering to the guidelines, see [Linting](index.md#linting).
+
+## Files
+
+- [Directory structure](index.md#location-and-naming-documents): place the docs
+  in the correct location.
+- [Documentation files](index.md#documentation-files): name the files accordingly.
+- [Markdown](../../user/markdown.md): use the GitLab Flavored Markdown in the
+  documentation.
+
+NOTE: **Note:**
+**Do not** use capital letters, spaces, or special chars in file names,
+branch names, directory names, headings, or in anything that generates a path.
+
+NOTE: **Note:**
+**Do not** create new `README.md` files, name them `index.md` instead. There's
+a test that will fail if it spots a new `README.md` file.
+
 ## Text
 
 - Split up long lines (wrap text), this makes it much easier to review and edit. Only
   double line breaks are shown as a full line break in [GitLab markdown][gfm].
-  80-100 characters is a good line length
+  80-100 characters is a good line length.
 - Make sure that the documentation is added in the correct
   [directory](index.md#documentation-directory-structure) and that
-  there's a link to it somewhere useful
-- Do not duplicate information
-- Be brief and clear
-- Unless there's a logical reason not to, add documents in alphabetical order
-- Write in US English
-- Use [single spaces][] instead of double spaces
+  there's a link to it somewhere useful.
+- Do not duplicate information.
+- Be brief and clear.
+- Unless there's a logical reason not to, add documents in alphabetical order.
+- Write in US English.
+- Use [single spaces][] instead of double spaces.
 - Jump a line between different markups (e.g., after every paragraph, header, list, etc)
-- Capitalize "G" and "L" in GitLab
+- Capitalize "G" and "L" in GitLab.
 - Use sentence case for titles, headings, labels, menu items, and buttons.
 - Use title case when referring to [features](https://about.gitlab.com/features/) or
-[products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
-Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
-(e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
-some features are also objects (e.g. "Merge Requests" and "merge requests").
+  [products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
+  Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
+  (e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
+  some features are also objects (e.g. "Merge Requests" and "merge requests").
 
 ## Formatting
 
-- Use double asterisks (`**`) to mark a word or text in bold (`**bold**`)
-- Use undescore (`_`) for text in italics (`_italic_`)
-- Jump a line between different markups, for example:
-
+- Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
+- Use undescore (`_`) for text in italics (`_italic_`).
+- Put an empty line between different markups. For example:
     ```md
     ## Header
 
@@ -53,19 +70,27 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
 
 ### Ordered and unordered lists
 
-- Use dashes (`-`) for unordered lists instead of asterisks (`*`)
-- Use the number one (`1`) for ordered lists
-- For punctuation in bullet lists, please refer to the [GitLab UX guide](https://design.gitlab.com/content/punctuation/)
+- Use dashes (`-`) for unordered lists instead of asterisks (`*`).
+- Use the number one (`1`) for ordered lists.
+- Separate list items from explanatory text with a colon (`:`). For example:
+    ```md
+    The list is as follows:
+
+    - First item: This explains the first item.
+    - Second item: This explains the second item.
+    ```
+- For further guidance on punctuation in bullet lists, please refer to the [GitLab UX guide](https://design.gitlab.com/content/punctuation/).
 
 ## Headings
 
 - Add **only one H1** in each document, by adding `#` at the beginning of
   it (when using markdown). The `h1` will be the document `<title>`.
-- For subheadings, use `##`, `###` and so on
+- Start with an h2 (`##`), and respect the order h2 > h3 > h4 > h5 > h6.
+  Never skip the hierarchy level, such as h2 > h4
 - Avoid putting numbers in headings. Numbers shift, hence documentation anchor
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
-  someone in the Merge Request
+  someone in the Merge Request.
 - [Avoid using symbols and special chars](https://gitlab.com/gitlab-com/gitlab-docs/issues/84)
   in headers. Whenever possible, they should be plain and short text.
 - Avoid adding things that show ephemeral statuses. For example, if a feature is
@@ -75,8 +100,8 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
   of the following GitLab members for a review: `@axil` or `@marcia`.
   This is to ensure that no document with wrong heading is going
   live without an audit, thus preventing dead links and redirection issues when
-  corrected
-- Leave exactly one new line after a heading
+  corrected.
+- Leave exactly one new line after a heading.
 
 ## Links
 
@@ -103,11 +128,11 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
 
 To indicate the steps of navigation through the UI:
 
-- Use the exact word as shown in the UI, including any capital letters as-is
+- Use the exact word as shown in the UI, including any capital letters as-is.
 - Use bold text for navigation items and the char `>` as separator
-(e.g., `Navigate to your project's **Settings > CI/CD**` )
+  (e.g., `Navigate to your project's **Settings > CI/CD**` ).
 - If there are any expandable menus, make sure to mention that the user
-needs to expand the tab to find the settings you're referring to
+  needs to expand the tab to find the settings you're referring to.
 
 ## Images
 
@@ -115,17 +140,16 @@ needs to expand the tab to find the settings you're referring to
   the `.md` document that you're working on is located. Always prepend their
   names with the name of the document that they will be included in. For
   example, if there is a document called `twitter.md`, then a valid image name
-  could be `twitter_login_screen.png`. [**Exception**: images for
-  [articles](index.md#technical-articles) should be
-  put in a directory called `img` underneath `/articles/article_title/img/`, therefore,
-  there's no need to prepend the document name to their filenames.]
+  could be `twitter_login_screen.png`.
 - Images should have a specific, non-generic name that will differentiate them.
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
 - Compress all images with <https://tinypng.com/> or similar tool.
 - Compress gifs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to _illustrate_ the description
-of a process, not to _replace_ it.
+  of a process, not to _replace_ it.
+- Max image size: 100KB (gifs included).
+- The GitLab docs do not support videos yet.
 
 Inside the document:
 
@@ -133,12 +157,12 @@ Inside the document:
   `![Proper description what the image is about](img/document_image_title.png)`
 - Always use a proper description for what the image is about. That way, when a
   browser fails to show the image, this text will be used as an alternative
-  description
+  description.
 - If there are consecutive images with little text between them, always add
   three dashes (`---`) between the image and the text to create a horizontal
-  line for better clarity
+  line for better clarity.
 - If a heading is placed right after an image, always add three dashes (`---`)
-  between the image and the heading
+  between the image and the heading.
 
 ## Alert boxes
 
@@ -229,7 +253,7 @@ below.
   (in that order) that introduced it. The above quote would be then transformed to:
 
     ```md
-    > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/1242) in GitLab 8.3.
+    > [Introduced](<link-to-issue>) in GitLab 8.3.
     ```
 
 - If the feature is only available in GitLab Enterprise Edition, don't forget to mention
@@ -237,30 +261,42 @@ below.
   the feature is available in:
 
     ```md
-    > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/1242)
-    in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
+    > [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
     ```
+
+#### Early versions of EE
+
+If the feature was created before GitLab 9.2 (before [different EE tiers were introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1851)):
+
+- Declare it as "Introduced in GitLab Enterprise Edition X.Y".
+- Note which tier the feature is available in.
+
+For example:
+
+```md
+> [Introduced](<link-to-issue>) in GitLab Enterprise Edition 9.0. Available in [GitLab Premium](https://about.gitlab.com/pricing/).
+```
 
 ### Product badges
 
 When a feature is available in EE-only tiers, add the corresponding tier according to the
 feature availability:
 
-- For GitLab Starter and GitLab.com Bronze: `**[STARTER]**`
-- For GitLab Premium and GitLab.com Silver: `**[PREMIUM]**`
-- For GitLab Ultimate and GitLab.com Gold: `**[ULTIMATE]**`
-- For GitLab Core and GitLab.com Free: `**[CORE]**`
+- For GitLab Starter and GitLab.com Bronze: `**[STARTER]**`.
+- For GitLab Premium and GitLab.com Silver: `**[PREMIUM]**`.
+- For GitLab Ultimate and GitLab.com Gold: `**[ULTIMATE]**`.
+- For GitLab Core and GitLab.com Free: `**[CORE]**`.
 
 To exclude GitLab.com tiers (when the feature is not available in GitLab.com), add the
 keyword "only":
 
-- For GitLab Starter: `**[STARTER ONLY]**`
-- For GitLab Premium: `**[PREMIUM ONLY]**`
-- For GitLab Ultimate: `**[ULTIMATE ONLY]**`
-- For GitLab Core: `**[CORE ONLY]**`
+- For GitLab Starter: `**[STARTER ONLY]**`.
+- For GitLab Premium: `**[PREMIUM ONLY]**`.
+- For GitLab Ultimate: `**[ULTIMATE ONLY]**`.
+- For GitLab Core: `**[CORE ONLY]**`.
 
 The tier should be ideally added to headers, so that the full badge will be displayed.
-But it can be also mentioned from paragraphs, list items, and table cells. For these cases,
+However, it can be also mentioned from paragraphs, list items, and table cells. For these cases,
 the tier mention will be represented by an orange question mark.
 E.g., `**[STARTER]**` renders **[STARTER]**, `**[STARTER ONLY]**` renders **[STARTER ONLY]**.
 
@@ -281,10 +317,10 @@ avoid duplication, link to the special document that can be found in
 [`doc/administration/restart_gitlab.md`][doc-restart]. Usually the text will
 read like:
 
-  ```
-  Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
-  for the changes to take effect.
-  ```
+```md
+Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
+for the changes to take effect.
+```
 
 If the document you are editing resides in a place other than the GitLab CE/EE
 `doc/` directory, instead of the relative link, use the full path:
@@ -312,8 +348,8 @@ prefer to document it in the CE docs to avoid duplication.
 
 Configuration settings include:
 
-- settings that touch configuration files in `config/`
-- NGINX settings and settings in `lib/support/` in general
+- Settings that touch configuration files in `config/`.
+- NGINX settings and settings in `lib/support/` in general.
 
 When there is a list of steps to perform, usually that entails editing the
 configuration file and reconfiguring/restarting GitLab. In such case, follow
@@ -367,19 +403,19 @@ low.
 
 You can use the following fake tokens as examples.
 
-|     **Token type**    |           **Token value**         |
-| --------------------- | --------------------------------- |
-| Private user token    | `9koXpg98eAheJpvBs5tK`            |
-| Personal access token | `n671WNGecHugsdEDPsyo`            |
+| **Token type**        | **Token value**                                                    |
+|:----------------------|:-------------------------------------------------------------------|
+| Private user token    | `9koXpg98eAheJpvBs5tK`                                             |
+| Personal access token | `n671WNGecHugsdEDPsyo`                                             |
 | Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
 | Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
-| Secret CI variable    | `Li8j-mLUVA3eZYjPfd_H`            |
-| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`        |
-| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`            |
-| Trigger token         | `be20d8dcc028677c931e04f3871a9b`  |
-| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`            |
-| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`            |
-| Request profile token | `7VgpS4Ax5utVD2esNstz`            |
+| Secret CI variable    | `Li8j-mLUVA3eZYjPfd_H`                                             |
+| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
+| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
+| Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
+| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
+| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
+| Request profile token | `7VgpS4Ax5utVD2esNstz`                                             |
 
 ### API
 
@@ -402,16 +438,16 @@ on this document. Further explanation is given below.
 Use the following table headers to describe the methods. Attributes should
 always be in code blocks using backticks (``` ` ```).
 
-```
+```md
 | Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
+|:----------|:-----|:---------|:------------|
 ```
 
 Rendered example:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user`  | string | yes | The GitLab username |
+| Attribute | Type   | Required | Description         |
+|:----------|:-------|:---------|:--------------------|
+| `user`    | string | yes      | The GitLab username |
 
 #### cURL commands
 
@@ -423,12 +459,12 @@ Rendered example:
 - Prefer to use examples using the personal access token and don't pass data of
   username and password.
 
-| Methods | Description |
-| ------- | ----------- |
+| Methods                                    | Description                                           |
+|:-------------------------------------------|:------------------------------------------------------|
 | `-H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK"` | Use this method as is, whenever authentication needed |
-| `-X POST`   | Use this method when creating new objects |
-| `-X PUT`    | Use this method when updating existing objects |
-| `-X DELETE` | Use this method when removing existing objects |
+| `-X POST`                                  | Use this method when creating new objects             |
+| `-X PUT`                                   | Use this method when updating existing objects        |
+| `-X DELETE`                                | Use this method when removing existing objects        |
 
 #### cURL Examples
 

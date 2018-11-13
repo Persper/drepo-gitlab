@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module DataBuilder
     module Push
@@ -97,11 +99,15 @@ module Gitlab
         }
       end
 
-      # This method provide a sample data generated with
+      # This method provides a sample data generated with
       # existing project and commits to test webhooks
       def build_sample(project, user)
+        # Use sample data if repo has no commit
+        # (expect the case of test service configuration settings)
+        return sample_data if project.empty_repo?
+
         ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{project.default_branch}"
-        commits = project.repository.commits(project.default_branch.to_s, limit: 3) rescue []
+        commits = project.repository.commits(project.default_branch.to_s, limit: 3)
 
         build(project, user, commits.last&.id, commits.first&.id, ref, commits)
       end

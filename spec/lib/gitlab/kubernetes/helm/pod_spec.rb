@@ -5,8 +5,9 @@ describe Gitlab::Kubernetes::Helm::Pod do
     let(:app) {  create(:clusters_applications_prometheus) }
     let(:command) {  app.install_command }
     let(:namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
+    let(:service_account_name) { nil }
 
-    subject { described_class.new(command, namespace) }
+    subject { described_class.new(command, namespace, service_account_name: service_account_name) }
 
     context 'with a command' do
       it 'should generate a Kubeclient::Resource' do
@@ -29,7 +30,7 @@ describe Gitlab::Kubernetes::Helm::Pod do
       it 'should generate the appropriate specifications for the container' do
         container = subject.generate.spec.containers.first
         expect(container.name).to eq('helm')
-        expect(container.image).to eq('alpine:3.6')
+        expect(container.image).to eq('registry.gitlab.com/gitlab-org/cluster-integration/helm-install-image/releases/2.7.2-kube-1.11.0')
         expect(container.env.count).to eq(3)
         expect(container.env.map(&:name)).to match_array([:HELM_VERSION, :TILLER_NAMESPACE, :COMMAND_SCRIPT])
         expect(container.command).to match_array(["/bin/sh"])
@@ -57,6 +58,20 @@ describe Gitlab::Kubernetes::Helm::Pod do
         expect(volume.configMap['name']).to eq("values-content-configuration-#{app.name}")
         expect(volume.configMap['items'].first['key']).to eq(:'values.yaml')
         expect(volume.configMap['items'].first['path']).to eq(:'values.yaml')
+      end
+
+      it 'should have no serviceAccountName' do
+        spec = subject.generate.spec
+        expect(spec.serviceAccountName).to be_nil
+      end
+
+      context 'with a service_account_name' do
+        let(:service_account_name) { 'sa' }
+
+        it 'should use the serviceAccountName provided' do
+          spec = subject.generate.spec
+          expect(spec.serviceAccountName).to eq(service_account_name)
+        end
       end
     end
   end

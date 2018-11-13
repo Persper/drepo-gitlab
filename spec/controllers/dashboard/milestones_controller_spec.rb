@@ -3,9 +3,11 @@ require 'spec_helper'
 describe Dashboard::MilestonesController do
   let(:project) { create(:project) }
   let(:group) { create(:group) }
+  let(:public_group) { create(:group, :public) }
   let(:user) { create(:user) }
   let(:project_milestone) { create(:milestone, project: project) }
   let(:group_milestone) { create(:milestone, group: group) }
+  let!(:public_milestone) { create(:milestone, group: public_group) }
   let(:milestone) do
     DashboardMilestone.build(
       [project],
@@ -43,13 +45,22 @@ describe Dashboard::MilestonesController do
   end
 
   describe "#index" do
-    it 'should contain group and project milestones' do
+    render_views
+
+    it 'returns group and project milestones to which the user belongs' do
       get :index, format: :json
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response.size).to eq(2)
-      expect(json_response.map { |i| i["first_milestone"]["id"] }).to include(group_milestone.id, project_milestone.id)
-      expect(json_response.map { |i| i["group_name"] }).to include(group.name)
+      expect(json_response.map { |i| i["first_milestone"]["id"] }).to match_array([group_milestone.id, project_milestone.id])
+      expect(json_response.map { |i| i["group_name"] }.compact).to match_array(group.name)
+    end
+
+    it 'should contain group and project milestones to which the user belongs to' do
+      get :index
+
+      expect(response.body).to include("Open\n<span class=\"badge badge-pill\">3</span>")
+      expect(response.body).to include("Closed\n<span class=\"badge badge-pill\">0</span>")
     end
   end
 end

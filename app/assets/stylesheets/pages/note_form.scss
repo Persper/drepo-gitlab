@@ -2,7 +2,7 @@
  * Note Form
  */
 .comment-btn {
-  @extend .btn-create;
+  @extend .btn-success;
 }
 
 .diff-file .diff-content {
@@ -74,13 +74,13 @@
     }
 
     &.is-dropzone-hover {
-      border-color: $gl-success;
+      border-color: $green-500;
       box-shadow: 0 0 2px $black-transparent,
-                  0 0 4px $gl-success-focus;
+                  0 0 4px $green-500-focus;
 
       .comment-toolbar,
       .nav-links {
-        border-color: $gl-success;
+        border-color: $green-500;
       }
     }
   }
@@ -239,6 +239,7 @@
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;
+    border-radius: 0 0 $border-radius-default $border-radius-default;
 
     &.is-replying {
       padding-bottom: $gl-padding;
@@ -247,10 +248,15 @@
 }
 
 .discussion-with-resolve-btn {
+  @include media-breakpoint-up(sm) {
+    display: flex;
+  }
+
+
   .discussion-actions {
     display: table;
 
-    .btn-default path {
+    svg {
       fill: $gray-darkest;
     }
 
@@ -269,6 +275,12 @@
 
   .btn {
     width: 100%;
+  }
+
+  .btn-text-field {
+    @include media-breakpoint-down(xs) {
+      margin-bottom: $gl-padding-8;
+    }
   }
 }
 
@@ -306,7 +318,7 @@
 
   &:hover,
   &:focus {
-    color: $gl-link-color;
+    color: $blue-600;
     outline: 0;
   }
 
@@ -340,6 +352,8 @@
 }
 
 .note-form-actions {
+  color: $gl-text-color;
+
   @include media-breakpoint-down(xs) {
     .btn {
       float: none;
@@ -424,7 +438,7 @@
 
 .uploading-error-icon,
 .uploading-error-message {
-  color: $gl-text-red;
+  color: $red-500;
 }
 
 .uploading-error-message {
@@ -443,7 +457,7 @@
 .attach-new-file,
 .button-attach-file,
 .retry-uploading-link {
-  color: $gl-link-color;
+  color: $blue-600;
   padding: 0;
   background: none;
   border: 0;
@@ -452,5 +466,5 @@
 }
 
 .markdown-selector {
-  color: $gl-link-color;
+  color: $blue-600;
 }

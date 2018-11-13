@@ -6,21 +6,18 @@
  * Makes a post request when the button is clicked.
  */
 import { s__ } from '~/locale';
+import { GlTooltipDirective, GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import Icon from '~/vue_shared/components/icon.vue';
-import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '../event_hub';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   components: {
     Icon,
-    LoadingIcon,
+    GlLoadingIcon,
   },
-
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
-
   props: {
     retryUrl: {
       type: String,
@@ -40,7 +37,9 @@ export default {
 
   computed: {
     title() {
-      return this.isLastDeployment ? s__('Environments|Re-deploy to environment') : s__('Environments|Rollback environment');
+      return this.isLastDeployment
+        ? s__('Environments|Re-deploy to environment')
+        : s__('Environments|Rollback environment');
     },
   },
 
@@ -55,21 +54,21 @@ export default {
 </script>
 <template>
   <button
-    v-tooltip
+    v-gl-tooltip
     :disabled="isLoading"
     :title="title"
     type="button"
     class="btn d-none d-sm-none d-md-block"
     @click="onClick"
   >
-
     <icon
       v-if="isLastDeployment"
-      name="repeat" />
+      name="repeat" 
+    />
     <icon
       v-else
-      name="redo"/>
-
-    <loading-icon v-if="isLoading" />
+      name="redo"
+    />
+    <gl-loading-icon v-if="isLoading" />
   </button>
 </template>

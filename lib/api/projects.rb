@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_dependency 'declarative_policy'
 
 module API
@@ -112,7 +114,8 @@ module API
         options = options.reverse_merge(
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           statistics: params[:statistics],
-          current_user: current_user
+          current_user: current_user,
+          license: false
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
@@ -198,6 +201,7 @@ module API
         use :optional_project_params
         use :create_params
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post "user/:user_id" do
         authenticated_as_admin!
         user = User.find_by(id: params.delete(:user_id))
@@ -214,6 +218,7 @@ module API
           render_validation_error!(project)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     params do
@@ -226,13 +231,17 @@ module API
       params do
         use :statistics_params
         use :with_custom_attributes
+
+        optional :license, type: Boolean, default: false,
+                           desc: 'Include project license data'
       end
       get ":id" do
         options = {
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           current_user: current_user,
           user_can_admin_project: can?(current_user, :admin_project, user_project),
-          statistics: params[:statistics]
+          statistics: params[:statistics],
+          license: params[:license]
         }
 
         project, options = with_custom_attributes(user_project, options)
@@ -281,6 +290,12 @@ module API
         forks = ForkProjectsFinder.new(user_project, params: project_finder_params, current_user: current_user).execute
 
         present_projects forks
+      end
+
+      desc 'Check pages access of this project'
+      get ':id/pages_access' do
+        authorize! :read_pages_content, user_project unless user_project.public_pages?
+        status 200
       end
 
       desc 'Update an existing project' do
@@ -386,7 +401,7 @@ module API
         requires :forked_from_id, type: String, desc: 'The ID of the project it was forked from'
       end
       post ":id/fork/:forked_from_id" do
-        authenticated_as_admin!
+        authorize! :admin_project, user_project
 
         fork_from_project = find_project!(params[:forked_from_id])
 
@@ -444,6 +459,7 @@ module API
       params do
         requires :group_id, type: Integer, desc: 'The ID of the group'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/share/:group_id" do
         authorize! :admin_project, user_project
 
@@ -452,6 +468,7 @@ module API
 
         destroy_conditionally!(link)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Upload a file'
       params do

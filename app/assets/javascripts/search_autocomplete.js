@@ -1,4 +1,4 @@
-/* eslint-disable no-return-assign, one-var, no-var, one-var-declaration-per-line, no-unused-vars, consistent-return, object-shorthand, prefer-template, class-methods-use-this, no-lonely-if, vars-on-top, max-len */
+/* eslint-disable no-return-assign, one-var, no-var, no-unused-vars, consistent-return, object-shorthand, prefer-template, class-methods-use-this, no-lonely-if, vars-on-top */
 
 import $ from 'jquery';
 import { escape, throttle } from 'underscore';
@@ -68,7 +68,7 @@ function setSearchOptions() {
   }
 }
 
-export default class SearchAutocomplete {
+export class SearchAutocomplete {
   constructor({ wrap, optsEl, autocompletePath, projectId, projectRef } = {}) {
     setSearchOptions();
     this.bindEventContext();
@@ -226,7 +226,7 @@ export default class SearchAutocomplete {
             icon,
             text: term,
             template: s__('SearchAutocomplete|in all GitLab'),
-            url: `/search?search=${term}`,
+            url: `${gon.relative_url_root}/search?search=${term}`,
           });
 
           if (template) {
@@ -234,7 +234,9 @@ export default class SearchAutocomplete {
               icon,
               text: term,
               template,
-              url: `/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
+              url: `${
+                gon.relative_url_root
+              }/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
             });
           }
         }
@@ -498,4 +500,8 @@ export default class SearchAutocomplete {
 
     this.dropdownMenu.toggleClass('fade-out', !this.isScrolledUp());
   }
+}
+
+export default function initSearchAutocomplete(opts) {
+  return new SearchAutocomplete(opts);
 }

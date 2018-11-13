@@ -14,8 +14,9 @@ module Clusters
         else
           check_timeout
         end
-      rescue Kubeclient::HttpError => ke
-        app.make_errored!("Kubernetes error: #{ke.message}") unless app.errored?
+      rescue Kubeclient::HttpError => e
+        Rails.logger.error "Kubernetes error: #{e.class.name} #{e.message}"
+        app.make_errored!("Kubernetes error") unless app.errored?
       end
 
       private
@@ -27,7 +28,7 @@ module Clusters
       end
 
       def on_failed
-        app.make_errored!(installation_errors || 'Installation silently failed')
+        app.make_errored!('Installation failed')
       ensure
         remove_installation_pod
       end
@@ -51,7 +52,8 @@ module Clusters
 
       def remove_installation_pod
         helm_api.delete_pod!(install_command.pod_name)
-      rescue
+      rescue => e
+        Rails.logger.error "Kubernetes error: #{e.class.name} #{e.message}"
         # no-op
       end
 

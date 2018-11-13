@@ -1,60 +1,61 @@
 <script>
-  import { mapActions } from 'vuex';
-  import Flash from '../../flash';
-  import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import tableRegistry from './table_registry.vue';
-  import { errorMessages, errorMessagesTypes } from '../constants';
+import { mapActions } from 'vuex';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import Flash from '../../flash';
+import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
+import tooltip from '../../vue_shared/directives/tooltip';
+import tableRegistry from './table_registry.vue';
+import { errorMessages, errorMessagesTypes } from '../constants';
+import { __ } from '../../locale';
 
-  export default {
-    name: 'CollapsibeContainerRegisty',
-    components: {
-      clipboardButton,
-      loadingIcon,
-      tableRegistry,
+export default {
+  name: 'CollapsibeContainerRegisty',
+  components: {
+    clipboardButton,
+    tableRegistry,
+    GlLoadingIcon,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    repo: {
+      type: Object,
+      required: true,
     },
-    directives: {
-      tooltip,
-    },
-    props: {
-      repo: {
-        type: Object,
-        required: true,
-      },
-    },
-    data() {
-      return {
-        isOpen: false,
-      };
-    },
-    methods: {
-      ...mapActions([
-        'fetchRepos',
-        'fetchList',
-        'deleteRepo',
-      ]),
+  },
+  data() {
+    return {
+      isOpen: false,
+    };
+  },
+  methods: {
+    ...mapActions(['fetchRepos', 'fetchList', 'deleteRepo']),
 
-      toggleRepo() {
-        this.isOpen = !this.isOpen;
+    toggleRepo() {
+      this.isOpen = !this.isOpen;
 
-        if (this.isOpen) {
-          this.fetchList({ repo: this.repo })
-          .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
-        }
-      },
-
-      handleDeleteRepository() {
-        this.deleteRepo(this.repo)
-          .then(() => this.fetchRepos())
-          .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
-      },
-
-      showError(message) {
-        Flash(errorMessages[message]);
-      },
+      if (this.isOpen) {
+        this.fetchList({ repo: this.repo }).catch(() =>
+          this.showError(errorMessagesTypes.FETCH_REGISTRY),
+        );
+      }
     },
-  };
+
+    handleDeleteRepository() {
+      this.deleteRepo(this.repo)
+        .then(() => {
+          Flash(__('This container registry has been scheduled for deletion.'), 'notice');
+          this.fetchRepos();
+        })
+        .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
+    },
+
+    showError(message) {
+      Flash(errorMessages[message]);
+    },
+  },
+};
 </script>
 
 <template>
@@ -86,8 +87,8 @@
 
       <div class="controls d-none d-sm-block float-right">
         <button
-          v-tooltip
           v-if="repo.canDelete"
+          v-tooltip
           :title="s__('ContainerRegistry|Remove repository')"
           :aria-label="s__('ContainerRegistry|Remove repository')"
           type="button"
@@ -103,10 +104,10 @@
       </div>
     </div>
 
-    <loading-icon
+    <gl-loading-icon
       v-if="repo.isLoading"
+      :size="2"
       class="append-bottom-20"
-      size="2"
     />
 
     <div

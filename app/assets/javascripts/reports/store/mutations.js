@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import * as types from './mutation_types';
 
 export default {
@@ -20,7 +19,6 @@ export default {
 
     state.status = response.status;
     state.reports = response.suites;
-
   },
   [types.RECEIVE_REPORTS_ERROR](state) {
     state.isLoading = false;
@@ -37,7 +35,7 @@ export default {
   [types.SET_ISSUE_MODAL_DATA](state, payload) {
     state.modal.title = payload.issue.name;
 
-    Object.keys(payload.issue).forEach((key) => {
+    Object.keys(payload.issue).forEach(key => {
       if (Object.prototype.hasOwnProperty.call(state.modal.data, key)) {
         state.modal.data[key] = {
           ...state.modal.data[key],

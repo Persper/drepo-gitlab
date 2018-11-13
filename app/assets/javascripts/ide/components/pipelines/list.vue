@@ -1,8 +1,8 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import { sprintf, __ } from '../../../locale';
-import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import Tabs from '../../../vue_shared/components/tabs/tabs';
@@ -12,13 +12,13 @@ import JobsList from '../jobs/list.vue';
 
 export default {
   components: {
-    LoadingIcon,
     Icon,
     CiIcon,
     Tabs,
     Tab,
     JobsList,
     EmptyState,
+    GlLoadingIcon,
   },
   computed: {
     ...mapState(['pipelinesEmptyStateSvgPath', 'links']),
@@ -27,7 +27,7 @@ export default {
     ...mapState('pipelines', ['isLoadingPipeline', 'latestPipeline', 'stages', 'isLoadingJobs']),
     ciLintText() {
       return sprintf(
-        __('You can also test your .gitlab-ci.yml in the %{linkStart}Lint%{linkEnd}'),
+        __('You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}.'),
         {
           linkStart: `<a href="${_.escape(this.currentProject.web_url)}/-/ci/lint">`,
           linkEnd: '</a>',
@@ -50,10 +50,10 @@ export default {
 
 <template>
   <div class="ide-pipeline">
-    <loading-icon
+    <gl-loading-icon
       v-if="showLoadingIcon"
+      :size="2"
       class="prepend-top-default"
-      size="2"
     />
     <template v-else-if="latestPipeline !== null">
       <header

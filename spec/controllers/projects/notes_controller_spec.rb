@@ -47,6 +47,37 @@ describe Projects::NotesController do
       get :index, request_params
     end
 
+    context 'when user notes_filter is present' do
+      let(:notes_json) { parsed_response[:notes] }
+      let!(:comment) { create(:note, noteable: issue, project: project) }
+      let!(:system_note) { create(:note, noteable: issue, project: project, system: true) }
+
+      it 'filters system notes by comments' do
+        user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
+
+        get :index, request_params
+
+        expect(notes_json.count).to eq(1)
+        expect(notes_json.first[:id].to_i).to eq(comment.id)
+      end
+
+      it 'returns all notes' do
+        user.set_notes_filter(UserPreference::NOTES_FILTERS[:all_notes], issue)
+
+        get :index, request_params
+
+        expect(notes_json.map { |note| note[:id].to_i }).to contain_exactly(comment.id, system_note.id)
+      end
+
+      it 'does not merge label event notes' do
+        user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
+
+        expect(ResourceEvents::MergeIntoNotesService).not_to receive(:new)
+
+        get :index, request_params
+      end
+    end
+
     context 'for a discussion note' do
       let(:project) { create(:project, :repository) }
       let!(:note) { create(:discussion_note_on_merge_request, project: project) }
@@ -154,7 +185,7 @@ describe Projects::NotesController do
         get :index, request_params
 
         expect(parsed_response[:notes].count).to eq(1)
-        expect(note_json[:id]).to eq(note.id)
+        expect(note_json[:id]).to eq(note.id.to_s)
       end
 
       it 'does not result in N+1 queries' do
@@ -205,6 +236,14 @@ describe Projects::NotesController do
       post :create, request_params.merge(format: :json)
 
       expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'returns discussion JSON when the return_discussion param is set' do
+      post :create, request_params.merge(format: :json, return_discussion: 'true')
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response).to have_key 'discussion'
+      expect(json_response['discussion']['notes'][0]['note']).to eq(request_params[:note][:note])
     end
 
     context 'when merge_request_diff_head_sha present' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Config
@@ -26,6 +28,7 @@ module Gitlab
             name.to_s.start_with?('.')
           end
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def compose!(deps = nil)
             super do
               @config.each do |name, config|
@@ -45,6 +48,7 @@ module Gitlab
               end
             end
           end
+          # rubocop: enable CodeReuse/ActiveRecord
         end
       end
     end

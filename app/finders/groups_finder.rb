@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # GroupsFinder
 #
 # Used to filter Groups by a set of params
@@ -58,6 +60,7 @@ class GroupsFinder < UnionFinder
     current_user.groups
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def groups_with_min_access_level
     groups = current_user
       .groups
@@ -67,12 +70,15 @@ class GroupsFinder < UnionFinder
       .new(groups)
       .base_and_descendants
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_parent(groups)
     return groups unless params[:parent]
 
     groups.where(parent: params[:parent])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def owned_groups
     current_user&.owned_groups || Group.none

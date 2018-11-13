@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Namespace do
   include ProjectForksHelper
+  include GitHelpers
 
   let!(:namespace) { create(:namespace) }
   let(:gitlab_shell) { Gitlab::Shell.new }
@@ -80,6 +81,27 @@ describe Namespace do
 
   describe '#human_name' do
     it { expect(namespace.human_name).to eq(namespace.owner_name) }
+  end
+
+  describe '#first_project_with_container_registry_tags' do
+    let(:container_repository) { create(:container_repository) }
+    let!(:project) { create(:project, namespace: namespace, container_repositories: [container_repository]) }
+
+    before do
+      stub_container_registry_config(enabled: true)
+    end
+
+    it 'returns the project' do
+      stub_container_registry_tags(repository: :any, tags: ['tag'])
+
+      expect(namespace.first_project_with_container_registry_tags).to eq(project)
+    end
+
+    it 'returns no project' do
+      stub_container_registry_tags(repository: :any, tags: nil)
+
+      expect(namespace.first_project_with_container_registry_tags).to be_nil
+    end
   end
 
   describe '.search' do
@@ -184,7 +206,8 @@ describe Namespace do
         end
 
         it 'raises an error about not movable project' do
-          expect { namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
+          expect { namespace.move_dir }.to raise_error(Gitlab::UpdatePathError,
+                                                       /Namespace .* cannot be moved/)
         end
       end
     end
@@ -339,9 +362,7 @@ describe Namespace do
     end
 
     def project_rugged(project)
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        project.repository.rugged
-      end
+      rugged_repo(project.repository)
     end
   end
 
@@ -394,12 +415,6 @@ describe Namespace do
           child.destroy
         end
       end
-
-      it 'removes the exports folder' do
-        expect(namespace).to receive(:remove_exports!)
-
-        namespace.destroy
-      end
     end
 
     context 'hashed storage' do
@@ -413,12 +428,6 @@ describe Namespace do
         namespace.destroy
 
         expect(File.exist?(deleted_path_in_dir)).to be(false)
-      end
-
-      it 'removes the exports folder' do
-        expect(namespace).to receive(:remove_exports!)
-
-        namespace.destroy
       end
     end
   end
@@ -551,6 +560,17 @@ describe Namespace do
     let!(:project2) { create(:project_empty_repo, namespace: child) }
 
     it { expect(group.all_projects.to_a).to match_array([project2, project1]) }
+  end
+
+  describe '#all_pipelines' do
+    let(:group) { create(:group) }
+    let(:child) { create(:group, parent: group) }
+    let!(:project1) { create(:project_empty_repo, namespace: group) }
+    let!(:project2) { create(:project_empty_repo, namespace: child) }
+    let!(:pipeline1) { create(:ci_empty_pipeline, project: project1) }
+    let!(:pipeline2) { create(:ci_empty_pipeline, project: project2) }
+
+    it { expect(group.all_pipelines.to_a).to match_array([pipeline1, pipeline2]) }
   end
 
   describe '#share_with_group_lock with subgroups', :nested_groups do
@@ -703,26 +723,6 @@ describe Namespace do
       expect(nested_group.root_ancestor).to eq(root_group)
       expect(deep_nested_group.root_ancestor).to eq(root_group)
       expect(very_deep_nested_group.root_ancestor).to eq(root_group)
-    end
-  end
-
-  describe '#remove_exports' do
-    let(:legacy_project) { create(:project, :with_export, :legacy_storage, namespace: namespace) }
-    let(:hashed_project) { create(:project, :with_export, namespace: namespace) }
-    let(:export_path) { Dir.mktmpdir('namespace_remove_exports_spec') }
-    let(:legacy_export) { legacy_project.export_project_path }
-    let(:hashed_export) { hashed_project.export_project_path }
-
-    it 'removes exports for legacy and hashed projects' do
-      allow(Gitlab::ImportExport).to receive(:storage_path) { export_path }
-
-      expect(File.exist?(legacy_export)).to be_truthy
-      expect(File.exist?(hashed_export)).to be_truthy
-
-      namespace.remove_exports!
-
-      expect(File.exist?(legacy_export)).to be_falsy
-      expect(File.exist?(hashed_export)).to be_falsy
     end
   end
 

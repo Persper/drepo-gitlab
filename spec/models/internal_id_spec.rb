@@ -30,7 +30,7 @@ describe InternalId do
 
       context 'with existing issues' do
         before do
-          rand(1..10).times { create(:issue, project: project) }
+          create_list(:issue, 2, project: project)
           described_class.delete_all
         end
 
@@ -54,7 +54,7 @@ describe InternalId do
     end
 
     it 'generates a strictly monotone, gapless sequence' do
-      seq = (0..rand(100)).map do
+      seq = Array.new(10).map do
         described_class.generate_next(issue, scope, usage, init)
       end
       normalized = seq.map { |i| i - seq.min }
@@ -65,7 +65,8 @@ describe InternalId do
     context 'with an insufficient schema version' do
       before do
         described_class.reset_column_information
-        expect(ActiveRecord::Migrator).to receive(:current_version).and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
+        # Project factory will also call the current_version
+        expect(ActiveRecord::Migrator).to receive(:current_version).twice.and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
       end
 
       let(:init) { double('block') }

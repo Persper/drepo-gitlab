@@ -57,7 +57,19 @@ describe MergeRequests::ReloadDiffsService, :use_clean_rails_memory_store_cachin
         expect(Rails.cache).to receive(:delete).with(old_cache_key).and_call_original
         expect(Rails.cache).to receive(:read).with(new_cache_key).and_call_original
         expect(Rails.cache).to receive(:write).with(new_cache_key, anything, anything).and_call_original
+
         subject.execute
+      end
+
+      it 'avoids N+1 queries', :request_store do
+        current_user
+        merge_request
+
+        control_count = ActiveRecord::QueryRecorder.new do
+          subject.execute
+        end.count
+
+        expect { subject.execute }.not_to exceed_query_limit(control_count)
       end
     end
   end

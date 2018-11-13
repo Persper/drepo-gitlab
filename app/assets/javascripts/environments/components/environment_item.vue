@@ -1,9 +1,10 @@
 <script>
 import Timeago from 'timeago.js';
 import _ from 'underscore';
-import tooltip from '~/vue_shared/directives/tooltip';
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { humanize } from '~/lib/utils/text_utility';
+import Icon from '~/vue_shared/components/icon.vue';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
 import StopComponent from './environment_stop.vue';
@@ -12,9 +13,10 @@ import TerminalButtonComponent from './environment_terminal_button.vue';
 import MonitoringButtonComponent from './environment_monitoring.vue';
 import CommitComponent from '../../vue_shared/components/commit.vue';
 import eventHub from '../event_hub';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 /**
- * Envrionment Item Component
+ * Environment Item Component
  *
  * Renders a table row for each environment.
  */
@@ -24,6 +26,7 @@ export default {
   components: {
     UserAvatarLink,
     CommitComponent,
+    Icon,
     ActionsComponent,
     ExternalUrlComponent,
     StopComponent,
@@ -33,7 +36,7 @@ export default {
   },
 
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
 
   props: {
@@ -58,7 +61,7 @@ export default {
 
   computed: {
     /**
-     * Verifies if `last_deployment` key exists in the current Envrionment.
+     * Verifies if `last_deployment` key exists in the current Environment.
      * This key is required to render most of the html - this method works has
      * an helper.
      *
@@ -69,21 +72,6 @@ export default {
         return true;
       }
       return false;
-    },
-
-    /**
-     * Verifies is the given environment has manual actions.
-     * Used to verify if we should render them or nor.
-     *
-     * @returns {Boolean|Undefined}
-     */
-    hasManualActions() {
-      return (
-        this.model &&
-        this.model.last_deployment &&
-        this.model.last_deployment.manual_actions &&
-        this.model.last_deployment.manual_actions.length > 0
-      );
     },
 
     /**
@@ -152,23 +140,20 @@ export default {
       return '';
     },
 
-    /**
-     * Returns the manual actions with the name parsed.
-     *
-     * @returns {Array.<Object>|Undefined}
-     */
-    manualActions() {
-      if (this.hasManualActions) {
-        return this.model.last_deployment.manual_actions.map(action => {
-          const parsedAction = {
-            name: humanize(action.name),
-            play_path: action.play_path,
-            playable: action.playable,
-          };
-          return parsedAction;
-        });
+    actions() {
+      if (!this.model || !this.model.last_deployment || !this.canCreateDeployment) {
+        return [];
       }
-      return [];
+
+      const { manualActions, scheduledActions } = convertObjectPropsToCamelCase(
+        this.model.last_deployment,
+        { deep: true },
+      );
+      const combinedActions = (manualActions || []).concat(scheduledActions || []);
+      return combinedActions.map(action => ({
+        ...action,
+        name: humanize(action.name),
+      }));
     },
 
     /**
@@ -441,12 +426,16 @@ export default {
 
     displayEnvironmentActions() {
       return (
-        this.hasManualActions ||
+        this.actions.length > 0 ||
         this.externalURL ||
         this.monitoringUrl ||
         this.canStopEnvironment ||
         this.canRetry
       );
+    },
+
+    folderIconName() {
+      return this.model.isOpen ? 'chevron-down' : 'chevron-right';
     },
   },
 
@@ -466,7 +455,9 @@ export default {
     class="gl-responsive-table-row"
     role="row">
     <div
-      class="table-section section-wrap section-15"
+      v-gl-tooltip
+      :title="model.name"
+      class="table-section section-wrap section-15 text-truncate"
       role="gridcell"
     >
       <div
@@ -480,9 +471,8 @@ export default {
         v-if="!model.isFolder"
         class="environment-name table-mobile-content">
         <a
-          v-tooltip
+          class="qa-environment-link"
           :href="environmentPath"
-          :title="model.name"
         >
           {{ model.name }}
         </a>
@@ -493,27 +483,15 @@ export default {
         role="button"
         @click="onClickFolder">
 
-        <span class="folder-icon">
-          <i
-            v-show="model.isOpen"
-            class="fa fa-caret-down"
-            aria-hidden="true"
-          >
-          </i>
-          <i
-            v-show="!model.isOpen"
-            class="fa fa-caret-right"
-            aria-hidden="true"
-          >
-          </i>
-        </span>
+        <icon
+          :name="folderIconName"
+          class="folder-icon"
+        />
 
-        <span class="folder-icon">
-          <i
-            class="fa fa-folder"
-            aria-hidden="true">
-          </i>
-        </span>
+        <icon
+          name="folder"
+          class="folder-icon"
+        />
 
         <span>
           {{ model.folderName }}
@@ -624,8 +602,8 @@ export default {
         />
 
         <actions-component
-          v-if="hasManualActions && canCreateDeployment"
-          :actions="manualActions"
+          v-if="actions.length > 0"
+          :actions="actions"
         />
 
         <terminal-button-component

@@ -34,7 +34,7 @@ Some of the predefined environment variables are available only if a minimum
 version of [GitLab Runner][runner] is used. Consult the table below to find the
 version of Runner required.
 
->**Note:**
+NOTE: **Note:**
 Starting with GitLab 9.0, we have deprecated some variables. Read the
 [9.0 Renaming](#9-0-renaming) section to find out their replacements. **You are
 strongly advised to use the new variables as we will remove the old ones in
@@ -65,6 +65,8 @@ future GitLab releases.**
 | **CI_JOB_NAME**                 | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
 | **CI_JOB_STAGE**                | 9.0    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
 | **CI_JOB_TOKEN**                | 9.0    | 1.2    | Token used for authenticating with the [GitLab Container Registry][registry] and downloading [dependent repositories][dependent-repositories] |
+| **CI_NODE_INDEX**               | 11.5   | all    | Index of the job in the job set. If the job is not parallelized, this variable is not set. |
+| **CI_NODE_TOTAL**               | 11.5   | all    | Total number of instances of this job running in parallel. If the job is not parallelized, this variable is set to `1`. |
 | **CI_JOB_URL**                  | 11.1   | 0.5    | Job details URL |
 | **CI_REPOSITORY_URL**           | 9.0    | all    | The URL to clone the Git repository |
 | **CI_RUNNER_DESCRIPTION**       | 8.10   | 0.5    | The description of the runner as saved in GitLab |
@@ -94,6 +96,9 @@ future GitLab releases.**
 | **CI_SERVER_NAME**              | all    | all    | The name of CI server that is used to coordinate jobs |
 | **CI_SERVER_REVISION**          | all    | all    | GitLab revision that is used to schedule jobs |
 | **CI_SERVER_VERSION**           | all    | all    | GitLab version that is used to schedule jobs |
+| **CI_SERVER_VERSION_MAJOR**     | 11.4   | all    | GitLab version major component |
+| **CI_SERVER_VERSION_MINOR**     | 11.4   | all    | GitLab version minor component |
+| **CI_SERVER_VERSION_PATCH**     | 11.4   | all    | GitLab version patch component |
 | **CI_SHARED_ENVIRONMENT**       | all    | 10.1   | Marks that the job is executed in a shared environment (something that is persisted across CI invocations like `shell` or `ssh` executor). If the environment is shared, it is set to true, otherwise it is not defined at all. |
 | **GET_SOURCES_ATTEMPTS**        | 8.15   | 1.9    | Number of attempts to fetch sources running a job |
 | **GITLAB_CI**                   | all    | all    | Mark that job is executed in GitLab CI environment |
@@ -109,7 +114,7 @@ To follow conventions of naming across GitLab, and to further move away from the
 `build` term and toward `job` CI variables have been renamed for the 9.0
 release.
 
->**Note:**
+NOTE: **Note:**
 Starting with GitLab 9.0, we have deprecated the `$CI_BUILD_*` variables. **You are
 strongly advised to use the new variables as we will remove the old ones in
 future GitLab releases.**
@@ -131,7 +136,7 @@ future GitLab releases.**
 
 ## `.gitlab-ci.yml` defined variables
 
->**Note:**
+NOTE **Note:**
 This feature requires GitLab Runner 0.5.0 or higher and GitLab CI 7.14 or higher.
 
 GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in the
@@ -194,7 +199,7 @@ Likewise, group-level variables can be added by going to your group's
 **Settings > CI/CD**, then finding the section called **Variables**.
 Any variables of [subgroups] will be inherited recursively.
 
-![Variables](img/secret_variables.png)
+![Variables](img/variables.png)
 
 Once you set them, they will be available for all subsequent pipelines. You can also
 [protect your variables](#protected-variables).
@@ -215,9 +220,15 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
+### Manually-specified variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/44059) in GitLab 10.8.
+
+Variables can be specified for a single pipeline run when a [manual pipeline](../pipelines.md#manually-executing-pipelines) is created.
+
 ## Deployment variables
 
->**Note:**
+NOTE: **Note:**
 This feature requires GitLab CI 8.15 or higher.
 
 [Project services](../../user/project/integrations/project_services.md) that are
@@ -317,6 +328,12 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI_SERVER_NAME='GitLab CI'
 ++ export CI_SERVER_VERSION=
 ++ CI_SERVER_VERSION=
+++ export CI_SERVER_VERSION_MAJOR=
+++ CI_SERVER_VERSION_MAJOR=
+++ export CI_SERVER_VERSION_MINOR=
+++ CI_SERVER_VERSION_MINOR=
+++ export CI_SERVER_VERSION_PATCH=
+++ CI_SERVER_VERSION_PATCH=
 ++ export CI_SERVER_REVISION=
 ++ CI_SERVER_REVISION=
 ++ export GITLAB_CI=true
@@ -462,6 +479,9 @@ export CI_SERVER="yes"
 export CI_SERVER_NAME="GitLab"
 export CI_SERVER_REVISION="70606bf"
 export CI_SERVER_VERSION="8.9.0"
+export CI_SERVER_VERSION_MAJOR="8"
+export CI_SERVER_VERSION_MINOR="9"
+export CI_SERVER_VERSION_PATCH="0"
 export GITLAB_USER_ID="42"
 export GITLAB_USER_EMAIL="user@example.com"
 export CI_REGISTRY_USER="gitlab-ci-token"

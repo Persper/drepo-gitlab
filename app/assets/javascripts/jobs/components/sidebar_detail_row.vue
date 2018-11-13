@@ -1,31 +1,36 @@
 <script>
-  export default {
-    name: 'SidebarDetailRow',
-    props: {
-      title: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      value: {
-        type: String,
-        required: true,
-      },
-      helpUrl: {
-        type: String,
-        required: false,
-        default: '',
-      },
+import { GlLink } from '@gitlab-org/gitlab-ui';
+
+export default {
+  name: 'SidebarDetailRow',
+  components: {
+    GlLink,
+  },
+  props: {
+    title: {
+      type: String,
+      required: false,
+      default: '',
     },
-    computed: {
-      hasTitle() {
-        return this.title.length > 0;
-      },
-      hasHelpURL() {
-        return this.helpUrl.length > 0;
-      },
+    value: {
+      type: String,
+      required: true,
     },
-  };
+    helpUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    hasTitle() {
+      return this.title.length > 0;
+    },
+    hasHelpURL() {
+      return this.helpUrl.length > 0;
+    },
+  },
+};
 </script>
 <template>
   <p class="build-detail-row">
@@ -41,7 +46,7 @@
       v-if="hasHelpURL"
       class="help-button float-right"
     >
-      <a
+      <gl-link
         :href="helpUrl"
         target="_blank"
         rel="noopener noreferrer nofollow"
@@ -50,7 +55,7 @@
           class="fa fa-question-circle"
           aria-hidden="true"
         ></i>
-      </a>
+      </gl-link>
     </span>
   </p>
 </template>

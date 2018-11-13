@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::IssuesController < Projects::ApplicationController
   include RendersNotes
   include ToggleSubscriptionAction
@@ -7,12 +9,25 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuesCalendar
   include SpammableActions
 
-  prepend_before_action :authenticate_user!, only: [:new]
+  def self.authenticate_user_only_actions
+    %i[new]
+  end
+
+  def self.issue_except_actions
+    %i[index calendar new create bulk_update]
+  end
+
+  def self.set_issuables_index_only_actions
+    %i[index calendar]
+  end
+
+  prepend_before_action :authenticate_user!, only: authenticate_user_only_actions
 
   before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
-  before_action :issue, except: [:index, :calendar, :new, :create, :bulk_update]
-  before_action :set_issuables_index, only: [:index, :calendar]
+  before_action :issue, except: issue_except_actions
+
+  before_action :set_issuables_index, only: set_issuables_index_only_actions
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -113,7 +128,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def referenced_merge_requests
-    @merge_requests, @closed_by_merge_requests = ::Issues::FetchReferencedMergeRequestsService.new(project, current_user).execute(issue)
+    @merge_requests, @closed_by_merge_requests = ::Issues::ReferencedMergeRequestsService.new(project, current_user).execute(issue)
 
     respond_to do |format|
       format.json do
@@ -125,7 +140,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def related_branches
-    @related_branches = @issue.related_branches(current_user)
+    @related_branches = Issues::RelatedBranchesService.new(project, current_user).execute(issue)
 
     respond_to do |format|
       format.json do
@@ -161,6 +176,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def issue
     return @issue if defined?(@issue)
 
@@ -172,6 +188,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     @issue
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue

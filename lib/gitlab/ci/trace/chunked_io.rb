@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # This class is compatible with IO class (https://ruby-doc.org/core-2.3.1/IO.html)
 # source: https://gitlab.com/snippets/1685610
@@ -66,8 +68,8 @@ module Gitlab
           end
         end
 
-        def read(length = nil, outbuf = "")
-          out = ""
+        def read(length = nil, outbuf = nil)
+          out = []
 
           length ||= size - tell
 
@@ -83,17 +85,18 @@ module Gitlab
             length -= chunk_data.bytesize
           end
 
+          out = out.join
+
           # If outbuf is passed, we put the output into the buffer. This supports IO.copy_stream functionality
           if outbuf
-            outbuf.slice!(0, outbuf.bytesize)
-            outbuf << out
+            outbuf.replace(out)
           end
 
           out
         end
 
         def readline
-          out = ""
+          out = []
 
           until eof?
             data = chunk_slice_from_offset
@@ -109,7 +112,7 @@ module Gitlab
             end
           end
 
-          out
+          out.join
         end
 
         def write(data)
@@ -133,6 +136,7 @@ module Gitlab
           invalidate_chunk_cache
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def truncate(offset)
           raise ArgumentError, 'Outside of file' if offset > size || offset < 0
           return if offset == size # Skip the following process as it doesn't affect anything
@@ -148,6 +152,7 @@ module Gitlab
         ensure
           invalidate_chunk_cache
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def flush
           # no-op
@@ -206,9 +211,11 @@ module Gitlab
           @chunks_cache = []
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def current_chunk
           @chunks_cache[chunk_index] ||= trace_chunks.find_by(chunk_index: chunk_index)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def build_chunk
           @chunks_cache[chunk_index] = ::Ci::BuildTraceChunk.new(build: build, chunk_index: chunk_index)
@@ -218,13 +225,17 @@ module Gitlab
           current_chunk || build_chunk
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def trace_chunks
           ::Ci::BuildTraceChunk.where(build: build)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def calculate_size
           trace_chunks.order(chunk_index: :desc).first.try(&:end_offset).to_i
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

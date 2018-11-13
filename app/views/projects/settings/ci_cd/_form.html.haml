@@ -3,21 +3,11 @@
     = form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings') do |f|
       = form_errors(@project)
       %fieldset.builds-feature
-        .form-group.append-bottom-default.js-secret-runner-token
-          = f.label :runners_token, _("Runner token"), class: 'label-bold'
-          .form-control.js-secret-value-placeholder
-            = '*' * 20
-          = f.text_field :runners_token, class: "form-control hide js-secret-value", placeholder: 'xEeFCaDAB89'
-          %p.form-text.text-muted= _("The secure token used by the Runner to checkout the project")
-          %button.btn.btn-info.prepend-top-10.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: 'false' } }
-            = _('Reveal value')
-
-        %hr
         .form-group
           %h5.prepend-top-0
             = _("Git strategy for pipelines")
           %p
-            = _("Choose between <code>clone</code> or <code>fetch</code> to get the recent application code")
+            = _("Choose between <code>clone</code> or <code>fetch</code> to get the recent application code").html_safe
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'git-strategy'), target: '_blank'
           .form-check
             = f.radio_button :build_allow_git_fetch, 'false', { class: 'form-check-input' }
@@ -47,7 +37,7 @@
           = f.label :ci_config_path, _('Custom CI config path'), class: 'label-bold'
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.form-text.text-muted
-            = _("The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>")
+            = _("The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>").html_safe
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-path'), target: '_blank'
 
         %hr
@@ -101,7 +91,7 @@
                 %code \(\d+.\d+\%\) covered
               %li
                 pytest-cov (Python) -
-                %code \d+\%\s*$
+                %code ^TOTAL\s+\d+\s+\d+\s+(\d+\%)$
               %li
                 phpunit --coverage-text --colors=never (PHP) -
                 %code ^\s*Lines:\s*\d+.\d+\%
@@ -121,7 +111,7 @@
                 go test -cover (Go)
                 %code coverage: \d+.\d+% of statements
 
-        = f.submit _('Save changes'), class: "btn btn-save"
+        = f.submit _('Save changes'), class: "btn btn-success"
 
 %hr
 

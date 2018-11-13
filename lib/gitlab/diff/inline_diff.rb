@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Diff
     class InlineDiff
@@ -67,10 +69,11 @@ module Gitlab
         private
 
         # Finds pairs of old/new line pairs that represent the same line that changed
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_changed_line_pairs(lines)
           # Prefixes of all diff lines, indicating their types
           # For example: `" - +  -+  ---+++ --+  -++"`
-          line_prefixes = lines.each_with_object("") { |line, s| s << (line[0] || ' ') }.gsub(/[^ +-]/, ' ')
+          line_prefixes = lines.each_with_object(+"") { |line, s| s << (line[0] || ' ') }.gsub(/[^ +-]/, ' ')
 
           changed_line_pairs = []
           line_prefixes.scan(LINE_PAIRS_PATTERN) do
@@ -89,6 +92,7 @@ module Gitlab
 
           changed_line_pairs
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
 
       private

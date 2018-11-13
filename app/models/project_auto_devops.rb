@@ -5,7 +5,8 @@ class ProjectAutoDevops < ActiveRecord::Base
 
   enum deploy_strategy: {
     continuous: 0,
-    manual: 1
+    manual: 1,
+    timed_incremental: 2
   }
 
   scope :enabled, -> { where(enabled: true) }
@@ -30,10 +31,7 @@ class ProjectAutoDevops < ActiveRecord::Base
                          value: domain.presence || instance_domain)
       end
 
-      if manual?
-        variables.append(key: 'STAGING_ENABLED', value: '1')
-        variables.append(key: 'INCREMENTAL_ROLLOUT_ENABLED', value: '1')
-      end
+      variables.concat(deployment_strategy_default_variables)
     end
   end
 
@@ -47,12 +45,20 @@ class ProjectAutoDevops < ActiveRecord::Base
   end
 
   def needs_to_create_deploy_token?
-    auto_devops_enabled? &&
+    project.auto_devops_enabled? &&
       !project.public? &&
       !project.deploy_tokens.find_by(name: DeployToken::GITLAB_DEPLOY_TOKEN_NAME).present?
   end
 
-  def auto_devops_enabled?
-    Gitlab::CurrentSettings.auto_devops_enabled? || enabled?
+  def deployment_strategy_default_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      if manual?
+        variables.append(key: 'STAGING_ENABLED', value: '1')
+        variables.append(key: 'INCREMENTAL_ROLLOUT_ENABLED', value: '1') # deprecated
+        variables.append(key: 'INCREMENTAL_ROLLOUT_MODE', value: 'manual')
+      elsif timed_incremental?
+        variables.append(key: 'INCREMENTAL_ROLLOUT_MODE', value: 'timed')
+      end
+    end
   end
 end

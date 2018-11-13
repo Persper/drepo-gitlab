@@ -64,6 +64,7 @@ describe ProjectPolicy do
     %i[
       change_namespace change_visibility_level rename_project remove_project
       archive_project remove_fork_project destroy_merge_request destroy_issue
+      set_issue_iid set_issue_created_at set_note_created_at
     ]
   end
 
@@ -162,7 +163,7 @@ describe ProjectPolicy do
         :create_build, :read_build, :update_build, :admin_build, :destroy_build,
         :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
         :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
-        :create_cluster, :read_cluster, :update_cluster, :admin_cluster, :destroy_cluster,
+        :create_cluster, :read_cluster, :update_cluster, :admin_cluster,
         :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment
       ]
 
@@ -181,7 +182,7 @@ describe ProjectPolicy do
         :create_build, :read_build, :update_build, :admin_build, :destroy_build,
         :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
         :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
-        :create_cluster, :read_cluster, :update_cluster, :admin_cluster, :destroy_cluster,
+        :create_cluster, :read_cluster, :update_cluster, :admin_cluster,
         :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment
       ]
 

@@ -1,14 +1,14 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'Badge',
   components: {
     Icon,
-    LoadingIcon,
     Tooltip,
+    GlLoadingIcon,
   },
   directives: {
     Tooltip,
@@ -80,7 +80,7 @@ export default {
       />
     </a>
 
-    <loading-icon
+    <gl-loading-icon
       v-show="isLoading"
       :inline="true"
     />
@@ -105,8 +105,8 @@ export default {
     </div>
 
     <button
-      v-tooltip
       v-show="hasError"
+      v-tooltip
       :title="s__('Badges|Reload badge image')"
       class="btn btn-transparent btn-sm text-primary"
       type="button"

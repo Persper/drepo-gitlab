@@ -46,6 +46,9 @@ class Milestone < ActiveRecord::Base
     where(conditions.reduce(:or))
   end
 
+  scope :order_by_name_asc, -> { order(Arel::Nodes::Ascending.new(arel_table[:title].lower)) }
+  scope :reorder_by_due_date_asc, -> { reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
+
   validates :group, presence: true, unless: :project
   validates :project, presence: true, unless: :group
 
@@ -142,14 +145,14 @@ class Milestone < ActiveRecord::Base
   end
 
   def participants
-    User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).uniq
+    User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).distinct
   end
 
   def self.sort_by_attribute(method)
     sorted =
       case method.to_s
       when 'due_date_asc'
-        reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))
+        reorder_by_due_date_asc
       when 'due_date_desc'
         reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
       when 'name_asc'
@@ -165,6 +168,22 @@ class Milestone < ActiveRecord::Base
       end
 
     sorted.with_order_id_desc
+  end
+
+  def self.states_count(projects, groups = nil)
+    return STATE_COUNT_HASH unless projects || groups
+
+    counts = Milestone
+               .for_projects_and_groups(projects&.map(&:id), groups&.map(&:id))
+               .reorder(nil)
+               .group(:state)
+               .count
+
+    {
+        opened: counts['active'] || 0,
+        closed: counts['closed'] || 0,
+        all: counts.values.sum
+    }
   end
 
   ##

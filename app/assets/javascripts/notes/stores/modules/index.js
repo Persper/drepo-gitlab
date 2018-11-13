@@ -2,7 +2,7 @@ import * as actions from '../actions';
 import * as getters from '../getters';
 import mutations from '../mutations';
 
-export default {
+export default () => ({
   state: {
     discussions: [],
     targetNoteHash: null,
@@ -11,6 +11,7 @@ export default {
     // View layer
     isToggleStateButtonLoading: false,
     isNotesFetched: false,
+    isLoading: true,
 
     // holds endpoints and permissions provided through haml
     notesData: {
@@ -20,8 +21,9 @@ export default {
     noteableData: {
       current_user: {},
     },
+    commentsDisabled: false,
   },
   actions,
   getters,
   mutations,
-};
+});

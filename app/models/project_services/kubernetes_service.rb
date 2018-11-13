@@ -96,15 +96,20 @@ class KubernetesService < DeploymentService
 
   # Check we can connect to the Kubernetes API
   def test(*args)
-    kubeclient = build_kubeclient!
+    kubeclient = build_kube_client!
 
-    kubeclient.discover
-    { success: kubeclient.discovered, result: "Checked API discovery endpoint" }
+    kubeclient.core_client.discover
+    { success: kubeclient.core_client.discovered, result: "Checked API discovery endpoint" }
   rescue => err
     { success: false, result: err }
   end
 
-  def predefined_variables
+  # Project param was added on
+  # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22011,
+  # as a way to keep this service compatible with
+  # Clusters::Platforms::Kubernetes, it won't be used on this method
+  # as it's only needed for Clusters::Cluster.
+  def predefined_variables(project:)
     config = YAML.dump(kubeconfig)
 
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
@@ -144,7 +149,7 @@ class KubernetesService < DeploymentService
   end
 
   def kubeclient
-    @kubeclient ||= build_kubeclient!
+    @kubeclient ||= build_kube_client!
   end
 
   def deprecated?
@@ -182,12 +187,11 @@ class KubernetesService < DeploymentService
     slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
   end
 
-  def build_kubeclient!(api_path: 'api', api_version: 'v1')
+  def build_kube_client!
     raise "Incomplete settings" unless api_url && actual_namespace && token
 
-    ::Kubeclient::Client.new(
-      join_api_url(api_path),
-      api_version,
+    Gitlab::Kubernetes::KubeClient.new(
+      api_url,
       auth_options: kubeclient_auth_options,
       ssl_options: kubeclient_ssl_options,
       http_proxy_uri: ENV['http_proxy']
@@ -196,7 +200,7 @@ class KubernetesService < DeploymentService
 
   # Returns a hash of all pods in the namespace
   def read_pods
-    kubeclient = build_kubeclient!
+    kubeclient = build_kube_client!
 
     kubeclient.get_pods(namespace: actual_namespace).as_json
   rescue Kubeclient::HttpError => err
@@ -218,15 +222,6 @@ class KubernetesService < DeploymentService
 
   def kubeclient_auth_options
     { bearer_token: token }
-  end
-
-  def join_api_url(api_path)
-    url = URI.parse(api_url)
-    prefix = url.path.sub(%r{/+\z}, '')
-
-    url.path = [prefix, api_path].join("/")
-
-    url.to_s
   end
 
   def terminal_auth

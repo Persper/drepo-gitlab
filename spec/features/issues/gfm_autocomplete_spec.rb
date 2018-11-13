@@ -5,6 +5,7 @@ describe 'GFM autocomplete', :js do
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }
   let(:issue)   { create(:issue, project: project) }
+  let!(:project_snippet) { create(:project_snippet, project: project, title: 'code snippet') }
 
   before do
     project.add_maintainer(user)
@@ -14,7 +15,7 @@ describe 'GFM autocomplete', :js do
     wait_for_requests
   end
 
-  it 'updates issue descripton with GFM reference' do
+  it 'updates issue description with GFM reference' do
     find('.js-issuable-edit').click
 
     simulate_input('#issue-description', "@#{user.name[0...3]}")
@@ -32,6 +33,21 @@ describe 'GFM autocomplete', :js do
     end
 
     expect(page).to have_selector('.atwho-container')
+  end
+
+  it 'opens autocomplete menu when field starts with text with item escaping HTML characters' do
+    alert_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
+    create(:issue, project: project, title: alert_title)
+
+    page.within '.timeline-content-form' do
+      find('#note-body').native.send_keys('#')
+    end
+
+    expect(page).to have_selector('.atwho-container')
+
+    page.within '.atwho-container #at-view-issues' do
+      expect(page.all('li').first.text).to include(alert_title)
+    end
   end
 
   it 'doesnt open autocomplete menu character is prefixed with text' do
@@ -298,6 +314,16 @@ describe 'GFM autocomplete', :js do
         type(note, '/unlabel ~')
         expect_labels(shown: [backend, bug, feature_proposal])
       end
+    end
+  end
+
+  it 'shows project snippets' do
+    page.within '.timeline-content-form' do
+      find('#note-body').native.send_keys('$')
+    end
+
+    page.within '.atwho-container' do
+      expect(page).to have_content(project_snippet.title)
     end
   end
 

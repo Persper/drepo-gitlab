@@ -10,6 +10,8 @@ class Namespace < ActiveRecord::Base
   include Storage::LegacyNamespace
   include Gitlab::SQL::Pattern
   include IgnorableColumn
+  include FeatureGate
+  include FromUnion
 
   ignore_column :deleted_at
 
@@ -81,7 +83,7 @@ class Namespace < ActiveRecord::Base
       find_by('lower(path) = :value', value: path.downcase)
     end
 
-    # Case insensetive search for namespace by path or name
+    # Case insensitive search for namespace by path or name
     def find_by_path_or_name(path)
       find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
     end
@@ -124,7 +126,6 @@ class Namespace < ActiveRecord::Base
   def to_param
     full_path
   end
-  alias_method :flipper_id, :to_param
 
   def human_name
     owner_name
@@ -132,6 +133,10 @@ class Namespace < ActiveRecord::Base
 
   def any_project_has_container_registry_tags?
     all_projects.any?(&:has_container_registry_tags?)
+  end
+
+  def first_project_with_container_registry_tags
+    all_projects.find(&:has_container_registry_tags?)
   end
 
   def send_update_instructions
@@ -147,8 +152,8 @@ class Namespace < ActiveRecord::Base
   def find_fork_of(project)
     return nil unless project.fork_network
 
-    if RequestStore.active?
-      forks_in_namespace = RequestStore.fetch("namespaces:#{id}:forked_projects") do
+    if Gitlab::SafeRequestStore.active?
+      forks_in_namespace = Gitlab::SafeRequestStore.fetch("namespaces:#{id}:forked_projects") do
         Hash.new do |found_forks, project|
           found_forks[project] = project.fork_network.find_forks_in(projects).first
         end
@@ -227,6 +232,12 @@ class Namespace < ActiveRecord::Base
     Project.inside_path(full_path)
   end
 
+  # Includes pipelines from this namespace and pipelines from all subgroups
+  # that belongs to this namespace
+  def all_pipelines
+    Ci::Pipeline.where(project: all_projects)
+  end
+
   def has_parent?
     parent.present?
   end
@@ -251,18 +262,6 @@ class Namespace < ActiveRecord::Base
       previous_parent = Group.find_by(id: parent_id_was)
       previous_parent.full_path + '/' + path_was
     end
-  end
-
-  # Exports belonging to projects with legacy storage are placed in a common
-  # subdirectory of the namespace, so a simple `rm -rf` is sufficient to remove
-  # them.
-  #
-  # Exports of projects using hashed storage are placed in a location defined
-  # only by the project ID, so each must be removed individually.
-  def remove_exports!
-    remove_legacy_exports!
-
-    all_projects.with_storage_feature(:repository).find_each(&:remove_exports)
   end
 
   def refresh_project_authorizations

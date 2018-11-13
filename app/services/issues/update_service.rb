@@ -48,6 +48,8 @@ module Issues
         notification_service.async.relabeled_issue(issue, added_labels, current_user)
       end
 
+      handle_milestone_change(issue)
+
       added_mentions = issue.mentioned_users - old_mentioned_users
 
       if added_mentions.present?
@@ -67,6 +69,7 @@ module Issues
       issue.move_between(issue_before, issue_after)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def change_issue_duplicate(issue)
       canonical_issue_id = params.delete(:canonical_issue_id)
       canonical_issue = IssuesFinder.new(current_user).find_by(id: canonical_issue_id)
@@ -75,6 +78,7 @@ module Issues
         Issues::DuplicateService.new(project, current_user).execute(issue, canonical_issue)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def move_issue_to_new_project(issue)
       target_project = params.delete(:target_project)
@@ -89,6 +93,19 @@ module Issues
 
     private
 
+    def handle_milestone_change(issue)
+      return if skip_milestone_email
+
+      return unless issue.previous_changes.include?('milestone_id')
+
+      if issue.milestone.nil?
+        notification_service.async.removed_milestone_issue(issue, current_user)
+      else
+        notification_service.async.changed_milestone_issue(issue, issue.milestone, current_user)
+      end
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
     def get_issue_if_allowed(id, board_group_id = nil)
       return unless id
 
@@ -101,6 +118,7 @@ module Issues
 
       issue if can?(current_user, :update_issue, issue)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def create_confidentiality_note(issue)
       SystemNoteService.change_issue_confidentiality(issue, issue.project, current_user)

@@ -1,10 +1,10 @@
 <script>
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import eventHub from '../eventhub';
 
 export default {
   components: {
-    loadingIcon,
+    GlLoadingIcon,
   },
   props: {
     deployKey: {
@@ -45,7 +45,7 @@ export default {
     class="btn"
     @click="doAction">
     <slot></slot>
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
       :inline="true"
     />

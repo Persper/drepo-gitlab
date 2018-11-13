@@ -230,7 +230,7 @@ describe Projects::CommitController do
             id: master_pickable_commit.id)
 
         expect(response).to redirect_to project_commits_path(project, 'master')
-        expect(flash[:notice]).to eq('The commit has been successfully cherry-picked.')
+        expect(flash[:notice]).to eq('The commit has been successfully cherry-picked into master.')
       end
     end
 
@@ -356,6 +356,7 @@ describe Projects::CommitController do
             expect(response).to be_ok
             expect(JSON.parse(response.body)['pipelines']).not_to be_empty
             expect(JSON.parse(response.body)['count']['all']).to eq 1
+            expect(response).to include_pagination_headers
           end
         end
       end

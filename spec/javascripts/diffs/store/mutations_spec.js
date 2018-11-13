@@ -1,6 +1,8 @@
+import createState from '~/diffs/store/modules/diff_state';
 import mutations from '~/diffs/store/mutations';
 import * as types from '~/diffs/store/mutation_types';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
+import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffsStoreMutations', () => {
   describe('SET_BASE_CONFIG', () => {
@@ -10,6 +12,7 @@ describe('DiffsStoreMutations', () => {
       const projectPath = '/root/project';
 
       mutations[types.SET_BASE_CONFIG](state, { endpoint, projectPath });
+
       expect(state.endpoint).toEqual(endpoint);
       expect(state.projectPath).toEqual(projectPath);
     });
@@ -20,7 +23,25 @@ describe('DiffsStoreMutations', () => {
       const state = {};
 
       mutations[types.SET_LOADING](state, false);
+
       expect(state.isLoading).toEqual(false);
+    });
+  });
+
+  describe('SET_DIFF_DATA', () => {
+    it('should set diff data type properly', () => {
+      const state = {};
+      const diffMock = {
+        diff_files: [diffFileMockData],
+      };
+
+      mutations[types.SET_DIFF_DATA](state, diffMock);
+
+      const firstLine = state.diffFiles[0].parallelDiffLines[0];
+
+      expect(firstLine.right.text).toBeUndefined();
+      expect(state.diffFiles[0].renderIt).toEqual(true);
+      expect(state.diffFiles[0].collapsed).toEqual(false);
     });
   });
 
@@ -29,6 +50,7 @@ describe('DiffsStoreMutations', () => {
       const state = {};
 
       mutations[types.SET_DIFF_VIEW_TYPE](state, INLINE_DIFF_VIEW_TYPE);
+
       expect(state.diffViewType).toEqual(INLINE_DIFF_VIEW_TYPE);
     });
   });
@@ -39,6 +61,7 @@ describe('DiffsStoreMutations', () => {
       const lineCode = 'FDE';
 
       mutations[types.ADD_COMMENT_FORM_LINE](state, { lineCode });
+
       expect(state.diffLineCommentForms[lineCode]).toBeTruthy();
     });
   });
@@ -49,9 +72,11 @@ describe('DiffsStoreMutations', () => {
       const lineCode = 'FDE';
 
       mutations[types.ADD_COMMENT_FORM_LINE](state, { lineCode });
+
       expect(state.diffLineCommentForms[lineCode]).toBeTruthy();
 
       mutations[types.REMOVE_COMMENT_FORM_LINE](state, { lineCode });
+
       expect(state.diffLineCommentForms[lineCode]).toBeUndefined();
     });
   });
@@ -64,6 +89,7 @@ describe('DiffsStoreMutations', () => {
       const state = { expandAllFiles: true, diffFiles: [diffFile] };
 
       mutations[types.EXPAND_ALL_FILES](state);
+
       expect(state.diffFiles[0].collapsed).toEqual(false);
     });
   });
@@ -99,11 +125,13 @@ describe('DiffsStoreMutations', () => {
         options.lineNumbers,
         options.params.bottom,
       );
+
       expect(lineRefSpy).toHaveBeenCalledWith(
         options.contextLines,
         options.lineNumbers,
         options.params.bottom,
       );
+
       expect(addContextLinesSpy).toHaveBeenCalledWith({
         inlineLines: diffFile.highlightedDiffLines,
         parallelLines: diffFile.parallelDiffLines,
@@ -120,15 +148,243 @@ describe('DiffsStoreMutations', () => {
 
       const fileHash = 123;
       const state = { diffFiles: [{}, { fileHash, existingField: 0 }] };
-      const file = { fileHash };
       const data = { diff_files: [{ file_hash: fileHash, extra_field: 1, existingField: 1 }] };
 
-      mutations[types.ADD_COLLAPSED_DIFFS](state, { file, data });
+      mutations[types.ADD_COLLAPSED_DIFFS](state, { file: state.diffFiles[1], data });
+
       expect(spy).toHaveBeenCalledWith(data, { deep: true });
 
       expect(state.diffFiles[1].fileHash).toEqual(fileHash);
       expect(state.diffFiles[1].existingField).toEqual(1);
       expect(state.diffFiles[1].extraField).toEqual(1);
+    });
+  });
+
+  describe('SET_LINE_DISCUSSIONS_FOR_FILE', () => {
+    it('should add discussions to the given line', () => {
+      const diffPosition = {
+        baseSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+        headSha: 'b921914f9a834ac47e6fd9420f78db0f83559130',
+        newLine: null,
+        newPath: '500-lines-4.txt',
+        oldLine: 5,
+        oldPath: '500-lines-4.txt',
+        startSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+      };
+
+      const state = {
+        latestDiff: true,
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1',
+                  discussions: [],
+                },
+                right: {
+                  lineCode: 'ABC_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1',
+                discussions: [],
+              },
+            ],
+          },
+        ],
+      };
+      const discussion = {
+        id: 1,
+        line_code: 'ABC_1',
+        diff_discussion: true,
+        resolvable: true,
+        original_position: diffPosition,
+        position: diffPosition,
+        diff_file: {
+          file_hash: state.diffFiles[0].fileHash,
+        },
+      };
+
+      const diffPositionByLineCode = {
+        ABC_1: diffPosition,
+      };
+
+      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+        discussion,
+        diffPositionByLineCode,
+      });
+
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(1);
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[0].id).toEqual(1);
+      expect(state.diffFiles[0].parallelDiffLines[0].right.discussions).toEqual([]);
+
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions[0].id).toEqual(1);
+    });
+
+    it('should add legacy discussions to the given line', () => {
+      const diffPosition = {
+        baseSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+        headSha: 'b921914f9a834ac47e6fd9420f78db0f83559130',
+        newLine: null,
+        newPath: '500-lines-4.txt',
+        oldLine: 5,
+        oldPath: '500-lines-4.txt',
+        startSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+        lineCode: 'ABC_1',
+      };
+
+      const state = {
+        latestDiff: true,
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1',
+                  discussions: [],
+                },
+                right: {
+                  lineCode: 'ABC_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1',
+                discussions: [],
+              },
+            ],
+          },
+        ],
+      };
+      const discussion = {
+        id: 1,
+        line_code: 'ABC_1',
+        diff_discussion: true,
+        active: true,
+        diff_file: {
+          file_hash: state.diffFiles[0].fileHash,
+        },
+      };
+
+      const diffPositionByLineCode = {
+        ABC_1: diffPosition,
+      };
+
+      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+        discussion,
+        diffPositionByLineCode,
+      });
+
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(1);
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[0].id).toEqual(1);
+
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions[0].id).toEqual(1);
+    });
+  });
+
+  describe('REMOVE_LINE_DISCUSSIONS', () => {
+    it('should remove the existing discussions on the given line', () => {
+      const state = {
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1',
+                  discussions: [
+                    {
+                      id: 1,
+                      line_code: 'ABC_1',
+                    },
+                    {
+                      id: 2,
+                      line_code: 'ABC_1',
+                    },
+                  ],
+                },
+                right: {
+                  lineCode: 'ABC_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1',
+                discussions: [
+                  {
+                    id: 1,
+                    line_code: 'ABC_1',
+                  },
+                  {
+                    id: 2,
+                    line_code: 'ABC_1',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      mutations[types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, {
+        fileHash: 'ABC',
+        lineCode: 'ABC_1',
+      });
+
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(0);
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(0);
+    });
+  });
+
+  describe('TOGGLE_FOLDER_OPEN', () => {
+    it('toggles entry opened prop', () => {
+      const state = {
+        treeEntries: {
+          path: {
+            opened: false,
+          },
+        },
+      };
+
+      mutations[types.TOGGLE_FOLDER_OPEN](state, 'path');
+
+      expect(state.treeEntries.path.opened).toBe(true);
+    });
+  });
+
+  describe('TOGGLE_SHOW_TREE_LIST', () => {
+    it('toggles showTreeList', () => {
+      const state = createState();
+
+      mutations[types.TOGGLE_SHOW_TREE_LIST](state);
+
+      expect(state.showTreeList).toBe(false, 'Failed to toggle showTreeList to false');
+
+      mutations[types.TOGGLE_SHOW_TREE_LIST](state);
+
+      expect(state.showTreeList).toBe(true, 'Failed to toggle showTreeList to true');
+    });
+  });
+
+  describe('UPDATE_CURRENT_DIFF_FILE_ID', () => {
+    it('updates currentDiffFileId', () => {
+      const state = createState();
+
+      mutations[types.UPDATE_CURRENT_DIFF_FILE_ID](state, 'somefileid');
+
+      expect(state.currentDiffFileId).toBe('somefileid');
     });
   });
 });

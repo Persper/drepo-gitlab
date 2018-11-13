@@ -3,24 +3,26 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import eventHub from '../../notes/event_hub';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import CompareVersions from './compare_versions.vue';
-import ChangedFiles from './changed_files.vue';
 import DiffFile from './diff_file.vue';
 import NoChanges from './no_changes.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
+import CommitWidget from './commit_widget.vue';
+import TreeList from './tree_list.vue';
 
 export default {
   name: 'DiffsApp',
   components: {
     Icon,
-    LoadingIcon,
     CompareVersions,
-    ChangedFiles,
     DiffFile,
     NoChanges,
     HiddenFilesWarning,
+    CommitWidget,
+    TreeList,
+    GlLoadingIcon,
   },
   props: {
     endpoint: {
@@ -41,6 +43,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      assignedDiscussions: false,
+    };
+  },
   computed: {
     ...mapState({
       isLoading: state => state.diffs.isLoading,
@@ -58,8 +65,9 @@ export default {
       plainDiffPath: state => state.diffs.plainDiffPath,
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
+    ...mapState('diffs', ['showTreeList', 'isLoading']),
     ...mapGetters('diffs', ['isParallelView']),
-    ...mapGetters(['isNotesFetched']),
+    ...mapGetters(['isNotesFetched', 'getNoteableData']),
     targetBranch() {
       return {
         branchName: this.targetBranchName,
@@ -88,6 +96,9 @@ export default {
     canCurrentUserFork() {
       return this.currentUser.canFork === true && this.currentUser.canCreateMergeRequest;
     },
+    showCompareVersions() {
+      return this.mergeRequestDiffs && this.mergeRequestDiff;
+    },
   },
   watch: {
     diffViewType() {
@@ -102,6 +113,8 @@ export default {
 
       this.adjustView();
     },
+    isLoading: 'adjustView',
+    showTreeList: 'adjustView',
   },
   mounted() {
     this.setBaseConfig({ endpoint: this.endpoint, projectPath: this.projectPath });
@@ -112,23 +125,47 @@ export default {
   },
   created() {
     this.adjustView();
+    eventHub.$once('fetchedNotesData', this.setDiscussions);
   },
   methods: {
-    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles']),
+    ...mapActions('diffs', [
+      'setBaseConfig',
+      'fetchDiffFiles',
+      'startRenderDiffsQueue',
+      'assignDiscussionsToDiff',
+    ]),
     fetchData() {
-      this.fetchDiffFiles().catch(() => {
-        createFlash(__('Something went wrong on our end. Please try again!'));
-      });
+      this.fetchDiffFiles()
+        .then(() => {
+          requestIdleCallback(
+            () => {
+              this.setDiscussions();
+              this.startRenderDiffsQueue();
+            },
+            { timeout: 1000 },
+          );
+        })
+        .catch(() => {
+          createFlash(__('Something went wrong on our end. Please try again!'));
+        });
 
       if (!this.isNotesFetched) {
         eventHub.$emit('fetchNotesData');
       }
     },
+    setDiscussions() {
+      if (this.isNotesFetched && !this.assignedDiscussions && !this.isLoading) {
+        this.assignedDiscussions = true;
+
+        requestIdleCallback(() => this.assignDiscussionsToDiff(), { timeout: 1000 });
+      }
+    },
     adjustView() {
-      if (this.shouldShow && this.isParallelView) {
-        window.mrTabs.expandViewContainer();
-      } else {
-        window.mrTabs.resetViewContainer();
+      if (this.shouldShow) {
+        this.$nextTick(() => {
+          window.mrTabs.resetViewContainer();
+          window.mrTabs.expandViewContainer(this.showTreeList);
+        });
       }
     },
   },
@@ -141,7 +178,7 @@ export default {
       v-if="isLoading"
       class="loading"
     >
-      <loading-icon />
+      <gl-loading-icon />
     </div>
     <div
       v-else
@@ -150,7 +187,7 @@ export default {
       class="diffs tab-pane"
     >
       <compare-versions
-        v-if="!commit && mergeRequestDiffs.length > 1"
+        v-if="showCompareVersions"
         :merge-request-diffs="mergeRequestDiffs"
         :merge-request-diff="mergeRequestDiff"
         :start-version="startVersion"
@@ -183,22 +220,34 @@ export default {
         </div>
       </div>
 
-      <changed-files
-        :diff-files="diffFiles"
+      <commit-widget
+        v-if="commit"
+        :commit="commit"
       />
 
       <div
-        v-if="diffFiles.length > 0"
-        class="files"
+        :data-can-create-note="getNoteableData.current_user.can_create_note"
+        class="files d-flex prepend-top-default"
       >
-        <diff-file
-          v-for="file in diffFiles"
-          :key="file.newPath"
-          :file="file"
-          :can-current-user-fork="canCurrentUserFork"
-        />
+        <div
+          v-show="showTreeList"
+          class="diff-tree-list"
+        >
+          <tree-list />
+        </div>
+        <div
+          v-if="diffFiles.length > 0"
+          class="diff-files-holder"
+        >
+          <diff-file
+            v-for="file in diffFiles"
+            :key="file.newPath"
+            :file="file"
+            :can-current-user-fork="canCurrentUserFork"
+          />
+        </div>
+        <no-changes v-else />
       </div>
-      <no-changes v-else />
     </div>
   </div>
 </template>

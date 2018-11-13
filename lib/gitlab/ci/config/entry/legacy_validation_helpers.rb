@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Config
@@ -7,6 +9,15 @@ module Gitlab
 
           def validate_duration(value)
             value.is_a?(String) && ChronicDuration.parse(value)
+          rescue ChronicDuration::DurationParseError
+            false
+          end
+
+          def validate_duration_limit(value, limit)
+            return false unless value.is_a?(String)
+
+            ChronicDuration.parse(value).second.from_now <
+              ChronicDuration.parse(limit).second.from_now
           rescue ChronicDuration::DurationParseError
             false
           end

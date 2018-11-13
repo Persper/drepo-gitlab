@@ -48,10 +48,25 @@ class ProjectImportState < ActiveRecord::Base
       project.reset_cache_and_import_attrs
 
       if Gitlab::ImportSources.importer_names.include?(project.import_type) && project.repo_exists?
+        # rubocop: disable CodeReuse/ServiceClass
         state.run_after_commit do
           Projects::AfterImportService.new(project).execute
         end
+        # rubocop: enable CodeReuse/ServiceClass
       end
     end
+  end
+
+  def mark_as_failed(error_message)
+    original_errors = errors.dup
+    sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
+
+    fail_op
+
+    update_column(:last_error, sanitized_message)
+  rescue ActiveRecord::ActiveRecordError => e
+    Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
+  ensure
+    @errors = original_errors
   end
 end

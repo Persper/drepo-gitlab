@@ -1,8 +1,12 @@
 <script>
+import { GlLink } from '@gitlab-org/gitlab-ui';
 /**
  * Renders Stuck Runners block for job's view.
  */
 export default {
+  components: {
+    GlLink,
+  },
   props: {
     hasNoRunnersForProject: {
       type: Boolean,
@@ -23,15 +27,8 @@ export default {
 <template>
   <div class="bs-callout bs-callout-warning">
     <p
-      v-if="hasNoRunnersForProject"
-      class="js-stuck-no-runners"
-    >
-      {{ s__(`Job|This job is stuck, because the project
-  doesn't have any runners online assigned to it.`) }}
-    </p>
-    <p
-      v-else-if="tags.length"
-      class="js-stuck-with-tags"
+      v-if="tags.length"
+      class="js-stuck-with-tags append-bottom-0"
     >
       {{ s__(`This job is stuck, because you don't have
   any active runners online with any of these tags assigned to them:`) }}
@@ -44,20 +41,27 @@ export default {
       </span>
     </p>
     <p
+      v-else-if="hasNoRunnersForProject"
+      class="js-stuck-no-runners append-bottom-0"
+    >
+      {{ s__(`Job|This job is stuck, because the project
+  doesn't have any runners online assigned to it.`) }}
+    </p>
+    <p
       v-else
-      class="js-stuck-no-active-runner"
+      class="js-stuck-no-active-runner append-bottom-0"
     >
       {{ s__(`This job is stuck, because you don't
   have any active runners that can run this job.`) }}
     </p>
 
     {{ __("Go to") }}
-    <a
+    <gl-link
       v-if="runnersPath"
       :href="runnersPath"
       class="js-runners-path"
     >
       {{ __("Runners page") }}
-    </a>
+    </gl-link>
   </div>
 </template>

@@ -20,7 +20,7 @@
 .account-btn-link,
 .profile-settings-sidebar a,
 .settings-sidebar a {
-  color: $md-link-color;
+  color: $blue-600;
 }
 
 .private-tokens-reset div.reset-action:not(:first-child) {
@@ -81,14 +81,14 @@
 // Middle dot divider between each element in a list of items.
 .middle-dot-divider {
   &::after {
-    content: "\00B7"; // Middle Dot
+    content: '\00B7'; // Middle Dot
     padding: 0 6px;
     font-weight: $gl-font-weight-bold;
   }
 
   &:last-child {
     &::after {
-      content: "";
+      content: '';
       padding: 0;
     }
   }
@@ -137,7 +137,7 @@
 
 .profile-settings-content {
   a {
-    color: $md-link-color;
+    color: $blue-600;
   }
 }
 
@@ -170,7 +170,7 @@
   background-color: $gray-light;
 
   &.not-active {
-    color: $provider-btn-not-active-color;
+    color: $blue-500;
   }
 }
 
@@ -191,7 +191,6 @@
     @include media-breakpoint-down(xs) {
       width: auto;
     }
-
   }
 
   .profile-crop-image-container {
@@ -214,7 +213,6 @@
     border: 1px solid $border-color;
   }
 }
-
 
 .user-profile {
   .cover-controls a {
@@ -240,6 +238,12 @@
 
   .fade-left {
     left: 0;
+  }
+
+  .activities-block {
+    .event-item {
+      padding-left: 40px;
+    }
   }
 
   @include media-breakpoint-down(xs) {
@@ -269,6 +273,12 @@
         margin-right: 0;
       }
     }
+
+    .activities-block {
+      .event-item {
+        padding-left: 0;
+      }
+    }
   }
 }
 
@@ -277,6 +287,10 @@ table.u2f-registrations {
   td:not(:last-child) {
     border-right: solid 1px transparent;
   }
+}
+
+.codes {
+  padding-top: 14px;
 }
 
 .oauth-application-show {
@@ -414,7 +428,7 @@ table.u2f-registrations {
     }
 
     &.unverified {
-      @include status-color($gray-dark, color("gray"), $common-gray-dark);
+      @include status-color($gray-dark, color('gray'), $common-gray-dark);
     }
   }
 }
@@ -427,7 +441,7 @@ table.u2f-registrations {
   }
 
   .emoji-menu-toggle-button {
-    @extend .note-action-button;
+    @include emoji-menu-toggle-button;
 
     .no-emoji-placeholder {
       position: relative;
