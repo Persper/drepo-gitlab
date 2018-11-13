@@ -36,21 +36,18 @@ export default {
   },
   computed: {
     ...mapState('diffs', ['commit', 'showTreeList']),
-    ...mapGetters('diffs', ['isInlineView', 'isParallelView', 'areAllFilesCollapsed']),
+    ...mapGetters('diffs', ['isInlineView', 'isParallelView', 'hasCollapsedFile']),
     comparableDiffs() {
       return this.mergeRequestDiffs.slice(1);
     },
-    isWhitespaceVisible() {
-      return !getParameterValues('w')[0];
-    },
     toggleWhitespaceText() {
-      if (this.isWhitespaceVisible) {
+      if (this.isWhitespaceVisible()) {
         return __('Hide whitespace changes');
       }
       return __('Show whitespace changes');
     },
     toggleWhitespacePath() {
-      if (this.isWhitespaceVisible) {
+      if (this.isWhitespaceVisible()) {
         return mergeUrlParams({ w: 1 }, window.location.href);
       }
 
@@ -67,6 +64,9 @@ export default {
       'expandAllFiles',
       'toggleShowTreeList',
     ]),
+    isWhitespaceVisible() {
+      return getParameterValues('w')[0] !== '1';
+    },
   },
 };
 </script>
@@ -113,15 +113,15 @@ export default {
         class="inline-parallel-buttons d-none d-md-flex ml-auto"
       >
         <a
-          v-if="areAllFilesCollapsed"
-          class="btn btn-default"
+          v-show="hasCollapsedFile"
+          class="btn btn-default append-right-8"
           @click="expandAllFiles"
         >
           {{ __('Expand all') }}
         </a>
         <a
           :href="toggleWhitespacePath"
-          class="btn btn-default"
+          class="btn btn-default qa-toggle-whitespace"
         >
           {{ toggleWhitespaceText }}
         </a>

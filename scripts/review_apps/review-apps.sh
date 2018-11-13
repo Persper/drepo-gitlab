@@ -126,6 +126,9 @@ function deploy() {
     delete
     cleanup
   fi
+
+  create_secret
+
   helm repo add gitlab https://charts.gitlab.io/
   helm dep update .
 
@@ -133,6 +136,7 @@ HELM_CMD=$(cat << EOF
   helm upgrade --install \
     --wait \
     --timeout 600 \
+    --set global.appConfig.enableUsagePing=false \
     --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
     --set global.hosts.hostSuffix="$HOST_SUFFIX" \
     --set global.hosts.domain="$REVIEW_APPS_DOMAIN" \

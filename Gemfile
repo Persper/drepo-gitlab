@@ -124,7 +124,7 @@ gem 'seed-fu', '~> 2.3.7'
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.8'
 gem 'deckar01-task_list', '2.0.0'
-gem 'gitlab-markup', '~> 1.6.4'
+gem 'gitlab-markup', '~> 1.6.5'
 gem 'github-markup', '~> 1.7.0', require: 'github/markup'
 gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
@@ -204,6 +204,9 @@ gem 'redis-rails', '~> 5.0.2'
 gem 'redis', '~> 3.2'
 gem 'connection_pool', '~> 2.0'
 
+# Discord integration
+gem 'discordrb-webhooks-blackst0ne', '~> 3.3', require: false
+
 # HipChat integration
 gem 'hipchat', '~> 1.5.0'
 
@@ -243,9 +246,6 @@ gem 'rack-attack', '~> 4.4.1'
 
 # Ace editor
 gem 'ace-rails-ap', '~> 4.1.0'
-
-# Keyboard shortcuts
-gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.5'
@@ -419,7 +419,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.118.1', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.123.0', require: 'gitaly'
 gem 'grpc', '~> 1.15.0'
 
 gem 'google-protobuf', '~> 3.6'
@@ -434,6 +434,3 @@ gem 'flipper-active_support_cache_store', '~> 0.13.0'
 # Structured logging
 gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
-
-# Asset synchronization
-gem 'asset_sync', '~> 2.4'
