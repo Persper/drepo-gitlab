@@ -1,5 +1,8 @@
 ---
 description: 'Learn how to use GitLab Pages to deploy a static website at no additional cost.'
+nav_section: devops_stages
+nav_category: release
+layout: default-copy
 ---
 
 # GitLab Pages

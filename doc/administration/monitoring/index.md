@@ -1,3 +1,10 @@
+---
+nav_section: devops_stages
+nav_category: monitor
+nav_title: "Monitor GitLab"
+layout: default-copy
+---
+
 # Monitoring GitLab
 
 Explore our features to monitor your GitLab instance:

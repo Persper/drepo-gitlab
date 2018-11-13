@@ -4,7 +4,7 @@ description: 'Learn how to contribute to GitLab.'
 nav_section: development
 nav_category: ""
 nav_category_position: -1
-nav_title: "Devs guidelines"
+nav_title: "Dev guidelines"
 layout: default-copy
 ---
 

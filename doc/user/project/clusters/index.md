@@ -1,3 +1,10 @@
+---
+nav_section: devops_stages
+nav_category: configure
+nav_title: "Clusters"
+layout: default-copy
+---
+
 # Connecting GitLab with a Kubernetes cluster
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35954) in GitLab 10.1.

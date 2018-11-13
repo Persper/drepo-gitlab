@@ -1,3 +1,9 @@
+---
+nav_section: devops_stages
+nav_category: manage
+layout: default-copy
+---
+
 # Instance statistics
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41416)

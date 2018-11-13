@@ -1,3 +1,10 @@
+---
+nav_section: admin
+nav_category: ""
+nav_title: "Update GitLab"
+layout: default-copy
+---
+
 # Updating GitLab
 
 Depending on the installation method and your GitLab version, there are multiple

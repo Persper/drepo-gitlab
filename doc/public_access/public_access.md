@@ -1,3 +1,10 @@
+---
+nav_section: user
+nav_category: ""
+nav_title: "Visibility"
+layout: default-copy
+---
+
 # Public access
 
 GitLab allows you to change your projects' visibility in order be accessed

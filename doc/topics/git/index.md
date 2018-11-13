@@ -1,3 +1,10 @@
+---
+nav_section: topics
+nav_category: ""
+nav_title: "Git"
+layout: default-copy
+---
+
 # Git documentation
 
 Git is a [free and open source](https://git-scm.com/about/free-and-open-source)

@@ -1,6 +1,10 @@
 ---
 comments: false
 description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Integration, Continuous Deployment, and Continuous Delivery toolset to build, test, and deploy your application."
+nav_section: devops_stages
+nav_category: verify
+nav_title: "GitLab CI/CD"
+layout: default-copy
 ---
 
 # GitLab Continuous Integration (GitLab CI/CD)

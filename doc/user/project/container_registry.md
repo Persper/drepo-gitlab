@@ -1,3 +1,10 @@
+---
+nav_section: devops_stages
+nav_category: package
+nav_title: "Container Registry"
+layout: default-copy
+---
+
 # GitLab Container Registry
 
 > **Notes:**

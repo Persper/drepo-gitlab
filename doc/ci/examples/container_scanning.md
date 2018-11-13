@@ -1,3 +1,10 @@
+---
+nav_section: devops_stages
+nav_category: secure
+nav_title: "Container Scanning"
+layout: default-copy
+---
+
 # Container Scanning with GitLab CI/CD
 
 You can check your Docker images (or more precisely the containers) for known
