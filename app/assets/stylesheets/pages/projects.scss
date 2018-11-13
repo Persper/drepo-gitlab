@@ -894,7 +894,7 @@ pre.light-well {
     padding: $gl-padding 0;
 
     @include media-breakpoint-up(lg) {
-      padding: $gl-padding-32 0;
+      padding: $gl-padding-24 0;
     }
 
     &.no-description {
