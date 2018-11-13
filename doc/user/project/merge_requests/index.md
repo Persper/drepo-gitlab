@@ -1,7 +1,7 @@
 ---
-category: create
+nav_section: devops_stages
+nav_category: create
 layout: default-copy
-nav: devops
 ---
 
 # Merge requests

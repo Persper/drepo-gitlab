@@ -1,6 +1,6 @@
 ---
-category: plan
-nav: devops
+nav_section: devops_stages
+nav_category: plan
 layout: default-copy
 ---
 

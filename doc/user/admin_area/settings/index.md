@@ -1,3 +1,10 @@
+---
+nav_section: admin
+nav_category: ""
+nav_title: "Admin area"
+layout: default-copy
+---
+
 # Admin area settings **[CORE ONLY]**
 
 In the admin area settings, you can find various options for your GitLab

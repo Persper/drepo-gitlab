@@ -1,7 +1,8 @@
 ---
-category: create
-nav: devops
+nav_section: devops_stages
+nav_category: create
 layout: default-copy
+nav_category_position: -1
 ---
 
 # Projects

@@ -1,5 +1,10 @@
 ---
 description: Learn how to contribute to GitLab Documentation.
+nav_section: development
+nav_category: ""
+nav_category_position: 0
+nav_title: "Docs guidelines"
+layout: default-copy
 ---
 
 # GitLab Documentation guidelines
