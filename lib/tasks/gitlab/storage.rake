@@ -5,6 +5,12 @@ namespace :gitlab do
       storage_migrator = Gitlab::HashedStorage::Migrator.new
       helper = Gitlab::HashedStorage::RakeHelper
 
+      if Gitlab::Database.read_only?
+        puts 'This task requires database write access. Exiting.'
+
+        next
+      end
+
       if helper.range_single_item?
         project = Project.with_unmigrated_storage.find_by(id: helper.range_from)
 
