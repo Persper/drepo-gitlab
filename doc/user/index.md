@@ -1,8 +1,7 @@
 ---
 description: 'Read through the GitLab User documentation to learn how to use, configure, and customize GitLab and GitLab.com to your own needs.'
-nav_section: user
+nav_section: user_main
 nav_category: ""
-nav_category_position: -1
 nav_title: "User docs"
 layout: default-copy
 ---

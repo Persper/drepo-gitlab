@@ -1,6 +1,6 @@
 ---
-nav_section: devops_stages
-nav_category: plan
+nav_section: user
+nav_category: essentials
 nav_category_position: -1
 layout: default-copy
 ---

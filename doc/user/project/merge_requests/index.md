@@ -1,10 +1,10 @@
 ---
-nav_section: devops_stages
-nav_category: create
+nav_section: user
+nav_category: essentials
 layout: default-copy
 ---
 
-# Merge requests
+# Merge Requests
 
 Merge requests allow you to exchange changes you made to source code and
 collaborate with other people on the same project.

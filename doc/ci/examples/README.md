@@ -1,5 +1,9 @@
 ---
 comments: false
+nav_section: user
+nav_category: ci
+nav_title: "Examples"
+layout: default-copy
 ---
 
 # GitLab CI/CD Examples

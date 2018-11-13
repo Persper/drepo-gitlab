@@ -1,3 +1,9 @@
+---
+nav_section: user
+nav_category: ci
+layout: default-copy
+---
+
 # Auto DevOps
 
 > [Introduced][ce-37115] in GitLab 10.0. Generally available on GitLab 11.0.

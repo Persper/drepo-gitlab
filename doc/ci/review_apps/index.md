@@ -1,3 +1,9 @@
+---
+nav_section: user
+nav_category: ci
+layout: default-copy
+---
+
 # Review Apps
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/21971) in GitLab 8.12. Further additions were made in GitLab 8.13 and 8.14.
