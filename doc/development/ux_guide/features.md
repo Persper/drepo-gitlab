@@ -1,11 +1,12 @@
 # Features
 
 ## Contents
-* [Navigation](#navigation)
-* [Filtering](#filtering)
-* [Search results](#search-results)
-* [Conversations](#conversations)
-* [Empty states](#empty-states)
+
+- [Navigation](#navigation)
+- [Filtering](#filtering)
+- [Search results](#search-results)
+- [Conversations](#conversations)
+- [Empty states](#empty-states)
 
 ---
 
@@ -16,7 +17,6 @@
 The global navigation is accessible via the menu button on the top left of the screen, and can be pinned to keep it open. It contains a consistent list of pages that allow you to view content that is across GitLab. For example, you can view your todos, issues and merge requests across projects and groups.
 
 ![Global nav](img/features-globalnav.png)
-
 
 ### Contextual navigation
 

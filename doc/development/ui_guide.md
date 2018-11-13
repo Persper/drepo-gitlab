@@ -42,13 +42,13 @@ be available on all resolutions.
 
 ## Icons
 
-* `trash` icon for button or link that does destructive action like removing
+- `trash` icon for button or link that does destructive action like removing
 information from database or file system
-* `x` icon for closing/hiding UI element. For example close modal window
-* `pencil` icon for edit button or link
-* `eye` icon for subscribe action
-* `rss` for rss/atom feed
-* `plus` for link or dropdown that lead to page where you create new object (For example new issue page)
+- `x` icon for closing/hiding UI element. For example close modal window
+- `pencil` icon for edit button or link
+- `eye` icon for subscribe action
+- `rss` for rss/atom feed
+- `plus` for link or dropdown that lead to page where you create new object (For example new issue page)
 
 ### SVGs
 
@@ -89,16 +89,16 @@ Correct file will look like this:
 
 ## Buttons
 
-* Button should contain icon or text. Exceptions should be approved by UX designer.
-* Use red button for destructive actions (not revertable). For example removing issue.
-* Use green or blue button for primary action. Primary button should be only one.
-Do not use both green and blue button in one form.
-* For all other cases use default white button.
-* Text button should have only first word capitalized. So should be "Create issue" instead of "Create Issue"
+- Button should contain icon or text. Exceptions should be approved by UX designer.
+- Use red button for destructive actions (not revertable). For example removing issue.
+- Use green or blue button for primary action. Primary button should be only one.
+  Do not use both green and blue button in one form.
+- For all other cases use default white button.
+- Text button should have only first word capitalized. So should be "Create issue" instead of "Create Issue"
 
 ## Counts
 
-* Always use the [`number_with_delimiter`][number_with_delimiter] helper to
+- Always use the [`number_with_delimiter`][number_with_delimiter] helper to
   display counts in the UI.
 
 [number_with_delimiter]: http://api.rubyonrails.org/classes/ActionView/Helpers/NumberHelper.html#method-i-number_with_delimiter

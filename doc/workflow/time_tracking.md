@@ -8,8 +8,9 @@ requests within GitLab.
 ## Overview
 
 Time Tracking lets you:
-* record the time spent working on an issue or a merge request,
-* add an estimate of the amount of time needed to complete an issue or a merge
+
+- Record the time spent working on an issue or a merge request.
+- Add an estimate of the amount of time needed to complete an issue or a merge
 request.
 
 You don't have to indicate an estimate to enter the time spent, and vice versa.
@@ -62,10 +63,11 @@ To remove all the time spent at once, use `/remove_time_spent`.
 ## Configuration
 
 The following time units are available:
-* weeks (w)
-* days (d)
-* hours (h)
-* minutes (m)
+
+- weeks (w)
+- days (d)
+- hours (h)
+- minutes (m)
 
 Default conversion rates are 1w = 5d and 1d = 8h.
 

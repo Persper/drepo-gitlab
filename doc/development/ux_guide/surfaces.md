@@ -1,10 +1,11 @@
 # Surfaces
 
 ## Contents
-* [Header](#header)
-* [Global menu](#global-menu)
-* [Side pane](#side-pane)
-* [Content area](#content-area)
+
+- [Header](#header)
+- [Global menu](#global-menu)
+- [Side pane](#side-pane)
+- [Content area](#content-area)
 
 ---
 

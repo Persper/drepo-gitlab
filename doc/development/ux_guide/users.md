@@ -1,15 +1,15 @@
 # UX Personas
 
-* [Nazim Ramesh](#nazim-ramesh)
+- [Nazim Ramesh](#nazim-ramesh)
     - Small to medium size organizations using GitLab CE
-* [Matthieu Poirier](#matthieu-poirier)
+- [Matthieu Poirier](#matthieu-poirier)
     - Responsible for managing and maintaining GitLab installation
     - Any size organization
     - Using CE or EE
-* [James Mackey](#james-mackey)
+- [James Mackey](#james-mackey)
     - Medium to large size organizations using CE or EE
     - Small organizations using EE
-* [Karolina Plaskaty](#karolina-plaskaty)
+- [Karolina Plaskaty](#karolina-plaskaty)
     - Using GitLab.com for personal/hobby projects
     - Would like to use GitLab at work
     - Working within a medium to large size organization
@@ -86,9 +86,10 @@ Nazim often has to calm down his colleagues, when a release contains regressions
 GitLab's interface initially attracted Nazim when he was comparing version control software. He thought it would help his less technical colleagues to adapt to using Git and perhaps, GitLab could be rolled out to other areas of the business, beyond engineering. However, using GitLab's interface daily has left him frustrated at the lack of personalization/control over his user experience. He's also regularly lost in a maze of navigation. Whilst he acknowledges that GitLab listens to its users and that the interface is improving, he becomes annoyed when the changes are too progressive. "Too frequent UI changes. Most of them tend to turn out great after a few cycles of fixes, but the frequency is still far too high for me to feel comfortable to always stay on the current release."
 
 ### Goals
-* To convince his colleagues to fully adopt GitLab CE, thus improving workflow and collaboration.
-* To use a feature-rich version control platform that covers all stages of the development lifecycle, in order to reduce dependencies on other tools.
-* To use an intuitive and stable product, so he can spend more time on his core job responsibilities and less time bug-fixing, guiding colleagues, etc.
+
+- To convince his colleagues to fully adopt GitLab CE, thus improving workflow and collaboration.
+- To use a feature-rich version control platform that covers all stages of the development lifecycle, in order to reduce dependencies on other tools.
+- To use an intuitive and stable product, so he can spend more time on his core job responsibilities and less time bug-fixing, guiding colleagues, etc.
 
 ---
 ## Matthieu Poirier
@@ -173,17 +174,17 @@ It's Matthieu's responsibility to get teams across his organization up and runni
 He states that there has been: "a sluggishness of others to adapt" and it's "a low-effort adaptation at that."
 
 ### Goals
-* To save time. One of the reasons Matthieu moved his company to GitLab was to reduce the effort it took him to manage and configure multiple tools, thus saving him time. He has to balance his day job in addition to managing the company's GitLab installation and onboarding new teams to GitLab.
-* To use a platform which is easy to manage. Matthieu isn't a Systems Administrator, and when updating GitLab, creating backups, etc. He would prefer to work within GitLab's UI. Explanations / guided instructions when configuring settings in GitLab's interface would really help Matthieu. He needs reassurance that what he is about to change is
 
-- The right setting.
-- Will provide him with the desired result he wants.
-
-* Matthieu needs to educate his colleagues about GitLab. Matthieu's colleagues won't adopt GitLab as they're unaware of its capabilities and the positive impact it could have on their work. Matthieu needs support in getting this message across to them.
+- To save time. One of the reasons Matthieu moved his company to GitLab was to reduce the effort it took him to manage and configure multiple tools, thus saving him time. He has to balance his day job in addition to managing the company's GitLab installation and onboarding new teams to GitLab.
+- To use a platform which is easy to manage. Matthieu isn't a Systems Administrator, and when updating GitLab, creating backups, etc. He would prefer to work within GitLab's UI. Explanations / guided instructions when configuring settings in GitLab's interface would really help Matthieu. He needs reassurance that what he is about to change is:
+  - The right setting.
+  - Will provide him with the desired result he wants.
+- Matthieu needs to educate his colleagues about GitLab. Matthieu's colleagues won't adopt GitLab as they're unaware of its capabilities and the positive impact it could have on their work. Matthieu needs support in getting this message across to them.
 
 ---
 
 ## James Mackey
+
 - Medium to large size organizations using CE or EE
 - Small organizations using EE
 
@@ -246,9 +247,10 @@ James and his team use CI quite heavily for several projects. Whilst they've wel
 
 
 ### Goals
-* To be able to integrate third-party tools easily with GitLab EE and to create custom integrations and patches where needed.
-* To use GitLab EE primarily for code hosting, merge requests, continuous integration and issue management. James and his team want to be able to understand and use these particular features easily.
-* To able to share one instance of GitLab EE with multiple teams across the business. Advanced user management, the ability to separate permissions on different parts of the source code, etc are important to James.
+
+- To be able to integrate third-party tools easily with GitLab EE and to create custom integrations and patches where needed.
+- To use GitLab EE primarily for code hosting, merge requests, continuous integration and issue management. James and his team want to be able to understand and use these particular features easily.
+- To able to share one instance of GitLab EE with multiple teams across the business. Advanced user management, the ability to separate permissions on different parts of the source code, etc are important to James.
 
 ---
 
@@ -305,6 +307,7 @@ GitLab.com is frequently slow and unavailable. Karolina has also heard that GitL
 Karolina has an interest in UX and therefore has strong opinions about how GitLab should look and feel. She feels the interface is cluttered, "it has too many links/buttons" and the navigation "feels a bit weird sometimes. I get lost if I don't pay attention." As Karolina also enjoys contributing to open-source projects, it's important to her that GitLab is well designed for public repositories, she doesn't feel that GitLab currently achieves this.
 
 ### Goals
-* To develop her programming experience and to learn from other developers.
-* To contribute to both her own and other open source projects.
-* To use a fast and intuitive version control platform.
+
+- To develop her programming experience and to learn from other developers.
+- To contribute to both her own and other open source projects.
+- To use a fast and intuitive version control platform.

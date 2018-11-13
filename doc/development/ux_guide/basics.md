@@ -1,11 +1,12 @@
 # Basics
 
 ## Contents
-* [Responsive](#responsive)
-* [Typography](#typography)
-* [Icons](#icons)
-* [Color](#color)
-* [Cursors](#cursors)
+
+- [Responsive](#responsive)
+- [Typography](#typography)
+- [Icons](#icons)
+- [Color](#color)
+- [Cursors](#cursors)
 
 ---
 
@@ -33,7 +34,7 @@ This is the typeface used for code blocks and references to commits, branches, a
 
 ## Icons
 
-GitLab has a strong, unique personality. When you look at any screen, you should know immediately that it is GitLab. 
+GitLab has a strong, unique personality. When you look at any screen, you should know immediately that it is GitLab.
 Iconography is a powerful visual cue to the user and is a great way for us to reflect our particular sense of style.
 
 - **Standard size:** 16px * 16px
@@ -78,5 +79,3 @@ The mouse cursor is key in helping users understand how to interact with element
 | ![Pan opened cursor](img/cursors-panopened.png) | Pan cursor (opened): indicates that you can grab and move the entire canvas, affecting what is seen in the view port. |
 | ![Pan closed cursor](img/cursors-panclosed.png) | Pan cursor (closed): indicates that you are actively panning the canvas. |
 | ![I-beam cursor](img/cursors-ibeam.png) | I-beam cursor: indicates that this is either text that you can select and copy, or a text field that you can click into to enter text. |
-
-

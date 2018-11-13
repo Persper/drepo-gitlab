@@ -1,42 +1,47 @@
 # Components
 
 ## Contents
-* [Tooltips](#tooltips)
-* [Anchor links](#anchor-links)
-* [Buttons](#buttons)
-* [Dropdowns](#dropdowns)
-* [Counts](#counts)
-* [Lists](#lists)
-* [Tables](#tables)
-* [Blocks](#blocks)
-* [Panels](#panels)
-* [Modals](#modals)
-* [Alerts](#alerts)
-* [Forms](#forms)
-* [Search box](#search-box)
-* [File holders](#file-holders)
-* [Data formats](#data-formats)
+
+- [Tooltips](#tooltips)
+- [Anchor links](#anchor-links)
+- [Buttons](#buttons)
+- [Dropdowns](#dropdowns)
+- [Counts](#counts)
+- [Lists](#lists)
+- [Tables](#tables)
+- [Blocks](#blocks)
+- [Panels](#panels)
+- [Modals](#modals)
+- [Alerts](#alerts)
+- [Forms](#forms)
+- [Search box](#search-box)
+- [File holders](#file-holders)
+- [Data formats](#data-formats)
 
 ---
 
 ## Tooltips
+
 Tooltips identify elements or provide additional, useful information about the referring elements. Tooltips are different from ALT-attributes, which are intended primarily for static images. Tooltips are summoned by:
 
-* Hovering over an element with a cursor
-* Focusing on an element with a keyboard (usually the tab key)
-* Upon touch
+- Hovering over an element with a cursor
+- Focusing on an element with a keyboard (usually the tab key)
+- Upon touch
 
 ### Usage
+
 A tooltip should be used:
-* When there isn’t enough space to show the information
-* When it isn’t critical for the user to see the information
-* For icons that don’t have a label
+
+- When there isn’t enough space to show the information
+- When it isn’t critical for the user to see the information
+- For icons that don’t have a label
 
 Tooltips shouldn’t repeat information that is shown near the referring element. However, they can show the same data in a different format (e.g. date or timestamps).
 
 ![Tooltip usage](img/tooltip-usage.png)
 
 ### Placement
+
 By default, tooltips should be placed below the referring element. However, if there isn’t enough space in the viewport, the tooltip should be moved to the side as needed.
 
 ![Tooltip placement location](img/tooltip-placement.png)
@@ -49,13 +54,15 @@ Popovers provide additional, useful, unique information about the referring elem
 
 Popovers are summoned:
 
-* Upon hover or touch on an element
+- Upon hover or touch on an element
 
 ### Usage
+
 A popover should be used:
-* When you don't want to let the user lose context, but still want to provide additional useful unique information about referring elements
-* When it isn’t critical for the user to act upon the information
-* When you want to give a user a summary of extended information and the option to switch context if they want to dive in deeper.
+
+- When you don't want to let the user lose context, but still want to provide additional useful unique information about referring elements.
+- When it isn’t critical for the user to act upon the information.
+- When you want to give a user a summary of extended information and the option to switch context if they want to dive in deeper.
 
 ### Styling
 
@@ -242,10 +249,10 @@ Skeleton loading is a way to convey to the user what kind of content is currentl
 
 ### Requirements
 
-* A skeleton should represent an organism in a recognisable way
-* Atom elements within organisms (for reference see this article on [atomic design methodology](http://atomicdesign.bradfrost.com/chapter-2/)) may be represented in a maximum of 3 repetitions, if applicable.
-* Skeletons should only be presented in grayscale using the HEX colors: `#fafafa` or `#ffffff` (except for shadows)
-* Animate the grey atoms in a pulsating way to show motion, as if "loading". The pulse animation transitions colors horizontally from left to right, starting with `#f2f2f2` to `#fafafa`.
+- A skeleton should represent an organism in a recognisable way.
+- Atom elements within organisms (for reference see this article on [atomic design methodology](http://atomicdesign.bradfrost.com/chapter-2/)) may be represented in a maximum of 3 repetitions, if applicable.
+- Skeletons should only be presented in grayscale using the HEX colors: `#fafafa` or `#ffffff` (except for shadows).
+- Animate the grey atoms in a pulsating way to show motion, as if "loading". The pulse animation transitions colors horizontally from left to right, starting with `#f2f2f2` to `#fafafa`.
 
 ![Skeleton loading animation](img/skeleton-loading.gif)
 
@@ -261,23 +268,23 @@ Modals are only used for having a conversation and confirmation with the user. T
 
 ### Usage
 
-* When the action is irreversible, modals provide the details and confirm with the user before they take an advanced action.
-* When the action will affect privacy or authorization, modals provide advanced information and confirm with the user.
+- When the action is irreversible, modals provide the details and confirm with the user before they take an advanced action.
+- When the action will affect privacy or authorization, modals provide advanced information and confirm with the user.
 
 ### Style
 
-* Modals contain the header, body, and actions.
-  * **Header(1):** The header title is a question instead of a descriptive phrase.
-  * **Body(2):** The content in body should never be ambiguous and unclear. It provides specific information.
-  * **Actions(3):** Contains an affirmative action, a dismissive action, and an extra action. The order of actions from left to right: Dismissive action → Extra action → Affirmative action
-* Confirmations regarding labels should keep labeling styling.
-* References to commits, branches, and tags should be **monospaced**.
+- Modals contain the header, body, and actions.
+  - **Header(1):** The header title is a question instead of a descriptive phrase.
+  - **Body(2):** The content in body should never be ambiguous and unclear. It provides specific information.
+  - **Actions(3):** Contains an affirmative action, a dismissive action, and an extra action. The order of actions from left to right: Dismissive action → Extra action → Affirmative action
+- Confirmations regarding labels should keep labeling styling.
+- References to commits, branches, and tags should be **monospaced**.
 
 ![layout-modal](img/modals-layout-for-modals.png)
 
 ### Placement
 
-* Modals should always be the center of the screen horizontally and be positioned **72px** from the top.
+- Modals should always be the center of the screen horizontally and be positioned **72px** from the top.
 
 | Modal with 2 actions | Modal with 3 actions | Special confirmation |
 | --------------------- | --------------------- | -------------------- |

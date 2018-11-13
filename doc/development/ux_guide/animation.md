@@ -12,8 +12,8 @@ Subtle animations, or objects leaving the screen should take **100-200 milliseco
 
 Easing specifies the rate of change of a parameter over time (see [easings.net](http://easings.net/)). Adding an easing curve will make the motion feel more natural. Being consistent with the easing curves will make the whole experience feel more cohesive and connected.
 
-* When an object is entering the screen, or transforming the scale, position, or shape, use the **easeOutQuint** curve (`cubic-bezier(0.23, 1, 0.32, 1)`)
-* When an object is leaving the screen, or transforming the opacity or color, no easing curve is needed. It shouldn't _slow down_ as it is exiting the screen, as that draws attention on the leaving object, where we don't want it. Adding easing to opacity and color transitions will make the motion appear less smooth. Therefore, for these cases, motion should just be **linear**.
+- When an object is entering the screen, or transforming the scale, position, or shape, use the **easeOutQuint** curve (`cubic-bezier(0.23, 1, 0.32, 1)`)
+- When an object is leaving the screen, or transforming the opacity or color, no easing curve is needed. It shouldn't _slow down_ as it is exiting the screen, as that draws attention on the leaving object, where we don't want it. Adding easing to opacity and color transitions will make the motion appear less smooth. Therefore, for these cases, motion should just be **linear**.
 
 ## Types of animations
 

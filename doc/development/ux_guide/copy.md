@@ -10,9 +10,10 @@ Portions of this page are inspired by work found in the [Material Design guideli
 We are currently inconsistent with this guidance. Images below are created to illustrate the point. As this guidance is refined, we will ensure that our experiences align.
 
 ## Contents
-* [Brevity](#brevity)
-* [Capitalization and punctuation](#capitalization-and-punctuation)
-* [Terminology](#terminology)
+
+- [Brevity](#brevity)
+- [Capitalization and punctuation](#capitalization-and-punctuation)
+- [Terminology](#terminology)
 
 ---
 
@@ -43,15 +44,15 @@ Use sentence case for titles, headings, labels, menu items, and buttons. Use tit
 ### Avoid periods
 Avoid using periods in solitary sentences in these elements:
 
-* Labels
-* Hover text
-* Bulleted lists
-* Modal body text
+- Labels
+- Hover text
+- Bulleted lists
+- Modal body text
 
 Periods should be used for:
 
-* Lists or modals with multiple sentences
-* Any sentence followed by a link
+- Lists or modals with multiple sentences
+- Any sentence followed by a link
 
 | :white_check_mark: **Do** place periods after sentences followed by a link | :no_entry_sign: **Don’t** place periods after a link if it‘s not followed by a sentence |
 | --- | --- |
@@ -103,8 +104,9 @@ When using the <kbd>Alt</kbd> keystrokes in Windows, use the numeric keypad, not
 Only use the terms below.
 
 When using verbs or adjectives:
-* If the context clearly refers to the object, use them alone. Example: `Edit` or `Closed`
-* If the context isn’t clear enough, use them with the object. Example: `Edit issue` or `Closed issues`
+
+- If the context clearly refers to the object, use them alone. Example: `Edit` or `Closed`.
+- If the context isn’t clear enough, use them with the object. Example: `Edit issue` or `Closed issues`.
 
 ### Search
 

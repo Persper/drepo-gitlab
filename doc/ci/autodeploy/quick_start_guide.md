@@ -4,8 +4,8 @@ This is a step-by-step guide to deploying a project hosted on GitLab.com to Goog
 
 We made a minimal [Ruby application](https://gitlab.com/gitlab-examples/minimal-ruby-app) to use as an example for this guide. It contains two files:
 
-* `server.rb` - our application. It will start an HTTP server on port 5000 and render “Hello, world!”
-* `Dockerfile` - to build our app into a container image. It will use a ruby base image and run `server.rb`
+- `server.rb` - our application. It will start an HTTP server on port 5000 and render “Hello, world!”
+- `Dockerfile` - to build our app into a container image. It will use a ruby base image and run `server.rb`
 
 ## Fork sample project on GitLab.com
 
