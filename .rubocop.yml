@@ -163,6 +163,9 @@ Gitlab/ModuleWithInstanceVariables:
 Gitlab/HTTParty:
   Enabled: true
 
+Gitlab/ModelsInheritApplicationRecord:
+  Enabled: true
+
 GitlabSecurity/PublicSend:
   Enabled: true
   Exclude:
