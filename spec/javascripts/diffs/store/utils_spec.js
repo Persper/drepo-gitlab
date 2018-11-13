@@ -13,6 +13,10 @@ import {
 import { MERGE_REQUEST_NOTEABLE_TYPE } from '~/notes/constants';
 import diffFileMockData from '../mock_data/diff_file';
 import { noteableDataMock } from '../../notes/mock_data';
+import {
+  OLD_NO_NEW_LINE_TYPE,
+  NEW_NO_NEW_LINE_TYPE,
+} from '../../../../app/assets/javascripts/diffs/constants';
 
 const getDiffFileMock = () =>
   Object.assign({}, diffFileMockData, {
@@ -20,6 +24,92 @@ const getDiffFileMock = () =>
   });
 
 describe('DiffsStoreUtils', () => {
+  describe('parallelize', () => {
+    it('returns empty array for undefined', () => {
+      expect(utils.parallelize()).toEqual([]);
+    });
+
+    it('puts old lines on the left', () => {
+      const lineOne = {
+        type: OLD_LINE_TYPE,
+      };
+      const lineTwo = {
+        type: OLD_NO_NEW_LINE_TYPE,
+      };
+      const highlightedDiffLines = [lineOne, lineTwo];
+
+      expect(utils.parallelize(highlightedDiffLines)).toEqual([
+        {
+          left: lineOne,
+          right: null,
+        },
+        {
+          left: lineTwo,
+          right: null,
+        },
+      ]);
+    });
+
+    it('puts new lines on the left', () => {
+      const lineOne = {
+        type: NEW_LINE_TYPE,
+      };
+      const lineTwo = {
+        type: NEW_NO_NEW_LINE_TYPE,
+      };
+      const highlightedDiffLines = [lineOne, lineTwo];
+
+      expect(utils.parallelize(highlightedDiffLines)).toEqual([
+        {
+          left: null,
+          right: lineOne,
+        },
+        {
+          left: null,
+          right: lineTwo,
+        },
+      ]);
+    });
+
+    it('puts matching lines on both sides', () => {
+      const line = {
+        type: MATCH_LINE_TYPE,
+      };
+      const highlightedDiffLines = [line];
+
+      expect(utils.parallelize(highlightedDiffLines)).toEqual([
+        {
+          left: line,
+          right: line,
+        },
+      ]);
+    });
+
+    it('correctly aligns old and new lines', () => {
+      const oldLineOne = {
+        type: OLD_LINE_TYPE,
+      };
+      const oldLineTwo = {
+        type: OLD_NO_NEW_LINE_TYPE,
+      };
+      const newLine = {
+        type: NEW_LINE_TYPE,
+      };
+      const highlightedDiffLines = [oldLineOne, oldLineTwo, newLine];
+
+      expect(utils.parallelize(highlightedDiffLines)).toEqual([
+        {
+          left: oldLineOne,
+          right: newLine,
+        },
+        {
+          left: oldLineTwo,
+          right: null,
+        },
+      ]);
+    });
+  });
+
   describe('findDiffFile', () => {
     const files = [{ fileHash: 1, name: 'one' }];
 
