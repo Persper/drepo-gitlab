@@ -2,14 +2,14 @@
 
 ## Icons
 
-In light of our [use gitlab-svgs initiative][gitlab-svgs-initiative], all new icons should be added to the [gitlab-svgs project][gitlab-svgs-project]. Once new icons are added to the gitlab-svgs project, please have the maintainer update the gitlab-svgs dependency on NPM and on gitlab-ce. The gitlab-ee repo will get updated from the automatic CE->EE merge.
+Icons should be added to the [gitlab-svgs project][gitlab-svgs-project]. Once new icons are added, please have the maintainer update the gitlab-svgs dependency on NPM and on gitlab-ce. The gitlab-ee repo will be updated from the automatic CE->EE merge.
 
 ### Using icons in HAML
 
 We've built a helper method `sprite_icon(icon_name, size: nil, css_class: '')` to make it easier to reference the sprite icons in HAML.
 
 - **icon_name** should correspond to the SVG sprite name. If you are unsure of the name, you can filter for the icon names using the [GitLab SVG Previewer][svg-previewer]
-- **size (optional)** sets the size of the icon. Valid sizes include 16, 24, 32, 48 and 72. These values will be transformed into its matching CSS class. E.g. 16 will add a CSS class of `s16`.
+- **size (optional)** sets the size of the icon. Valid sizes include 16, 24, 32, 48 and 72
 - **css_class (optional)** applies additional css classes to the icon.
 
 ```
@@ -24,7 +24,7 @@ We've built a helper method `sprite_icon(icon_name, size: nil, css_class: '')` t
 
 ### Using icons in Vue
 
-We've also built a shared component for icon usage in Vue - [icon.vue][icon-vue].
+We've built a shared component for icon usage in Vue - [icon.vue][icon-vue].
 
 ### Using icons in JavaScript
 
@@ -32,7 +32,7 @@ Import `spriteIcon` from [common_utils.js][common-utils]. Calling `spriteIcon(ic
 
 ## Illustrations
 
-Illustrations are also stored in the `gitlab-svgs` project. For consistent sizing and padding it can be wrapped in an element with the `svg-content` class.
+Illustrations are also stored in the `gitlab-svgs` project. For consistent sizing and padding they can be wrapped by an element with the `svg-content` class.
 
 ### In HAML
 
@@ -145,13 +145,12 @@ In Vue, we initialize tooltips by importing our [tooltip directive][tooltip-dire
 ```
 <!-- Tooltip will read: Hello world -->
 <span
-  v-tooltip
+  v-gl-tooltip
   title="Hello world"
 >
 </span>
 ```
 
-[gitlab-svgs-initiative]: ../initiatives.md
 [gitlab-svgs-project]: https://gitlab.com/gitlab-org/gitlab-svgs
 [svg-previewer]: http://gitlab-org.gitlab.io/gitlab-svgs/
 [icon-vue]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/vue_shared/components/icon.vue
