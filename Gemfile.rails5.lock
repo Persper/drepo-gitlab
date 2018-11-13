@@ -61,11 +61,6 @@ GEM
     asciidoctor (1.5.6.2)
     asciidoctor-plantuml (0.0.8)
       asciidoctor (~> 1.5)
-    asset_sync (2.4.0)
-      activemodel (>= 4.1.0)
-      fog-core
-      mime-types (>= 2.99)
-      unf
     ast (2.4.0)
     atomic (1.1.99)
     attr_encrypted (3.1.0)
@@ -170,6 +165,8 @@ GEM
       rotp (~> 2.0)
     diff-lcs (1.3)
     diffy (3.1.0)
+    discordrb-webhooks-blackst0ne (3.3.0)
+      rest-client (~> 2.0)
     docile (1.1.5)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
@@ -277,11 +274,10 @@ GEM
       gettext_i18n_rails (>= 0.7.1)
       po_to_json (>= 1.0.0)
       rails (>= 3.2.0)
-    gitaly-proto (0.118.1)
-      google-protobuf (~> 3.1)
-      grpc (~> 1.10)
+    gitaly-proto (0.123.0)
+      grpc (~> 1.0)
     github-markup (1.7.0)
-    gitlab-markup (1.6.4)
+    gitlab-markup (1.6.5)
     gitlab-sidekiq-fetcher (0.3.0)
       sidekiq (~> 5)
     gitlab-styles (2.4.1)
@@ -550,7 +546,7 @@ GEM
     orm_adapter (0.5.0)
     os (1.0.0)
     parallel (1.12.1)
-    parser (2.5.1.2)
+    parser (2.5.3.0)
       ast (~> 2.4.0)
     parslet (1.8.2)
     peek (1.0.1)
@@ -618,7 +614,7 @@ GEM
       httpclient (>= 2.4)
       multi_json (>= 1.3.6)
       rack (>= 1.1)
-    rack-protection (2.0.3)
+    rack-protection (2.0.4)
       rack
     rack-proxy (0.6.0)
       rack
@@ -691,7 +687,7 @@ GEM
       redis-actionpack (>= 5.0, < 6)
       redis-activesupport (>= 5.0, < 6)
       redis-store (>= 1.2, < 2)
-    redis-store (1.4.1)
+    redis-store (1.6.0)
       redis (>= 2.2, < 5)
     regexp_parser (0.5.0)
     representable (3.0.4)
@@ -816,7 +812,7 @@ GEM
       rack
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
-    sidekiq (5.2.1)
+    sidekiq (5.2.3)
       connection_pool (~> 2.2, >= 2.2.2)
       rack-protection (>= 1.5.0)
       redis (>= 3.3.5, < 5)
@@ -948,7 +944,6 @@ DEPENDENCIES
   asana (~> 0.6.0)
   asciidoctor (~> 1.5.6)
   asciidoctor-plantuml (= 0.0.8)
-  asset_sync (~> 2.4)
   attr_encrypted (~> 3.1.0)
   awesome_print
   babosa (~> 1.0.2)
@@ -981,6 +976,7 @@ DEPENDENCIES
   devise (~> 4.4)
   devise-two-factor (~> 3.0.0)
   diffy (~> 3.1.0)
+  discordrb-webhooks-blackst0ne (~> 3.3)
   doorkeeper (~> 4.3)
   doorkeeper-openid_connect (~> 1.5)
   ed25519 (~> 1.2)
@@ -1009,9 +1005,9 @@ DEPENDENCIES
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.3)
-  gitaly-proto (~> 0.118.1)
+  gitaly-proto (~> 0.123.0)
   github-markup (~> 1.7.0)
-  gitlab-markup (~> 1.6.4)
+  gitlab-markup (~> 1.6.5)
   gitlab-sidekiq-fetcher
   gitlab-styles (~> 2.4)
   gitlab_omniauth-ldap (~> 2.0.4)
@@ -1167,4 +1163,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.16.6
+   1.17.1

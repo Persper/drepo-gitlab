@@ -122,7 +122,7 @@ describe Projects::ClustersController do
         it 'has new object' do
           go
 
-          expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::Cluster)
+          expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
         end
       end
 
@@ -143,7 +143,7 @@ describe Projects::ClustersController do
       it 'has new object' do
         go
 
-        expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::Cluster)
+        expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
       end
     end
 
@@ -396,20 +396,6 @@ describe Projects::ClustersController do
   end
 
   describe 'PUT update' do
-    let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-
-    let(:params) do
-      {
-        cluster: {
-          enabled: false,
-          name: 'my-new-cluster-name',
-          platform_kubernetes_attributes: {
-            namespace: 'my-namespace'
-          }
-        }
-      }
-    end
-
     def go(format: :html)
       put :update, params.merge(namespace_id: project.namespace.to_param,
                                 project_id: project.to_param,
@@ -423,105 +409,73 @@ describe Projects::ClustersController do
       stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
     end
 
-    context 'when cluster is provided by GCP' do
-      it "updates and redirects back to show page" do
-        go
+    let(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
 
-        cluster.reload
-        expect(response).to redirect_to(project_cluster_path(project, cluster))
-        expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
-        expect(cluster.enabled).to be_falsey
-      end
-
-      it "does not change cluster name" do
-        go
-
-        cluster.reload
-        expect(cluster.name).to eq('test-cluster')
-      end
-
-      context 'when cluster is being created' do
-        let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
-
-        it "rejects changes" do
-          go
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:show)
-          expect(cluster.enabled).to be_truthy
-        end
-      end
-    end
-
-    context 'when cluster is provided by user' do
-      let(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
-
-      let(:params) do
-        {
-          cluster: {
-            enabled: false,
-            name: 'my-new-cluster-name',
-            platform_kubernetes_attributes: {
-              namespace: 'my-namespace'
-            }
+    let(:params) do
+      {
+        cluster: {
+          enabled: false,
+          name: 'my-new-cluster-name',
+          platform_kubernetes_attributes: {
+            namespace: 'my-namespace'
           }
         }
-      end
+      }
+    end
 
-      it "updates and redirects back to show page" do
-        go
+    it "updates and redirects back to show page" do
+      go
 
-        cluster.reload
-        expect(response).to redirect_to(project_cluster_path(project, cluster))
-        expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
-        expect(cluster.enabled).to be_falsey
-        expect(cluster.name).to eq('my-new-cluster-name')
-        expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
-      end
+      cluster.reload
+      expect(response).to redirect_to(project_cluster_path(project, cluster))
+      expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
+      expect(cluster.enabled).to be_falsey
+      expect(cluster.name).to eq('my-new-cluster-name')
+      expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
+    end
 
-      context 'when format is json' do
-        context 'when changing parameters' do
-          context 'when valid parameters are used' do
-            let(:params) do
-              {
-                cluster: {
-                  enabled: false,
-                  name: 'my-new-cluster-name',
-                  platform_kubernetes_attributes: {
-                    namespace: 'my-namespace'
-                  }
+    context 'when format is json' do
+      context 'when changing parameters' do
+        context 'when valid parameters are used' do
+          let(:params) do
+            {
+              cluster: {
+                enabled: false,
+                name: 'my-new-cluster-name',
+                platform_kubernetes_attributes: {
+                  namespace: 'my-namespace'
                 }
               }
-            end
-
-            it "updates and redirects back to show page" do
-              go(format: :json)
-
-              cluster.reload
-              expect(response).to have_http_status(:no_content)
-              expect(cluster.enabled).to be_falsey
-              expect(cluster.name).to eq('my-new-cluster-name')
-              expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
-            end
+            }
           end
 
-          context 'when invalid parameters are used' do
-            let(:params) do
-              {
-                cluster: {
-                  enabled: false,
-                  platform_kubernetes_attributes: {
-                    namespace: 'my invalid namespace #@'
-                  }
+          it "updates and redirects back to show page" do
+            go(format: :json)
+
+            cluster.reload
+            expect(response).to have_http_status(:no_content)
+            expect(cluster.enabled).to be_falsey
+            expect(cluster.name).to eq('my-new-cluster-name')
+            expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
+          end
+        end
+
+        context 'when invalid parameters are used' do
+          let(:params) do
+            {
+              cluster: {
+                enabled: false,
+                platform_kubernetes_attributes: {
+                  namespace: 'my invalid namespace #@'
                 }
               }
-            end
+            }
+          end
 
-            it "rejects changes" do
-              go(format: :json)
+          it "rejects changes" do
+            go(format: :json)
 
-              expect(response).to have_http_status(:bad_request)
-            end
+            expect(response).to have_http_status(:bad_request)
           end
         end
       end
