@@ -17,9 +17,10 @@ module Resolvers
     # rubocop: disable CodeReuse/ActiveRecord
     def resolve(**args)
       args[:project_id] = project.id
-      args[:per_page] = 2
 
-      IssuesFinder.new(context[:current_user], args).execute.limit(args[:limit])
+      IssuesFinder.new(context[:current_user], args).execute
+        .preload(:assignees, :labels, :notes, :timelogs, :project, :author, :closed_by)
+        .limit(args[:limit])
     end
     # rubocop: enable CodeReuse/ActiveRecord
   end

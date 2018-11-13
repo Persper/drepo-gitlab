@@ -8,6 +8,7 @@ query($fullPath: ID!, $search: String, $limit: Int = 5) {
       upvotes
       webUrl
       state
+      closedAt
       createdAt
       updatedAt
       author {

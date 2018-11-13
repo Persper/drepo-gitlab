@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import ApolloClient from 'apollo-boost';
+import defaultClient from '~/lib/graphql';
 import App from './components/app.vue';
-import csrf from '~/lib/utils/csrf';
 
 Vue.use(VueApollo);
 
@@ -11,12 +10,7 @@ export default function() {
   const issueTitle = document.getElementById('issue_title');
   const { projectPath } = el.dataset;
   const apolloProvider = new VueApollo({
-    defaultClient: new ApolloClient({
-      uri: '/api/graphql',
-      headers: {
-        [csrf.headerKey]: csrf.token,
-      },
-    }),
+    defaultClient,
   });
 
   return new Vue({

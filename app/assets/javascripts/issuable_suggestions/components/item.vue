@@ -1,11 +1,14 @@
 <script>
-import { GlLink, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlLink, GlTooltip, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import timeago from '~/vue_shared/mixins/timeago';
 
 export default {
   components: {
+    GlTooltip,
     GlLink,
     Icon,
     UserAvatarImage,
@@ -14,6 +17,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [timeago],
   props: {
     suggestion: {
       type: Object,
@@ -21,6 +25,12 @@ export default {
     },
   },
   computed: {
+    isOpen() {
+      return this.suggestion.state === 'opened';
+    },
+    isClosed() {
+      return this.suggestion.state === 'closed';
+    },
     counts() {
       return [
         {
@@ -36,7 +46,13 @@ export default {
       ].filter(({ count }) => count);
     },
     stateIcon() {
-      return this.suggestion.state === 'closed' ? 'issue-close' : 'issue-open-m';
+      return this.isClosed ? 'issue-close' : 'issue-open-m';
+    },
+    stateTitle() {
+      return this.isClosed ? __('Closed') : __('Opened');
+    },
+    closedOrCreatedDate() {
+      return this.suggestion.closedAt || this.suggestion.createdAt;
     },
   },
 };
@@ -47,8 +63,10 @@ export default {
     <div>
       <icon
         v-if="suggestion.confidential"
+        v-gl-tooltip.bottom
+        :title="__('Confidential')"
         name="eye-slash"
-        class="text-warning"
+        class="suggestion-help-hover text-warning"
       />
       <gl-link
         :href="suggestion.webUrl"
@@ -60,17 +78,34 @@ export default {
     </div>
     <div class="text-secondary">
       <icon
+        ref="state"
         :name="stateIcon"
         :class="{
-          'suggestion-state-open': suggestion.state === 'opened',
-          'suggestion-state-closed': suggestion.state === 'closed'
+          'suggestion-state-open': isOpen,
+          'suggestion-state-closed': isClosed
         }"
+        class="suggestion-help-hover"
       />
+      <gl-tooltip
+        :target="() => $refs.state"
+        placement="bottom"
+      >
+        <span class="d-block">
+          <strong>
+            {{ stateTitle }}
+          </strong>
+          <span class="bold">
+            {{ timeFormated(closedOrCreatedDate) }}
+          </span>
+        </span>
+        {{ tooltipTitle(closedOrCreatedDate) }}
+      </gl-tooltip>
       #{{ suggestion.iid }}
       &middot;
       <timeago-tooltip
         :time="suggestion.createdAt"
         tooltip-placement="bottom"
+        class="suggestion-help-hover"
       />
       by
       <gl-link
@@ -93,6 +128,7 @@ export default {
         <timeago-tooltip
           :time="suggestion.updatedAt"
           tooltip-placement="bottom"
+          class="suggestion-help-hover"
         />
       </template>
       <span class="suggestion-counts">
@@ -101,7 +137,7 @@ export default {
           :key="index"
           v-gl-tooltip.bottom
           :title="tooltipTitle"
-          class="ml-2"
+          class="suggestion-help-hover ml-2"
         >
           <icon
             :name="icon"
@@ -126,7 +162,7 @@ export default {
   color: #1f78d1;
 }
 
-.suggestion-counts span {
+.suggestion-help-hover {
   cursor: help;
 }
 </style>

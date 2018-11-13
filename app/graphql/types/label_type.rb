@@ -5,7 +5,7 @@ module Types
     graphql_name 'Label'
 
     field :id, GraphQL::ID_TYPE, null: false
-    field :description, GraphQL::STRING_TYPE, null: false
+    field :description, GraphQL::STRING_TYPE, null: true
     field :title, GraphQL::STRING_TYPE, null: false
     field :color, GraphQL::STRING_TYPE, null: false
     field :text_color, GraphQL::STRING_TYPE, null: false
