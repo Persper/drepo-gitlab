@@ -129,6 +129,7 @@
     "eslint-plugin-jasmine": "^2.10.1",
     "gettext-extractor": "^3.3.2",
     "gettext-extractor-vue": "^4.0.1",
+    "graphql-tag": "^2.10.0",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.9.0",
     "jasmine-diff": "^0.1.3",

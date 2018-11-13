@@ -1,4 +1,3 @@
-import _ from 'underscore';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import ApolloClient from 'apollo-boost';
@@ -29,12 +28,9 @@ export default function() {
       };
     },
     mounted() {
-      issueTitle.addEventListener(
-        'input',
-        _.debounce(() => {
-          this.search = issueTitle.value;
-        }, 250),
-      );
+      issueTitle.addEventListener('input', () => {
+        this.search = issueTitle.value;
+      });
     },
     render(h) {
       return h(App, {

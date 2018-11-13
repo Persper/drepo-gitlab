@@ -1395,6 +1395,10 @@ class User < ActiveRecord::Base
     !consented_usage_stats? && 7.days.ago > self.created_at && !has_current_license? && User.single_user?
   end
 
+  def web_url
+    Gitlab::Routing.url_helpers.user_url(self)
+  end
+
   # Avoid migrations only building user preference object when needed.
   def user_preference
     super.presence || build_user_preference

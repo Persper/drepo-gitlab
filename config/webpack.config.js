@@ -84,7 +84,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.mjs', '.js'],
+    extensions: ['.mjs', '.js', '.gql', '.graphql'],
     alias: {
       '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
       emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
@@ -120,6 +120,11 @@ module.exports = {
             VUE_LOADER_VERSION,
           ].join('|'),
         },
+      },
+      {
+        test: /\.(graphql|gql)$/,
+        exclude: /node_modules/,
+        loader: 'graphql-tag/loader',
       },
       {
         test: /\.svg$/,

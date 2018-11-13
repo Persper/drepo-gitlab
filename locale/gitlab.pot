@@ -4650,9 +4650,6 @@ msgstr ""
 msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
-msgid "Possible related issues"
-msgstr ""
-
 msgid "Preferences"
 msgstr ""
 
@@ -6227,6 +6224,9 @@ msgstr ""
 msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
+msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
+msgstr ""
+
 msgid "They can be managed using the %{link}."
 msgstr ""
 
@@ -6961,9 +6961,6 @@ msgid "Web IDE"
 msgstr ""
 
 msgid "Web terminal"
-msgstr ""
-
-msgid "What is your issue about?"
 msgstr ""
 
 msgid "When a runner is locked, it cannot be assigned to other projects"

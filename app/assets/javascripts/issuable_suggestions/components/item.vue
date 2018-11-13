@@ -1,11 +1,18 @@
 <script>
-import { GlLink } from '@gitlab-org/gitlab-ui';
+import { GlLink, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import Icon from '~/vue_shared/components/icon.vue';
+import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
+import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   components: {
     GlLink,
     Icon,
+    UserAvatarImage,
+    TimeagoTooltip,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     suggestion: {
@@ -18,81 +25,108 @@ export default {
       return [
         {
           icon: 'thumb-up',
+          tooltipTitle: 'Upvotes',
           count: this.suggestion.upvotes,
         },
         {
           icon: 'comment',
+          tooltipTitle: 'Comments',
           count: this.suggestion.userNotesCount,
         },
-      ];
+      ].filter(({ count }) => count);
+    },
+    stateIcon() {
+      return this.suggestion.state === 'closed' ? 'issue-close' : 'issue-open-m';
     },
   },
 };
 </script>
 
 <template>
-  <gl-link
-    v-once
-    :href="suggestion.web_url"
-    target="_blank"
-    class="suggestion"
-  >
-    <span class="suggestion-title">
-      #{{ suggestion.iid }}
-      {{ suggestion.title }}
-    </span>
-    <span class="suggestion-counts ml-auto">
-      <span
-        v-for="({ count, icon }, index) in counts"
-        :key="index"
-        :class="{
-          faded: count === 0
-        }"
-        class="ml-2"
+  <div class="suggestion-item">
+    <div>
+      <icon
+        v-if="suggestion.confidential"
+        name="eye-slash"
+        class="text-warning"
+      />
+      <gl-link
+        :href="suggestion.webUrl"
+        target="_blank"
+        class="suggestion bold"
       >
-        <icon
-          :name="icon"
+        {{ suggestion.title }}
+      </gl-link>
+    </div>
+    <div class="text-secondary">
+      <icon
+        :name="stateIcon"
+        :class="{
+          'suggestion-state-open': suggestion.state === 'opened',
+          'suggestion-state-closed': suggestion.state === 'closed'
+        }"
+      />
+      #{{ suggestion.iid }}
+      &middot;
+      <timeago-tooltip
+        :time="suggestion.createdAt"
+        tooltip-placement="bottom"
+      />
+      by
+      <gl-link
+        :href="suggestion.author.webUrl"
+      >
+        <user-avatar-image
+          :img-src="suggestion.author.avatarUrl"
+          :size="16"
+          css-classes="mr-0 float-none"
+          tooltip-placement="bottom"
+          class="d-inline-block"
+        >
+          <strong class="d-block">Author</strong>
+          <span class="bold">{{ suggestion.author.name }}</span> @{{ suggestion.author.username }}
+        </user-avatar-image>
+      </gl-link>
+      <template v-if="suggestion.updatedAt !== suggestion.createdAt">
+        &middot;
+        updated
+        <timeago-tooltip
+          :time="suggestion.updatedAt"
+          tooltip-placement="bottom"
         />
-        {{ count }}
+      </template>
+      <span class="suggestion-counts">
+        <span
+          v-for="({ count, icon, tooltipTitle }, index) in counts"
+          :key="index"
+          v-gl-tooltip.bottom
+          :title="tooltipTitle"
+          class="ml-2"
+        >
+          <icon
+            :name="icon"
+          />
+          {{ count }}
+        </span>
       </span>
-    </span>
-  </gl-link>
+    </div>
+  </div>
 </template>
 
 <style>
-.suggestion {
-  display: flex;
-  width: 100%;
-  color: #2e2e2e;
-  padding: 4px 6px;
-  border-radius: 2px;
+.suggestion-item a {
+  color: initial;
 }
 
-.suggestion:hover,
-.suggestion:focus {
-  color: #2e2e2e;
-  background-color: #eee;
-  text-decoration: none;
+.suggestion-state-open {
+  color: #1aaa55;
 }
 
-.suggestion svg {
-  position: relative;
-  top: 3px;
+.suggestion-state-closed {
+  color: #1f78d1;
 }
 
-.suggestion-title {
-  max-width: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.suggestion-counts {
-  display: flex;
-  white-space: nowrap;
-}
-
-.faded {
-  opacity: 0.4;
+.suggestion-counts span {
+  cursor: help;
 }
 </style>

@@ -18,7 +18,7 @@ describe "User creates issue" do
         .and have_no_content("Labels")
         .and have_no_content("Milestone")
 
-        expect(page.find('#issue_title')['placeholder']).to eq 'What is your issue about?'
+        expect(page.find('#issue_title')['placeholder']).to eq 'Title'
         expect(page.find('#issue_description')['placeholder']).to eq 'Write a comment or drag your files here…'
       end
 

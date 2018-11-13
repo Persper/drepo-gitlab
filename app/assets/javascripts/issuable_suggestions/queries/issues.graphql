@@ -1,0 +1,21 @@
+query($fullPath: ID!, $search: String, $limit: Int = 5) {
+  project(fullPath: $fullPath) {
+    issues(search: $search, limit: $limit) {
+      iid
+      title
+      confidential
+      userNotesCount
+      upvotes
+      webUrl
+      state
+      createdAt
+      updatedAt
+      author {
+        name
+        username
+        avatarUrl
+        webUrl
+      }
+    }
+  }
+}

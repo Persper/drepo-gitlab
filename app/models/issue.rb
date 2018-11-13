@@ -269,6 +269,10 @@ class Issue < ActiveRecord::Base
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  def web_url
+    Gitlab::UrlBuilder.build(self)
+  end
+
   private
 
   def ensure_metrics
