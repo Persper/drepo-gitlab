@@ -19,7 +19,7 @@ export default () => {
     const commitButton = $('.js-commit-button');
 
     commitButton.on('click', () => {
-      window.onbeforeunload = undefined;
+      window.onbeforeunload = null;
     });
 
     new EditBlob(`${urlRoot}${assetsPath}`, filePath, currentAction, projectId);
