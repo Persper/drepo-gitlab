@@ -1,3 +1,9 @@
+---
+nav_section: user
+nav_category: general
+layout: default-copy
+---
+
 # Authentication
 
 This page gathers all the resources for the topic **Authentication** within GitLab.

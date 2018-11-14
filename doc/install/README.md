@@ -4,6 +4,7 @@ description: Read through the GitLab installation methods.
 nav_section: admin
 nav_category: instance
 nav_title: "Install"
+nav_category_position: -2
 layout: default-copy
 ---
 
