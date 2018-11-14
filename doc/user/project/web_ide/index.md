@@ -1,3 +1,9 @@
+---
+nav_section: user
+nav_category: essentials
+layout: default-copy
+---
+
 # Web IDE
 
 > [Introduced in](https://gitlab.com/gitlab-org/gitlab-ee/issues/4539) [GitLab Ultimate][ee] 10.4.

@@ -1,3 +1,9 @@
+---
+nav_section: user
+nav_category: essentials
+layout: default-copy
+---
+
 # Repository
 
 A [repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)
