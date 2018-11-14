@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181107054254) do
+ActiveRecord::Schema.define(version: 20181114132131) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1629,6 +1629,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.boolean "pages_https_only", default: true
     t.boolean "remote_mirror_available_overridden"
     t.bigint "pool_repository_id"
+    t.integer "repository_id"
     t.index ["ci_id"], name: "index_projects_on_ci_id", using: :btree
     t.index ["created_at"], name: "index_projects_on_created_at", using: :btree
     t.index ["creator_id"], name: "index_projects_on_creator_id", using: :btree
@@ -1644,6 +1645,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.index ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
     t.index ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
     t.index ["pool_repository_id"], name: "index_projects_on_pool_repository_id", where: "(pool_repository_id IS NOT NULL)", using: :btree
+    t.index ["repository_id"], name: "index_projects_on_repository_id", where: "(repository_id IS NOT NULL)", using: :btree
     t.index ["repository_storage", "created_at"], name: "idx_project_repository_check_partial", where: "(last_repository_check_at IS NULL)", using: :btree
     t.index ["repository_storage"], name: "index_projects_on_repository_storage", using: :btree
     t.index ["runners_token"], name: "index_projects_on_runners_token", using: :btree
@@ -2355,6 +2357,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
   add_foreign_key "project_mirror_data", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "projects", "repositories", column: "pool_repository_id", name: "fk_6e5c14658a", on_delete: :nullify
+  add_foreign_key "projects", "repositories"
   add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade
