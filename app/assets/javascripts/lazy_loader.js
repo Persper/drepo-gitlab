@@ -1,11 +1,14 @@
 import _ from 'underscore';
+import EventEmitter from './event_emitter';
 
 export const placeholderImage =
   'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 const SCROLL_THRESHOLD = 500;
 
-export default class LazyLoader {
+export default class LazyLoader extends EventEmitter {
   constructor(options = {}) {
+    super();
+
     this.intersectionObserver = null;
     this.lazyImages = [];
     this.observerNode = options.observerNode || '#content-body';
@@ -113,6 +116,10 @@ export default class LazyLoader {
     this.requestAnimationFrame(() => this.checkElementsInView());
   }
 
+  emitIntersectionUpdate(isInView) {
+    this.emit('intersectionUpdate.lazyLoader', { isInView });
+  }
+
   checkElementsInView() {
     const scrollTop = window.pageYOffset;
     const visHeight = scrollTop + window.innerHeight + SCROLL_THRESHOLD;
@@ -128,6 +135,7 @@ export default class LazyLoader {
           this.requestAnimationFrame(() => {
             LazyLoader.loadImage(selectedImage);
           });
+          this.emitIntersectionUpdate(false);
           return false;
         }
 
@@ -139,12 +147,17 @@ export default class LazyLoader {
           if (this.intersectionObserver) {
             this.intersectionObserver.observe(selectedImage);
           }
+          this.emitIntersectionUpdate(false);
           return false;
         }
+        this.emitIntersectionUpdate(true);
         return true;
       }
+      this.emitIntersectionUpdate(false);
       return false;
     });
+
+    if (this.lazyImages.length === 0) this.emitIntersectionUpdate(false);
   }
 
   static loadImage(img) {

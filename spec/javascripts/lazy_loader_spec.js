@@ -1,7 +1,5 @@
 import LazyLoader from '~/lazy_loader';
 import { TEST_HOST } from './test_constants';
-import scrollIntoViewPromise from './helpers/scroll_into_view_promise_helper';
-import waitForPromises from './helpers/wait_for_promises';
 
 let lazyLoader = null;
 
@@ -39,15 +37,14 @@ describe('LazyLoader', function() {
       const img = document.querySelectorAll('img[data-src]')[0];
       const originalDataSrc = img.getAttribute('data-src');
 
-      scrollIntoViewPromise(img)
-        .then(waitForPromises)
-        .then(() => {
-          expect(LazyLoader.loadImage).toHaveBeenCalled();
-          expect(img.getAttribute('src')).toBe(originalDataSrc);
-          expect(img).toHaveClass('js-lazy-loaded');
-          done();
-        })
-        .catch(done.fail);
+      lazyLoader.once('intersectionUpdate.lazyLoader', () => {
+        expect(LazyLoader.loadImage).toHaveBeenCalled();
+        expect(img.getAttribute('src')).toBe(originalDataSrc);
+        expect(img).toHaveClass('js-lazy-loaded');
+        done();
+      });
+
+      img.scrollIntoView();
     });
 
     it('should lazy load dynamically added data-src images', function(done) {
@@ -57,15 +54,16 @@ describe('LazyLoader', function() {
       newImg.setAttribute('data-src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
-        .then(waitForPromises)
-        .then(() => {
-          expect(LazyLoader.loadImage).toHaveBeenCalled();
-          expect(newImg.getAttribute('src')).toBe(testPath);
-          expect(newImg).toHaveClass('js-lazy-loaded');
-          done();
-        })
-        .catch(done.fail);
+      lazyLoader.on('intersectionUpdate.lazyLoader', ({ detail }) => {
+        if (detail.isInView) return;
+
+        expect(LazyLoader.loadImage).toHaveBeenCalled();
+        expect(newImg.getAttribute('src')).toBe(testPath);
+        expect(newImg).toHaveClass('js-lazy-loaded');
+        done();
+      });
+
+      newImg.scrollIntoView();
     });
 
     it('should not alter normal images', function(done) {
@@ -74,14 +72,13 @@ describe('LazyLoader', function() {
       newImg.setAttribute('src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
-        .then(waitForPromises)
-        .then(() => {
-          expect(LazyLoader.loadImage).not.toHaveBeenCalled();
-          expect(newImg).not.toHaveClass('js-lazy-loaded');
-          done();
-        })
-        .catch(done.fail);
+      lazyLoader.once('intersectionUpdate.lazyLoader', () => {
+        expect(LazyLoader.loadImage).not.toHaveBeenCalled();
+        expect(newImg).not.toHaveClass('js-lazy-loaded');
+        done();
+      });
+
+      newImg.scrollIntoView();
     });
 
     it('should not load dynamically added pictures if content observer is turned off', done => {
@@ -93,14 +90,13 @@ describe('LazyLoader', function() {
       newImg.setAttribute('data-src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
-        .then(waitForPromises)
-        .then(() => {
-          expect(LazyLoader.loadImage).not.toHaveBeenCalled();
-          expect(newImg).not.toHaveClass('js-lazy-loaded');
-          done();
-        })
-        .catch(done.fail);
+      lazyLoader.once('intersectionUpdate.lazyLoader', () => {
+        expect(LazyLoader.loadImage).not.toHaveBeenCalled();
+        expect(newImg).not.toHaveClass('js-lazy-loaded');
+        done();
+      });
+
+      newImg.scrollIntoView();
     });
 
     it('should load dynamically added pictures if content observer is turned off and on again', done => {
@@ -113,14 +109,15 @@ describe('LazyLoader', function() {
       newImg.setAttribute('data-src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
-        .then(waitForPromises)
-        .then(() => {
-          expect(LazyLoader.loadImage).toHaveBeenCalled();
-          expect(newImg).toHaveClass('js-lazy-loaded');
-          done();
-        })
-        .catch(done.fail);
+      lazyLoader.on('intersectionUpdate.lazyLoader', ({ detail }) => {
+        if (detail.isInView) return;
+
+        expect(LazyLoader.loadImage).toHaveBeenCalled();
+        expect(newImg).toHaveClass('js-lazy-loaded');
+        done();
+      });
+
+      newImg.scrollIntoView();
     });
   });
 
@@ -149,15 +146,14 @@ describe('LazyLoader', function() {
       const img = document.querySelectorAll('img[data-src]')[0];
       const originalDataSrc = img.getAttribute('data-src');
 
-      scrollIntoViewPromise(img)
-        .then(waitForPromises)
-        .then(() => {
-          expect(LazyLoader.loadImage).toHaveBeenCalled();
-          expect(img.getAttribute('src')).toBe(originalDataSrc);
-          expect(img).toHaveClass('js-lazy-loaded');
-          done();
-        })
-        .catch(done.fail);
+      lazyLoader.once('intersectionUpdate.lazyLoader', () => {
+        expect(LazyLoader.loadImage).toHaveBeenCalled();
+        expect(img.getAttribute('src')).toBe(originalDataSrc);
+        expect(img).toHaveClass('js-lazy-loaded');
+        done();
+      });
+
+      img.scrollIntoView();
     });
 
     it('should lazy load dynamically added data-src images', function(done) {
@@ -167,15 +163,14 @@ describe('LazyLoader', function() {
       newImg.setAttribute('data-src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
-        .then(waitForPromises)
-        .then(() => {
-          expect(LazyLoader.loadImage).toHaveBeenCalled();
-          expect(newImg.getAttribute('src')).toBe(testPath);
-          expect(newImg).toHaveClass('js-lazy-loaded');
-          done();
-        })
-        .catch(done.fail);
+      lazyLoader.once('intersectionUpdate.lazyLoader', () => {
+        expect(LazyLoader.loadImage).toHaveBeenCalled();
+        expect(newImg.getAttribute('src')).toBe(testPath);
+        expect(newImg).toHaveClass('js-lazy-loaded');
+        done();
+      });
+
+      newImg.scrollIntoView();
     });
 
     it('should not alter normal images', function(done) {
@@ -184,14 +179,13 @@ describe('LazyLoader', function() {
       newImg.setAttribute('src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
-        .then(waitForPromises)
-        .then(() => {
-          expect(LazyLoader.loadImage).not.toHaveBeenCalled();
-          expect(newImg).not.toHaveClass('js-lazy-loaded');
-          done();
-        })
-        .catch(done.fail);
+      lazyLoader.once('intersectionUpdate.lazyLoader', () => {
+        expect(LazyLoader.loadImage).not.toHaveBeenCalled();
+        expect(newImg).not.toHaveClass('js-lazy-loaded');
+        done();
+      });
+
+      newImg.scrollIntoView();
     });
 
     it('should not load dynamically added pictures if content observer is turned off', done => {
@@ -203,14 +197,13 @@ describe('LazyLoader', function() {
       newImg.setAttribute('data-src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
-        .then(waitForPromises)
-        .then(() => {
-          expect(LazyLoader.loadImage).not.toHaveBeenCalled();
-          expect(newImg).not.toHaveClass('js-lazy-loaded');
-          done();
-        })
-        .catch(done.fail);
+      lazyLoader.once('intersectionUpdate.lazyLoader', () => {
+        expect(LazyLoader.loadImage).not.toHaveBeenCalled();
+        expect(newImg).not.toHaveClass('js-lazy-loaded');
+        done();
+      });
+
+      newImg.scrollIntoView();
     });
 
     it('should load dynamically added pictures if content observer is turned off and on again', done => {
@@ -223,14 +216,13 @@ describe('LazyLoader', function() {
       newImg.setAttribute('data-src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
-        .then(waitForPromises)
-        .then(() => {
-          expect(LazyLoader.loadImage).toHaveBeenCalled();
-          expect(newImg).toHaveClass('js-lazy-loaded');
-          done();
-        })
-        .catch(done.fail);
+      lazyLoader.once('intersectionUpdate.lazyLoader', () => {
+        expect(LazyLoader.loadImage).toHaveBeenCalled();
+        expect(newImg).toHaveClass('js-lazy-loaded');
+        done();
+      });
+
+      newImg.scrollIntoView();
     });
   });
 });
