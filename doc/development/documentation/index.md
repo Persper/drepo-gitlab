@@ -688,5 +688,224 @@ code review. For docs changes in merge requests, whenever a change under `/doc`
 is made, the bot leaves a comment for the author to mention `@gl-docsteam`, so
 that the docs can be properly reviewed.
 
+## Global navigation
+
+[Introduced](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/362)
+in November 2018, the global nav loops through all pages in the docs site,
+outputting in the nav the pages according to frontmatter entries with key/values
+specifying the position in the nav.
+
+### How it works
+
+The global nav has 3 components:
+
+- **Section**
+  - Category
+    - Link
+
+These entries are defined in the document frontmatter:
+
+```md
+---
+nav_section: admin
+nav_category: instance
+---
+
+# Install
+```
+
+The configuration above adds the "Install" doc to the nav section "Admin docs",
+under the "Instance" category. The output is:
+
+```md
+- Admin docs
+  - Instance
+    - [Install](link)
+```
+
+#### Sections (`nav_section`)
+
+This entry sets the section a category will be under. The available sections are:
+
+| Section slug  | Output           |
+| ------------- | ---------------- |
+| `user`        | User docs        |
+| `admin`       | Admin docs       |
+| `development` | Contributor docs |
+
+#### Categories (`nav_category`)
+
+This entry sets the category of the nav under one of its sections.
+
+Available categories for the `user` section:
+
+| Category slug | Output     |
+| ------------- | ---------- |
+| `essentials`  | Essentials |
+| `ci`          | CI/CD      |
+| `account`     | Account    |
+| `general`     | General    |
+
+Available categories for the `admin` section:
+
+| Category slug | Output     |
+| ------------- | ---------- |
+| `instance`    | Instance   |
+| `general`     | General    |
+
+Available categories for the `development` section: none. In this particular case, while
+there's no reason to create diferent categories for the development guides,
+`nav_category: ""` is left empty, so that all the docs are listed directly under
+the `development` section.
+
+#### Positioning a document within a category
+
+The optional frontmatter entry `nav_category_position` sets the position of the link
+in the category list. With it, it's possible to customize the order of the links
+within a category. For example, in the section `user`, category `essentials`,
+the link to "projects" comes first. This was determined by setting a specific
+order for this doc.
+
+For docs that do not have any order set, they will be included at the bottom of the
+list, after the docs that have an order set.
+
+Negative values shift the document to the top of the list. Example:
+
+```yaml
+nav_section: admin
+nav_category: instance
+nav_category_position: -2
+```
+
+#### Document title
+
+The `nav_title` entry sets a custom title for the nav link. The fallback is the document title.
+It's useful to keep the nav with short names and concise/consistent layout.
+
+Example:
+
+```md
+---
+nav_section: admin
+nav_category: instance
+nav_title: "Install"
+---
+
+# Installing GitLab on Bla Bla Bla Bla
+```
+
+### Further settings
+
+There are two files that define the global navigation:
+
+- A layout file: `global-nav.html`
+- A Nanoc helper: `nav.rb`
+
+#### Customizing the categories order
+
+For customizing the order of the categories within a section, this needs to be done in the helper file `nav.rb`:
+
+```ruby
+NAV_SECTION_CONFIG = {
+  # sets the order of the categories in the "user" section. In this case, essentials comes first, then ci, then account, and then general.
+  'user' => {
+    'category_order' => %w{essentials ci account general}
+  }
+}
+```
+
+This needs to be done carefully, as the array of categories needs to match all the categories
+set through the documents. If you add another category, make sure to add it to this list.
+
+#### Global nav layout
+
+The layout of the nav is defined by the file `global-nav.html`. In this file,
+the sections are organized individually.
+
+For example:
+
+```erb
+<!-- Admin docs -->
+<span class="global-nav-block">Admin docs</span>
+<%= nav_create_links_for(sections, 'admin', @item) %>
+```
+
+This block defines the admin section name in the span tag, and outputs
+the loop through all the docs within the `admin` section of the nav.
+
+Let's say you want to add a new section to the nav:
+
+```erb
+<!-- New section -->
+<span class="global-nav-block">Section name</span>
+<%= nav_create_links_for(sections, 'section-slug', @item) %>
+```
+
+To output docs into this new section, you'd have to add this to their frontmatter:
+
+```yaml
+nav_section: section-slug
+nav_category: category-name
+```
+
+Note that the category is created by the frontmatter entry itself, although,
+if you want to define a specific order for the categories of a section, or if
+the section already has its category ordered, the new category needs to
+added to the helper, as explained above on [customizing the categories order](#customizing-the-categories-order).
+
+#### Category slugs
+
+The nav categories are defined in the frontmatter as slugs, converted to their names
+on the helper file. The fallback is the slug itself, capitalized.
+
+For example, for the category slug `general`, the category output on the nav is "General".
+In this case, there's no label definition for the slug, so the code only capitalizes it.
+
+On the other hand, for the category slug `ci`, the category output on the nav is "CI/CD".
+In this case, the slug is defined in the helper file by indicating a label for the slug:
+
+```ruby
+NAV_CATEGORY_CONFIG = {
+  'ci' => {
+    'label' => 'CI/CD'
+  }
+}
+```
+
+Let's say you need to create a category called "Q&A" under the section "Admin docs".
+
+The doc frontmatter would contain:
+
+```yaml
+nav_section: admin
+nav_category: qa
+```
+
+And you'd have to define a corresponding label for the slug in the helper:
+
+```ruby
+NAV_CATEGORY_CONFIG = {
+  #...
+  'qa' => {
+    'label' => 'Q&A'
+  }
+}
+```
+
+As for the `admin` section, there's a defined category order, so you also must add the new
+category to the array in the helper file:
+
+```ruby
+NAV_SECTION_CONFIG = {
+  #...
+  'admin' => {
+    'category_order' => %w{general instance qa}
+  }
+}
+```
+
+This way, you're not only including the new category to the section, but outputting
+it after `general` and `instance`.
+
 [gitlab-map]: https://gitlab.com/gitlab-org/gitlab-design/raw/master/production/resources/gitlab-map.png
 [graffle]: https://gitlab.com/gitlab-org/gitlab-design/blob/d8d39f4a87b90fb9ae89ca12dc565347b4900d5e/production/resources/gitlab-map.graffle
