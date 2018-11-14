@@ -6,7 +6,8 @@ module QA
   module Resource
     class User < Base
       attr_reader :unique_id
-      attr_writer :username, :password
+      attr_writer :username, :password, :name, :email
+      attr_accessor :provider, :extern_uid
 
       def initialize
         @unique_id = SecureRandom.hex(8)
@@ -73,10 +74,19 @@ module QA
           username: username,
           name: name,
           skip_confirmation: true
-        }
+        }.merge(ldap_post_body)
       end
 
       private
+
+      def ldap_post_body
+        return {} unless extern_uid && provider
+
+        {
+            extern_uid: extern_uid,
+            provider: provider
+        }
+      end
 
       def fetch_id(username)
         users = parse_body(api_get_from("/users?username=#{username}"))
