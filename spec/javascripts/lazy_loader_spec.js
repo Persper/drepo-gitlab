@@ -3,13 +3,30 @@ import { TEST_HOST } from './test_constants';
 import scrollIntoViewPromise from './helpers/scroll_into_view_promise_helper';
 import waitForPromises from './helpers/wait_for_promises';
 
-let lazyLoader = null;
-
 const execImmediately = callback => {
   callback();
 };
 
+const waitForAttributeChange = (domElement, attributes, timeout = 1500) =>
+  new Promise((resolve, reject) => {
+    let observer;
+    const timeoutId = setTimeout(() => {
+      observer.disconnect();
+      reject(new Error(`Could not see an attribute change within ${timeout} ms`));
+    }, timeout);
+
+    observer = new MutationObserver(() => {
+      clearTimeout(timeoutId);
+      observer.disconnect();
+      resolve();
+    });
+
+    observer.observe(domElement, { attributes: true, attributeFilter: attributes });
+  });
+
 describe('LazyLoader', function() {
+  let lazyLoader = null;
+
   preloadFixtures('issues/issue_with_comment.html.raw');
 
   describe('without IntersectionObserver', () => {
@@ -18,13 +35,13 @@ describe('LazyLoader', function() {
 
       lazyLoader = new LazyLoader({
         observerNode: 'foobar',
-        requestAnimationFrame: execImmediately,
       });
 
       spyOn(LazyLoader, 'supportsIntersectionObserver').and.callFake(() => false);
 
       spyOn(LazyLoader, 'loadImage').and.callThrough();
 
+      spyOn(window, 'requestAnimationFrame').and.callFake(execImmediately);
       spyOn(window, 'requestIdleCallback').and.callFake(execImmediately);
 
       // Doing everything that happens normally in onload
@@ -39,8 +56,7 @@ describe('LazyLoader', function() {
       const img = document.querySelectorAll('img[data-src]')[0];
       const originalDataSrc = img.getAttribute('data-src');
 
-      scrollIntoViewPromise(img)
-        .then(waitForPromises)
+      Promise.all([scrollIntoViewPromise(img), waitForAttributeChange(img, ['data-src', 'src'])])
         .then(() => {
           expect(LazyLoader.loadImage).toHaveBeenCalled();
           expect(img.getAttribute('src')).toBe(originalDataSrc);
@@ -57,8 +73,10 @@ describe('LazyLoader', function() {
       newImg.setAttribute('data-src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
-        .then(waitForPromises)
+      Promise.all([
+        scrollIntoViewPromise(newImg),
+        waitForAttributeChange(newImg, ['data-src', 'src']),
+      ])
         .then(() => {
           expect(LazyLoader.loadImage).toHaveBeenCalled();
           expect(newImg.getAttribute('src')).toBe(testPath);
@@ -113,7 +131,10 @@ describe('LazyLoader', function() {
       newImg.setAttribute('data-src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
+      Promise.all([
+        scrollIntoViewPromise(newImg),
+        waitForAttributeChange(newImg, ['data-src', 'src']),
+      ])
         .then(waitForPromises)
         .then(() => {
           expect(LazyLoader.loadImage).toHaveBeenCalled();
@@ -130,11 +151,11 @@ describe('LazyLoader', function() {
 
       lazyLoader = new LazyLoader({
         observerNode: 'foobar',
-        requestAnimationFrame: execImmediately,
       });
 
       spyOn(LazyLoader, 'loadImage').and.callThrough();
 
+      spyOn(window, 'requestAnimationFrame').and.callFake(execImmediately);
       spyOn(window, 'requestIdleCallback').and.callFake(execImmediately);
 
       // Doing everything that happens normally in onload
@@ -149,8 +170,7 @@ describe('LazyLoader', function() {
       const img = document.querySelectorAll('img[data-src]')[0];
       const originalDataSrc = img.getAttribute('data-src');
 
-      scrollIntoViewPromise(img)
-        .then(waitForPromises)
+      Promise.all([scrollIntoViewPromise(img), waitForAttributeChange(img, ['data-src', 'src'])])
         .then(() => {
           expect(LazyLoader.loadImage).toHaveBeenCalled();
           expect(img.getAttribute('src')).toBe(originalDataSrc);
@@ -167,8 +187,10 @@ describe('LazyLoader', function() {
       newImg.setAttribute('data-src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
-        .then(waitForPromises)
+      Promise.all([
+        scrollIntoViewPromise(newImg),
+        waitForAttributeChange(newImg, ['data-src', 'src']),
+      ])
         .then(() => {
           expect(LazyLoader.loadImage).toHaveBeenCalled();
           expect(newImg.getAttribute('src')).toBe(testPath);
@@ -223,8 +245,10 @@ describe('LazyLoader', function() {
       newImg.setAttribute('data-src', testPath);
       document.body.appendChild(newImg);
 
-      scrollIntoViewPromise(newImg)
-        .then(waitForPromises)
+      Promise.all([
+        scrollIntoViewPromise(newImg),
+        waitForAttributeChange(newImg, ['data-src', 'src']),
+      ])
         .then(() => {
           expect(LazyLoader.loadImage).toHaveBeenCalled();
           expect(newImg).toHaveClass('js-lazy-loaded');
