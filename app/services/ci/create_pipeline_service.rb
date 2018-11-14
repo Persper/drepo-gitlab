@@ -23,6 +23,7 @@ module Ci
         before_sha: params[:before],
         trigger_request: trigger_request,
         schedule: schedule,
+        merge_request: merge_request,
         ignore_skip_ci: ignore_skip_ci,
         save_incompleted: save_on_errors,
         seeds_block: block,

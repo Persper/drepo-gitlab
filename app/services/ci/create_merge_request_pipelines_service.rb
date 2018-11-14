@@ -14,6 +14,7 @@ module Ci
 
     def find_merge_requests(&block)
       MergeRequest.where(source_project: project, source_branch: params[:ref])
+                  .opened
                   .find_each(&block)
     end
   end

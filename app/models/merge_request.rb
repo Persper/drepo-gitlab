@@ -56,6 +56,8 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
 
+  has_many :pipelines, through: :merge_request_pipelines, class_name: "Ci::Pipeline"
+
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :merge_requests_closing_issues,
@@ -680,6 +682,10 @@ class MergeRequest < ActiveRecord::Base
 
   def closed_event
     @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
+  end
+
+  def has_mr_pipelines?
+    self.pipelines.any?
   end
 
   def work_in_progress?
