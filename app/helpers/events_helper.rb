@@ -161,6 +161,12 @@ module EventsHelper
       project_commit_url(event.project, event.note_target, anchor: dom_id(event.target))
     elsif event.project_snippet_note?
       project_snippet_url(event.project, event.note_target, anchor: dom_id(event.target))
+    elsif event.issue_note?
+      namespace_project_issue_url(namespace_id: event.project.namespace_id, project_id: event.project_id,
+                                  id: event.note_target, anchor: dom_id(event.target))
+    elsif event.merge_request_note?
+      namespace_project_merge_request_url(namespace_id: event.project.namespace_id, project_id: event.project_id,
+                                          id: event.note_target, anchor: dom_id(event.target))
     else
       polymorphic_url([event.project.namespace.becomes(Namespace),
                        event.project, event.note_target],
