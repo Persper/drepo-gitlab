@@ -95,8 +95,19 @@ docker exec -t <container name> gitlab-rake gitlab:backup:create
 If you are using the gitlab-omnibus helm chart on a Kubernetes cluster, you can
 run the backup task on the gitlab application pod using kubectl:
 
+> Note. This chart was deprecated according to 
+[GitLab-Omnibus Helm Chart](https://docs.gitlab.com/ee/install/kubernetes/gitlab_omnibus.html) documentation.
+
 ```sh
 kubectl exec -it <gitlab-gitlab pod> gitlab-rake gitlab:backup:create
+```
+
+If you are using the gitlab helm chart on a Kubernetes cluster, you can
+run the backup task using `backup-utility` script on the gitlab task runner pod via kubectl. 
+Please refer to [Backing up a GitLab installation](https://gitlab.com/charts/gitlab/blob/master/doc/backup-restore/backup.md#backing-up-a-gitlab-installation) for more details:
+
+```sh
+kubectl exec -it <gitlab task-runner pod> backup-utility
 ```
 
 Example output:
@@ -714,7 +725,7 @@ If there is a GitLab version mismatch between your backup tar file and the insta
 version of GitLab, the restore command will abort with an error. Install the
 [correct GitLab version](https://packages.gitlab.com/gitlab/) and try again.
 
-### Restore for Docker image and gitlab-omnibus helm chart
+### Restore for Docker image, gitlab-omnibus, and gitlab helm chart
 
 For GitLab installations using docker image or the gitlab-omnibus helm chart on
 a Kubernetes cluster, restore task expects the restore directories to be empty.
@@ -741,6 +752,8 @@ gitlab application pod using kubectl
 ```
 kubectl exec -it <gitlab-gitlab pod> gitlab-rake gitlab:backup:restore
 ```
+
+For restoring backups using gitlab helm chart please refer to [Restoring a GitLab installation](https://gitlab.com/charts/gitlab/blob/master/doc/backup-restore/restore.md).
 
 ## Alternative backup strategies
 
