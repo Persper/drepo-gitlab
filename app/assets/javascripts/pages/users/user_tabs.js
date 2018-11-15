@@ -62,20 +62,12 @@ import UserOverviewBlock from './user_overview_block';
  * </div>
  */
 
-const CALENDAR_TEMPLATES = {
-  activity: `
-    <div class="clearfix calendar">
-      <div class="js-contrib-calendar"></div>
-      <div class="calendar-hint bottom-right"></div>
-    </div>
-  `,
-  overview: `
-    <div class="clearfix calendar">
-      <div class="calendar-hint"></div>
-      <div class="js-contrib-calendar prepend-top-20"></div>
-    </div>
-  `,
-};
+const CALENDAR_TEMPLATE = `
+  <div class="clearfix calendar">
+    <div class="js-contrib-calendar"></div>
+    <div class="calendar-hint bottom-right"></div>
+  </div>
+`;
 
 const CALENDAR_PERIOD_6_MONTHS = 6;
 const CALENDAR_PERIOD_12_MONTHS = 12;
@@ -233,7 +225,7 @@ export default class UserTabs {
   }
 
   static renderActivityCalendar(data, action, $calendarWrap) {
-    const monthsAgo = UserTabs.getVisibleCalendarPeriod(action, $calendarWrap);
+    const monthsAgo = UserTabs.getVisibleCalendarPeriod($calendarWrap);
     const calendarActivitiesPath = $calendarWrap.data('calendarActivitiesPath');
     let utcFormatted = 'UTC';
     const utcOffset = $calendarWrap.data('utcOffset');
@@ -241,7 +233,7 @@ export default class UserTabs {
       utcFormatted = `UTC${utcOffset > 0 ? '+' : ''}${utcOffset / 3600}`;
     }
 
-    $calendarWrap.html(CALENDAR_TEMPLATES[action]);
+    $calendarWrap.html(CALENDAR_TEMPLATE);
 
     let calendarHint = '';
 
@@ -292,13 +284,10 @@ export default class UserTabs {
     return this.$parentEl.find('.nav-links a.active').data('action');
   }
 
-  static getVisibleCalendarPeriod(action, $calendarWrap) {
-    let monthsAgo = CALENDAR_PERIOD_12_MONTHS;
-
-    if (action === 'overview' && $calendarWrap.width() < OVERVIEW_CALENDAR_BREAKPOINT) {
-      monthsAgo = CALENDAR_PERIOD_6_MONTHS;
-    }
-
-    return monthsAgo;
+  static getVisibleCalendarPeriod($calendarWrap) {
+    const width = $calendarWrap.width();
+    return width < OVERVIEW_CALENDAR_BREAKPOINT
+      ? CALENDAR_PERIOD_6_MONTHS
+      : CALENDAR_PERIOD_12_MONTHS;
   }
 }
