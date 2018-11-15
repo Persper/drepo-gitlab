@@ -213,6 +213,10 @@
     @include btn-with-margin;
   }
 
+  &.btn-icon {
+    color: $gl-gray-700;
+  }
+
   .fa-caret-down,
   .fa-chevron-down {
     margin-left: 5px;
@@ -221,6 +225,25 @@
   &.dropdown-toggle {
     .fa-caret-down {
       margin-left: 3px;
+    }
+  }
+
+  &.btn-text-field {
+    width: 100%;
+    text-align: left;
+    padding: 6px 16px;
+    border-color: $border-color;
+    color: $gray-darkest;
+    background-color: $gray-light;
+
+    &:hover,
+    &:active,
+    &:focus {
+      cursor: text;
+      box-shadow: none;
+      border-color: lighten($blue-300, 20%);
+      color: $gray-darkest;
+      background-color: $gray-light;
     }
   }
 
@@ -338,25 +361,6 @@
 
   .fa {
     margin-right: 5px;
-  }
-}
-
-.btn-text-field {
-  width: 100%;
-  text-align: left;
-  padding: 6px 16px;
-  border-color: $border-color;
-  color: $gray-darkest;
-  background-color: $gray-light;
-
-  &:hover,
-  &:active,
-  &:focus {
-    cursor: text;
-    box-shadow: none;
-    border-color: lighten($blue-300, 20%);
-    color: $gray-darkest;
-    background-color: $gray-light;
   }
 }
 
