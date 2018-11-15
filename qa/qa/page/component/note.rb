@@ -35,6 +35,7 @@ module QA
         def reply_to_discussion(reply_text)
           all_elements(:discussion_reply).last.click
           fill_element :reply_input, reply_text
+          sleep 1
           all_elements(:reply_comment_button).last.click
         end
 

@@ -36,19 +36,6 @@ module QA
           element :diff_comment
         end
 
-        view 'app/assets/javascripts/notes/components/comment_form.vue' do
-          element :note_dropdown
-          element :discussion_option
-        end
-
-        view 'app/assets/javascripts/notes/components/note_form.vue' do
-          element :reply_input
-        end
-
-        view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do
-          element :discussion_reply
-        end
-
         view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
           element :new_diff_line
         end
@@ -156,18 +143,6 @@ module QA
           all_elements(:new_diff_line).first.hover
           click_element :diff_comment
           fill_element :reply_input, text
-        end
-
-        def start_discussion(text)
-          fill_element :comment_input, text
-          click_element :note_dropdown
-          click_element :discussion_option
-          click_element :comment_button
-        end
-
-        def reply_to_discussion(reply_text)
-          all_elements(:discussion_reply).last.click
-          fill_element :reply_input, reply_text
         end
 
         def edit!
