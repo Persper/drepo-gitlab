@@ -2,7 +2,43 @@
 
 require 'spec_helper'
 
-describe ClusterPlatformConfigureWorker, '#execute' do
+describe ClusterPlatformConfigureWorker, '#perform' do
+  let(:worker) { described_class.new }
+
+  context 'when group cluster' do
+    let(:cluster) { create(:cluster, :group, :provided_by_gcp) }
+    let(:group) { cluster.group }
+
+    context 'when group has no projects' do
+      it 'does not create a namespace' do
+        expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).not_to receive(:execute)
+
+        worker.perform(cluster.id)
+      end
+    end
+
+    context 'when group has a project' do
+      let!(:project) { create(:project, group: group) }
+
+      it 'creates a namespace for the project' do
+        expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).to receive(:execute).once
+
+        worker.perform(cluster.id)
+      end
+    end
+
+    context 'when group has project in a sub-group' do
+      let!(:subgroup) { create(:group, parent: group) }
+      let!(:project) { create(:project, group: subgroup) }
+
+      it 'creates a namespace for the project' do
+        expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).to receive(:execute).once
+
+        worker.perform(cluster.id)
+      end
+    end
+  end
+
   context 'when provider type is gcp' do
     let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
 

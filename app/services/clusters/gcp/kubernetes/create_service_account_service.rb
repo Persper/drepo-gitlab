@@ -38,6 +38,8 @@ module Clusters
 
         def execute
           ensure_project_namespace_exists if namespace_creator
+
+          # FIXME create or update
           kubeclient.create_service_account(service_account_resource)
           kubeclient.create_secret(service_account_token_resource)
           create_role_or_cluster_role_binding if rbac

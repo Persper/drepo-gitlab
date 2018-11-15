@@ -148,10 +148,20 @@ module Clusters
       platform_kubernetes.kubeclient if kubernetes?
     end
 
-    def find_or_initialize_kubernetes_namespace(cluster_project)
+    def find_or_initialize_kubernetes_namespace_by_cluster_project(cluster_project)
+      return unless project_type?
+
       kubernetes_namespaces.find_or_initialize_by(
         project: cluster_project.project,
         cluster_project: cluster_project
+      )
+    end
+
+    def find_or_initialize_kubernetes_namespace_by_project(project)
+      return unless group_type?
+
+      kubernetes_namespaces.find_or_initialize_by(
+        project: project
       )
     end
 
