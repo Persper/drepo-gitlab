@@ -9,7 +9,7 @@ module Gitlab
 
           def perform!
             pipeline.save!
-          rescue ActiveRecord::RecordInvalid => e
+          rescue ActiveRecord::RecordInvalid, Deployable::FailedToCreateEnvironmentError => e
             error("Failed to persist the pipeline: #{e}")
           end
 

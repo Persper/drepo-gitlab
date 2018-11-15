@@ -5,10 +5,6 @@ describe Deployable do
     let(:deployment) { job.deployment }
     let(:environment) { deployment&.environment }
 
-    before do
-      job.reload
-    end
-
     context 'when the deployable object will deploy to production' do
       let!(:job) { create(:ci_build, :start_review_app) }
 
@@ -47,6 +43,29 @@ describe Deployable do
       it 'does not create a deployment and environment record' do
         expect(deployment).to be_nil
         expect(environment).to be_nil
+      end
+    end
+
+    context 'when environment scope contains invalid character' do
+      let(:job) do
+        create(
+          :ci_build,
+          name: 'job:deploy-to-test-site',
+          environment: '$CI_JOB_NAME',
+          options: {
+            environment: {
+              name: '$CI_JOB_NAME',
+              url: 'http://staging.example.com/$CI_JOB_NAME',
+              on_stop: 'stop_review_app'
+            }
+          })
+      end
+
+      it 'fails to create build' do
+        expect { job }.to raise_error(
+          Deployable::FailedToCreateEnvironmentError,
+          "Validation failed: Name can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.', and spaces, but it cannot start or end with '/'"
+        )
       end
     end
   end
