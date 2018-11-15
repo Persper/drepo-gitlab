@@ -4,7 +4,6 @@ module QA
   module Page
     module MergeRequest
       class Show < Page::Base
-        prepend QA::EE::Page::MergeRequest::Show
         include Page::Component::Note
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
