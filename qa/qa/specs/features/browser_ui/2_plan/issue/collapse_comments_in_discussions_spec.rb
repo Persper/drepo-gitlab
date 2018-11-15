@@ -7,7 +7,7 @@ module QA
 
       it 'user collapses reply for comments in an issue' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         Resource::Issue.fabricate! do |issue|
           issue.title = issue_title
