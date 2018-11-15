@@ -981,17 +981,10 @@ describe API::Internal do
       env: env
     }
 
-    if Gitlab.rails5?
-      post(
-        api("/internal/allowed"),
-        params: params
-      )
-    else
-      post(
-        api("/internal/allowed"),
-        params: params
-      )
-    end
+    post(
+      api("/internal/allowed"),
+      params: params
+    )
   end
 
   def archive(key, project)

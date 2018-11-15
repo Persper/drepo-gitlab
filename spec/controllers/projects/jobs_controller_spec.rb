@@ -685,8 +685,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
     def post_cancel(additional_params = {})
       post :cancel, params: { namespace_id: project.namespace,
-                      project_id: project,
-                      id: job.id }.merge(additional_params)
+                              project_id: project,
+                              id: job.id }.merge(additional_params)
     end
   end
 

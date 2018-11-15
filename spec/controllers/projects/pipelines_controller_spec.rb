@@ -244,11 +244,11 @@ describe Projects::PipelinesController do
     def get_stage(name, params = {})
       get :stage, params: {
 **params.merge(
-        namespace_id: project.namespace,
-        project_id: project,
-        id: pipeline.id,
-        stage: name,
-        format: :json)
+  namespace_id: project.namespace,
+  project_id: project,
+  id: pipeline.id,
+  stage: name,
+  format: :json)
 }
     end
   end

@@ -402,10 +402,10 @@ describe Projects::ClustersController do
   describe 'PUT update' do
     def go(format: :html)
       put :update, params: params.merge(namespace_id: project.namespace.to_param,
-                                project_id: project.to_param,
-                                id: cluster,
-                                format: format
-                               )
+                                        project_id: project.to_param,
+                                        id: cluster,
+                                        format: format
+                                       )
     end
 
     before do
