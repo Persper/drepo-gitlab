@@ -1,7 +1,8 @@
 ---
 nav_section: admin
-nav_category: general
+nav_category: settings
 nav_title: "Admin area"
+nav_category_position: -1
 layout: default-copy
 ---
 
