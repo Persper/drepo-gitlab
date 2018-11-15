@@ -1,3 +1,10 @@
+---
+nav_section: admin
+nav_category: settings
+nav_title: "Gitaly"
+layout: default-copy
+---
+
 # Gitaly
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) (introduced in GitLab

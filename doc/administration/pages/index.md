@@ -1,5 +1,9 @@
 ---
 description: 'Learn how to administer GitLab Pages.'
+nav_section: admin
+nav_category: settings
+nav_title: "GitLab Pages"
+layout: default-copy
 ---
 
 # GitLab Pages administration

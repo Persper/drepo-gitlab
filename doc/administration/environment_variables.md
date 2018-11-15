@@ -1,3 +1,9 @@
+---
+nav_section: admin
+nav_category: settings
+layout: default-copy
+---
+
 # Environment Variables
 
 GitLab exposes certain environment variables which can be used to override
