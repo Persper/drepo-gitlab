@@ -94,7 +94,7 @@ export default {
       return __('Show latest version');
     },
     canCurrentUserFork() {
-      return this.currentUser.canFork === true && this.currentUser.canCreateMergeRequest;
+      return this.currentUser.can_fork === true && this.currentUser.can_create_merge_request;
     },
     showCompareVersions() {
       return this.mergeRequestDiffs && this.mergeRequestDiff;
@@ -128,6 +128,7 @@ export default {
     eventHub.$once('fetchedNotesData', this.setDiscussions);
   },
   methods: {
+    ...mapActions(['startTaskList']),
     ...mapActions('diffs', [
       'setBaseConfig',
       'fetchDiffFiles',
@@ -157,7 +158,13 @@ export default {
       if (this.isNotesFetched && !this.assignedDiscussions && !this.isLoading) {
         this.assignedDiscussions = true;
 
-        requestIdleCallback(() => this.assignDiscussionsToDiff(), { timeout: 1000 });
+        requestIdleCallback(
+          () =>
+            this.assignDiscussionsToDiff()
+              .then(this.$nextTick)
+              .then(this.startTaskList),
+          { timeout: 1000 },
+        );
       }
     },
     adjustView() {

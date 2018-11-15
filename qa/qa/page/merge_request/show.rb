@@ -44,6 +44,10 @@ module QA
           element :labels_block
         end
 
+        view 'app/views/projects/merge_requests/_mr_title.html.haml' do
+          element :edit_button
+        end
+
         def fast_forward_possible?
           !has_text?('Fast-forward merge is not possible')
         end
@@ -139,6 +143,22 @@ module QA
           all_elements(:new_diff_line).first.hover
           click_element :diff_comment
           fill_element :reply_input, text
+        end
+
+        def start_discussion(text)
+          fill_element :comment_input, text
+          click_element :note_dropdown
+          click_element :discussion_option
+          click_element :comment_button
+        end
+
+        def reply_to_discussion(reply_text)
+          all_elements(:discussion_reply).last.click
+          fill_element :reply_input, reply_text
+        end
+
+        def edit!
+          click_element :edit_button
         end
       end
     end

@@ -33,19 +33,47 @@ describe EnvironmentStatusEntity do
   it { is_expected.not_to include(:metrics_url) }
   it { is_expected.not_to include(:metrics_monitoring_url) }
 
-  context 'when :ci_environments_status_changes feature flag is disabled' do
-    before do
-      stub_feature_flags(ci_environments_status_changes: false)
-    end
-
-    it { is_expected.not_to include(:changes) }
-  end
-
   context 'when the user is project maintainer' do
     before do
       project.add_maintainer(user)
     end
 
     it { is_expected.to include(:stop_url) }
+  end
+
+  context 'when deployment has metrics' do
+    let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
+
+    let(:simple_metrics) do
+      {
+        success: true,
+        metrics: {},
+        last_update: 42
+      }
+    end
+
+    before do
+      project.add_maintainer(user)
+      allow(deployment).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+      allow(prometheus_adapter).to receive(:query).with(:deployment, deployment).and_return(simple_metrics)
+      allow(entity).to receive(:deployment).and_return(deployment)
+    end
+
+    context 'when deployment succeeded' do
+      let(:deployment)    { create(:deployment, :succeed, :review_app) }
+
+      it 'returns metrics url' do
+        expect(subject[:metrics_url])
+          .to eq("/#{project.namespace.name}/#{project.name}/environments/#{environment.id}/deployments/#{deployment.iid}/metrics")
+      end
+    end
+
+    context 'when deployment is running' do
+      let(:deployment)    { create(:deployment, :running, :review_app) }
+
+      it 'does not return metrics url' do
+        expect(subject[:metrics_url]).to be_nil
+      end
+    end
   end
 end
