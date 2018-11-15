@@ -11,9 +11,11 @@ describe Projects::BlobController do
     context 'with file path' do
       before do
         get(:show,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: id)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id
+            })
       end
 
       context "valid branch, valid file" do
@@ -43,9 +45,11 @@ describe Projects::BlobController do
 
         before do
           get(:show,
-              namespace_id: project.namespace,
-              project_id: project,
-              id: id,
+              params: {
+                namespace_id: project.namespace,
+                project_id: project,
+                id: id
+              },
               format: :json)
         end
 
@@ -61,11 +65,13 @@ describe Projects::BlobController do
 
         before do
           get(:show,
-              namespace_id: project.namespace,
-              project_id: project,
-              id: id,
-              format: :json,
-              viewer: 'none')
+              params: {
+                namespace_id: project.namespace,
+                project_id: project,
+                id: id,
+                viewer: 'none'
+              },
+              format: :json)
         end
 
         it do
@@ -79,9 +85,11 @@ describe Projects::BlobController do
     context 'with tree path' do
       before do
         get(:show,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: id)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id
+            })
         controller.instance_variable_set(:@blob, nil)
       end
 
@@ -104,7 +112,7 @@ describe Projects::BlobController do
       params = { namespace_id: project.namespace,
                  project_id: project,
                  id: 'master/CHANGELOG' }
-      get :diff, params.merge(opts)
+      get :diff, params: params.merge(opts)
     end
 
     before do
@@ -217,7 +225,7 @@ describe Projects::BlobController do
 
     context 'anonymous' do
       before do
-        get :edit, default_params
+        get :edit, params: default_params
       end
 
       it 'redirects to sign in and returns' do
@@ -230,7 +238,7 @@ describe Projects::BlobController do
 
       before do
         sign_in(guest)
-        get :edit, default_params
+        get :edit, params: default_params
       end
 
       it 'redirects to blob show' do
@@ -244,7 +252,7 @@ describe Projects::BlobController do
       before do
         project.add_developer(developer)
         sign_in(developer)
-        get :edit, default_params
+        get :edit, params: default_params
       end
 
       it 'redirects to blob show' do
@@ -258,7 +266,7 @@ describe Projects::BlobController do
       before do
         project.add_maintainer(maintainer)
         sign_in(maintainer)
-        get :edit, default_params
+        get :edit, params: default_params
       end
 
       it 'redirects to blob show' do
@@ -291,7 +299,7 @@ describe Projects::BlobController do
     end
 
     it 'redirects to blob' do
-      put :update, default_params
+      put :update, params: default_params
 
       expect(response).to redirect_to(blob_after_edit_path)
     end
@@ -301,7 +309,7 @@ describe Projects::BlobController do
       let(:mr_params) { default_params.merge(from_merge_request_iid: merge_request.iid) }
 
       it 'redirects to MR diff' do
-        put :update, mr_params
+        put :update, params: mr_params
 
         after_edit_path = diffs_project_merge_request_path(project, merge_request)
         file_anchor = "##{Digest::SHA1.hexdigest('CHANGELOG')}"
@@ -315,7 +323,7 @@ describe Projects::BlobController do
         end
 
         it "it redirect to blob" do
-          put :update, mr_params
+          put :update, params: mr_params
 
           expect(response).to redirect_to(blob_after_edit_path)
         end
@@ -337,7 +345,7 @@ describe Projects::BlobController do
         end
 
         it 'redirects to blob' do
-          put :update, default_params
+          put :update, params: default_params
 
           expect(response).to redirect_to(project_blob_path(forked_project, 'master/CHANGELOG'))
         end
@@ -348,7 +356,7 @@ describe Projects::BlobController do
           default_params[:branch_name] = "fork-test-1"
           default_params[:create_merge_request] = 1
 
-          put :update, default_params
+          put :update, params: default_params
 
           expect(response).to redirect_to(
             project_new_merge_request_path(
@@ -391,7 +399,7 @@ describe Projects::BlobController do
       let(:after_delete_path) { project_tree_path(project, 'master/files') }
 
       it 'redirects to the sub directory' do
-        delete :destroy, default_params
+        delete :destroy, params: default_params
 
         expect(response).to redirect_to(after_delete_path)
       end
@@ -410,7 +418,7 @@ describe Projects::BlobController do
       end
 
       it 'redirects to the project root' do
-        delete :destroy, default_params
+        delete :destroy, params: default_params
 
         expect(response).to redirect_to(project_root_path)
       end
@@ -430,7 +438,7 @@ describe Projects::BlobController do
         let(:after_delete_path) { project_tree_path(project, 'binary-encoding') }
 
         it 'redirects to the project root of the branch' do
-          delete :destroy, default_params
+          delete :destroy, params: default_params
 
           expect(response).to redirect_to(after_delete_path)
         end

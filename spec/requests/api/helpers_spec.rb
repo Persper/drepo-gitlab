@@ -272,7 +272,7 @@ describe API::Helpers do
         expect(Gitlab::Sentry).to receive(:enabled?).twice.and_return(true)
         expect(ProjectsFinder).to receive(:new).and_raise('Runtime Error!')
 
-        get api('/projects', user), password: 'dont_send_this', other_param: 'send_this'
+        get api('/projects', user), params: { password: 'dont_send_this', other_param: 'send_this' }
 
         expect(event_data).to include('other_param=send_this')
         expect(event_data).to include('password=********')

@@ -12,13 +12,13 @@ describe Projects::ImportsController do
   describe 'GET #show' do
     context 'when repository does not exists' do
       it 'renders template' do
-        get :show, namespace_id: project.namespace.to_param, project_id: project
+        get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 
         expect(response).to render_template :show
       end
 
       it 'sets flash.now if params is present' do
-        get :show, namespace_id: project.namespace.to_param, project_id: project, continue: { to: '/', notice_now: 'Started' }
+        get :show, params: { namespace_id: project.namespace.to_param, project_id: project, continue: { to: '/', notice_now: 'Started' } }
 
         expect(flash.now[:notice]).to eq 'Started'
       end
@@ -33,13 +33,13 @@ describe Projects::ImportsController do
         end
 
         it 'renders template' do
-          get :show, namespace_id: project.namespace.to_param, project_id: project
+          get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 
           expect(response).to render_template :show
         end
 
         it 'sets flash.now if params is present' do
-          get :show, namespace_id: project.namespace.to_param, project_id: project, continue: { to: '/', notice_now: 'In progress' }
+          get :show, params: { namespace_id: project.namespace.to_param, project_id: project, continue: { to: '/', notice_now: 'In progress' } }
 
           expect(flash.now[:notice]).to eq 'In progress'
         end
@@ -51,7 +51,7 @@ describe Projects::ImportsController do
         end
 
         it 'redirects to new_namespace_project_import_path' do
-          get :show, namespace_id: project.namespace.to_param, project_id: project
+          get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 
           expect(response).to redirect_to new_project_import_path(project)
         end
@@ -66,7 +66,7 @@ describe Projects::ImportsController do
           it 'redirects to namespace_project_path' do
             allow_any_instance_of(Project).to receive(:forked?).and_return(true)
 
-            get :show, namespace_id: project.namespace.to_param, project_id: project
+            get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 
             expect(flash[:notice]).to eq 'The project was successfully forked.'
             expect(response).to redirect_to project_path(project)
@@ -75,7 +75,7 @@ describe Projects::ImportsController do
 
         context 'when project is external' do
           it 'redirects to namespace_project_path' do
-            get :show, namespace_id: project.namespace.to_param, project_id: project
+            get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 
             expect(flash[:notice]).to eq 'The project was successfully imported.'
             expect(response).to redirect_to project_path(project)
@@ -91,7 +91,7 @@ describe Projects::ImportsController do
           end
 
           it 'redirects to internal params[:to]' do
-            get :show, namespace_id: project.namespace.to_param, project_id: project, continue: params
+            get :show, params: { namespace_id: project.namespace.to_param, project_id: project, continue: params }
 
             expect(flash[:notice]).to eq params[:notice]
             expect(response).to redirect_to params[:to]
@@ -100,7 +100,7 @@ describe Projects::ImportsController do
           it 'does not redirect to external params[:to]' do
             params[:to] = "//google.com"
 
-            get :show, namespace_id: project.namespace.to_param, project_id: project, continue: params
+            get :show, params: { namespace_id: project.namespace.to_param, project_id: project, continue: params }
             expect(response).not_to redirect_to params[:to]
           end
         end
@@ -112,7 +112,7 @@ describe Projects::ImportsController do
         end
 
         it 'redirects to namespace_project_path' do
-          get :show, namespace_id: project.namespace.to_param, project_id: project
+          get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 
           expect(response).to redirect_to project_path(project)
         end

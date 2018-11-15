@@ -16,7 +16,7 @@ describe Projects::ReleasesController do
       tag_id = release.tag
       project.releases.destroy_all # rubocop: disable DestroyAll
 
-      get :edit, namespace_id: project.namespace, project_id: project, tag_id: tag_id
+      get :edit, params: { namespace_id: project.namespace, project_id: project, tag_id: tag_id }
 
       release = assigns(:release)
       expect(release).not_to be_nil
@@ -24,7 +24,7 @@ describe Projects::ReleasesController do
     end
 
     it 'retrieves an existing release' do
-      get :edit, namespace_id: project.namespace, project_id: project, tag_id: release.tag
+      get :edit, params: { namespace_id: project.namespace, project_id: project, tag_id: release.tag }
 
       release = assigns(:release)
       expect(release).not_to be_nil
@@ -47,9 +47,11 @@ describe Projects::ReleasesController do
 
   def update_release(description)
     put :update,
-      namespace_id: project.namespace.to_param,
-      project_id: project,
-      tag_id: release.tag,
-      release: { description: description }
+      params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        tag_id: release.tag,
+        release: { description: description }
+      }
   end
 end

@@ -13,8 +13,10 @@ describe Projects::CommitsController do
     context "no ref is provided" do
       it 'should redirect to the default branch of the project' do
         get(:commits_root,
-            namespace_id: project.namespace,
-            project_id: project)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project
+            })
 
         expect(response).to redirect_to project_commits_path(project)
       end
@@ -27,9 +29,11 @@ describe Projects::CommitsController do
     context 'with file path' do
       before do
         get(:show,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: id)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id
+            })
       end
 
       context "valid branch, valid file" do
@@ -55,9 +59,11 @@ describe Projects::CommitsController do
       context "when the ref does not exist with the suffix" do
         before do
           get(:show,
-              namespace_id: project.namespace,
-              project_id: project,
-              id: "master.atom")
+              params: {
+                namespace_id: project.namespace,
+                project_id: project,
+                id: "master.atom"
+              })
         end
 
         it "renders as atom" do
@@ -78,9 +84,11 @@ describe Projects::CommitsController do
           allow_any_instance_of(Repository).to receive(:commit).with('master.atom').and_return(commit)
 
           get(:show,
-              namespace_id: project.namespace,
-              project_id: project,
-              id: "master.atom")
+              params: {
+                namespace_id: project.namespace,
+                project_id: project,
+                id: "master.atom"
+              })
         end
 
         it "renders as HTML" do

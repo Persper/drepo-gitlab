@@ -26,7 +26,7 @@ describe Oauth::ApplicationsController do
 
     describe 'POST #create' do
       it 'creates an application' do
-        post :create, oauth_params
+        post :create, params: oauth_params
 
         expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(oauth_application_path(Doorkeeper::Application.last))
@@ -35,7 +35,7 @@ describe Oauth::ApplicationsController do
       it 'redirects back to profile page if OAuth applications are disabled' do
         disable_user_oauth
 
-        post :create, oauth_params
+        post :create, params: oauth_params
 
         expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(profile_path)

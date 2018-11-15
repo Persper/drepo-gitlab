@@ -5,7 +5,7 @@ describe 'Redacted events in API::Events' do
     it 'redacts events the user does not have access to' do
       expect_any_instance_of(Event).to receive(:visible_to_user?).and_call_original
 
-      get api(path), user
+      get api(path), params: user
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to contain_exactly(

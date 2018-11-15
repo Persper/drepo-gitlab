@@ -60,7 +60,7 @@ describe GraphqlController do
       }
     QUERY
 
-    post :execute, query: query, operationName: 'Echo', variables: variables
+    post :execute, params: { query: query, operationName: 'Echo', variables: variables }
   end
 
   def query_response

@@ -17,7 +17,7 @@ describe Projects::DeployKeysController do
 
     context 'when html requested' do
       it 'redirects to blob' do
-        get :index, params
+        get :index, params: params
 
         expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
       end
@@ -52,7 +52,7 @@ describe Projects::DeployKeysController do
       end
 
       it 'returns json in a correct format' do
-        get :index, params.merge(format: :json)
+        get :index, params: params.merge(format: :json)
 
         json = JSON.parse(response.body)
 

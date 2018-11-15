@@ -18,7 +18,7 @@ describe Projects::IssuesController do
           project.issues_enabled = false
           project.save!
 
-          get :index, namespace_id: project.namespace, project_id: project
+          get :index, params: { namespace_id: project.namespace, project_id: project }
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -26,7 +26,7 @@ describe Projects::IssuesController do
 
       context 'when GitLab issues enabled' do
         it 'renders the "index" template' do
-          get :index, namespace_id: project.namespace, project_id: project
+          get :index, params: { namespace_id: project.namespace, project_id: project }
 
           expect(response).to have_gitlab_http_status(200)
           expect(response).to render_template(:index)
@@ -43,13 +43,13 @@ describe Projects::IssuesController do
       it_behaves_like "issuables list meta-data", :issue
 
       it "returns index" do
-        get :index, namespace_id: project.namespace, project_id: project
+        get :index, params: { namespace_id: project.namespace, project_id: project }
 
         expect(response).to have_gitlab_http_status(200)
       end
 
       it "returns 301 if request path doesn't match project path" do
-        get :index, namespace_id: project.namespace, project_id: project.path.upcase
+        get :index, params: { namespace_id: project.namespace, project_id: project.path.upcase }
 
         expect(response).to redirect_to(project_issues_path(project))
       end
@@ -58,7 +58,7 @@ describe Projects::IssuesController do
         project.issues_enabled = false
         project.save!
 
-        get :index, namespace_id: project.namespace, project_id: project
+        get :index, params: { namespace_id: project.namespace, project_id: project }
         expect(response).to have_gitlab_http_status(404)
       end
     end
@@ -75,18 +75,22 @@ describe Projects::IssuesController do
 
       it 'redirects to last_page if page number is larger than number of pages' do
         get :index,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          page: (last_page + 1).to_param
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            page: (last_page + 1).to_param
+          }
 
         expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
       end
 
       it 'redirects to specified page' do
         get :index,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          page: last_page.to_param
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            page: last_page.to_param
+          }
 
         expect(assigns(:issues).current_page).to eq(last_page)
         expect(response).to have_gitlab_http_status(200)
@@ -95,10 +99,12 @@ describe Projects::IssuesController do
       it 'does not redirect to external sites when provided a host field' do
         external_host = "www.example.com"
         get :index,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          page: (last_page + 1).to_param,
-          host: external_host
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            page: (last_page + 1).to_param,
+            host: external_host
+          }
 
         expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
       end
@@ -107,9 +113,11 @@ describe Projects::IssuesController do
         allow(controller).to receive(:pagination_disabled?).and_return(true)
 
         get :index,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          page: (last_page + 1).to_param
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            page: (last_page + 1).to_param
+          }
 
         expect(response).to have_gitlab_http_status(200)
         expect(assigns(:issues).size).to eq(2)
@@ -119,7 +127,7 @@ describe Projects::IssuesController do
 
   describe 'GET #new' do
     it 'redirects to signin if not logged in' do
-      get :new, namespace_id: project.namespace, project_id: project
+      get :new, params: { namespace_id: project.namespace, project_id: project }
 
       expect(flash[:notice]).to eq 'Please sign in to create the new issue.'
       expect(response).to redirect_to(new_user_session_path)
@@ -132,7 +140,7 @@ describe Projects::IssuesController do
       end
 
       it 'builds a new issue' do
-        get :new, namespace_id: project.namespace, project_id: project
+        get :new, params: { namespace_id: project.namespace, project_id: project }
 
         expect(assigns(:issue)).to be_a_new(Issue)
       end
@@ -142,7 +150,7 @@ describe Projects::IssuesController do
         project_with_repository.add_developer(user)
         mr = create(:merge_request_with_diff_notes, source_project: project_with_repository)
 
-        get :new, namespace_id: project_with_repository.namespace, project_id: project_with_repository, merge_request_to_resolve_discussions_of: mr.iid
+        get :new, params: { namespace_id: project_with_repository.namespace, project_id: project_with_repository, merge_request_to_resolve_discussions_of: mr.iid }
 
         expect(assigns(:issue).title).not_to be_empty
         expect(assigns(:issue).description).not_to be_empty
@@ -151,7 +159,7 @@ describe Projects::IssuesController do
       it 'fills in an issue for a discussion' do
         note = create(:note_on_merge_request, project: project)
 
-        get :new, namespace_id: project.namespace.path, project_id: project, merge_request_to_resolve_discussions_of: note.noteable.iid, discussion_to_resolve: note.discussion_id
+        get :new, params: { namespace_id: project.namespace.path, project_id: project, merge_request_to_resolve_discussions_of: note.noteable.iid, discussion_to_resolve: note.discussion_id }
 
         expect(assigns(:issue).title).not_to be_empty
         expect(assigns(:issue).description).not_to be_empty
@@ -176,7 +184,7 @@ describe Projects::IssuesController do
           project.issues_enabled = false
           project.save!
 
-          get :new, namespace_id: project.namespace, project_id: project
+          get :new, params: { namespace_id: project.namespace, project_id: project }
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -184,7 +192,7 @@ describe Projects::IssuesController do
 
       context 'when GitLab issues enabled' do
         it 'renders the "new" template' do
-          get :new, namespace_id: project.namespace, project_id: project
+          get :new, params: { namespace_id: project.namespace, project_id: project }
 
           expect(response).to have_gitlab_http_status(200)
           expect(response).to render_template(:new)
@@ -210,9 +218,11 @@ describe Projects::IssuesController do
     context 'without an AJAX request' do
       it 'stores the visited URL' do
         get :show,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: issue.iid
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: issue.iid
+          }
 
         expect(session['user_return_to']).to eq("/#{project.namespace.to_param}/#{project.to_param}/issues/#{issue.iid}")
       end
@@ -251,11 +261,13 @@ describe Projects::IssuesController do
 
       def move_issue
         post :move,
-          format: :json,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: issue.iid,
-          move_to_project_id: another_project.id
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: issue.iid,
+            move_to_project_id: another_project.id
+          },
+          format: :json
       end
     end
   end
@@ -263,10 +275,13 @@ describe Projects::IssuesController do
   describe 'PUT #update' do
     subject do
       put :update,
-        namespace_id: project.namespace,
-        project_id: project,
-        id: issue.to_param,
-        issue: { title: 'New title' }, format: :json
+        params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: issue.to_param,
+          issue: { title: 'New title' }
+        },
+        format: :json
     end
 
     before do
@@ -316,9 +331,11 @@ describe Projects::IssuesController do
   describe 'GET #realtime_changes' do
     def go(id:)
       get :realtime_changes,
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: id
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: id
+        }
     end
 
     context 'when an issue was edited' do
@@ -431,8 +448,10 @@ describe Projects::IssuesController do
 
       def get_issues
         get :index,
-          namespace_id: project.namespace.to_param,
-          project_id: project
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project
+          }
       end
     end
 
@@ -500,7 +519,7 @@ describe Projects::IssuesController do
           format: :json
         }.merge(additional_params)
 
-        put :update, params
+        put :update, params: params
       end
 
       def go(id:)
@@ -633,9 +652,11 @@ describe Projects::IssuesController do
 
       def go(id:)
         get :show,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: id
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: id
+          }
       end
 
       it 'avoids (most) N+1s loading labels', :request_store do
@@ -656,9 +677,11 @@ describe Projects::IssuesController do
 
       def go(id:)
         get :realtime_changes,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: id
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: id
+          }
       end
     end
 
@@ -667,9 +690,11 @@ describe Projects::IssuesController do
 
       def go(id:)
         get :edit,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: id
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: id
+          }
       end
     end
 
@@ -678,10 +703,12 @@ describe Projects::IssuesController do
 
       def go(id:)
         put :update,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: id,
-          issue: { title: 'New title' }
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: id,
+            issue: { title: 'New title' }
+          }
       end
     end
   end
@@ -692,7 +719,7 @@ describe Projects::IssuesController do
       project = create(:project, :public)
       project.add_developer(user)
 
-      post :create, {
+      post :create, params: {
         namespace_id: project.namespace.to_param,
         project_id: project,
         issue: { title: 'Title', description: 'Description' }.merge(issue_attrs)
@@ -716,7 +743,7 @@ describe Projects::IssuesController do
       end
 
       def post_issue(issue_params, other_params: {})
-        post :create, { namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_to_resolve_discussions_of: merge_request.iid }.merge(other_params)
+        post :create, params: { namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_to_resolve_discussions_of: merge_request.iid }.merge(other_params)
       end
 
       it 'creates an issue for the project' do
@@ -883,7 +910,7 @@ describe Projects::IssuesController do
         create(:user_agent_detail, subject: issue)
         project.add_maintainer(admin)
         sign_in(admin)
-        post :mark_as_spam, {
+        post :mark_as_spam, params: {
           namespace_id: project.namespace,
           project_id: project,
           id: issue.iid
@@ -904,7 +931,7 @@ describe Projects::IssuesController do
       end
 
       it "rejects a developer to destroy an issue" do
-        delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
         expect(response).to have_gitlab_http_status(404)
       end
     end
@@ -919,7 +946,7 @@ describe Projects::IssuesController do
       end
 
       it "deletes the issue" do
-        delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
         expect(response).to have_gitlab_http_status(302)
         expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
@@ -928,7 +955,7 @@ describe Projects::IssuesController do
       it 'delegates the update of the todos count cache to TodoService' do
         expect_any_instance_of(TodoService).to receive(:destroy_target).with(issue).once
 
-        delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
       end
     end
   end
@@ -941,8 +968,12 @@ describe Projects::IssuesController do
 
     it "toggles the award emoji" do
       expect do
-        post(:toggle_award_emoji, namespace_id: project.namespace,
-                                  project_id: project, id: issue.iid, name: "thumbsup")
+        post(:toggle_award_emoji, params: {
+                                    namespace_id: project.namespace,
+                                    project_id: project,
+                                    id: issue.iid,
+                                    name: "thumbsup"
+                                  })
       end.to change { issue.award_emoji.count }.by(1)
 
       expect(response).to have_gitlab_http_status(200)
@@ -984,9 +1015,11 @@ describe Projects::IssuesController do
     end
 
     def create_merge_request
-      post :create_merge_request, namespace_id: project.namespace.to_param,
-                                  project_id: project.to_param,
-                                  id: issue.to_param,
+      post :create_merge_request, params: {
+                                    namespace_id: project.namespace.to_param,
+                                    project_id: project.to_param,
+                                    id: issue.to_param
+                                  },
                                   format: :json
     end
   end
@@ -1000,7 +1033,7 @@ describe Projects::IssuesController do
       end
 
       it 'returns discussion json' do
-        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+        get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
         expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion discussion_path individual_note resolvable resolved resolved_at resolved_by resolved_by_push commit_id for_commit project_id])
       end
@@ -1008,7 +1041,7 @@ describe Projects::IssuesController do
       it 'renders the author status html if there is a status' do
         create(:user_status, user: discussion.author)
 
-        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+        get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
         note_json = json_response.first['notes'].first
 
@@ -1017,14 +1050,14 @@ describe Projects::IssuesController do
 
       it 'does not cause an extra query for the status' do
         control = ActiveRecord::QueryRecorder.new do
-          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+          get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
         end
 
         create(:user_status, user: discussion.author)
         second_discussion = create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user))
         create(:user_status, user: second_discussion.author)
 
-        expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }
+        expect { get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid } }
           .not_to exceed_query_limit(control)
       end
 
@@ -1044,26 +1077,26 @@ describe Projects::IssuesController do
         end
 
         it 'filters notes that the user should not see' do
-          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+          get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
           expect(JSON.parse(response.body).count).to eq(1)
         end
 
         it 'does not result in N+1 queries' do
           # Instantiate the controller variables to ensure QueryRecorder has an accurate base count
-          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+          get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
           RequestStore.clear!
 
           control_count = ActiveRecord::QueryRecorder.new do
-            get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
           end.count
 
           RequestStore.clear!
 
           create_list(:discussion_note_on_issue, 2, :system, noteable: issue, project: issue.project, note: cross_reference)
 
-          expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }.not_to exceed_query_limit(control_count)
+          expect { get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid } }.not_to exceed_query_limit(control_count)
         end
       end
     end

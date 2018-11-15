@@ -44,7 +44,7 @@ describe Projects::NotesController do
         .with(anything, anything, hash_including(last_fetched_at: last_fetched_at))
         .and_call_original
 
-      get :index, request_params
+      get :index, params: request_params
     end
 
     context 'when user notes_filter is present' do
@@ -55,7 +55,7 @@ describe Projects::NotesController do
       it 'filters system notes by comments' do
         user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
 
-        get :index, request_params
+        get :index, params: request_params
 
         expect(notes_json.count).to eq(1)
         expect(notes_json.first[:id].to_i).to eq(comment.id)
@@ -64,7 +64,7 @@ describe Projects::NotesController do
       it 'returns all notes' do
         user.set_notes_filter(UserPreference::NOTES_FILTERS[:all_notes], issue)
 
-        get :index, request_params
+        get :index, params: request_params
 
         expect(notes_json.map { |note| note[:id].to_i }).to contain_exactly(comment.id, system_note.id)
       end
@@ -74,7 +74,7 @@ describe Projects::NotesController do
 
         expect(ResourceEvents::MergeIntoNotesService).not_to receive(:new)
 
-        get :index, request_params
+        get :index, params: request_params
       end
     end
 
@@ -85,7 +85,7 @@ describe Projects::NotesController do
       let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id, html: true) }
 
       it 'responds with the expected attributes' do
-        get :index, params
+        get :index, params: params
 
         expect(note_json[:id]).to eq(note.id)
         expect(note_json[:discussion_html]).not_to be_nil
@@ -101,7 +101,7 @@ describe Projects::NotesController do
       let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id, html: true) }
 
       it 'responds with the expected attributes' do
-        get :index, params
+        get :index, params: params
 
         expect(note_json[:id]).to eq(note.id)
         expect(note_json[:discussion_html]).not_to be_nil
@@ -120,7 +120,7 @@ describe Projects::NotesController do
         let(:params) { request_params.merge(target_type: 'merge_request', target_id: merge_request.id, html: true) }
 
         it 'responds with the expected attributes' do
-          get :index, params
+          get :index, params: params
 
           expect(note_json[:id]).to eq(note.id)
           expect(note_json[:discussion_html]).not_to be_nil
@@ -133,7 +133,7 @@ describe Projects::NotesController do
         let(:params) { request_params.merge(target_type: 'commit', target_id: note.commit_id, html: true) }
 
         it 'responds with the expected attributes' do
-          get :index, params
+          get :index, params: params
 
           expect(note_json[:id]).to eq(note.id)
           expect(note_json[:discussion_html]).to be_nil
@@ -148,7 +148,7 @@ describe Projects::NotesController do
           end
 
           it 'renders 404' do
-            get :index, params
+            get :index, params: params
 
             expect(response).to have_gitlab_http_status(404)
           end
@@ -162,7 +162,7 @@ describe Projects::NotesController do
       let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id, html: true) }
 
       it 'responds with the expected attributes' do
-        get :index, params
+        get :index, params: params
 
         expect(note_json[:id]).to eq(note.id)
         expect(note_json[:html]).not_to be_nil
@@ -182,7 +182,7 @@ describe Projects::NotesController do
       end
 
       it 'filters notes that the user should not see' do
-        get :index, request_params
+        get :index, params: request_params
 
         expect(parsed_response[:notes].count).to eq(1)
         expect(note_json[:id]).to eq(note.id.to_s)
@@ -190,19 +190,19 @@ describe Projects::NotesController do
 
       it 'does not result in N+1 queries' do
         # Instantiate the controller variables to ensure QueryRecorder has an accurate base count
-        get :index, request_params
+        get :index, params: request_params
 
         RequestStore.clear!
 
         control_count = ActiveRecord::QueryRecorder.new do
-          get :index, request_params
+          get :index, params: request_params
         end.count
 
         RequestStore.clear!
 
         create_list(:discussion_note_on_issue, 2, :system, noteable: issue, project: issue.project, note: cross_reference)
 
-        expect { get :index, request_params }.not_to exceed_query_limit(control_count)
+        expect { get :index, params: request_params }.not_to exceed_query_limit(control_count)
       end
     end
   end
@@ -227,19 +227,19 @@ describe Projects::NotesController do
     end
 
     it "returns status 302 for html" do
-      post :create, request_params
+      post :create, params: request_params
 
       expect(response).to have_gitlab_http_status(302)
     end
 
     it "returns status 200 for json" do
-      post :create, request_params.merge(format: :json)
+      post :create, params: request_params.merge(format: :json)
 
       expect(response).to have_gitlab_http_status(200)
     end
 
     it 'returns discussion JSON when the return_discussion param is set' do
-      post :create, request_params.merge(format: :json, return_discussion: 'true')
+      post :create, params: request_params.merge(format: :json, return_discussion: 'true')
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to have_key 'discussion'
@@ -260,7 +260,7 @@ describe Projects::NotesController do
       end
 
       it "returns status 302 for html" do
-        post :create, request_params
+        post :create, params: request_params
 
         expect(response).to have_gitlab_http_status(302)
       end
@@ -282,7 +282,7 @@ describe Projects::NotesController do
       end
 
       def post_create(extra_params = {})
-        post :create, {
+        post :create, params: {
                note: { note: 'some other note' },
                namespace_id: project.namespace,
                project_id: project,
@@ -333,7 +333,7 @@ describe Projects::NotesController do
       context 'when a noteable is not found' do
         it 'returns 404 status' do
           request_params[:target_id] = 9999
-          post :create, request_params.merge(format: :json)
+          post :create, params: request_params.merge(format: :json)
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -341,19 +341,19 @@ describe Projects::NotesController do
 
       context 'when a user is a team member' do
         it 'returns 302 status for html' do
-          post :create, request_params
+          post :create, params: request_params
 
           expect(response).to have_gitlab_http_status(302)
         end
 
         it 'returns 200 status for json' do
-          post :create, request_params.merge(format: :json)
+          post :create, params: request_params.merge(format: :json)
 
           expect(response).to have_gitlab_http_status(200)
         end
 
         it 'creates a new note' do
-          expect { post :create, request_params }.to change { Note.count }.by(1)
+          expect { post :create, params: request_params }.to change { Note.count }.by(1)
         end
       end
 
@@ -363,13 +363,13 @@ describe Projects::NotesController do
         end
 
         it 'returns 404 status' do
-          post :create, request_params
+          post :create, params: request_params
 
           expect(response).to have_gitlab_http_status(404)
         end
 
         it 'does not create a new note' do
-          expect { post :create, request_params }.not_to change { Note.count }
+          expect { post :create, params: request_params }.not_to change { Note.count }
         end
       end
     end
@@ -394,7 +394,7 @@ describe Projects::NotesController do
     end
 
     it "updates the note" do
-      expect { put :update, request_params }.to change { note.reload.note }
+      expect { put :update, params: request_params }.to change { note.reload.note }
     end
   end
 
@@ -415,13 +415,13 @@ describe Projects::NotesController do
       end
 
       it "returns status 200 for html" do
-        delete :destroy, request_params
+        delete :destroy, params: request_params
 
         expect(response).to have_gitlab_http_status(200)
       end
 
       it "deletes the note" do
-        expect { delete :destroy, request_params }.to change { Note.count }.from(1).to(0)
+        expect { delete :destroy, params: request_params }.to change { Note.count }.from(1).to(0)
       end
     end
 
@@ -432,7 +432,7 @@ describe Projects::NotesController do
       end
 
       it "returns status 404" do
-        delete :destroy, request_params
+        delete :destroy, params: request_params
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -447,17 +447,17 @@ describe Projects::NotesController do
 
     it "toggles the award emoji" do
       expect do
-        post(:toggle_award_emoji, request_params.merge(name: "thumbsup"))
+        post(:toggle_award_emoji, params: request_params.merge(name: "thumbsup"))
       end.to change { note.award_emoji.count }.by(1)
 
       expect(response).to have_gitlab_http_status(200)
     end
 
     it "removes the already awarded emoji" do
-      post(:toggle_award_emoji, request_params.merge(name: "thumbsup"))
+      post(:toggle_award_emoji, params: request_params.merge(name: "thumbsup"))
 
       expect do
-        post(:toggle_award_emoji, request_params.merge(name: "thumbsup"))
+        post(:toggle_award_emoji, params: request_params.merge(name: "thumbsup"))
       end.to change { AwardEmoji.count }.by(-1)
 
       expect(response).to have_gitlab_http_status(200)
@@ -476,7 +476,7 @@ describe Projects::NotesController do
 
       context "when the user is not authorized to resolve the note" do
         it "returns status 404" do
-          post :resolve, request_params
+          post :resolve, params: request_params
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -493,7 +493,7 @@ describe Projects::NotesController do
           end
 
           it "returns status 404" do
-            post :resolve, request_params
+            post :resolve, params: request_params
 
             expect(response).to have_gitlab_http_status(404)
           end
@@ -501,7 +501,7 @@ describe Projects::NotesController do
 
         context "when the note is resolvable" do
           it "resolves the note" do
-            post :resolve, request_params
+            post :resolve, params: request_params
 
             expect(note.reload.resolved?).to be true
             expect(note.reload.resolved_by).to eq(user)
@@ -510,17 +510,17 @@ describe Projects::NotesController do
           it "sends notifications if all discussions are resolved" do
             expect_any_instance_of(MergeRequests::ResolvedDiscussionNotificationService).to receive(:execute).with(merge_request)
 
-            post :resolve, request_params
+            post :resolve, params: request_params
           end
 
           it "returns the name of the resolving user" do
-            post :resolve, request_params.merge(html: true)
+            post :resolve, params: request_params.merge(html: true)
 
             expect(JSON.parse(response.body)["resolved_by"]).to eq(user.name)
           end
 
           it "returns status 200" do
-            post :resolve, request_params
+            post :resolve, params: request_params
 
             expect(response).to have_gitlab_http_status(200)
           end
@@ -537,7 +537,7 @@ describe Projects::NotesController do
 
       context "when the user is not authorized to resolve the note" do
         it "returns status 404" do
-          delete :unresolve, request_params
+          delete :unresolve, params: request_params
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -554,7 +554,7 @@ describe Projects::NotesController do
           end
 
           it "returns status 404" do
-            delete :unresolve, request_params
+            delete :unresolve, params: request_params
 
             expect(response).to have_gitlab_http_status(404)
           end
@@ -562,13 +562,13 @@ describe Projects::NotesController do
 
         context "when the note is resolvable" do
           it "unresolves the note" do
-            delete :unresolve, request_params
+            delete :unresolve, params: request_params
 
             expect(note.reload.resolved?).to be false
           end
 
           it "returns status 200" do
-            delete :unresolve, request_params
+            delete :unresolve, params: request_params
 
             expect(response).to have_gitlab_http_status(200)
           end
