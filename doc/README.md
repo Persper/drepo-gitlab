@@ -4,7 +4,7 @@ description: 'Learn how to use and administer GitLab, the most scalable Git-base
 layout: default-copy
 nav_section: home
 nav_category: ""
-nav_title: "GitLab docs"
+nav_title: "GitLab Docs"
 ---
 
 # GitLab Documentation
