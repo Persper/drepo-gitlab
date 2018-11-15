@@ -51,7 +51,7 @@
       .project-description
         .project-description-markdown.read-more-container
           = markdown_field(@project, :description)
-        %button.btn.btn-blank.btn-link.text-secondary.js-read-more-trigger.text-secondary.d-lg-none{ type: "button" }
+        %button.btn.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
           = _("Read more")
 
     - if @project.forked?
