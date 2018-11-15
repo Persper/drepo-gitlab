@@ -1,11 +1,3 @@
----
-nav_section: admin
-nav_category: instance
-nav_title: "Statistics"
-nav_category_position: 1
-layout: default-copy
----
-
 # Instance statistics
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41416)
