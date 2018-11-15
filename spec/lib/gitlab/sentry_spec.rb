@@ -19,14 +19,14 @@ describe Gitlab::Sentry do
     end
 
     it 'raises the exception if it should' do
-      expect(described_class).to receive(:should_raise?).and_return(true)
+      expect(described_class).to receive(:should_raise_for_dev?).and_return(true)
       expect { described_class.track_exception(exception) }
         .to raise_error(RuntimeError)
     end
 
     context 'when exceptions should not be raised' do
       before do
-        allow(described_class).to receive(:should_raise?).and_return(false)
+        allow(described_class).to receive(:should_raise_for_dev?).and_return(false)
       end
 
       it 'logs the exception with all attributes passed' do
