@@ -167,11 +167,7 @@ describe Boards::ListsController do
                  list: { position: position },
                  format: :json }
 
-      if Gitlab.rails5?
-        patch :update, params: params, as: :json
-      else
-        patch :update, params: params
-      end
+      patch :update, params: params, as: :json
     end
   end
 
