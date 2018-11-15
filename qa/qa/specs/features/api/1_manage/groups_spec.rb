@@ -6,7 +6,7 @@ module QA
   describe 'Groups API' do
     before(:context) do
       @api_client = Runtime::API::Client.new(:gitlab)
-      @personal_access_token = Runtime::API::Client.new.get_personal_access_token
+      @personal_access_token = Runtime::API::Client.new.personal_access_token
     end
 
     let(:random_string) { SecureRandom.hex(8) }
