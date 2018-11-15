@@ -107,7 +107,7 @@ The table below shows what kind of documentation goes where.
 
 1. The correct naming and location of a new document, is a combination
    of the relative URL of the document in question and the GitLab Map design
-   that is used for UX purposes ([source][graffle], [image][gitlab-map]).
+   that is used for UX purposes ([source](https://gitlab.com/gitlab-org/gitlab-design/blob/d8d39f4a87b90fb9ae89ca12dc565347b4900d5e/production/resources/gitlab-map.graffle)).
 1. When creating a new document and it has more than one word in its name,
    make sure to use underscores instead of spaces or dashes (`-`). For example,
    a proper naming would be `import_projects_from_github.md`. The same rule
@@ -984,6 +984,3 @@ nav_category_position: -2
 ```
 
 Don't forget to ask a technical writer to review your changes before merging.
-
-[gitlab-map]: https://gitlab.com/gitlab-org/gitlab-design/raw/master/production/resources/gitlab-map.png
-[graffle]: https://gitlab.com/gitlab-org/gitlab-design/blob/d8d39f4a87b90fb9ae89ca12dc565347b4900d5e/production/resources/gitlab-map.graffle
