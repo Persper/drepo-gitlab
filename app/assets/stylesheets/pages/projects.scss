@@ -280,7 +280,9 @@
   }
 
   .project-description {
-    font-size: $gl-font-size-large;
+    @include media-breakpoint-up(md) {
+      font-size: $gl-font-size-large;
+    }
   }
 
   .notifications-btn {
