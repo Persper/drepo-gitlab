@@ -4,6 +4,7 @@ module QA
   module Page
     module MergeRequest
       class Show < Page::Base
+        prepend QA::EE::Page::MergeRequest::Show
         include Page::Component::Note
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
@@ -34,6 +35,19 @@ module QA
 
         view 'app/assets/javascripts/diffs/components/diff_line_gutter_content.vue' do
           element :diff_comment
+        end
+
+        view 'app/assets/javascripts/notes/components/comment_form.vue' do
+          element :note_dropdown
+          element :discussion_option
+        end
+
+        view 'app/assets/javascripts/notes/components/note_form.vue' do
+          element :reply_input
+        end
+
+        view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do
+          element :discussion_reply
         end
 
         view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
