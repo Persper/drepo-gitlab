@@ -1,10 +1,9 @@
 ---
 comments: false
 description: 'Learn how to contribute to GitLab.'
-nav_section: development
+nav_section: development_main
 nav_category: ""
-nav_category_position: -1
-nav_title: "Development guidelines"
+nav_title: "Contributor docs"
 layout: default-copy
 ---
 
