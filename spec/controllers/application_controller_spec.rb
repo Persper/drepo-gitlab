@@ -127,7 +127,7 @@ describe ApplicationController do
           .and increment(:user_session_override_counter)
           .and increment(:user_sessionless_authentication_counter)
 
-        get :index, private_token: personal_access_token.token
+        get :index, params: { private_token: personal_access_token.token }
 
         expect(response).to have_gitlab_http_status(200)
         expect(response.body).to eq('authenticated')
@@ -153,7 +153,7 @@ describe ApplicationController do
       expect(authentication_metrics)
         .to increment(:user_unauthenticated_counter)
 
-      get :index, private_token: "token"
+      get :index, params: { private_token: "token" }
 
       expect(response.status).not_to eq(200)
       expect(response.body).not_to eq('authenticated')
@@ -244,7 +244,7 @@ describe ApplicationController do
               .and increment(:user_session_override_counter)
               .and increment(:user_sessionless_authentication_counter)
 
-            get :index, feed_token: user.feed_token, format: :atom
+            get :index, format: :atom, params: { feed_token: user.feed_token }
 
             expect(response).to have_gitlab_http_status 200
             expect(response.body).to eq 'authenticated'
@@ -258,7 +258,7 @@ describe ApplicationController do
               .and increment(:user_session_override_counter)
               .and increment(:user_sessionless_authentication_counter)
 
-            get :index, feed_token: user.feed_token, format: :ics
+            get :index, format: :ics, params: { feed_token: user.feed_token }
 
             expect(response).to have_gitlab_http_status 200
             expect(response.body).to eq 'authenticated'
@@ -270,7 +270,7 @@ describe ApplicationController do
             expect(authentication_metrics)
               .to increment(:user_unauthenticated_counter)
 
-            get :index, feed_token: user.feed_token
+            get :index, params: { feed_token: user.feed_token }
 
             expect(response.status).not_to have_gitlab_http_status 200
             expect(response.body).not_to eq 'authenticated'
@@ -283,7 +283,7 @@ describe ApplicationController do
           expect(authentication_metrics)
             .to increment(:user_unauthenticated_counter)
 
-          get :index, feed_token: 'token', format: :atom
+          get :index, format: :atom, params: { feed_token: 'token' }
 
           expect(response.status).not_to eq 200
           expect(response.body).not_to eq 'authenticated'
@@ -566,15 +566,15 @@ describe ApplicationController do
         end
 
         it 'renders a 403 when the sessionless user did not accept the terms' do
-          get :index, feed_token: user.feed_token, format: :atom
+          get :index, format: :atom, params: { feed_token: user.feed_token }
 
           expect(response).to have_gitlab_http_status(403)
         end
 
         it 'renders the error message when the format was html' do
           get :index,
-              private_token: create(:personal_access_token, user: user).token,
-              format: :html
+              format: :html,
+              params: { private_token: create(:personal_access_token, user: user).token }
 
           expect(response.body).to have_content /accept the terms of service/i
         end
@@ -582,7 +582,7 @@ describe ApplicationController do
         it 'renders a 200 when the sessionless user accepted the terms' do
           accept_terms(user)
 
-          get :index, feed_token: user.feed_token, format: :atom
+          get :index, format: :atom, params: { feed_token: user.feed_token }
 
           expect(response).to have_gitlab_http_status(200)
         end
@@ -665,7 +665,7 @@ describe ApplicationController do
     end
 
     it 'renders a 403 when a message is passed to access denied' do
-      get :index, message: 'None shall pass'
+      get :index, params: { message: 'None shall pass' }
 
       expect(response).to have_gitlab_http_status(403)
     end
@@ -685,34 +685,18 @@ describe ApplicationController do
     end
 
     context 'html' do
-      subject { get :index, text: "hi \255" }
+      subject { get :index, params: { text: "hi \255" } }
 
       it 'renders 412' do
-        if Gitlab.rails5?
-          expect { subject }.to raise_error(ActionController::BadRequest)
-        else
-          subject
-
-          expect(response).to have_gitlab_http_status(412)
-          expect(response).to render_template :precondition_failed
-        end
+        expect { subject }.to raise_error(ActionController::BadRequest)
       end
     end
 
     context 'js' do
-      subject { get :index, text: "hi \255", format: :js }
+      subject { get :index, format: :js, params: { text: "hi \255" } }
 
       it 'renders 412' do
-        if Gitlab.rails5?
-          expect { subject }.to raise_error(ActionController::BadRequest)
-        else
-          subject
-
-          json_response = JSON.parse(response.body)
-
-          expect(response).to have_gitlab_http_status(412)
-          expect(json_response['error']).to eq('Invalid UTF-8')
-        end
+        expect { subject }.to raise_error(ActionController::BadRequest)
       end
     end
   end
