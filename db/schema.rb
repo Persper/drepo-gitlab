@@ -1200,13 +1200,12 @@ ActiveRecord::Schema.define(version: 20181114155639) do
 
   create_table "merge_request_pipelines", force: :cascade do |t|
     t.integer "merge_request_id", null: false
-    t.integer "ci_pipeline_id", null: false
+    t.integer "pipeline_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.index ["merge_request_id"], name: "index_merge_request_pipelines_on_merge_request_id", using: :btree
+    t.index ["pipeline_id"], name: "index_merge_request_pipelines_on_pipeline_id", using: :btree
   end
-
-  add_index "merge_request_pipelines", ["ci_pipeline_id"], name: "index_merge_request_pipelines_on_ci_pipeline_id", using: :btree
-  add_index "merge_request_pipelines", ["merge_request_id"], name: "index_merge_request_pipelines_on_merge_request_id", using: :btree
 
   create_table "merge_requests", force: :cascade do |t|
     t.string "target_branch", null: false
@@ -2333,7 +2332,7 @@ ActiveRecord::Schema.define(version: 20181114155639) do
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "users", column: "latest_closed_by_id", name: "fk_ae440388cc", on_delete: :nullify
   add_foreign_key "merge_request_metrics", "users", column: "merged_by_id", name: "fk_7f28d925f3", on_delete: :nullify
-  add_foreign_key "merge_request_pipelines", "ci_pipelines", on_delete: :cascade
+  add_foreign_key "merge_request_pipelines", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "merge_request_pipelines", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_requests", "ci_pipelines", column: "head_pipeline_id", name: "fk_fd82eae0b9", on_delete: :nullify
   add_foreign_key "merge_requests", "merge_request_diffs", column: "latest_merge_request_diff_id", name: "fk_06067f5644", on_delete: :nullify

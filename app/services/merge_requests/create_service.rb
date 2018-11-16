@@ -29,7 +29,7 @@ module MergeRequests
 
       # Create merge request pipelines
       Ci::CreateMergeRequestPipelinesService
-        .new(merge_request.project, current_user, ref: merge_request.source_branch)
+        .new(issuable.project, current_user, ref: issuable.source_branch)
         .execute(:merge_request)
 
       super

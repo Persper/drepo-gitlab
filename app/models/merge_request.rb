@@ -56,6 +56,7 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
 
+  has_many :merge_request_pipelines, class_name: "MergeRequest::Pipeline"
   has_many :pipelines, through: :merge_request_pipelines, class_name: "Ci::Pipeline"
 
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
