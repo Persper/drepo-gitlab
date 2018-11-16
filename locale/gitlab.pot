@@ -2870,6 +2870,9 @@ msgstr ""
 msgid "Forking in progress"
 msgstr ""
 
+msgid "Forks"
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -5791,6 +5794,9 @@ msgid "Starred Projects' Activity"
 msgstr ""
 
 msgid "Starred projects"
+msgstr ""
+
+msgid "Stars"
 msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
