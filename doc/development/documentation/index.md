@@ -713,11 +713,11 @@ nav_category: instance
 # Install
 ```
 
-The configuration above adds the "Install" doc to the nav section "Admin docs",
+The configuration above adds the "Install" doc to the nav section "Administrator",
 under the "Instance" category. The output is:
 
 ```md
-- Admin docs
+- Administrator
   - Instance
     - [Install](link)
 ```
@@ -728,11 +728,11 @@ The `nav_section` frontmatter entry sets the section a category will be under.
 
 The available sections are:
 
-| Section slug  | Output           |
-| ------------- | ---------------- |
-| `user`        | User docs        |
-| `admin`       | Admin docs       |
-| `development` | Contributor docs |
+| Section slug  | Output        |
+| ------------- | ------------- |
+| `user`        | User          |
+| `admin`       | Administrator |
+| `development` | Contributor   |
 
 #### Categories
 
@@ -756,10 +756,10 @@ nav_category: essentials
 
 Available categories for the `admin` section:
 
-| Category slug | Output     |
-| ------------- | ---------- |
-| `instance`    | Instance   |
-| `general`     | General    |
+| Category slug  | Output     |
+| -------------- | ---------- |
+| `instance`     | Instance   |
+| `settings`     | Settings   |
 
 Example:
 
@@ -873,7 +873,7 @@ For example:
 
 ```erb
 <!-- Admin docs -->
-<span class="global-nav-block">Admin docs</span>
+<span class="global-nav-block">Administrator</span>
 <%= nav_create_links_for(sections, 'admin', @item) %>
 ```
 
@@ -920,12 +920,12 @@ NAV_CATEGORY_CONFIG = {
 }
 ```
 
-Let's say you need to create a category called "Q&A" under the section "Admin docs".
+Let's say you need to create a category called "Q&A" under the section "User".
 
 The doc frontmatter would contain:
 
 ```yaml
-nav_section: admin
+nav_section: user
 nav_category: qa
 ```
 
@@ -940,20 +940,20 @@ NAV_CATEGORY_CONFIG = {
 }
 ```
 
-As for the `admin` section, there's a defined category order, so you also must add the new
+As for the `user` section, there's a defined category order, so you also must add the new
 category to the array in the helper file:
 
 ```ruby
 NAV_SECTION_CONFIG = {
   #...
   'admin' => {
-    'category_order' => %w{general instance qa}
+    'category_order' => %w{essentials ci account general qa}
   }
 }
 ```
 
 This way, you're not only including the new category `qa` into the section, but outputting
-it after `general` and `instance`.
+it after `general`.
 
 ### Adding new items to the global nav
 
