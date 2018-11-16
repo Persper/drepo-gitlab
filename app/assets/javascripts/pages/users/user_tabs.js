@@ -71,7 +71,7 @@ const CALENDAR_TEMPLATE = `
 
 const CALENDAR_PERIOD_6_MONTHS = 6;
 const CALENDAR_PERIOD_12_MONTHS = 12;
-const OVERVIEW_CALENDAR_BREAKPOINT = 918;
+const OVERVIEW_CALENDAR_BREAKPOINT = 924;
 
 export default class UserTabs {
   constructor({ defaultAction, action, parentEl }) {
