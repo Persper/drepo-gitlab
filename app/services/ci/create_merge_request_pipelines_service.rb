@@ -3,6 +3,8 @@
 module Ci
   class CreateMergeRequestPipelinesService < BaseService
     def execute(source, **args, &block)
+      return unless Feature.enabled?(:ci_merge_request_pipelines, default_enabled: true)
+
       find_merge_requests do |merge_request|
         Ci::CreatePipelineService
           .new(merge_request.target_project, current_user, params)
