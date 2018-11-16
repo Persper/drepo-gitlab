@@ -113,6 +113,10 @@ class Project < ActiveRecord::Base
   after_create :ensure_storage_path_exists
   after_save :ensure_storage_path_exists, if: :namespace_id_changed?
 
+  after_create do |project|
+    create_project_repository(shard_name: project.repository_storage, disk_path: project.disk_path)
+  end
+
   acts_as_ordered_taggable
 
   attr_accessor :old_path_with_namespace
@@ -123,6 +127,7 @@ class Project < ActiveRecord::Base
   alias_attribute :title, :name
 
   # Relations
+  belongs_to :project_repository, foreign_key: :repository_id
   belongs_to :pool_repository
   belongs_to :creator, class_name: 'User'
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
