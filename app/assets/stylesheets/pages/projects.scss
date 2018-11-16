@@ -910,13 +910,6 @@ pre.light-well {
     font-size: 20px;
     font-weight: $gl-font-weight-normal;
 
-    /*
-    @include media-breakpoint-down(sm) {
-      width: 100%;
-      margin-bottom: $gl-padding-8;
-    }
-    */
-
     .project-name {
       font-weight: $gl-font-weight-bold;
     }
@@ -924,16 +917,13 @@ pre.light-well {
 
   .avatar-container {
     flex: 0 0 auto;
-  }
-
-  .avatar-container {
     align-self: flex-start;
   }
 
   .project-details {
     min-width: 0;
     line-height: 16px;
-    
+
     @include media-breakpoint-only(sm) {
       display: flex;
     }
