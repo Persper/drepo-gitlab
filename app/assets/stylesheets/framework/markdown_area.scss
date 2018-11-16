@@ -131,6 +131,12 @@
   width: 100%;
 }
 
+.md-suggestion-header {
+  border: 1px solid $border-color;
+  font-weight: $gl-font-weight-bold;
+  height: 45px;
+}
+
 .md {
   &.md-preview-holder {
     // Reset ul style types since we're nested inside a ul already

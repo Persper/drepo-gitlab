@@ -6,9 +6,11 @@ import GLForm from '../../../gl_form';
 import markdownHeader from './header.vue';
 import markdownToolbar from './toolbar.vue';
 import icon from '../icon.vue';
+import suggestion from './suggestion.vue';
 
 export default {
   components: {
+    suggestion,
     markdownHeader,
     markdownToolbar,
     icon,
@@ -38,6 +40,11 @@ export default {
       required: false,
       default: '',
     },
+    fileName: {
+      type: String,
+      required: false,
+      default: '',
+    },
     canAttachFile: {
       type: Boolean,
       required: false,
@@ -62,6 +69,10 @@ export default {
     shouldShowReferencedUsers() {
       const referencedUsersThreshold = 10;
       return this.referencedUsers.length >= referencedUsersThreshold;
+    },
+    isSuggestion() {
+      return true; // temporary until backend is ready
+      //  return this.markdownPreview.includes('js-render-suggestion');
     },
   },
   mounted() {
@@ -175,7 +186,12 @@ export default {
       v-show="previewMarkdown"
       class="md md-preview-holder md-preview js-vue-md-preview"
     >
+      <suggestion
+        v-if="isSuggestion"
+        :suggestion="markdownPreview"
+        :file-name="fileName"/>
       <div
+        v-else
         ref="markdown-preview"
         v-html="markdownPreview"
       >

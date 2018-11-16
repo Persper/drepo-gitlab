@@ -3,6 +3,7 @@ import $ from 'jquery';
 import noteEditedText from './note_edited_text.vue';
 import noteAwardsList from './note_awards_list.vue';
 import noteAttachment from './note_attachment.vue';
+import suggestion from '~/vue_shared/components/markdown/suggestion.vue';
 import noteForm from './note_form.vue';
 import autosave from '../mixins/autosave';
 
@@ -11,6 +12,7 @@ export default {
     noteEditedText,
     noteAwardsList,
     noteAttachment,
+    suggestion,
     noteForm,
   },
   mixins: [autosave],
@@ -33,6 +35,13 @@ export default {
     noteBody() {
       return this.note.note;
     },
+    noteFileName() {
+      return this.note.position ? this.note.position.new_path : '';
+    },
+    isSuggestion() {
+      return true; // temporary until backend is ready
+      //  return this.note.note_html.includes('js-render-suggestion');
+    }
   },
   mounted() {
     this.renderGFM();
@@ -62,15 +71,6 @@ export default {
     formCancelHandler(shouldConfirm, isDirty) {
       this.$emit('cancelForm', shouldConfirm, isDirty);
     },
-    mockSuggestion() {
-      // temporary: this will be generated on the backend and returned in `note.note_html`
-      return `
-        <pre
-        class="code js-render-suggestion white"
-        data-comment="I suggest the following"
-        data-file="test.html"
-        ><code><span id="LC1" class="line">- &lt;p&gt;Foo&lt;/p&gt;</span>&#x000A;<span id="LC2" class="line">+ &lt;p&gt;Bar&lt;/p&gt;</span></code></pre>`;
-    },
   },
 };
 </script>
@@ -80,18 +80,22 @@ export default {
     ref="note-body"
     :class="{ 'js-task-list-container': canEdit }"
     class="note-body">
+    <suggestion
+      v-if="isSuggestion && !isEditing"
+      :can-apply="true"
+      :suggestion="note.note_html"
+      :file-name="noteFileName"/>
     <div
+      v-else
       class="note-text md"
-      v-html="mockSuggestion()"></div>
-    <!--<div
-      class="note-text md"
-      v-html="note.note_html"></div>-->
+      v-html="note.note_html"></div>
     <note-form
       v-if="isEditing"
       ref="noteForm"
       :is-editing="isEditing"
       :note-body="noteBody"
       :note-id="note.id"
+      :note-file-name="noteFileName"
       :markdown-version="note.cached_markdown_version"
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"

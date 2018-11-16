@@ -24,6 +24,11 @@ export default {
       required: false,
       default: '',
     },
+    noteFileName: {
+      type: String,
+      required: false,
+      default: '',
+    },
     markdownVersion: {
       type: Number,
       required: false,
@@ -177,6 +182,7 @@ export default {
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"
         :markdown-version="markdownVersion"
+        :file-name="noteFileName"
         :quick-actions-docs-path="quickActionsDocsPath"
         :add-spacing-classes="false">
         <textarea
