@@ -52,11 +52,12 @@ class Projects::PipelinesController < Projects::ApplicationController
   def create
     @pipeline = Ci::CreatePipelineService
       .new(project, current_user, create_params)
-      .execute(:web, ignore_skip_ci: true, save_on_errors: false).tap do
-        Ci::CreateMergeRequestPipelinesService
-          .new(project, current_user, create_params)
-          .execute(:web, ignore_skip_ci: true, save_on_errors: false)
-      end
+      .execute(:web, ignore_skip_ci: true, save_on_errors: false)
+
+    # Create merge request pipelines
+    Ci::CreateMergeRequestPipelinesService
+      .new(project, current_user, create_params)
+      .execute(:web, ignore_skip_ci: true, save_on_errors: false)
 
     if @pipeline.persisted?
       redirect_to project_pipeline_path(project, @pipeline)

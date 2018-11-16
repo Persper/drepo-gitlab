@@ -29,6 +29,7 @@ module Gitlab
           def matches_pattern?(pattern, pipeline)
             return true if pipeline.tag? && pattern == 'tags'
             return true if pipeline.branch? && pattern == 'branches'
+            return true if pipeline.merge_request_pipeline? && pattern == 'merge-requests'
             return true if pipeline.source == pattern
             return true if pipeline.source&.pluralize == pattern
 

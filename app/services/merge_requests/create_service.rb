@@ -27,6 +27,11 @@ module MergeRequests
       issuable.cache_merge_request_closes_issues!(current_user)
       update_merge_requests_head_pipeline(issuable)
 
+      # Create merge request pipelines
+      Ci::CreateMergeRequestPipelinesService
+        .new(merge_request.project, current_user, ref: merge_request.source_branch)
+        .execute(:merge_request)
+
       super
     end
 

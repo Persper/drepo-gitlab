@@ -1198,10 +1198,6 @@ ActiveRecord::Schema.define(version: 20181114155639) do
     t.index ["pipeline_id"], name: "index_merge_request_metrics_on_pipeline_id", using: :btree
   end
 
-  add_index "merge_request_metrics", ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at", using: :btree
-  add_index "merge_request_metrics", ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
-  add_index "merge_request_metrics", ["pipeline_id"], name: "index_merge_request_metrics_on_pipeline_id", using: :btree
-
   create_table "merge_request_pipelines", force: :cascade do |t|
     t.integer "merge_request_id", null: false
     t.integer "ci_pipeline_id", null: false

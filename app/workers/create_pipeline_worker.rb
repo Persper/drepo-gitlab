@@ -11,12 +11,15 @@ class CreatePipelineWorker
     user = User.find(user_id)
     params = params.deep_symbolize_keys
 
-    Ci::CreatePipelineService
+    pipeline = Ci::CreatePipelineService
       .new(project, user, ref: ref)
-      .execute(source, **params).tap do
-        Ci::CreateMergeRequestPipelinesService
-          .new(project, user, ref: ref)
-          .execute(source, **params)
-      end
+      .execute(source, **params)
+
+    # Create merge request pipelines
+    Ci::CreateMergeRequestPipelinesService
+      .new(project, user, ref: ref)
+      .execute(source, **params)
+
+    pipeline
   end
 end

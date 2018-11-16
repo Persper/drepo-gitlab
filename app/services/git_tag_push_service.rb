@@ -10,11 +10,12 @@ class GitTagPushService < BaseService
     @push_data = build_push_data
 
     EventCreateService.new.push(project, current_user, push_data)
-    Ci::CreatePipelineService.new(project, current_user, push_data).execute(:push).tap do
-      Ci::CreateMergeRequestPipelinesService
-        .new(project, current_user, push_data)
-        .execute(:push)
-    end
+    Ci::CreatePipelineService.new(project, current_user, push_data).execute(:push)
+
+    # Create merge request pipelines. This might not be necessary because tag cannot be associated with merge request
+    Ci::CreateMergeRequestPipelinesService
+      .new(project, current_user, push_data)
+      .execute(:push)
 
     SystemHooksService.new.execute_hooks(build_system_push_data, :tag_push_hooks)
     project.execute_hooks(push_data.dup, :tag_push_hooks)

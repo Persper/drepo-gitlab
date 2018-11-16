@@ -29,8 +29,8 @@ module Ci
 
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
-    has_many :merge_requests, foreign_key: "head_pipeline_id"
-    has_many :real_merge_requests, through: :merge_request_pipelines, class_name: "MergeRequest"
+    has_many :merge_requests_as_head_pipeline, foreign_key: "head_pipeline_id"
+    has_many :merge_requests, through: :merge_request_pipelines, class_name: "MergeRequest"
 
     has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
@@ -66,7 +66,8 @@ module Ci
       trigger: 3,
       schedule: 4,
       api: 5,
-      external: 6
+      external: 6,
+      merge_request: 7
     }
 
     enum_with_nil config_source: {
@@ -483,8 +484,8 @@ module Ci
       end
     end
 
-    def mr_pipeline?
-      real_merge_requests.any?
+    def merge_request_pipeline?
+      merge_requests.any?
     end
 
     ##

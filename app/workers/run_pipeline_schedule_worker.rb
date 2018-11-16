@@ -18,13 +18,15 @@ class RunPipelineScheduleWorker
   # rubocop: enable CodeReuse/ActiveRecord
 
   def run_pipeline_schedule(schedule, user)
-    Ci::CreatePipelineService.new(schedule.project,
+    pipeline = Ci::CreatePipelineService.new(schedule.project,
                                   user,
                                   ref: schedule.ref)
-      .execute(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule).tap do
-        Ci::CreateMergeRequestPipelinesService
-          .new(schedule.project, user, ref: schedule.ref)
-          .execute(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
-      end
+      .execute(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
+
+    Ci::CreateMergeRequestPipelinesService
+      .new(schedule.project, user, ref: schedule.ref)
+      .execute(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
+
+    pipeline
   end
 end

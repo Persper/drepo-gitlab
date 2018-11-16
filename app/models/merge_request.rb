@@ -684,7 +684,7 @@ class MergeRequest < ActiveRecord::Base
     @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
-  def has_mr_pipelines?
+  def has_merge_request_pipelines?
     self.pipelines.any?
   end
 

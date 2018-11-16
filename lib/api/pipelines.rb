@@ -58,11 +58,12 @@ module API
         new_pipeline = Ci::CreatePipelineService.new(user_project,
                                                      current_user,
                                                      pipeline_params)
-                           .execute(:api, ignore_skip_ci: true, save_on_errors: false).tap do
-                             Ci::CreateMergeRequestPipelinesService
-                               .new(user_project, current_user, pipeline_params)
-                               .execute(:api, ignore_skip_ci: true, save_on_errors: false)
-                           end
+                           .execute(:api, ignore_skip_ci: true, save_on_errors: false)
+
+        # Create merge request pipelines
+        Ci::CreateMergeRequestPipelinesService
+          .new(user_project, current_user, pipeline_params)
+          .execute(:api, ignore_skip_ci: true, save_on_errors: false)
 
         if new_pipeline.persisted?
           present new_pipeline, with: Entities::Pipeline
