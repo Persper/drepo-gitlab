@@ -62,6 +62,15 @@ export default {
     formCancelHandler(shouldConfirm, isDirty) {
       this.$emit('cancelForm', shouldConfirm, isDirty);
     },
+    mockSuggestion() {
+      // temporary: this will be generated on the backend and returned in `note.note_html`
+      return `
+        <pre
+        class="code js-render-suggestion white"
+        data-comment="I suggest the following"
+        data-file="test.html"
+        ><code><span id="LC1" class="line">- &lt;p&gt;Foo&lt;/p&gt;</span>&#x000A;<span id="LC2" class="line">+ &lt;p&gt;Bar&lt;/p&gt;</span></code></pre>`;
+    },
   },
 };
 </script>
@@ -73,7 +82,10 @@ export default {
     class="note-body">
     <div
       class="note-text md"
-      v-html="note.note_html"></div>
+      v-html="mockSuggestion()"></div>
+    <!--<div
+      class="note-text md"
+      v-html="note.note_html"></div>-->
     <note-form
       v-if="isEditing"
       ref="noteForm"
