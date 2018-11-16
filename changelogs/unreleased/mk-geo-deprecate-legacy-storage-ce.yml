@@ -1,0 +1,5 @@
+---
+title: "[CE Backport] Prevent migrate_to_hashed task with read only database"
+merge_request: 23131
+author:
+type: added
