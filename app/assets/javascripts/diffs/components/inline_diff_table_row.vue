@@ -1,5 +1,5 @@
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapState } from 'vuex';
 import DiffTableCell from './diff_table_cell.vue';
 import {
   NEW_LINE_TYPE,
@@ -10,6 +10,7 @@ import {
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
 } from '../constants';
+import { isHighlightedRow } from '../store/utils';
 
 export default {
   components: {
@@ -40,6 +41,11 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      isHighlighted(state) {
+        return this.line.lineCode === state.diffs.highlightedRow;
+      },
+    }),
     ...mapGetters('diffs', ['isInlineView']),
     isContextLine() {
       return this.line.type === CONTEXT_LINE_TYPE;
@@ -91,6 +97,7 @@ export default {
       :is-bottom="isBottom"
       :is-hover="isHover"
       :show-comment-button="true"
+      :is-highlighted="isHighlighted"
       class="diff-line-num old_line"
     />
     <diff-table-cell
@@ -100,10 +107,14 @@ export default {
       :line-type="newLineType"
       :is-bottom="isBottom"
       :is-hover="isHover"
+      :is-highlighted="isHighlighted"
       class="diff-line-num new_line qa-new-diff-line"
     />
     <td
-      :class="line.type"
+      :class="{
+        [line.type]: true,
+        hll: isHighlighted,
+      }"
       class="line_content"
       v-html="line.rich_text"
     >

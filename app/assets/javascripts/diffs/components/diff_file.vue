@@ -66,6 +66,14 @@ export default {
       );
     },
   },
+  mounted() {
+    const id = window && window.location && window.location.hash;
+
+    if (id) {
+      console.log({ id });
+      this.setHighlightedRow(id.slice(1));
+    }
+  },
   watch: {
     'file.collapsed': function fileCollapsedWatch(newVal, oldVal) {
       if (!newVal && oldVal && !this.hasDiffLines) {
@@ -74,7 +82,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['loadCollapsedDiff', 'assignDiscussionsToDiff']),
+    ...mapActions('diffs', ['loadCollapsedDiff', 'assignDiscussionsToDiff', 'setHighlightedRow']),
     handleToggle() {
       if (!this.hasDiffLines) {
         this.handleLoadCollapsedDiff();

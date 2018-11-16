@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import DiffLineGutterContent from './diff_line_gutter_content.vue';
 import {
   MATCH_LINE_TYPE,
@@ -65,6 +65,11 @@ export default {
       required: false,
       default: false,
     },
+    isHighlighted: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters(['isLoggedIn']),
@@ -85,6 +90,7 @@ export default {
       const { type } = this.line;
 
       return {
+        hll: this.isHighlighted,
         [type]: type,
         [LINE_UNFOLD_CLASS_NAME]: this.isMatchLine,
         [LINE_HOVER_CLASS_NAME]:
@@ -98,13 +104,22 @@ export default {
     lineNumber() {
       return this.lineType === OLD_LINE_TYPE ? this.line.old_line : this.line.new_line;
     },
+    lineCode() {
+      return (
+        this.line.lineCode ||
+        (this.line.left && this.line.line.left.lineCode) ||
+        (this.line.right && this.line.right.lineCode)
+      );
+    },
   },
+  methods: mapActions('diffs', ['setHighlightedRow']),
 };
 </script>
 
 <template>
   <td
     :class="classNameMap"
+    @click="setHighlightedRow(line.lineCode || line.left.lineCode)"
   >
     <diff-line-gutter-content
       :line="line"

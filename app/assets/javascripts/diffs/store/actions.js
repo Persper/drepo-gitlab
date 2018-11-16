@@ -33,6 +33,10 @@ export const fetchDiffFiles = ({ state, commit }) => {
     .then(handleLocationHash);
 };
 
+export const setHighlightedRow = ({ commit }, lineCode) => {
+  commit(types.SET_HIGHLIGHTED_ROW, lineCode);
+};
+
 // This is adding line discussions to the actual lines in the diff tree
 // once for parallel and once for inline mode
 export const assignDiscussionsToDiff = (

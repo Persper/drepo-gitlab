@@ -179,6 +179,7 @@ export default {
       <a
         v-if="lineNumber"
         :data-linenumber="lineNumber"
+        @click.prevent
         :href="lineHref"
       >
       </a>

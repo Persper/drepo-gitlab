@@ -22,6 +22,7 @@ import actions, {
   expandAllFiles,
   toggleFileDiscussions,
   saveDiffDiscussion,
+  setHighlightedRow,
   toggleTreeOpen,
   scrollToFile,
   toggleShowTreeList,
@@ -89,6 +90,12 @@ describe('DiffsStoreActions', () => {
           done();
         },
       );
+    });
+  });
+
+  describe('setHighlightedRow', () => {
+    it('should set lineHash and fileHash of highlightedRow', () => {
+      testAction(setHighlightedRow, { fileHash: '123', lineHash: 'abc' }, {});
     });
   });
 
