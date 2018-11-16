@@ -1198,11 +1198,10 @@ ActiveRecord::Schema.define(version: 20181114155639) do
     t.index ["pipeline_id"], name: "index_merge_request_metrics_on_pipeline_id", using: :btree
   end
 
-  create_table "merge_request_pipelines", force: :cascade do |t|
+  create_table "merge_request_pipelines", id: :bigserial, force: :cascade do |t|
     t.integer "merge_request_id", null: false
     t.integer "pipeline_id", null: false
     t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
     t.index ["merge_request_id"], name: "index_merge_request_pipelines_on_merge_request_id", using: :btree
     t.index ["pipeline_id"], name: "index_merge_request_pipelines_on_pipeline_id", using: :btree
   end

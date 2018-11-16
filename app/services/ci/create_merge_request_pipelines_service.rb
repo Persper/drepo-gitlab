@@ -4,12 +4,17 @@ module Ci
   class CreateMergeRequestPipelinesService < BaseService
     def execute(source, **args, &block)
       return unless Feature.enabled?(:ci_merge_request_pipelines, default_enabled: true)
+      raise ArgumentError, 'ref must be specified' unless params[:ref]
+
+      pipelines = []
 
       find_merge_requests do |merge_request|
-        Ci::CreatePipelineService
+        pipelines << Ci::CreatePipelineService
           .new(merge_request.target_project, current_user, params)
-          .execute(source, args, merge_request: merge_request, &block)
+          .execute(source, **args, merge_request: merge_request, &block)
       end
+
+      pipelines
     end
 
     private
