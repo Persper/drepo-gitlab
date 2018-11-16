@@ -13,6 +13,14 @@ module Gitlab
             @pipeline = pipeline
             @attributes = attributes
 
+            # TODO: Improve
+            unless pipeline.merge_request_pipeline?
+              attributes.dig(:only, :refs)&.delete('merge-requests')
+              attributes.dig(:except, :refs)&.delete('merge-requests')
+              attributes.dig(:only).delete(:refs) if attributes.dig(:only, :refs)&.empty?
+              attributes.dig(:except).delete(:refs) if attributes.dig(:except, :refs)&.empty?
+            end
+
             @only = Gitlab::Ci::Build::Policy
               .fabricate(attributes.delete(:only))
             @except = Gitlab::Ci::Build::Policy

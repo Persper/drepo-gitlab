@@ -486,7 +486,8 @@ module Ci
     end
 
     def merge_request_pipeline?
-      merge_requests.any?
+      Feature.enabled?(:ci_merge_request_pipelines, default_enabled: true) &&
+        merge_requests.any?
     end
 
     ##
