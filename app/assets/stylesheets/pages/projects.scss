@@ -934,8 +934,13 @@ pre.light-well {
     min-width: 0;
     line-height: 16px;
     
+    @include media-breakpoint-only(sm) {
+      display: flex;
+    }
+
     .flex-wrapper {
       flex: 1;
+      min-width: 0;
     }
 
     p,

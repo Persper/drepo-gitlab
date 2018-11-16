@@ -9,7 +9,7 @@
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
 - cache_key = project_list_cache_key(project)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
-- css_details_class = compact_mode ? "flex-md-row align-items-md-center" : "flex-md-column align-items-md-start"
+- css_details_class = compact_mode ? "d-flex flex-column flex-sm-row flex-md-row align-items-md-center" : "flex-md-column align-items-md-start"
 - css_controls_class = compact_mode ? "flex-md-column" : "align-items-md-center flex-md-row"
 
 %li.project-row.d-flex{ class: css_class }
@@ -21,7 +21,7 @@
             = image_tag avatar_icon_for_user(project.creator, 64), class: "avatar s65", alt:''
           - else
             = project_icon(project, alt: '', class: 'avatar project-avatar s64', width: 64, height: 64)
-    .project-details.d-flex.flex-column.flex-sm-row.align-items-start.align-items-sm-center.flex-grow{ class: css_details_class }
+    .project-details.flex-sm-fill{ class: css_details_class }
       %div.flex-wrapper
         .d-flex.align-items-center.flex-wrap
           %h2.prepend-top-0.append-bottom-0
