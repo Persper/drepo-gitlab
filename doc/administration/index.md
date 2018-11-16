@@ -2,7 +2,7 @@
 description: 'Learn how to install, configure, update, and maintain your GitLab instance.'
 nav_section: admin_main
 nav_category: ""
-nav_title: "Admin docs"
+nav_title: "Administrator"
 layout: default-copy
 ---
 
