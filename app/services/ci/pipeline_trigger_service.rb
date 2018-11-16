@@ -24,9 +24,9 @@ module Ci
       
       # Create merge request pipelines
       Ci::CreateMergeRequestPipelinesService.new(project, trigger.owner, ref: params[:ref])
-        .execute(:trigger, ignore_skip_ci: true) do |mr_pipeline|
-          mr_pipeline.trigger_requests.build(trigger: trigger)
-          mr_pipeline.variables.build(variables)
+        .execute(:trigger, ignore_skip_ci: true) do |pipeline|
+          pipeline.trigger_requests.build(trigger: trigger)
+          pipeline.variables.build(variables)
         end
 
       if pipeline.persisted?

@@ -29,7 +29,7 @@ module Ci
 
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
-    has_many :merge_requests_as_head_pipeline, foreign_key: "head_pipeline_id"
+    has_many :merge_requests_as_head_pipeline, foreign_key: "head_pipeline_id", class_name: "MergeRequest"
     has_many :merge_requests, through: :merge_request_pipelines, class_name: "MergeRequest"
 
     has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
