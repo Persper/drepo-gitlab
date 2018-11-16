@@ -186,7 +186,7 @@ export default class UserTabs {
       requestParams: { limit: 10 },
     });
     UserTabs.renderMostRecentBlocks('#js-overview .projects-block', {
-      requestParams: { limit: 10, skip_pagination: true, compact_mode: true },
+      requestParams: { limit: 10, skip_pagination: true },
     });
 
     this.loaded.overview = true;
