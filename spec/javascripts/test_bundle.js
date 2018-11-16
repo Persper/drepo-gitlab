@@ -114,7 +114,6 @@ testsContext.keys().forEach(function(path) {
   try {
     testsContext(path);
   } catch (err) {
-    console.log(err);
     console.error('[GL SPEC RUNNER ERROR] Unable to load spec: ', path);
     describe('Test bundle', function() {
       it(`includes '${path}'`, function() {

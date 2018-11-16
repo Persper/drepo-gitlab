@@ -84,7 +84,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.mjs', '.js', '.gql', '.graphql'],
+    extensions: ['.js', '.gql', '.graphql'],
     alias: {
       '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
       emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
@@ -100,6 +100,11 @@ module.exports = {
   module: {
     strictExportPresence: true,
     rules: [
+      {
+        type: 'javascript/auto',
+        test: /\.mjs$/,
+        use: [],
+      },
       {
         test: /\.js$/,
         exclude: path => /node_modules|vendor[\\/]assets/.test(path) && !/\.vue\.js/.test(path),

@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import Suggestion from './item.vue';
@@ -7,7 +7,6 @@ import issuesQuery from '../queries/issues.graphql';
 
 export default {
   components: {
-    GlLoadingIcon,
     Suggestion,
     Icon,
   },
@@ -24,16 +23,30 @@ export default {
       required: true,
     },
   },
+  apollo: {
+    issues: {
+      query: issuesQuery,
+      debounce: 250,
+      skip() {
+        return this.isSearchEmpty;
+      },
+      update: data => data.project.issues,
+      variables() {
+        return {
+          fullPath: this.projectPath,
+          search: this.search,
+        };
+      },
+    },
+  },
+  data() {
+    return {
+      issues: [],
+    };
+  },
   computed: {
     isSearchEmpty() {
       return this.search.trim() === '';
-    },
-  },
-  methods: {
-    hasIssues(data) {
-      if (!data || !data.project) return false;
-
-      return data.project.issues.length;
     },
   },
   issuesQuery,
@@ -44,60 +57,37 @@ export default {
 </script>
 
 <template>
-  <apollo-query
-    :query="$options.issuesQuery"
-    :variables="{
-      fullPath: projectPath,
-      search
-    }"
-    :skip="isSearchEmpty"
-    :debounce="250"
+  <div
+    v-if="!isSearchEmpty && issues.length"
+    class="form-group row issuable-suggestions"
   >
     <div
-      v-if="!isSearchEmpty && (loading || hasIssues(data))"
-      slot-scope="{ result: { loading, data } }"
-      class="form-group row issuable-suggestions"
+      v-once
+      class="col-form-label col-sm-2 pt-0"
     >
-      <div
-        v-once
-        class="col-form-label col-sm-2 pt-0"
-      >
-        {{ __('Related Issues') }}
-        <icon
-          v-gl-tooltip.bottom
-          :title="$options.helpText"
-          name="question-o"
-        />
-      </div>
-      <div class="col-sm-10">
-        <p
-          v-if="loading"
-          class="bold mb-0 mt-0"
-        >
-          {{ __('Searching for possible related issues') }}
-          <gl-loading-icon
-            inline
-          />
-        </p>
-        <ul
-          v-else-if="hasIssues(data)"
-          class="list-unstyled m-0"
-        >
-          <li
-            v-for="(suggestion, index) in data.project.issues"
-            :key="suggestion.id"
-            :class="{
-              'append-bottom-default': index !== data.project.issues.length - 1
-            }"
-          >
-            <suggestion
-              :suggestion="suggestion"
-            />
-          </li>
-        </ul>
-      </div>
+      {{ __('Related Issues') }}
+      <icon
+        v-gl-tooltip.bottom
+        :title="$options.helpText"
+        name="question-o"
+      />
     </div>
-  </apollo-query>
+    <div class="col-sm-10">
+      <ul class="list-unstyled m-0">
+        <li
+          v-for="(suggestion, index) in issues"
+          :key="suggestion.id"
+          :class="{
+            'append-bottom-default': index !== issues.length - 1
+          }"
+        >
+          <suggestion
+            :suggestion="suggestion"
+          />
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <style>

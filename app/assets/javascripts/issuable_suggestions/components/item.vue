@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlTooltip, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlLink, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
