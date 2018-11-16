@@ -2,7 +2,7 @@ import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import Activities from '~/activities';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
-import { __, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import flash from '~/flash';
 import ActivityCalendar from './activity_calendar';
 import UserOverviewBlock from './user_overview_block';
@@ -90,8 +90,8 @@ export default class UserTabs {
       this.action = this.defaultAction;
     }
 
-    // caches data for activity calendar (based on tab)
-    this.activityCalendarData = { overview: null, activity: null };
+    // caches data for activity calendar
+    this.activityCalendarData = null;
 
     this.activateTab(this.action);
   }
@@ -106,10 +106,7 @@ export default class UserTabs {
   }
 
   onResize() {
-    const action = this.getCurrentAction();
-    if (action === 'overview') {
-      this.loadActivityCalendar(action);
-    }
+    this.loadActivityCalendar();
   }
 
   changeProjectsPage(e) {
@@ -172,8 +169,6 @@ export default class UserTabs {
       return;
     }
 
-    this.loadActivityCalendar('activity');
-
     // eslint-disable-next-line no-new
     new Activities('#activity');
 
@@ -185,7 +180,7 @@ export default class UserTabs {
       return;
     }
 
-    this.loadActivityCalendar('overview');
+    this.loadActivityCalendar();
 
     UserTabs.renderMostRecentBlocks('#js-overview .activities-block', {
       requestParams: { limit: 5 },
@@ -207,46 +202,31 @@ export default class UserTabs {
     });
   }
 
-  loadActivityCalendar(action) {
+  loadActivityCalendar() {
     const $calendarWrap = this.$parentEl.find('.tab-pane.active .user-calendar');
     const calendarPath = $calendarWrap.data('calendarPath');
 
-    if (!this.activityCalendarData[action]) {
+    if (!this.activityCalendarData) {
       axios
         .get(calendarPath)
         .then(({ data }) => {
-          this.activityCalendarData[action] = data;
-          UserTabs.renderActivityCalendar(data, action, $calendarWrap);
+          // let's cache the data so we don't need to fetch it again when the chart gets resized
+          this.activityCalendarData = data;
+          UserTabs.renderActivityCalendar(data, $calendarWrap);
         })
         .catch(() => flash(__('There was an error loading users activity calendar.')));
     } else {
-      UserTabs.renderActivityCalendar(this.activityCalendarData[action], action, $calendarWrap);
+      UserTabs.renderActivityCalendar(this.activityCalendarData, $calendarWrap);
     }
   }
 
-  static renderActivityCalendar(data, action, $calendarWrap) {
+  static renderActivityCalendar(data, $calendarWrap) {
     const monthsAgo = UserTabs.getVisibleCalendarPeriod($calendarWrap);
     const calendarActivitiesPath = $calendarWrap.data('calendarActivitiesPath');
-    let utcFormatted = 'UTC';
     const utcOffset = $calendarWrap.data('utcOffset');
-    if (utcOffset !== 0) {
-      utcFormatted = `UTC${utcOffset > 0 ? '+' : ''}${utcOffset / 3600}`;
-    }
+    const calendarHint = __('Issues, merge requests, pushes and comments.');
 
     $calendarWrap.html(CALENDAR_TEMPLATE);
-
-    let calendarHint = '';
-
-    if (action === 'activity') {
-      calendarHint = sprintf(
-        __(
-          'Summary of issues, merge requests, push events, and comments (Timezone: %{utcFormatted})',
-        ),
-        { utcFormatted },
-      );
-    } else if (action === 'overview') {
-      calendarHint = __('Issues, merge requests, pushes and comments.');
-    }
 
     $calendarWrap.find('.calendar-hint').text(calendarHint);
 
