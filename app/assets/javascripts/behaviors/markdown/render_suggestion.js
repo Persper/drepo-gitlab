@@ -15,16 +15,20 @@ export default function renderSuggestion($els) {
   if (!$els.length) return;
 
   $els.each((i, el) => {
-
     const applyBtn = document.createElement('button');
     const fileHeader = document.createElement('div');
     const comment = document.createTextNode(el.dataset.comment);
 
-    applyBtn.onclick = ()=> applySuggestion();
+    applyBtn.onclick = () => applySuggestion();
     applyBtn.classList.add('btn');
     applyBtn.innerText = 'Apply';
 
-    fileHeader.classList.add('file-title-flex-parent', 'suggestion-note-header', 'mt-2', 'border-bottom-0');
+    fileHeader.classList.add(
+      'file-title-flex-parent',
+      'suggestion-note-header',
+      'mt-2',
+      'border-bottom-0',
+    );
     fileHeader.innerText = el.dataset.file;
     fileHeader.appendChild(applyBtn);
 
