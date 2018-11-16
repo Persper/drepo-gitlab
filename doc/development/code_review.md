@@ -21,7 +21,7 @@ If you need some guidance (e.g. it's your first merge request), feel free to ask
 one of the [Merge request coaches][team].
 
 If you need assistance with security scans or comments, feel free to include the 
-secure team (`@gl-security`) in the review.
+secure team (`gitlab\-com/gl\-security`) in the review.
 
 Depending on the areas your merge request touches, it must be **approved** by one
 or more [maintainers](https://about.gitlab.com/handbook/engineering/#maintainer):
