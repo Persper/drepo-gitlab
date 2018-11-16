@@ -41,7 +41,7 @@ widget. Reviewers can add their approval by [approving additionally](https://doc
       **approved by a [UX lead][team]**.
    1. If your merge request includes a new dependency or a filesystem change, it must be
       **approved by a [Distribution team member][team]**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/dev-backend/distribution/) for more details.
-   1. If your merge request is processing, storing, or transferring any kind of [RED data](red data), possibly orange data too, it must be
+   1. If your merge request is processing, storing, or transferring any kind of [RED data][red data], possibly orange data too, it must be
       **approved by a [Security Engineer][team]**.
    1. If your merge request is implementing, utilizing, or related to any type of authentication, authorization, or session handling mechanism, it must be
       **approved by a [Security Engineer][team]**.
