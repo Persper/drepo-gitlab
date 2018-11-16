@@ -22,7 +22,7 @@
           - else
             = project_icon(project, alt: '', class: 'avatar project-avatar s64', width: 64, height: 64)
     .project-details.flex-sm-fill{ class: css_details_class }
-      %div.flex-wrapper
+      .flex-wrapper
         .d-flex.align-items-center.flex-wrap
           %h2.prepend-top-0.append-bottom-0
             = link_to project_path(project), class: 'text-plain' do
@@ -55,7 +55,7 @@
             = markdown_field(project, :description)
 
       .controls.d-flex.flex-row.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap{ class: css_controls_class }
-        %div.icon-container.d-flex
+        .icon-container.d-flex
           - if project.archived
             %span.d-flex.icon-wrapper.badge.badge-warning archived
           - if stars
@@ -77,7 +77,7 @@
           - if can?(current_user, :read_cross_project) && project.pipeline_status.has_status?
             %span.d-flex.icon-wrapper.pipeline-state
               = render_project_pipeline_status(project.pipeline_status, tooltip_placement: 'top')
-        %div.d-flex.updated-note
+        .updated-note.d-flex
           %span Updated #{updated_tooltip}
 
     .d-none.d-md-flex.d-lg-flex.align-item-stretch
