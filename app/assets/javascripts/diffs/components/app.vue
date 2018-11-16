@@ -3,6 +3,7 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
@@ -21,6 +22,7 @@ export default {
     HiddenFilesWarning,
     CommitWidget,
     TreeList,
+    GlLoadingIcon,
   },
   props: {
     endpoint: {
@@ -92,7 +94,7 @@ export default {
       return __('Show latest version');
     },
     canCurrentUserFork() {
-      return this.currentUser.canFork === true && this.currentUser.canCreateMergeRequest;
+      return this.currentUser.can_fork === true && this.currentUser.can_create_merge_request;
     },
     showCompareVersions() {
       return this.mergeRequestDiffs && this.mergeRequestDiff;
@@ -126,6 +128,7 @@ export default {
     eventHub.$once('fetchedNotesData', this.setDiscussions);
   },
   methods: {
+    ...mapActions(['startTaskList']),
     ...mapActions('diffs', [
       'setBaseConfig',
       'fetchDiffFiles',
@@ -153,11 +156,13 @@ export default {
     },
     setDiscussions() {
       if (this.isNotesFetched && !this.assignedDiscussions && !this.isLoading) {
+        this.assignedDiscussions = true;
+
         requestIdleCallback(
           () =>
-            this.assignDiscussionsToDiff().then(() => {
-              this.assignedDiscussions = true;
-            }),
+            this.assignDiscussionsToDiff()
+              .then(this.$nextTick)
+              .then(this.startTaskList),
           { timeout: 1000 },
         );
       }
@@ -227,7 +232,10 @@ export default {
         :commit="commit"
       />
 
-      <div class="files d-flex prepend-top-default">
+      <div
+        :data-can-create-note="getNoteableData.current_user.can_create_note"
+        class="files d-flex prepend-top-default"
+      >
         <div
           v-show="showTreeList"
           class="diff-tree-list"

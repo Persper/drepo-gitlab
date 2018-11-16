@@ -500,6 +500,12 @@ module ProjectsHelper
     end
   end
 
+  def explore_projects_tab?
+    current_page?(explore_root_path) ||
+      current_page?(trending_explore_projects_path) ||
+      current_page?(starred_explore_projects_path)
+  end
+
   def sidebar_projects_paths
     %w[
       projects#show
@@ -541,9 +547,12 @@ module ProjectsHelper
     ]
   end
 
-  def explore_projects_tab?
-    current_page?(explore_root_path) ||
-      current_page?(trending_explore_projects_path) ||
-      current_page?(starred_explore_projects_path)
+  def sidebar_operations_paths
+    %w[
+      environments
+      clusters
+      user
+      gcp
+    ]
   end
 end

@@ -36,7 +36,7 @@ Please consider using a virtual machine to run GitLab.
 GitLab requires Ruby (MRI) 2.3. Support for Ruby versions below 2.3 (2.1, 2.2) will stop with GitLab 8.13.
 
 You will have to use the standard MRI implementation of Ruby.
-We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab
+We love [JRuby](https://www.jruby.org/) and [Rubinius](https://rubinius.com) but GitLab
 needs several Gems that have native extensions.
 
 ## Hardware requirements
@@ -197,7 +197,13 @@ use the CI features.
 
 ## Supported web browsers
 
-We support the current and the previous major release of Firefox, Chrome/Chromium, Safari and Microsoft browsers (Microsoft Edge and Internet Explorer 11).
+We support the current and the previous major release of:
+
+- Firefox
+- Chrome/Chromium
+- Safari
+- Microsoft Edge
+- Internet Explorer 11
 
 Each time a new browser version is released, we begin supporting that version and stop supporting the third most recent version.
 
