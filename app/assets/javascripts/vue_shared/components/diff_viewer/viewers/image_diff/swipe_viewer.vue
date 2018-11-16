@@ -108,10 +108,11 @@ export default {
     <div
       ref="swipeFrame"
       :style="{
-        'width': swipeMaxPixelWidth,
-        'height': swipeMaxPixelHeight,
+        width: swipeMaxPixelWidth,
+        height: swipeMaxPixelHeight,
       }"
-      class="swipe-frame">
+      class="swipe-frame"
+    >
       <image-viewer
         key="swipeOldImg"
         ref="swipeOldImg"
@@ -123,10 +124,11 @@ export default {
       <div
         ref="swipeWrap"
         :style="{
-          'width': swipeWrapPixelWidth,
-          'height': swipeMaxPixelHeight,
+          width: swipeWrapPixelWidth,
+          height: swipeMaxPixelHeight,
         }"
-        class="swipe-wrap">
+        class="swipe-wrap"
+      >
         <image-viewer
           key="swipeNewImg"
           :render-info="false"
@@ -134,21 +136,17 @@ export default {
           class="frame added"
           @imgLoaded="swipeNewImgLoaded"
         >
-          <slot
-            slot="image-overlay"
-            name="image-overlay"
-          >
-          </slot>
+          <slot slot="image-overlay" name="image-overlay"> </slot>
         </image-viewer>
       </div>
       <span
         ref="swipeBar"
-        :style="{ 'left': swipeBarPixelPos }"
+        :style="{ left: swipeBarPixelPos }"
         class="swipe-bar"
         @mousedown="startDrag"
-        @mouseup="stopDrag">
-        <span class="top-handle"></span>
-        <span class="bottom-handle"></span>
+        @mouseup="stopDrag"
+      >
+        <span class="top-handle"></span> <span class="bottom-handle"></span>
       </span>
     </div>
   </div>

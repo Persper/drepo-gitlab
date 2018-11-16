@@ -87,22 +87,10 @@ export default {
 
 <template>
   <div>
-    <div
-      :class="innerCssClasses"
-      :style="dimensionStyles"
-      class="position-relative"
-    >
-      <img
-        ref="contentImg"
-        :src="path"
-        @load="onImgLoad"
-      />
-      <slot name="image-overlay"></slot>
+    <div :class="innerCssClasses" :style="dimensionStyles" class="position-relative">
+      <img ref="contentImg" :src="path" @load="onImgLoad" /> <slot name="image-overlay"></slot>
     </div>
-    <p
-      v-if="renderInfo"
-      class="image-info"
-    >
+    <p v-if="renderInfo" class="image-info">
       <template v-if="hasFileSize">
         {{ fileSizeReadable }}
       </template>
