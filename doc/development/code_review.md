@@ -5,7 +5,7 @@ having your code reviewed.
 
 All merge requests for GitLab CE and EE, whether written by a GitLab team member
 or a volunteer contributor, must go through a code review process to ensure the
-code is effective, understandable, and maintainable.
+code is effective, understandable, maintainable, and secure.
 
 ## Getting your merge request reviewed, approved, and merged
 
@@ -19,6 +19,9 @@ importance of involving reviewer(s) in the section on the responsibility of the 
 
 If you need some guidance (e.g. it's your first merge request), feel free to ask
 one of the [Merge request coaches][team].
+
+If you need assistance with security scans or comments, feel free to include the 
+secure team (`@gl-security`) in the review.
 
 Depending on the areas your merge request touches, it must be **approved** by one
 or more [maintainers](https://about.gitlab.com/handbook/engineering/#maintainer):
@@ -38,6 +41,13 @@ widget. Reviewers can add their approval by [approving additionally](https://doc
       **approved by a [UX lead][team]**.
    1. If your merge request includes a new dependency or a filesystem change, it must be
       **approved by a [Distribution team member][team]**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/dev-backend/distribution/) for more details.
+   1. If your merge request is processing, storing, or transferring any kind of [RED data](red data), possibly orange data too, it must be
+      **approved by a [Security Engineer][team]**.
+   1. If your merge request is implementing, utilizing, or related to any type of authentication, authorization, or session handling mechanism, it must be
+      **approved by a [Security Engineer][team]**.
+   1. If your merge request has a goal which requires a cryptographic function such as: confidentiality, integrity, authentication, or non-repudiation, it must be
+      **approved by a [Security Engineer][team]**.
+   
 
 Getting your merge request **merged** also requires a maintainer. If it requires
 more than one approval, the last maintainer to review and approve it will also merge it.
@@ -54,9 +64,10 @@ merge request author.
 Before assigning a merge request to a maintainer for approval and merge, they
 should be confident that it actually solves the problem it was meant to solve,
 that it does so in the most appropriate way, that it satisfies all requirements,
-and that there are no remaining bugs, logical problems, or uncovered edge cases.
-The merge request should also have a completed task list in its description and
-a passing CI pipeline to avoid unnecessary back and forth.
+and that there are no remaining bugs, logical problems, uncovered edge cases,
+or known vulnerabilities. The merge request should also have a completed task
+list in its description and a passing CI pipeline to avoid unnecessary back and
+forth.
 
 To reach the required level of confidence in their solution, an author is expected
 to involve other people in the investigation and implementation processes as
@@ -102,6 +113,17 @@ as the maintainer to ultimately approve and merge it.
 
 Maintainers should check before merging if the merge request is approved by the
 required approvers.
+
+Maintainers must check before merging if the merge request is introducing new
+vulnerabilities, by inspecting the list in the Merge Request [Security
+Widget][security-widget]. In doubt, a [Security Engineer][team] can be
+involved. The list of detected vulnerabilities must be either empty or
+containing:
+- dismissed vulnerabilities in case of false positives
+- vulnerabilities converted to issues
+
+Maintainers should **never** dismiss vulnerabilities to "empty" the list,
+without duly verify them.
 
 ## Best practices
 
@@ -280,4 +302,6 @@ Largely based on the [thoughtbot code review guide].
 [projects]: https://about.gitlab.com/handbook/engineering/projects/
 [team]: https://about.gitlab.com/team/
 [build handbook]: https://about.gitlab.com/handbook/build/handbook/build#how-to-work-with-build
+[red data]: https://docs.google.com/document/d/15eNKGA3zyZazsJMldqTBFbYMnVUSQSpU14lo22JMZQY/edit
+[security-widget]: https://docs.gitlab.com/ce/user/project/merge_requests/#security-reports-ultimate
 [^1]: Please note that specs other than JavaScript specs are considered backend code.
