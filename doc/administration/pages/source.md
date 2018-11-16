@@ -398,10 +398,6 @@ server_name ~^.*\.pages\.example\.io$;
 GitLab Pages access control can be configured per-project, and allows access to a Pages
 site to be controlled based on a user's membership to that project.
 
-Authentication uses the login mechanism configured for GitLab, whether it be
-local accounts, an integrated LDAP-server, or anything else. This excludes any
-mechanism that has it's own password mechanism, or any other private form of secrets.
-
 Access control works by registering the Pages daemon as an OAuth application
 with GitLab. Whenever a request to access a private Pages site is made by an
 unauthenticated user, the Pages daemon redirects the user to GitLab. If
