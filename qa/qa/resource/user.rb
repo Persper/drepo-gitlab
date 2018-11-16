@@ -76,6 +76,17 @@ module QA
         }
       end
 
+      def self.fabricate_or_use(username, password)
+        if !Runtime::Env.signup_disabled?
+          self.fabricate!
+        else
+          self.new.tap do |user|
+            user.username = username
+            user.password = password
+          end
+        end
+      end
+
       private
 
       def fetch_id(username)
