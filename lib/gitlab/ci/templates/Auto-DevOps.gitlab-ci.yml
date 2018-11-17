@@ -174,6 +174,27 @@ sast:
     variables:
       - $SAST_DISABLED
 
+sast_dashboard:
+  stage: test
+  image: docker:stable
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - setup_docker
+    - sast
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+  only:
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bsast\b/
+  except:
+    variables:
+      - $SAST_DISABLED
+
 dependency_scanning:
   stage: test
   image: docker:stable
