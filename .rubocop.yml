@@ -32,6 +32,8 @@ Style/MutableConstant:
     - 'ee/db/migrate/**/*'
     - 'ee/db/post_migrate/**/*'
     - 'ee/db/geo/migrate/**/*'
+    - 'drepo/db/migrate/**/*'
+    - 'drepo/db/post_migrate/**/*'
 
 # TODO: Move this to gitlab-styles
 Style/SafeNavigation:
@@ -50,6 +52,7 @@ Style/FrozenStringLiteralComment:
     - 'danger/**/*'
     - 'db/**/*'
     - 'ee/**/*'
+    - 'drepo/**/*'
     - 'lib/tasks/**/*'
     - 'qa/**/*'
     - 'rubocop/**/*'
@@ -61,6 +64,7 @@ RSpec/FilePath:
     - 'qa/**/*'
     - 'spec/javascripts/fixtures/*'
     - 'ee/spec/javascripts/fixtures/*'
+    - 'drepo/spec/javascripts/fixtures/*'
     - 'spec/requests/api/v3/*'
 
 Naming/FileName:
@@ -68,18 +72,23 @@ Naming/FileName:
   Exclude:
     - 'db/**/*'
     - 'ee/db/**/*'
+    - 'drepo/db/**/*'
     - 'spec/**/*'
     - 'features/**/*'
     - 'ee/spec/**/*'
+    - 'drepo/spec/**/*'
     - 'qa/spec/**/*'
     - 'qa/qa/specs/**/*'
     - 'qa/bin/*'
     - 'config/**/*'
     - 'ee/config/**/*'
+    - 'drepo/config/**/*'
     - 'lib/generators/**/*'
     - 'locale/unfound_translations.rb'
     - 'ee/locale/unfound_translations.rb'
+    - 'drepo/locale/unfound_translations.rb'
     - 'ee/lib/generators/**/*'
+    - 'drepo/lib/generators/**/*'
     - 'qa/qa/scenario/test/integration/ldap_no_tls.rb'
     - 'qa/qa/scenario/test/integration/ldap_tls.rb'
 
@@ -152,9 +161,11 @@ Gitlab/ModuleWithInstanceVariables:
     # We ignore Rails helpers right now because it's hard to workaround it
     - app/helpers/**/*_helper.rb
     - ee/app/helpers/**/*_helper.rb
+    - drepo/app/helpers/**/*_helper.rb
     # We ignore Rails mailers right now because it's hard to workaround it
     - app/mailers/emails/**/*.rb
     - ee/**/emails/**/*.rb
+    - drepo/**/emails/**/*.rb
     # We ignore spec helpers because it usually doesn't matter
     - spec/support/**/*.rb
     - features/steps/**/*.rb
@@ -174,9 +185,13 @@ GitlabSecurity/PublicSend:
     - 'ee/db/**/*'
     - 'ee/lib/**/*.rake'
     - 'ee/spec/**/*'
+    - 'drepo/db/**/*'
+    - 'drepo/lib/**/*.rake'
+    - 'drepo/spec/**/*'
 
 Cop/InjectEnterpriseEditionModule:
   Enabled: true
   Exclude:
     - 'spec/**/*'
     - 'ee/spec/**/*'
+    - 'drepo/spec/**/*'
