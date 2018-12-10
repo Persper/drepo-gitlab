@@ -88,6 +88,8 @@ included_attributes:
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
+  user:
+    - :drepo_uuid
   project:
     - :name
     - :path
@@ -117,9 +119,11 @@ excluded_attributes:
     - :description_html
     - :repository_languages
     - :bfg_object_map
+    - :drepo_uuid
   namespaces:
     - :runners_token
     - :runners_token_encrypted
+    - :drepo_uuid
   project_import_state:
     - :last_error
     - :jid

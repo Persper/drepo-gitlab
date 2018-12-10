@@ -22,6 +22,9 @@ describe 'Import/Export model configuration' do
   let(:ee_models_yml) { 'ee/spec/lib/gitlab/import_export/all_models.yml' }
   let(:ee_models_hash) { File.exist?(ee_models_yml) ? YAML.load_file(ee_models_yml) : {} }
 
+  let(:drepo_models_yml) { 'drepo/spec/lib/gitlab/import_export/all_models.yml' }
+  let(:drepo_models_hash) { File.exist?(drepo_models_yml) ? YAML.load_file(drepo_models_yml) : {} }
+
   let(:current_models) { setup_models }
   let(:all_models_hash) do
     all_models_hash = ce_models_hash.dup
@@ -30,7 +33,15 @@ describe 'Import/Export model configuration' do
       associations.concat(ee_models_hash[model] || [])
     end
 
+    all_models_hash.each do |model, associations|
+      associations.concat(drepo_models_hash[model] || [])
+    end
+
     ee_models_hash.each do |model, associations|
+      all_models_hash[model] ||= associations
+    end
+
+    drepo_models_hash.each do |model, associations|
       all_models_hash[model] ||= associations
     end
 
@@ -61,6 +72,7 @@ describe 'Import/Export model configuration' do
 
       Definitely add it to `#{File.expand_path(ce_models_yml)}`
       #{"or `#{File.expand_path(ee_models_yml)}` if the model/associations are EE-specific\n" if ee_models_hash.any?}
+      #{"or `#{File.expand_path(drepo_models_yml)}` if the model/associations are Drepo-specific\n" if drepo_models_hash.any?}
       to signal that you've handled this error and to prevent it from showing up in the future.
     MSG
   end
