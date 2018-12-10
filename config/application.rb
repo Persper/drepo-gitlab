@@ -182,15 +182,16 @@ module Gitlab
     %w[images javascripts stylesheets].each do |path|
       config.assets.paths << "#{config.root}/drepo/app/assets/#{path}"
     end
-    config.assets.precompile << "shared/snowplow/sp.js"
+    # Drepo has no this file, comment it
+    # config.assets.precompile << "shared/snowplow/sp.js"
 
     # Compile non-JS/CSS assets in the drepo/app/assets folder by default
     # Mimic sprockets-rails default: https://github.com/rails/sprockets-rails/blob/v3.2.1/lib/sprockets/railtie.rb#L84-L87
-    LOOSE_EE_APP_ASSETS = lambda do |logical_path, filename|
+    LOOSE_DREPO_APP_ASSETS = lambda do |logical_path, filename|
       filename.start_with?(config.root.join("drepo/app/assets").to_s) &&
           !['.js', '.css', ''].include?(File.extname(logical_path))
     end
-    config.assets.precompile << LOOSE_EE_APP_ASSETS
+    config.assets.precompile << LOOSE_DREPO_APP_ASSETS
     ## Drepo-specific assets config END
 
     # Version of your assets, change this if you want to expire all your assets
