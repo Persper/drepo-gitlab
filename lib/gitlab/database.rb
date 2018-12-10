@@ -11,6 +11,10 @@ module Gitlab
     # https://dev.mysql.com/doc/refman/5.7/en/datetime.html
     MAX_TIMESTAMP_VALUE = Time.at((1 << 31) - 1).freeze
 
+    class << self
+      prepend Drepo::Gitlab::Database
+    end
+
     def self.config
       ActiveRecord::Base.configurations[Rails.env]
     end
