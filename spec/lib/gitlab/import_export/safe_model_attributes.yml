@@ -147,6 +147,7 @@ User:
 - id
 - username
 - email
+- drepo_uuid
 MergeRequest:
 - id
 - target_branch
@@ -493,6 +494,7 @@ Project:
 - merge_requests_rebase_enabled
 - jobs_cache_index
 - pages_https_only
+- drepo_uuid
 Author:
 - name
 ProjectFeature:
