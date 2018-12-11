@@ -509,17 +509,19 @@ rspec-pg:
   <<: *rspec-metadata-pg
   parallel: 50
 
-rspec-mysql:
-  <<: *rspec-metadata-mysql
-  parallel: 50
+## Drepo-specific only test rails 5 with pg START
+#rspec-mysql:
+#  <<: *rspec-metadata-mysql
+#  parallel: 50
 
-rspec-pg-rails4:
-  <<: *rspec-metadata-pg-rails4
-  parallel: 50
+#rspec-pg-rails4:
+#  <<: *rspec-metadata-pg-rails4
+#  parallel: 50
 
-rspec-mysql-rails4:
-  <<: *rspec-metadata-mysql-rails4
-  parallel: 50
+#rspec-mysql-rails4:
+#  <<: *rspec-metadata-mysql-rails4
+#  parallel: 50
+## Drepo-specific only test rails 5 with pg END
 
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
