@@ -56,6 +56,18 @@ module Gitlab
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
+    ## Drepo-specific paths config START
+    drepo_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
+      drepo_path = config.root.join('drepo', Pathname.new(path).relative_path_from(config.root))
+      memo << drepo_path.to_s if drepo_path.exist?
+    end
+    config.eager_load_paths.unshift(*drepo_paths)
+
+    config.paths['lib/tasks'].unshift "#{config.root}/drepo/lib/tasks"
+    config.paths['app/views'].unshift "#{config.root}/drepo/app/views"
+    config.helpers_paths.unshift "#{config.root}/drepo/app/helpers"
+    ## Drepo-specific paths config END
+
     # Rake tasks ignore the eager loading settings, so we need to set the
     # autoload paths explicitly
     config.autoload_paths = config.eager_load_paths.dup
@@ -165,6 +177,23 @@ module Gitlab
     # Import css for xterm
     config.assets.paths << "#{config.root}/node_modules/xterm/src/"
     config.assets.precompile << "xterm.css"
+
+    ## Drepo-specific assets config START
+    %w[images javascripts stylesheets].each do |path|
+      config.assets.paths << "#{config.root}/drepo/app/assets/#{path}"
+    end
+
+    ## Drepo has no this file, comment it
+    # config.assets.precompile << "shared/snowplow/sp.js"
+
+    # Compile non-JS/CSS assets in the drepo/app/assets folder by default
+    # Mimic sprockets-rails default: https://github.com/rails/sprockets-rails/blob/v3.2.1/lib/sprockets/railtie.rb#L84-L87
+    LOOSE_EE_APP_ASSETS = lambda do |logical_path, filename|
+      filename.start_with?(config.root.join("drepo/app/assets").to_s) &&
+        !['.js', '.css', ''].include?(File.extname(logical_path))
+    end
+    config.assets.precompile << LOOSE_EE_APP_ASSETS
+    ## Drepo-specific assets config END
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
