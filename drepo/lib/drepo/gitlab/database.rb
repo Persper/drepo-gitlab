@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Drepo
   module Gitlab
     module Database

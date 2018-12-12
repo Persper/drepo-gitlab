@@ -30,13 +30,13 @@ class AddUuidToSomeTables < ActiveRecord::Migration[5.0]
   def up
     uuid_tables.each do |table|
       execute("ALTER TABLE #{table} ADD COLUMN #{drepo_column} CHARACTER VARYING NOT NULL DEFAULT uuid_generate_v4()")
-      add_index table, drepo_column
+      add_concurrent_index table, drepo_column
     end
   end
 
   def down
     uuid_tables.each do |table|
-      remove_index(table, drepo_column) if index_exists?(table, drepo_column)
+      remove_concurrent_index(table, drepo_column) if index_exists?(table, drepo_column)
       remove_column(table, drepo_column) if column_exists?(table, drepo_column)
     end
   end
