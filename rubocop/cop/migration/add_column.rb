@@ -27,11 +27,20 @@ module RuboCop
 
           return unless opts && opts.type == :hash
 
+          ## Drepo-specific uuid_generate_v4() run! START
+          # opts.each_node(:pair) do |pair|
+          #   if hash_key_type(pair) == :sym && hash_key_name(pair) == :default
+          #     add_offense(node, location: :selector)
+          #   end
+          # end
           opts.each_node(:pair) do |pair|
-            if hash_key_type(pair) == :sym && hash_key_name(pair) == :default
+            if hash_key_type(pair) == :sym &&
+                hash_key_name(pair) == :default &&
+                hash_key_value(pair) != 'uuid_generate_v4()'
               add_offense(node, location: :selector)
             end
           end
+          ## Drepo-specific uuid_generate_v4() run! END
         end
 
         def table_whitelisted?(symbol)
@@ -46,6 +55,12 @@ module RuboCop
         def hash_key_name(pair)
           pair.children[0].children[0]
         end
+
+        ## Drepo-specific uuid_generate_v4() run! START
+        def hash_key_value(pair)
+          pair.children[1].children[0]
+        end
+        ## Drepo-specific uuid_generate_v4() run! END
       end
     end
   end
