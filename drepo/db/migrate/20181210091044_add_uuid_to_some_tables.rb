@@ -25,11 +25,11 @@ class AddUuidToSomeTables < ActiveRecord::Migration[5.0]
   #
   # To disable transactions uncomment the following line and remove these
   # comments:
-  # disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
     uuid_tables.each do |table|
-      execute("ALTER TABLE #{table} ADD COLUMN #{drepo_column} CHARACTER VARYING NOT NULL DEFAULT uuid_generate_v4()")
+      add_column table, drepo_column, :uuid, default: 'uuid_generate_v4()', null: false
       add_concurrent_index table, drepo_column
     end
   end

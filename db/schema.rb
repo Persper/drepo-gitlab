@@ -1344,7 +1344,7 @@ ActiveRecord::Schema.define(version: 20181210091044) do
     t.integer "cached_markdown_version"
     t.string "runners_token"
     t.string "runners_token_encrypted"
-    t.string "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.index ["created_at"], name: "index_namespaces_on_created_at", using: :btree
     t.index ["drepo_uuid"], name: "index_namespaces_on_drepo_uuid", using: :btree
     t.index ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
@@ -1691,7 +1691,7 @@ ActiveRecord::Schema.define(version: 20181210091044) do
     t.bigint "pool_repository_id"
     t.string "runners_token_encrypted"
     t.string "bfg_object_map"
-    t.string "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.index ["ci_id"], name: "index_projects_on_ci_id", using: :btree
     t.index ["created_at"], name: "index_projects_on_created_at", using: :btree
     t.index ["creator_id"], name: "index_projects_on_creator_id", using: :btree
@@ -2203,7 +2203,7 @@ ActiveRecord::Schema.define(version: 20181210091044) do
     t.boolean "private_profile"
     t.boolean "include_private_contributions"
     t.string "commit_email"
-    t.string "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.index ["accepted_term_id"], name: "index_users_on_accepted_term_id", using: :btree
     t.index ["admin"], name: "index_users_on_admin", using: :btree
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
