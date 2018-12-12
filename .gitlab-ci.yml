@@ -72,10 +72,12 @@ stages:
     - postgres:9.6
     - redis:alpine
 
-.use-mysql: &use-mysql
-  services:
-    - mysql:5.7
-    - redis:alpine
+## Drepo-specific drepo not support mysql START
+#.use-mysql: &use-mysql
+#  services:
+#    - mysql:5.7
+#    - redis:alpine
+## Drepo-specific drepo not support mysql END
 
 .rails4: &rails4
   allow_failure: false
@@ -184,13 +186,17 @@ stages:
   <<: *rspec-metadata-pg
   <<: *rails4
 
-.rspec-metadata-mysql: &rspec-metadata-mysql
-  <<: *rspec-metadata
-  <<: *use-mysql
+## Drepo-specific drepo not support mysql START
+#.rspec-metadata-mysql: &rspec-metadata-mysql
+#  <<: *rspec-metadata
+#  <<: *use-mysql
+## Drepo-specific drepo not support mysql END
 
-.rspec-metadata-mysql-rails4: &rspec-metadata-mysql-rails4
-  <<: *rspec-metadata-mysql
-  <<: *rails4
+## Drepo-specific drepo not support mysql START
+#.rspec-metadata-mysql-rails4: &rspec-metadata-mysql-rails4
+#  <<: *rspec-metadata-mysql
+#  <<: *rails4
+## Drepo-specific drepo not support mysql END
 
 .only-canonical-masters: &only-canonical-masters
   only:
@@ -509,19 +515,23 @@ rspec-pg:
   <<: *rspec-metadata-pg
   parallel: 50
 
-## Drepo-specific only test rails 5 with pg START
+## Drepo-specific drepo not support mysql START
 #rspec-mysql:
 #  <<: *rspec-metadata-mysql
 #  parallel: 50
+## Drepo-specific drepo not support mysql END
 
+## Drepo-specific only test rails 5 with pg START
 #rspec-pg-rails4:
 #  <<: *rspec-metadata-pg-rails4
 #  parallel: 50
+## Drepo-specific only test rails 5 with pg START
 
+## Drepo-specific drepo not support mysql START
 #rspec-mysql-rails4:
 #  <<: *rspec-metadata-mysql-rails4
 #  parallel: 50
-## Drepo-specific only test rails 5 with pg END
+## Drepo-specific drepo not support mysql END
 
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -598,9 +608,11 @@ db:migrate:reset-pg:
   <<: *db-migrate-reset
   <<: *use-pg
 
-db:migrate:reset-mysql:
-  <<: *db-migrate-reset
-  <<: *use-mysql
+## Drepo-specific drepo not support mysql START
+#db:migrate:reset-mysql:
+#  <<: *db-migrate-reset
+#  <<: *use-mysql
+## Drepo-specific drepo not support mysql END
 
 db:check-schema-pg:
   <<: *db-migrate-reset
@@ -612,9 +624,11 @@ migration:path-pg:
   <<: *migration-paths
   <<: *use-pg
 
-migration:path-mysql:
-  <<: *migration-paths
-  <<: *use-mysql
+## Drepo-specific drepo not support mysql START
+#migration:path-mysql:
+#  <<: *migration-paths
+#  <<: *use-mysql
+## Drepo-specific drepo not support mysql END
 
 .db-rollback: &db-rollback
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
@@ -626,17 +640,21 @@ db:rollback-pg:
   <<: *db-rollback
   <<: *use-pg
 
-db:rollback-mysql:
-  <<: *db-rollback
-  <<: *use-mysql
+## Drepo-specific drepo not support mysql START
+#db:rollback-mysql:
+#  <<: *db-rollback
+#  <<: *use-mysql
+## Drepo-specific drepo not support mysql END
 
 gitlab:setup-pg:
   <<: *gitlab-setup
   <<: *use-pg
 
-gitlab:setup-mysql:
-  <<: *gitlab-setup
-  <<: *use-mysql
+## Drepo-specific drepo not support mysql START
+#gitlab:setup-mysql:
+#  <<: *gitlab-setup
+#  <<: *use-mysql
+## Drepo-specific drepo not support mysql END
 
 # Frontend-related jobs
 gitlab:assets:compile:
