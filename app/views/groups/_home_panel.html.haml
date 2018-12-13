@@ -15,3 +15,5 @@
       .group-buttons
         = render 'shared/members/access_request_buttons', source: @group
         = render 'shared/notifications/button', notification_setting: @notification_setting
+        - if @group.public? && @group.has_owner?(current_user)
+          = render_if_exists 'shared/groups/drepo'

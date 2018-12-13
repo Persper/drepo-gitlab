@@ -1,0 +1,10 @@
+- unless @project.empty_repo?
+  .count-badge.d-inline-flex.align-item-stretch.append-right-8
+    = link_to '/',
+        class: 'btn btn-default has-tooltip count-badge-button d-flex align-items-center fork-btn',
+        title: s_('ProjectOverview|Sync up your project to Drepo') do
+      = sprite_icon('retry', { css_class: 'icon' })
+      %span= s_('ProjectOverview|Drepo!')
+    %span.fork-count.count-badge-count.d-flex.align-items-center
+      = link_to '/', title: n_(s_('ProjectOverview|Drepo'), s_('ProjectOverview|Drepo'), ''), class: 'count' do
+        = "8h"
