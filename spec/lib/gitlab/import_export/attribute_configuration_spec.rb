@@ -26,6 +26,9 @@ describe 'Import/Export attribute configuration' do
   let(:ee_safe_attributes_file) { 'ee/spec/lib/gitlab/import_export/safe_model_attributes.yml' }
   let(:ee_safe_model_attributes) { File.exist?(ee_safe_attributes_file) ? YAML.load_file(ee_safe_attributes_file) : {} }
 
+  let(:drepo_safe_attributes_file) { 'drepo/spec/lib/gitlab/import_export/safe_model_attributes.yml' }
+  let(:drepo_safe_model_attributes) { File.exist?(drepo_safe_attributes_file) ? YAML.load_file(drepo_safe_attributes_file) : {} }
+
   it 'has no new columns' do
     relation_names.each do |relation_name|
       relation_class = relation_class_for_name(relation_name)
@@ -35,6 +38,10 @@ describe 'Import/Export attribute configuration' do
       safe_attributes = safe_model_attributes[relation_class.to_s].dup || []
 
       ee_safe_model_attributes[relation_class.to_s].to_a.each do |attribute|
+        safe_attributes << attribute
+      end
+
+      drepo_safe_model_attributes[relation_class.to_s].to_a.each do |attribute|
         safe_attributes << attribute
       end
 
@@ -52,6 +59,7 @@ describe 'Import/Export attribute configuration' do
 
       Please add the attribute(s) to SAFE_MODEL_ATTRIBUTES if you consider this can be exported.
       #{"If the model/associations are EE-specific, use `#{File.expand_path(ee_safe_attributes_file)}`.\n" if ee_safe_model_attributes.any?}
+      #{"If the model/associations are Drepo-specific, use `#{File.expand_path(drepo_safe_attributes_file)}`.\n" if drepo_safe_model_attributes.any?}
       Otherwise, please blacklist the attribute(s) in IMPORT_EXPORT_CONFIG by adding it to its correspondent
       model in the +excluded_attributes+ section.
 
