@@ -33,6 +33,8 @@
       .count-buttons.d-inline-flex
         = render 'projects/buttons/star'
         = render 'projects/buttons/fork'
+        - if @project.public? && @project.owner.present? && @project.owner == current_user
+          = render_if_exists 'projects/buttons/drepo'
 
       - if can?(current_user, :download_code, @project)
         .project-clone-holder.d-inline-flex.d-md-none.btn-block
