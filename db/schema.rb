@@ -1346,7 +1346,7 @@ ActiveRecord::Schema.define(version: 20181210091044) do
     t.string "runners_token_encrypted"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.index ["created_at"], name: "index_namespaces_on_created_at", using: :btree
-    t.index ["drepo_uuid"], name: "index_namespaces_on_drepo_uuid", using: :btree
+    t.index ["drepo_uuid"], name: "index_namespaces_on_drepo_uuid", unique: true, using: :btree
     t.index ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
     t.index ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
     t.index ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
@@ -1696,7 +1696,7 @@ ActiveRecord::Schema.define(version: 20181210091044) do
     t.index ["created_at"], name: "index_projects_on_created_at", using: :btree
     t.index ["creator_id"], name: "index_projects_on_creator_id", using: :btree
     t.index ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
-    t.index ["drepo_uuid"], name: "index_projects_on_drepo_uuid", using: :btree
+    t.index ["drepo_uuid"], name: "index_projects_on_drepo_uuid", unique: true, using: :btree
     t.index ["id"], name: "index_projects_on_id_partial_for_visibility", unique: true, where: "(visibility_level = ANY (ARRAY[10, 20]))", using: :btree
     t.index ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
     t.index ["last_repository_check_at"], name: "index_projects_on_last_repository_check_at", where: "(last_repository_check_at IS NOT NULL)", using: :btree
@@ -2208,7 +2208,7 @@ ActiveRecord::Schema.define(version: 20181210091044) do
     t.index ["admin"], name: "index_users_on_admin", using: :btree
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
     t.index ["created_at"], name: "index_users_on_created_at", using: :btree
-    t.index ["drepo_uuid"], name: "index_users_on_drepo_uuid", using: :btree
+    t.index ["drepo_uuid"], name: "index_users_on_drepo_uuid", unique: true, using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["email"], name: "index_users_on_email_trigram", using: :gin, opclasses: {"email"=>"gin_trgm_ops"}
     t.index ["feed_token"], name: "index_users_on_feed_token", using: :btree

@@ -7,12 +7,12 @@ class AddUuidToSomeTables < ActiveRecord::Migration[5.0]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
-  DOWNTIME = true
+  DOWNTIME = false
 
   # When a migration requires downtime you **must** uncomment the following
   # constant and define a short and easy to understand explanation as to why the
   # migration requires downtime.
-  DOWNTIME_REASON = 'Add a uuid column to some tables with default value uuid_generate_v4()'
+  # DOWNTIME_REASON = ''
 
   # When using the methods "add_concurrent_index", "remove_concurrent_index" or
   # "add_column_with_default" you must disable the use of transactions
@@ -27,16 +27,20 @@ class AddUuidToSomeTables < ActiveRecord::Migration[5.0]
   # comments:
   disable_ddl_transaction!
 
+  ## Postgres only, because used Postgres builtin function uuid_generate_v4()
   def up
     uuid_tables.each do |table|
-      add_column table, drepo_column, :uuid, default: 'uuid_generate_v4()', null: false
-      add_concurrent_index table, drepo_column
+      add_column_with_default(table, drepo_column, :uuid, default: "uuid_generate_v4()", allow_null: false) do |t, update_arel|
+        update_arel.set([[t[drepo_column], Arel.sql('uuid_generate_v4()')]]) if Arel::UpdateManager === update_arel
+        update_arel
+      end
+      add_concurrent_index table, drepo_column, unique: true
     end
   end
 
   def down
     uuid_tables.each do |table|
-      remove_concurrent_index(table, drepo_column) if index_exists?(table, drepo_column)
+      remove_concurrent_index(table, drepo_column) if index_exists?(table, drepo_column, unique: true)
       remove_column(table, drepo_column) if column_exists?(table, drepo_column)
     end
   end
