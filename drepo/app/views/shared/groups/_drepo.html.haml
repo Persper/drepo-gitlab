@@ -1,0 +1,10 @@
+- if current_user
+  .drepo-count-buttons.d-inline-flex
+    %span.fork-count.count-badge-count.d-flex.align-items-center
+      = link_to "#", title: 'Time from last sync', class: 'count' do
+        = "4d"
+    = link_to "",
+        class: "btn btn-default has-tooltip count-badge-button align-items-center",
+        title: "To sync this group settings to Drepo" do
+      = sprite_icon('retry', { css_class: 'icon' })
+      %span= _('Drepo!')

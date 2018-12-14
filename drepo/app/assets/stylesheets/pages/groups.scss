@@ -1,0 +1,36 @@
+.drepo-count-buttons {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: $gl-padding;
+  height: 34px;
+
+  .count-badge {
+    height: 34px;
+
+    .icon {
+      top: -1px;
+    }
+  }
+
+  .count-badge-count,
+  .count-badge-button {
+    border: 1px solid $border-color;
+    line-height: 1;
+  }
+
+  .count,
+  .count-badge-button {
+    color: $gl-text-color;
+  }
+
+  .count-badge-count {
+    padding: 0 12px;
+    border-right: 0;
+    border-radius: $border-radius-base 0 0 $border-radius-base;
+    background: $gray-light;
+  }
+
+  .count-badge-button {
+    border-radius: 0 $border-radius-base $border-radius-base 0;
+  }
+}
