@@ -2,6 +2,7 @@ import $ from 'jquery';
 import createFlash from '~/flash';
 import GfmAutoComplete from '~/gfm_auto_complete';
 import EmojiMenu from './emoji_menu';
+import 'drepo/pages/profiles/show/index';
 
 const defaultStatusEmoji = 'speech_balloon';
 

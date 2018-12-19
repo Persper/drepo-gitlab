@@ -1,0 +1,24 @@
+.prepend-top-default.append-bottom-default.drepo-sync-container
+  - update_profile_locally_label = _("Update profile settings")
+  - update_and_sync_to_drepo_label = _("Update and Drepo!")
+  .btn-group.drepo-sync-dropdown.droplab-dropdown{ data: { } }
+    %input.btn.btn-success.dropdown-primary.js-update-profile-settings{ type: "button", value: update_profile_locally_label, data: { action: "update-profile-settings" } }
+    %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#update-profile-locally-or-sync-drepo", 'display' => 'static' } }
+      = icon("caret-down", class: "dropdown-btn-icon")
+    %ul#update-profile-locally-or-sync-drepo.dropdown-menu.dropdown-menu-right{ data: { dropdown: true } }
+      %li.droplab-item-selected.qa-new-project-option{ role: "button", data: { value: "update-profile-settings", text: update_profile_locally_label } }
+        .menu-item
+          .icon-container
+            = icon("check", class: "list-item-checkmark")
+          .description
+            %strong= update_profile_locally_label
+            %span= s_("Profiles|Update profile settings locally")
+      %li.divider.droplap-item-ignore
+      %li.qa-new-subgroup-option{ role: "button", data: { value: "update-and-sync-drepo", text: update_and_sync_to_drepo_label } }
+        .menu-item
+          .icon-container
+            = icon("check", class: "list-item-checkmark")
+          .description
+            %strong= update_and_sync_to_drepo_label
+            %span= s_("Profiles|Update profile and sync with Drepo!")
+  = link_to _("Cancel"), user_path(current_user), class: 'btn btn-cancel'
