@@ -44,6 +44,13 @@ function generateEntries() {
 
   pageEntries.forEach(path => generateAutoEntries(path));
 
+  // Drepo-specific auto entries
+  const drepoPageEntries = glob.sync('pages/**/index.js', {
+    cwd: path.join(ROOT_PATH, 'drepo/app/assets/javascripts'),
+  });
+  drepoPageEntries.forEach(path => generateAutoEntries(path, 'drepo'));
+  watchAutoEntries.push(path.join(ROOT_PATH, 'drepo/app/assets/javascripts/pages/'));
+
   const autoEntryKeys = Object.keys(autoEntriesMap);
   autoEntriesCount = autoEntryKeys.length;
 
@@ -94,6 +101,13 @@ module.exports = {
       vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       vue$: 'vue/dist/vue.esm.js',
       spec: path.join(ROOT_PATH, 'spec/javascripts'),
+
+      // Drepo-only
+      drepo: path.join(ROOT_PATH, 'drepo/app/assets/javascripts'),
+      drepo_empty_states: path.join(ROOT_PATH, 'drepo/app/views/shared/empty_states'),
+      drepo_icons: path.join(ROOT_PATH, 'drepo/app/views/shared/icons'),
+      drepo_images: path.join(ROOT_PATH, 'drepo/app/assets/images'),
+      drepo_spec: path.join(ROOT_PATH, 'drepo/spec/javascripts'),
     },
   },
 
