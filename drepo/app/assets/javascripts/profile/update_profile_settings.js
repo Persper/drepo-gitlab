@@ -6,7 +6,7 @@ const InputSetter = Object.assign({}, ISetter);
 const UPDATE_PROFILE_SETTINGS = 'update-profile-settings';
 const UPDATE_AND_SYNC_DREPO = 'update-and-sync-drepo';
 
-export default class updateProfileSettings {
+export default class UpdateProfileSettings {
   constructor(buttonWrapper) {
     this.buttonWrapper = buttonWrapper;
     this.updateProfileSettingsButton = this.buttonWrapper.querySelector('.js-update-profile-settings');
