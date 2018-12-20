@@ -9,7 +9,9 @@ const UPDATE_AND_SYNC_DREPO = 'update-and-sync-drepo';
 export default class UpdateProfileSettings {
   constructor(buttonWrapper) {
     this.buttonWrapper = buttonWrapper;
-    this.updateProfileSettingsButton = this.buttonWrapper.querySelector('.js-update-profile-settings');
+    this.updateProfileSettingsButton = this.buttonWrapper.querySelector(
+      '.js-update-profile-settings',
+    );
     this.dropdownToggle = this.buttonWrapper.querySelector('.js-dropdown-toggle');
     this.dropdownList = this.buttonWrapper.querySelector('.dropdown-menu');
 
@@ -48,14 +50,17 @@ export default class UpdateProfileSettings {
   }
 
   bindEvents() {
-    this.updateProfileSettingsButton.addEventListener('click', this.onClickUpdateSyncProfile.bind(this));
+    this.updateProfileSettingsButton.addEventListener(
+      'click',
+      this.onClickUpdateSyncProfile.bind(this),
+    );
   }
 
   onClickUpdateSyncProfile(e) {
-    if (e.target.dataset.action === UPDATE_PROFILE_SETTINGS ) {
-        this.buttonWrapper.submit();
-    } else if (e.target.dataset.action === UPDATE_AND_SYNC_DREPO ) {
-        this.buttonWrapper.submit();
+    if (e.target.dataset.action === UPDATE_PROFILE_SETTINGS) {
+      this.buttonWrapper.submit();
+    } else if (e.target.dataset.action === UPDATE_AND_SYNC_DREPO) {
+      this.buttonWrapper.submit();
     }
   }
 }

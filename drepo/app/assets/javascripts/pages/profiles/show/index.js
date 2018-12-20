@@ -3,9 +3,9 @@
 import UpdateProfileSettings from '../../../profile/update_profile_settings';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const userDataFormWrapper = document.querySelector('.edit-user');
+  const userDataFormWrapper = document.querySelector('.edit-user');
 
-    if (userDataFormWrapper) {
-        new UpdateProfileSettings(userDataFormWrapper);
-    }
+  if (userDataFormWrapper) {
+    new UpdateProfileSettings(userDataFormWrapper);
+  }
 });
