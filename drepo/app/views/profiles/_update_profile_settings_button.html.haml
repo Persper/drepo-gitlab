@@ -1,8 +1,8 @@
 .prepend-top-default.append-bottom-default.drepo-sync-container
-  - update_profile_locally_label = _("Update profile settings")
-  - update_and_sync_to_drepo_label = _("Update and Drepo!")
+  - update_profile_locally_label = s_("Profiles|Update profile settings")
+  - update_and_sync_to_drepo_label = s_("Profiles|Update and Drepo!")
   .btn-group.drepo-sync-dropdown.droplab-dropdown{ data: { } }
-    %button.btn.btn-success.dropdown-primary.js-update-profile-settings{ data: { action: "update-profile-settings" } }
+    %button.btn.btn-success.dropdown-primary.js-update-profile-settings{ type: "submit", data: { action: "update-profile-settings" } }
       = update_profile_locally_label
     %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#update-profile-locally-or-sync-drepo", 'display' => 'static' } }
       = icon("caret-down", class: "dropdown-btn-icon")
