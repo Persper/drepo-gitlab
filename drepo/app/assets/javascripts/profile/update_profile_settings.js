@@ -58,7 +58,7 @@ export default class UpdateProfileSettings {
 
   onClickUpdateSyncProfile(e) {
     if (e.target.dataset.action === UPDATE_AND_SYNC_DREPO) {
-      console.log("do updating and sync drepo")
+      console.log('do updating and sync drepo');
     }
   }
 }
