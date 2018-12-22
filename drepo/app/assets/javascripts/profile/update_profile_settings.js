@@ -1,9 +1,11 @@
+// the eslint rule code may be removed after onClickUpdateSyncProfile updated later on
+/* eslint class-methods-use-this: ["error", { "exceptMethods": ["onClickUpdateSyncProfile"] }] */
+
 import DropLab from '~/droplab/drop_lab';
 import ISetter from '~/droplab/plugins/input_setter';
 
 const InputSetter = Object.assign({}, ISetter);
 
-const UPDATE_PROFILE_SETTINGS = 'update-profile-settings';
 const UPDATE_AND_SYNC_DREPO = 'update-and-sync-drepo';
 
 export default class UpdateProfileSettings {
@@ -58,7 +60,7 @@ export default class UpdateProfileSettings {
 
   onClickUpdateSyncProfile(e) {
     if (e.target.dataset.action === UPDATE_AND_SYNC_DREPO) {
-      console.log('do updating and sync drepo');
+      // do updating and sync drepo
     }
   }
 }
