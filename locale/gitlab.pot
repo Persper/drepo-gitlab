@@ -5159,9 +5159,6 @@ msgstr ""
 msgid "Profiles|Typically starts with \"ssh-rsa …\""
 msgstr ""
 
-msgid "Profiles|Update profile settings"
-msgstr ""
-
 msgid "Profiles|Update username"
 msgstr ""
 
