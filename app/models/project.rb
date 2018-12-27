@@ -35,6 +35,8 @@ class Project < ActiveRecord::Base
 
   extend Gitlab::ConfigHelper
 
+  include ::Drepo::Project
+
   BoardLimitExceeded = Class.new(StandardError)
 
   STATISTICS_ATTRIBUTE = 'repositories_count'.freeze
