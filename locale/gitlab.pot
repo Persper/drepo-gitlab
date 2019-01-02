@@ -4416,6 +4416,9 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "No activities found"
+msgstr ""
+
 msgid "No assignee"
 msgstr ""
 
@@ -6236,7 +6239,7 @@ msgstr ""
 msgid "SortOptions|Least popular"
 msgstr ""
 
-msgid "SortOptions|Milestone"
+msgid "SortOptions|Milestone due date"
 msgstr ""
 
 msgid "SortOptions|Milestone due later"
