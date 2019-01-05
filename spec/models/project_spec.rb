@@ -3525,7 +3525,31 @@ describe Project do
     end
   end
 
-  context '#auto_devops_variables' do
+  describe '#api_variables' do
+    set(:project) { create(:project) }
+
+    it 'exposes API v4 URL' do
+      expect(project.api_variables.first[:key]).to eq 'CI_API_V4_URL'
+      expect(project.api_variables.first[:value]).to include '/api/v4'
+    end
+
+    it 'contains a URL variable for every supported API version' do
+      # Ensure future API versions have proper variables defined. We're not doing this for v3.
+      supported_versions = API::API.versions - ['v3']
+      supported_versions = supported_versions.select do |version|
+        API::API.routes.select { |route| route.version == version }.many?
+      end
+
+      required_variables = supported_versions.map do |version|
+        "CI_API_#{version.upcase}_URL"
+      end
+
+      expect(project.api_variables.map { |variable| variable[:key] })
+        .to contain_exactly(*required_variables)
+    end
+  end
+
+  describe '#auto_devops_variables' do
     set(:project) { create(:project) }
 
     subject { project.auto_devops_variables }
