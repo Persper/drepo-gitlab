@@ -8,7 +8,9 @@ module RuboCop
       path = node.location.expression.source_buffer.name
 
       !SPEC_HELPERS.include?(File.basename(path)) &&
-        path.start_with?(File.join(Dir.pwd, 'spec'), File.join(Dir.pwd, 'ee', 'spec'))
+        path.start_with?(File.join(Dir.pwd, 'spec'),
+                         File.join(Dir.pwd, 'ee', 'spec'),
+                         File.join(Dir.pwd, 'drepo', 'spec'))
     end
 
     def migration_directories
