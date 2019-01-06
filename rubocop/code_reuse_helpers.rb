@@ -72,7 +72,8 @@ module RuboCop
     def in_api?(node)
       file_path_for_node(node).start_with?(
         File.join(ce_lib_directory, 'api'),
-        File.join(ee_lib_directory, 'api')
+        File.join(ee_lib_directory, 'api'),
+        File.join(drepo_lib_directory, 'api')
       )
     end
 
@@ -81,7 +82,8 @@ module RuboCop
     def in_directory?(node, directory)
       file_path_for_node(node).start_with?(
         File.join(ce_app_directory, directory),
-        File.join(ee_app_directory, directory)
+        File.join(ee_app_directory, directory),
+        File.join(drepo_app_directory, directory)
       )
     end
 
@@ -141,12 +143,20 @@ module RuboCop
       File.join(rails_root, 'ee', 'app')
     end
 
+    def drepo_app_directory
+      File.join(rails_root, 'drepo', 'app')
+    end
+
     def ce_lib_directory
       File.join(rails_root, 'lib')
     end
 
     def ee_lib_directory
       File.join(rails_root, 'ee', 'lib')
+    end
+
+    def drepo_lib_directory
+      File.join(rails_root, 'drepo', 'lib')
     end
 
     def rails_root
