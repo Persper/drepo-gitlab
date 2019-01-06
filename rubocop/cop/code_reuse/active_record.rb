@@ -78,6 +78,7 @@ module RuboCop
           lib/gitlab/cycle_analytics
           lib/gitlab/database
           lib/gitlab/import_export
+          lib/drepo/import_export
           lib/gitlab/project_authorizations
           lib/gitlab/sql
           lib/system_check
@@ -113,7 +114,8 @@ module RuboCop
           WHITELISTED_DIRECTORIES.any? do |directory|
             path.start_with?(
               File.join(rails_root, directory),
-              File.join(rails_root, 'ee', directory)
+              File.join(rails_root, 'ee', directory),
+              File.join(rails_root, 'drepo', directory)
             )
           end
         end
