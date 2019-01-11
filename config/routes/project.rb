@@ -449,6 +449,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       namespace :settings do
         resource :operations, only: [:show, :update]
       end
+
+      # Drepo-specific
+      scope path: 'drepo_syncs', controller: 'drepo_syncs' do
+        scope path: 'new', as: :new_drepo_sync do
+          get '', action: :new
+        end
+      end
+      # Drepo-specific
     end
 
     resources(:projects,
