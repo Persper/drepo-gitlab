@@ -866,6 +866,21 @@ lint:javascript:report:
     paths:
       - eslint-report.html
 
+jsdoc:
+  <<: *dedicated-no-docs-pull-cache-job
+  stage: post-test
+  dependencies:
+    - compile-assets
+  before_script: []
+  script:
+    - date
+    - yarn run jsdoc || true # ignore exit code
+  artifacts:
+    name: jsdoc
+    expire_in: 31d
+    paths:
+      - jsdoc/
+
 pages:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   before_script: []
@@ -875,6 +890,7 @@ pages:
     - karma
     - gitlab:assets:compile
     - lint:javascript:report
+    - jsdoc
   script:
     - mv public/ .public/
     - mkdir public/
@@ -884,6 +900,7 @@ pages:
     - mv webpack-report/ public/webpack-report/ || true
     - cp .public/assets/application-*.css public/application.css || true
     - cp .public/assets/application-*.css.gz public/application.css.gz || true
+    - mv jsdoc/ public/jsdoc/ || true
   artifacts:
     paths:
       - public
