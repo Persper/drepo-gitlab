@@ -6,14 +6,13 @@ export default function initEtherWallet(el) {
   // projectPath for Cancel button to back to project page
   const projectPath = el.getAttribute('data-projectPath');
 
-  /* eslint-disable no-new */
   return new Vue({
     el,
     components: { EtherWallet },
-    data () {
+    data() {
       return {
-        projectPath: projectPath
-      }
+        projectPath,
+      };
     },
     template: '<EtherWallet :projectPath="projectPath" />',
   });

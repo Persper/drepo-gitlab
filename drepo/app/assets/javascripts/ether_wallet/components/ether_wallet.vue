@@ -2,17 +2,17 @@
   <div id="js-ether-wallet-access" class="row ether-wallet-container">
     <div class="col-lg-3">
       <label for="metamask" class="ratio">
-        <input id="metamask" v-model="unlockOption" type="radio" value="metamask">
+        <input id="metamask" v-model="unlockOption" type="radio" value="metamask" />
         <span class="label-text">MetaMask</span>
       </label>
       <br />
       <label for="mnemonic-phrase" class="ratio">
-        <input id="mnemonic-phrase" v-model="unlockOption" type="radio" value="mnemonic_phrase">
+        <input id="mnemonic-phrase" v-model="unlockOption" type="radio" value="mnemonic_phrase" />
         <span class="label-text">Mnemonic Phrase</span>
       </label>
       <br />
       <label for="private-key" class="ratio">
-        <input id="private-key" v-model="unlockOption" type="radio" value="private_key">
+        <input id="private-key" v-model="unlockOption" type="radio" value="private_key" />
         <span class="label-text">Private Key</span>
       </label>
     </div>
@@ -94,7 +94,12 @@
       />
     </div>
     <div class="col-lg-4">
-      <input type="button" class="btn btn-ether col-lg-4" value="Cancel" @click="cancelDrepoSync($event)" />
+      <input
+        type="button"
+        class="btn btn-ether col-lg-4"
+        value="Cancel"
+        @click="cancelDrepoSync($event);"
+      />
     </div>
   </div>
 </template>
@@ -117,8 +122,8 @@ export default {
   props: {
     projectPath: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
 
   data() {
@@ -200,7 +205,7 @@ export default {
           });
 
           const self = this;
-          window.ethereum.on('accountsChanged', (accounts) => {
+          window.ethereum.on('accountsChanged', accounts => {
             if (accounts[0] && self.web3Client && self.unlockOption === 'metamask') {
               self.updateAccountInfo(accounts[0]);
             }
@@ -250,7 +255,7 @@ export default {
       this.isUnlockByPrivateKeyButtonClicked = true;
       // console.log('>>>>>>>>>>>>>>> PrivateKey <<<<<<<<<<<<<<<<');
       const provider = new HDWalletProvider(
-        '0x' + this.privateKeyInput,
+        `0x${this.privateKeyInput}`,
         'https://rinkeby.infura.io/v3/8d1ba1e9ef484906ba94d560cc1d3a87',
       );
       // console.log(provider);
@@ -278,12 +283,15 @@ export default {
 
     updateAccountInfo(account) {
       if (account && this.web3Client) {
-        this.web3Client.eth.defaultAccount = this.accountAddress = account;
+        this.web3Client.eth.defaultAccount = account;
+        this.accountAddress = account;
         this.getBalance();
       } else {
         this.web3Client.eth.getAccounts((err, accounts) => {
           if (err || accounts.length < 1) return;
-          this.accountAddress = this.web3Client.eth.defaultAccount = accounts[0];
+          const [firstAccount] = accounts;
+          this.accountAddress = firstAccount;
+          this.web3Client.eth.defaultAccount = firstAccount;
           if (this.accountAddress) this.getBalance();
         });
       }
@@ -291,17 +299,15 @@ export default {
 
     getBalance() {
       this.web3Client.eth.getBalance(this.accountAddress, (err, balance) => {
-        if (err) return
+        if (err) return;
 
         // console.log(this.accountBalance);
         if (!balance) {
           this.accountBalance = 'Query balance failed';
+        } else if (this.unlockOption === 'metamask') {
+          this.accountBalance = this.web3Client.fromWei(balance, 'ether').toString();
         } else {
-          if (this.unlockOption === 'metamask') {
-            this.accountBalance = this.web3Client.fromWei(balance, 'ether').toString();
-          } else {
-            this.accountBalance = this.web3Client.utils.fromWei(balance, 'ether').toString();
-          }
+          this.accountBalance = this.web3Client.utils.fromWei(balance, 'ether').toString();
         }
       });
     },
@@ -324,7 +330,7 @@ export default {
           .setMessage('hello world! mmmmm')
           .send({ from: this.accountAddress })
           .on('confirmation', (confirmationNumber, receipt) => {
-            console.log('Confirmed: ' + confirmationNumber + ' ' + receipt);
+            console.log(`Confirmed: ${confirmationNumber} ${receipt}`);
           });
       }
     },
@@ -339,8 +345,8 @@ export default {
 
     cancelDrepoSync(event) {
       if (event) event.preventDefault();
-      window.location.href = this.projectPath
-    }
+      window.location.href = this.projectPath;
+    },
   },
 };
 </script>

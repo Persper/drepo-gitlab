@@ -17,12 +17,12 @@ export default {
   props: {
     accountAddress: {
       type: String,
-      required: true
+      required: true,
     },
     accountBalance: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
 };
 </script>
