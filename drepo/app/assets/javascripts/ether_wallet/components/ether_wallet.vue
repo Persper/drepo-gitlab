@@ -78,8 +78,8 @@
       <div id="account-info">
         <AccountInfo
           v-if="isUnlocked"
-          :accountBalance="accountBalance"
-          :accountAddress="accountAddress"
+          :account-balance="accountBalance"
+          :account-address="accountAddress"
         />
       </div>
     </div>
@@ -318,6 +318,7 @@ export default {
         const myContract = this.web3Client.eth.contract(contractData);
         const myContractInstance = myContract.at(this.contractAddress);
         myContractInstance.setMessage('message from web3 metamask', (err, result) => {
+          // eslint-disable-next-line no-console
           if (!err) console.log(result);
         });
       } else {
@@ -330,6 +331,7 @@ export default {
           .setMessage('hello world! mmmmm')
           .send({ from: this.accountAddress })
           .on('confirmation', (confirmationNumber, receipt) => {
+            // eslint-disable-next-line no-console
             console.log(`Confirmed: ${confirmationNumber} ${receipt}`);
           });
       }
