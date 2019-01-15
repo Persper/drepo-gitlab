@@ -102,7 +102,7 @@
     "three-stl-loader": "^1.0.4",
     "timeago.js": "^3.0.2",
     "truffle": "^5.0.1",
-    "truffle-hdwallet-provider": "git+https://github.com/gingerhot/truffle-hdwallet-provider",
+    "truffle-hdwallet-provider": "https://github.com/gingerhot/truffle-hdwallet-provider",
     "underscore": "^1.9.0",
     "url-loader": "^1.1.1",
     "visibilityjs": "^1.2.4",
