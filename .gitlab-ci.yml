@@ -516,10 +516,12 @@ rspec-pg-quarantine:
   <<: *rspec-quarantine
   allow_failure: true
 
-rspec-mysql-quarantine:
-  <<: *rspec-metadata-mysql
-  <<: *rspec-quarantine
-  allow_failure: true
+## Drepo-specific drepo not support mysql START
+#rspec-mysql-quarantine:
+#  <<: *rspec-metadata-mysql
+#  <<: *rspec-quarantine
+#  allow_failure: true
+## Drepo-specific drepo not support mysql END
 
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
