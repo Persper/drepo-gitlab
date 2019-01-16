@@ -25,7 +25,7 @@
         </p>
         <p v-if="isMetaMaskTurnedOn && !isMetaMaskLoggedIn" class="col-lg-12">
           Please login your MetaMask first.
-          <a href="#" @click="loginMetaMask($event);">login now</a>
+          <a href="#" @click.stop.prevent="loginMetaMask();">login now</a>
         </p>
         <p v-if="!isMetaMaskSupportedBrowser" class="col-lg-12">
           Your brower not supports MetaMask extension.
@@ -35,7 +35,7 @@
           class="btn btn-success btn-ether"
           :disabled="!isConnectToMetaMaskButtonClickable"
           value="Connect to MetaMask"
-          @click="connectToMetaMask($event);"
+          @click.stop.prevent="connectToMetaMask();"
         />
       </div>
       <div v-else-if="unlockOption === 'mnemonic_phrase'">
@@ -59,7 +59,7 @@
           class="btn btn-success btn-ether col-lg-4"
           :disabled="!isUnlockByMnemonicPhraseButtonClickable"
           value="Unlock"
-          @click="unlockByMnemonicPhrase($event);"
+          @click.stop.prevent="unlockByMnemonicPhrase();"
         />
       </div>
       <div v-else-if="unlockOption === 'private_key'">
@@ -70,7 +70,7 @@
           class="btn btn-success btn-ether col-lg-4"
           :disabled="!isUnlockByPrivateKeyButtonClickable"
           value="Unlock"
-          @click="unlockByPrivateKey($event);"
+          @click.stop.prevent="unlockByPrivateKey($event);"
         />
       </div>
     </div>
@@ -90,7 +90,7 @@
         class="btn btn-success btn-ether col-lg-3"
         :disabled="!isStartDrepoSyncButtonClickable"
         value="Start Drepo!"
-        @click="startDrepoSync($event);"
+        @click.stop.prevent="startDrepoSync($event);"
       />
     </div>
     <div class="col-lg-4">
@@ -98,7 +98,7 @@
         type="button"
         class="btn btn-ether col-lg-4"
         value="Cancel"
-        @click="cancelDrepoSync($event);"
+        @click.stop.prevent="cancelDrepoSync();"
       />
     </div>
   </div>
@@ -234,13 +234,11 @@ export default {
       }
     },
 
-    loginMetaMask(event) {
-      if (event) event.preventDefault();
+    loginMetaMask() {
       if (!this.isMetaMaskLoggedIn) window.ethereum.enable();
     },
 
-    connectToMetaMask(event) {
-      if (event) event.preventDefault();
+    connectToMetaMask() {
       if (this.isConnectToMetaMaskButtonClicked) return;
       this.isConnectToMetaMaskButtonClicked = true;
       // console.log('>>>>>>>>>>>>>>> MetaMask <<<<<<<<<<<<<<<<');
@@ -249,8 +247,7 @@ export default {
       this.isConnectToMetaMaskButtonClicked = false;
     },
 
-    unlockByPrivateKey(event) {
-      if (event) event.preventDefault();
+    unlockByPrivateKey() {
       if (this.isUnlockByPrivateKeyButtonClicked) return;
       this.isUnlockByPrivateKeyButtonClicked = true;
       // console.log('>>>>>>>>>>>>>>> PrivateKey <<<<<<<<<<<<<<<<');
@@ -264,8 +261,7 @@ export default {
       this.isUnlockByPrivateKeyButtonClicked = false;
     },
 
-    unlockByMnemonicPhrase(event) {
-      if (event) event.preventDefault();
+    unlockByMnemonicPhrase() {
       if (this.isUnlockByMnemonicPhraseButtonClicked) return;
       this.isUnlockByMnemonicPhraseButtonClicked = true;
       // console.log('>>>>>>>>>>>>>>> Mnemonic Phrase <<<<<<<<<<<<<<<<');
@@ -337,16 +333,14 @@ export default {
       }
     },
 
-    startDrepoSync(event) {
-      if (event) event.preventDefault();
+    startDrepoSync() {
       if (this.isStartDrepoSyncButtonClicked) return;
       this.isStartDrepoSyncButtonClicked = true;
       this.web3Contract();
       this.isStartDrepoSyncButtonClicked = false;
     },
 
-    cancelDrepoSync(event) {
-      if (event) event.preventDefault();
+    cancelDrepoSync() {
       window.location.href = this.projectPath;
     },
   },
