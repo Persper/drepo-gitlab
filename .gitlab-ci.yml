@@ -812,7 +812,7 @@ qa:selectors:
       - .yarn-cache/
   dependencies: []
   before_script:
-    - apk update && apk add --no-cache git
+    - apk update && apk add --no-cache git python g++ make
   script:
     - date
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
