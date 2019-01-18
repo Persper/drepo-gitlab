@@ -108,8 +108,6 @@
 import * as Web3One from 'web3';
 import { detect } from 'detect-browser';
 import HDWalletProvider from 'truffle-hdwallet-provider';
-import { contract as contractAddressObj } from '../contract_build/address.json';
-import InboxContract from '../contract_build/Inbox.json';
 import AccountInfo from './account_info.vue';
 
 export default {
@@ -122,6 +120,10 @@ export default {
   props: {
     projectPath: {
       type: String,
+      required: true,
+    },
+    contractInfo: {
+      type: Object,
       required: true,
     },
   },
@@ -142,7 +144,6 @@ export default {
       mnemonicPhraseInput: '',
       addressIndexInput: 1,
       privateKeyInput: '',
-      contractAddress: '',
       gasLimit: 1000000,
       transactionObject: {
         from: this.accountAddress,
@@ -215,10 +216,6 @@ export default {
         // the browser not support MetaMask
         this.unlockOption = 'mnemonic_phrase';
       }
-    }
-    // initilize contract address
-    if (contractAddressObj) {
-      this.contractAddress = contractAddressObj.address;
     }
   },
 
@@ -309,10 +306,10 @@ export default {
     },
 
     web3Contract() {
-      const contractData = JSON.parse(InboxContract.interface);
+      const contractData = JSON.parse(this.contractInfo.interface);
       if (this.unlockOption === 'metamask') {
         const myContract = this.web3Client.eth.contract(contractData);
-        const myContractInstance = myContract.at(this.contractAddress);
+        const myContractInstance = myContract.at(this.contractInfo.address);
         myContractInstance.setMessage('message from web3 metamask', (err, result) => {
           // eslint-disable-next-line no-console
           if (!err) console.log(result);
@@ -320,7 +317,7 @@ export default {
       } else {
         const myContract = new this.web3Client.eth.Contract(
           contractData,
-          this.contractAddress,
+          this.contractInfo.address,
           this.transactionObject,
         );
         myContract.methods

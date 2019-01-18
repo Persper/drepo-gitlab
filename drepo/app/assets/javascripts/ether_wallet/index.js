@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import contractInfo from './contract';
 import EtherWallet from './components/ether_wallet.vue';
 
 export default function initEtherWallet(el) {
@@ -12,8 +13,9 @@ export default function initEtherWallet(el) {
     data() {
       return {
         projectPath,
+        contractInfo,
       };
     },
-    template: '<EtherWallet :projectPath="projectPath" />',
+    template: '<EtherWallet :projectPath="projectPath" :contractInfo="contractInfo" />',
   });
 }
