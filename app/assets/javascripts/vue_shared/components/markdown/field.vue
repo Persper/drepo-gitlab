@@ -89,7 +89,6 @@ export default {
       return this.referencedUsers.length >= referencedUsersThreshold;
     },
     lineContent() {
-      const FIRST_CHAR_REGEX = /^(\+|-)/;
       const [firstSuggestion] = this.suggestions;
       if (firstSuggestion) {
         return firstSuggestion.from_content;
@@ -99,7 +98,7 @@ export default {
         const { rich_text: richText, text } = this.line;
 
         if (text) {
-          return text.replace(FIRST_CHAR_REGEX, '');
+          return text;
         }
 
         return _.unescape(stripHtml(richText).replace(/\n/g, ''));
@@ -183,9 +182,9 @@ export default {
         this.hasSuggestion = data.references.suggestions && data.references.suggestions.length;
       }
 
-      this.$nextTick(() => {
-        $(this.$refs['markdown-preview']).renderGFM();
-      });
+      this.$nextTick()
+        .then(() => $(this.$refs['markdown-preview']).renderGFM())
+        .catch(() => new Flash(__('Error rendering markdown preview')));
     },
 
     versionedPreviewPath() {

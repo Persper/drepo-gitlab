@@ -65,19 +65,22 @@ common actions on issues or merge requests
      browse, and download job artifacts
      - [Pipeline settings](pipelines/settings.md): Set up Git strategy (choose the default way your repository is fetched from GitLab in a job),
      timeout (defines the maximum amount of time in minutes that a job is able run), custom path for `.gitlab-ci.yml`, test coverage parsing, pipeline's visibility, and much more
-  - [GKE cluster integration](clusters/index.md): Connecting your GitLab project
-    with Google Kubernetes Engine
+  - [Kubernetes cluster integration](clusters/index.md): Connecting your GitLab project
+    with a Kubernetes cluster
 - [GitLab Pages](pages/index.md): Build, test, and deploy your static
 website with GitLab Pages
 
 **Other features:**
 
-- [Wiki](wiki/index.md): Document your GitLab project in an integrated Wiki
-- [Snippets](../snippets.md): Store, share and collaborate on code snippets
-- [Cycle Analytics](cycle_analytics.md): Review your development lifecycle
-- [Syntax highlighting](highlighting.md): An alternative to customize
-your code blocks, overriding GitLab's default choice of language
-- [Badges](badges.md): Badges for the project overview
+- [Wiki](wiki/index.md): document your GitLab project in an integrated Wiki.
+- [Snippets](../snippets.md): store, share and collaborate on code snippets.
+- [Cycle Analytics](cycle_analytics.md): review your development lifecycle.
+- [Syntax highlighting](highlighting.md): an alternative to customize
+your code blocks, overriding GitLab's default choice of language.
+- [Badges](badges.md): badges for the project overview.
+- [Releases](releases/index.md): a way to track deliverables in your project as snapshot in time of
+the source, build output, and other metadata or artifacts
+associated with a released version of your code.
 
 ### Project's integrations
 

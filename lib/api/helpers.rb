@@ -235,8 +235,8 @@ module API
       forbidden! unless current_user.admin?
     end
 
-    def authorize!(action, subject = :global)
-      forbidden! unless can?(current_user, action, subject)
+    def authorize!(action, subject = :global, reason = nil)
+      forbidden!(reason) unless can?(current_user, action, subject)
     end
 
     def authorize_push_project
@@ -496,7 +496,11 @@ module API
     def send_git_blob(repository, blob)
       env['api.format'] = :txt
       content_type 'text/plain'
-      header['Content-Disposition'] = content_disposition('attachment', blob.name)
+      header['Content-Disposition'] = content_disposition('inline', blob.name)
+
+      # Let Workhorse examine the content and determine the better content disposition
+      header[Gitlab::Workhorse::DETECT_HEADER] = "true"
+
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 
@@ -512,7 +516,7 @@ module API
     # `request`. We workaround this by defining methods that returns the right
     # values.
     def define_params_for_grape_middleware
-      self.define_singleton_method(:request) { Rack::Request.new(env) }
+      self.define_singleton_method(:request) { ActionDispatch::Request.new(env) }
       self.define_singleton_method(:params) { request.params.symbolize_keys }
     end
 

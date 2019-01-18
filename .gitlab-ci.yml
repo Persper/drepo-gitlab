@@ -319,6 +319,7 @@ cloud-native-image:
   variables:
     GIT_DEPTH: "1"
   cache: {}
+  when: always
   script:
     - gem install gitlab --no-document
     - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng
@@ -502,6 +503,24 @@ rspec-pg:
 #rspec-mysql:
 #  <<: *rspec-metadata-mysql
 #  parallel: 50
+## Drepo-specific drepo not support mysql END
+
+.rspec-quarantine: &rspec-quarantine
+  script:
+    - export CACHE_CLASSES=true
+    - scripts/gitaly-test-spawn
+    - bin/rspec --color --format documentation --tag quarantine spec/
+
+rspec-pg-quarantine:
+  <<: *rspec-metadata-pg
+  <<: *rspec-quarantine
+  allow_failure: true
+
+## Drepo-specific drepo not support mysql START
+#rspec-mysql-quarantine:
+#  <<: *rspec-metadata-mysql
+#  <<: *rspec-quarantine
+#  allow_failure: true
 ## Drepo-specific drepo not support mysql END
 
 static-analysis:
@@ -803,6 +822,7 @@ qa:selectors:
     - bundle exec bin/qa Test::Sanity::Selectors
 
 .qa-frontend-node: &qa-frontend-node
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   stage: test
   variables:
     NODE_OPTIONS: --max_old_space_size=3584
@@ -818,11 +838,6 @@ qa:selectors:
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - date
     - yarn run webpack-prod
-  <<: *except-docs
-
-qa-frontend-node:6:
-  <<: *qa-frontend-node
-  image: node:6-alpine
 
 qa-frontend-node:8:
   <<: *qa-frontend-node
@@ -870,6 +885,21 @@ lint:javascript:report:
     paths:
       - eslint-report.html
 
+jsdoc:
+  <<: *dedicated-no-docs-pull-cache-job
+  stage: post-test
+  dependencies:
+    - compile-assets
+  before_script: []
+  script:
+    - date
+    - yarn run jsdoc || true # ignore exit code
+  artifacts:
+    name: jsdoc
+    expire_in: 31d
+    paths:
+      - jsdoc/
+
 pages:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   before_script: []
@@ -879,6 +909,7 @@ pages:
     - karma
     - gitlab:assets:compile
     - lint:javascript:report
+    - jsdoc
   script:
     - mv public/ .public/
     - mkdir public/
@@ -888,6 +919,7 @@ pages:
     - mv webpack-report/ public/webpack-report/ || true
     - cp .public/assets/application-*.css public/application.css || true
     - cp .public/assets/application-*.css.gz public/application.css.gz || true
+    - mv jsdoc/ public/jsdoc/ || true
   artifacts:
     paths:
       - public

@@ -247,6 +247,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       namespace :serverless do
+        get '/functions/:environment_id/:id', to: 'functions#show'
         resources :functions, only: [:index]
       end
 
@@ -255,8 +256,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
-            post :cancel_all
-
             resources :artifacts, only: [] do
               collection do
                 get :latest_succeeded,
@@ -361,6 +360,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
         collection do
           post :bulk_update
+          post :import_csv
         end
       end
 
@@ -440,6 +440,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :cleanup
         end
       end
+
+      resources :error_tracking, only: [:index], controller: :error_tracking
 
       # Since both wiki and repository routing contains wildcard characters
       # its preferable to keep it below all other project routes

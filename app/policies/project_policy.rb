@@ -200,6 +200,7 @@ class ProjectPolicy < BasePolicy
     enable :read_environment
     enable :read_deployment
     enable :read_merge_request
+    enable :read_sentry_issue
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -221,6 +222,8 @@ class ProjectPolicy < BasePolicy
 
   rule { owner | admin | guest | group_member }.prevent :request_access
   rule { ~request_access_enabled }.prevent :request_access
+
+  rule { can?(:developer_access) & can?(:create_issue) }.enable :import_issues
 
   rule { can?(:developer_access) }.policy do
     enable :admin_merge_request

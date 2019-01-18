@@ -92,6 +92,15 @@ request widget will show the "Removes source branch" text.
 
 ![Remove source branch status](img/remove_source_branch_status.png)
 
+## Allow collaboration on merge requests across forks
+
+When a user opens a merge request from a fork, they are given the option to allow
+upstream maintainers to collaborate with them on the source branch. This allows
+the maintainers of the upstream project to make small fixes or rebase branches
+before merging, reducing the back and forth of accepting community contributions.
+
+[Learn more about allowing upstream members to push to forks.](allow_collaboration.md)
+
 ## Authorization for merge requests
 
 There are two main ways to have a merge request flow with GitLab:
@@ -169,9 +178,9 @@ those conflicts in the GitLab UI.
 
 ## Create new merge requests by email
 
-*This feature needs [incoming email](../../../administration/incoming_email.md)
+_This feature needs [incoming email](../../../administration/incoming_email.md)
 to be configured by a GitLab administrator to be available for CE/EE users, and
-it's available on GitLab.com.*
+it's available on GitLab.com._
 
 You can create a new merge request by sending an email to a user-specific email
 address. The address can be obtained on the merge requests page by clicking on
@@ -183,7 +192,15 @@ will be used as the merge request description. You need
 this feature. If it's not enabled to your instance, you may ask your GitLab
 administrator to do so.
 
+This is a private email address, generated just for you. **Keep it to yourself**
+as anyone who gets ahold of it can create issues or merge requests as if they were you.
+You can add this address to your contact list for easy access.
+
 ![Create new merge requests by email](img/create_from_email.png)
+
+_In GitLab 11.7, we updated the format of the generated email address.
+However the older format is still supported, allowing existing aliases
+or contacts to continue working._
 
 ### Adding patches when creating a merge request via e-mail
 
@@ -320,8 +337,8 @@ troubleshooting steps.
 
 This can occur for one of two reasons:
 
-* Sidekiq doesn't pick up the changes fast enough
-* Because of the bug described in [#41545](https://gitlab.com/gitlab-org/gitlab-ce/issues/41545)
+- Sidekiq doesn't pick up the changes fast enough
+- Because of the bug described in [#41545](https://gitlab.com/gitlab-org/gitlab-ce/issues/41545)
 
 #### Sidekiq
 

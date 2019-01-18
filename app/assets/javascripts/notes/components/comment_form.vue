@@ -357,9 +357,9 @@ js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
                 data-supports-quick-actions="true"
                 aria-label="Description"
                 placeholder="Write a comment or drag your files here…"
-                @keydown.up="editCurrentUserLastNote();"
-                @keydown.meta.enter="handleSave();"
-                @keydown.ctrl.enter="handleSave();"
+                @keydown.up="editCurrentUserLastNote()"
+                @keydown.meta.enter="handleSave()"
+                @keydown.ctrl.enter="handleSave()"
               >
               </textarea>
             </markdown-field>
@@ -370,10 +370,10 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
               >
                 <button
                   :disabled="isSubmitButtonDisabled"
-                  class="btn btn-create comment-btn js-comment-button js-comment-submit-button
+                  class="btn btn-success js-comment-button js-comment-submit-button
                     qa-comment-button"
                   type="submit"
-                  @click.prevent="handleSave();"
+                  @click.prevent="handleSave()"
                 >
                   {{ __(commentButtonTitle) }}
                 </button>
@@ -381,7 +381,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                   :disabled="isSubmitButtonDisabled"
                   name="button"
                   type="button"
-                  class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
+                  class="btn btn-success note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
                   data-display="static"
                   data-toggle="dropdown"
                   aria-label="Open comment type dropdown"
@@ -394,7 +394,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     <button
                       type="button"
                       class="btn btn-transparent"
-                      @click.prevent="setNoteType('comment');"
+                      @click.prevent="setNoteType('comment')"
                     >
                       <i aria-hidden="true" class="fa fa-check icon"> </i>
                       <div class="description">
@@ -408,7 +408,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     <button
                       type="button"
                       class="btn btn-transparent qa-discussion-option"
-                      @click.prevent="setNoteType('discussion');"
+                      @click.prevent="setNoteType('discussion')"
                     >
                       <i aria-hidden="true" class="fa fa-check icon"> </i>
                       <div class="description">
@@ -429,17 +429,8 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                 ]"
                 :disabled="isToggleStateButtonLoading || isSubmitting"
                 :label="issueActionButtonTitle"
-                @click="handleSave(true);"
+                @click="handleSave(true)"
               />
-
-              <button
-                v-if="note.length"
-                type="button"
-                class="btn btn-cancel js-note-discard"
-                @click="discard"
-              >
-                Discard draft
-              </button>
             </div>
           </form>
         </div>

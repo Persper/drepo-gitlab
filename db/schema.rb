@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190103140724) do
+ActiveRecord::Schema.define(version: 20190115054216) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -354,7 +354,6 @@ ActiveRecord::Schema.define(version: 20190103140724) do
     t.index ["commit_id", "status", "type"], name: "index_ci_builds_on_commit_id_and_status_and_type", using: :btree
     t.index ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
     t.index ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
-    t.index ["id"], name: "partial_index_ci_builds_on_id_with_legacy_artifacts", where: "(artifacts_file <> ''::text)", using: :btree
     t.index ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
     t.index ["project_id", "status"], name: "index_ci_builds_project_id_and_status_for_live_jobs_partial2", where: "(((type)::text = 'Ci::Build'::text) AND ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text])))", using: :btree
     t.index ["protected"], name: "index_ci_builds_on_protected", using: :btree
@@ -1573,6 +1572,13 @@ ActiveRecord::Schema.define(version: 20190103140724) do
     t.index ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", unique: true, using: :btree
   end
 
+  create_table "project_error_tracking_settings", primary_key: "project_id", id: :integer, force: :cascade do |t|
+    t.boolean "enabled", default: true, null: false
+    t.string "api_url", null: false
+    t.string "encrypted_token"
+    t.string "encrypted_token_iv"
+  end
+
   create_table "project_features", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "merge_requests_access_level"
@@ -1842,6 +1848,7 @@ ActiveRecord::Schema.define(version: 20190103140724) do
     t.string "encrypted_credentials_salt"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "error_notification_sent"
     t.index ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
     t.index ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
   end
@@ -2434,6 +2441,7 @@ ActiveRecord::Schema.define(version: 20190103140724) do
   add_foreign_key "project_custom_attributes", "projects", on_delete: :cascade
   add_foreign_key "project_deploy_tokens", "deploy_tokens", on_delete: :cascade
   add_foreign_key "project_deploy_tokens", "projects", on_delete: :cascade
+  add_foreign_key "project_error_tracking_settings", "projects", on_delete: :cascade
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade

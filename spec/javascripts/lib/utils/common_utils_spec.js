@@ -347,20 +347,31 @@ describe('common_utils', () => {
   });
 
   describe('parseBoolean', () => {
+    const { parseBoolean } = commonUtils;
+
     it('returns true for "true"', () => {
-      expect(commonUtils.parseBoolean('true')).toEqual(true);
+      expect(parseBoolean('true')).toEqual(true);
     });
 
     it('returns false for "false"', () => {
-      expect(commonUtils.parseBoolean('false')).toEqual(false);
+      expect(parseBoolean('false')).toEqual(false);
     });
 
     it('returns false for "something"', () => {
-      expect(commonUtils.parseBoolean('something')).toEqual(false);
+      expect(parseBoolean('something')).toEqual(false);
     });
 
     it('returns false for null', () => {
-      expect(commonUtils.parseBoolean(null)).toEqual(false);
+      expect(parseBoolean(null)).toEqual(false);
+    });
+
+    it('is idempotent', () => {
+      const input = ['true', 'false', 'something', null];
+      input.forEach(value => {
+        const result = parseBoolean(value);
+
+        expect(parseBoolean(result)).toBe(result);
+      });
     });
   });
 
@@ -714,6 +725,31 @@ describe('common_utils', () => {
       expect(commonUtils.roundOffFloat(34567.14159, -3)).toBe(35000);
       expect(commonUtils.roundOffFloat(34567.14159, -4)).toBe(30000);
       expect(commonUtils.roundOffFloat(34567.14159, -5)).toBe(0);
+    });
+  });
+
+  describe('isInViewport', () => {
+    let el;
+
+    beforeEach(() => {
+      el = document.createElement('div');
+    });
+
+    afterEach(() => {
+      document.body.removeChild(el);
+    });
+
+    it('returns true when provided `el` is in viewport', () => {
+      document.body.appendChild(el);
+
+      expect(commonUtils.isInViewport(el)).toBe(true);
+    });
+
+    it('returns false when provided `el` is not in viewport', () => {
+      el.setAttribute('style', 'position: absolute; top: -1000px; left: -1000px;');
+      document.body.appendChild(el);
+
+      expect(commonUtils.isInViewport(el)).toBe(false);
     });
   });
 });
