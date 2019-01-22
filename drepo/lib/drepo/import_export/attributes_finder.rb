@@ -3,10 +3,12 @@
 module Drepo
   module ImportExport
     class AttributesFinder
-      def initialize(included_attributes:, excluded_attributes:, methods:)
+      def initialize(included_attributes:, excluded_attributes:, methods:, diffs:, inline_associations:)
         @included_attributes = included_attributes || {}
         @excluded_attributes = excluded_attributes || {}
         @methods = methods || {}
+        @diffs = diffs || {}
+        @inline_associations = inline_associations || {}
       end
 
       def find(model_object)
@@ -34,6 +36,16 @@ module Drepo
         @methods[key].nil? ? {} : { methods: @methods[key] }
       end
 
+      def find_diff(value)
+        key = key_from_hash(value)
+        @diffs.include?(key) ? { diffs: true } : {}
+      end
+
+      def find_inline(value)
+        key = key_from_hash(value)
+        @inline_associations.include?(key) ? { inline: true } : {}
+      end
+
       def find_excluded_keys(klass_name)
         @excluded_attributes[klass_name.to_sym]&.map(&:to_s) || []
       end
@@ -41,7 +53,7 @@ module Drepo
       private
 
       def find_attributes_only(value)
-        find_included(value).merge(find_excluded(value)).merge(find_method(value))
+        find_included(value).merge(find_excluded(value)).merge(find_method(value)).merge(find_diff(value)).merge(find_inline(value))
       end
 
       def key_from_hash(value)

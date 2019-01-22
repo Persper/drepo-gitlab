@@ -52,13 +52,6 @@ project_tree:
     - resource_label_events:
       - label:
           :priorities
-  - ci_pipelines:
-    - notes:
-      - :author
-      - events:
-        - :push_event_payload
-    - stages:
-      - :statuses
   - :auto_devops
   - :triggers
   - :pipeline_schedules
@@ -73,7 +66,6 @@ project_tree:
   - :custom_attributes
   - :prometheus_metrics
   - :project_badges
-  - :ci_cd_settings
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -82,9 +74,8 @@ included_attributes:
     - :email
     - :username
   author:
+    - :id
     - :name
-  ci_cd_settings:
-    - :group_runners_enabled
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
@@ -109,7 +100,6 @@ excluded_attributes:
     - :lfs_enabled
     - :created_at
     - :updated_at
-    - :id
     - :star_count
     - :last_activity_at
     - :last_repository_updated_at
@@ -193,3 +183,25 @@ methods:
     - :action
   project_badges:
     - :type
+
+diffs:
+  - :issues
+  - :merge_requests
+  - :milestones
+  - :labels
+  - :project_members
+  - :protected_branches
+  - :protected_tags
+
+# must be the leaf node of the project_tree above
+inline_associations:
+  - :merge_request_diff_commits
+  - :merge_request_diff_files
+  - :issue_assignees
+  - :push_event_payload
+# inline tables:
+#  - :repository_languages
+#  - :system_note_metadata
+#  - :taggings
+#  - :tags
+#  - :user_interacted_projects

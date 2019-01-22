@@ -8,9 +8,6 @@ module Drepo
       attr_reader :full_path
 
       def initialize(project:, current_user:, shared:, params: {})
-        # TODO: del
-        Rails.logger.info("====================== #{self.class} =======================")
-
         @params = params
         @project = project
         @current_user = current_user
@@ -35,7 +32,7 @@ module Drepo
           project_json['description'] = @params[:description]
         end
 
-        project_json['project_members'] += group_members_json
+        project_json['project_members'].merge!(group_members_json.map { |g| [g['id'], g] }.to_h)
 
         RelationRenameService.add_new_associations(project_json)
 
@@ -43,7 +40,12 @@ module Drepo
       end
 
       def project_json
-        @project_json ||= @project.as_json(reader.project_tree)
+        # @project_json ||= @project.as_json(reader.project_tree)
+        @project_json ||= Drepo::ImportExport::Serialization.new.as_json(
+          @project,
+          @project.model_name.element,
+          reader.project_tree
+        )
       end
 
       def reader
