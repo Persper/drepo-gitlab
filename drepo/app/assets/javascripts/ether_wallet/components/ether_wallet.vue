@@ -104,7 +104,7 @@
           />
         </span>
         <div class="inline prepend-top-10">
-          Please review the commits and changes below before starting Drepo!.
+          Please review the commits and changes below before starting Drepo!
         </div>
       </div>
     </div>
@@ -357,17 +357,19 @@ export default {
   max-width: 100%;
   overflow-x: hidden;
   text-align: left;
-  padding-left: 60px;
+  padding-left: 20px;
   margin-top: 30px;
 }
 
 .label-text {
   padding-left: 5px;
 }
+
 .btn-ether {
   text-align: center;
   margin-top: 20px;
 }
+
 .ratio {
   position: relative;
   margin: 15px 0;
