@@ -83,23 +83,30 @@
         />
       </div>
     </div>
-    <div class="col-lg-12"><hr /></div>
-    <div class="col-lg-8">
-      <input
-        type="button"
-        class="btn btn-success btn-ether col-lg-3"
-        :disabled="!isStartDrepoSyncButtonClickable"
-        value="Start Drepo!"
-        @click.stop.prevent="startDrepoSync()"
-      />
-    </div>
-    <div class="col-lg-4">
-      <input
-        type="button"
-        class="btn btn-ether col-lg-4"
-        value="Cancel"
-        @click.stop.prevent="cancelDrepoSync()"
-      />
+    <div class="col-lg-8"></div>
+    <div class="col-lg-12">
+      <div class="middle-block row-content-block">
+        <div class="float-right">
+          <input
+            type="button"
+            class="btn btn-cancel"
+            value="Cancel"
+            @click.stop.prevent="cancelDrepoSync()"
+          />
+        </div>
+        <span class="append-right-10">
+          <input
+            type="submit"
+            class="btn btn-success col-lg-2"
+            :disabled="!isStartDrepoSyncButtonClickable"
+            value="Start Drepo!"
+            @click.stop.prevent="startDrepoSync()"
+          />
+        </span>
+        <div class="inline prepend-top-10">
+          Please review the commits and changes below before starting Drepo!.
+        </div>
+      </div>
     </div>
   </div>
 </template>
