@@ -70,7 +70,7 @@
           class="btn btn-success btn-ether col-lg-4"
           :disabled="!isUnlockByPrivateKeyButtonClickable"
           value="Unlock"
-          @click.stop.prevent="unlockByPrivateKey($event)"
+          @click.stop.prevent="unlockByPrivateKey()"
         />
       </div>
     </div>
@@ -90,7 +90,7 @@
         class="btn btn-success btn-ether col-lg-3"
         :disabled="!isStartDrepoSyncButtonClickable"
         value="Start Drepo!"
-        @click.stop.prevent="startDrepoSync($event)"
+        @click.stop.prevent="startDrepoSync()"
       />
     </div>
     <div class="col-lg-4">
