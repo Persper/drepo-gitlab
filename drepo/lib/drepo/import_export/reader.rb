@@ -11,7 +11,9 @@ module Drepo
         @tree = config_hash[:project_tree]
         @attributes_finder = Drepo::ImportExport::AttributesFinder.new(included_attributes: config_hash[:included_attributes],
                                                                        excluded_attributes: config_hash[:excluded_attributes],
-                                                                       methods: config_hash[:methods])
+                                                                       methods: config_hash[:methods],
+                                                                       diffs: config_hash[:diffs],
+                                                                       inline_associations: config_hash[:inline_associations])
       end
 
       # Outputs a hash in the format described here: http://api.rubyonrails.org/classes/ActiveModel/Serializers/JSON.html
