@@ -16,7 +16,7 @@
         <span class="label-text">Private Key</span>
       </label>
     </div>
-    <div class="col-lg-5">
+    <div class="ether-form col-lg-5">
       <div v-if="unlockOption === 'metamask'">
         <h4 class="col-lg-12">MetaMask</h4>
         <p v-if="isMetaMaskSupportedBrowser && !isMetaMaskTurnedOn" class="col-lg-12">
@@ -359,6 +359,10 @@ export default {
   text-align: left;
   padding-left: 20px;
   margin-top: 30px;
+}
+
+.ether-form {
+  height: 200px;
 }
 
 .label-text {
