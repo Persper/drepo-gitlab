@@ -50,15 +50,64 @@ class AddUuidToSomeTables < ActiveRecord::Migration[5.0]
   end
 
   def uuid_tables
-    [
-        # root: User
-        'users',
-
-        # root: Project
-        'projects',
-
-        # root: Namespace
-        'namespaces'
+    # version: 1 && inline: false
+    %w[
+      badges
+      boards
+      emails
+      events
+      fork_network_members
+      fork_networks
+      group_custom_attributes
+      internal_ids
+      issue_metrics
+      issues
+      label_links
+      label_priorities
+      labels
+      lfs_file_locks
+      lfs_objects
+      lfs_objects_projects
+      lists
+      members
+      merge_request_diffs
+      merge_request_metrics
+      merge_requests
+      merge_requests_closing_issues
+      milestones
+      namespaces
+      note_diff_files
+      notes
+      notification_settings
+      pages_domains
+      personal_access_tokens
+      project_custom_attributes
+      project_deploy_tokens
+      project_features
+      project_group_links
+      projects
+      protected_branch_merge_access_levels
+      protected_branch_push_access_levels
+      protected_branches
+      protected_tag_create_access_levels
+      protected_tags
+      redirect_routes
+      releases
+      remote_mirrors
+      routes
+      services
+      snippets
+      subscriptions
+      term_agreements
+      timelogs
+      u2f_registrations
+      user_custom_attributes
+      user_preferences
+      user_statuses
+      user_synced_attributes_metadata
+      users
+      users_star_projects
+      web_hooks
     ]
   end
 end
