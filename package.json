@@ -119,7 +119,7 @@
     "vue-template-compiler": "^2.5.21",
     "vue-virtual-scroll-list": "^1.2.5",
     "vuex": "^3.0.1",
-    "web3": "^1.0.0-beta.37",
+    "web3": "1.0.0-beta.37",
     "webpack": "^4.29.0",
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.2.1",
