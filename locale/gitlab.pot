@@ -717,6 +717,9 @@ msgstr ""
 msgid "Are you sure you want to lose unsaved changes?"
 msgstr ""
 
+msgid "Are you sure you want to lose your issue information?"
+msgstr ""
+
 msgid "Are you sure you want to regenerate the public key? You will have to update the public key on the remote server before mirroring will work again."
 msgstr ""
 
@@ -1254,6 +1257,12 @@ msgstr ""
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
+msgid "Certificate"
+msgstr ""
+
+msgid "Certificate (PEM)"
+msgstr ""
+
 msgid "Change permissions"
 msgstr ""
 
@@ -1486,6 +1495,9 @@ msgid "Close"
 msgstr ""
 
 msgid "Closed"
+msgstr ""
+
+msgid "Closed (moved)"
 msgstr ""
 
 msgid "ClusterIntegration| is the default environment scope for this cluster. This means that all jobs, regardless of their environment, will use this cluster. %{environment_scope_start}More information%{environment_scope_end}"
@@ -2234,6 +2246,9 @@ msgstr ""
 msgid "Create New Directory"
 msgstr ""
 
+msgid "Create New Domain"
+msgstr ""
+
 msgid "Create a new branch"
 msgstr ""
 
@@ -2382,6 +2397,9 @@ msgid "CycleAnalyticsStage|Staging"
 msgstr ""
 
 msgid "CycleAnalyticsStage|Test"
+msgstr ""
+
+msgid "DNS"
 msgstr ""
 
 msgid "Dashboard"
@@ -3981,6 +3999,9 @@ msgstr ""
 msgid "June"
 msgstr ""
 
+msgid "Key (PEM)"
+msgstr ""
+
 msgid "Kubernetes"
 msgstr ""
 
@@ -4327,6 +4348,9 @@ msgstr ""
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
 
+msgid "MergeRequests|Jump to next unresolved discussion"
+msgstr ""
+
 msgid "MergeRequests|Resolve this discussion in a new issue"
 msgstr ""
 
@@ -4555,6 +4579,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "New Label"
+msgstr ""
+
+msgid "New Pages Domain"
 msgstr ""
 
 msgid "New Pipeline Schedule"
@@ -4932,6 +4959,12 @@ msgid "Owner"
 msgstr ""
 
 msgid "Pages"
+msgstr ""
+
+msgid "Pages Domain"
+msgstr ""
+
+msgid "Pages Domains"
 msgstr ""
 
 msgid "Pagination|Last »"
@@ -6072,6 +6105,9 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+msgid "Save Changes"
+msgstr ""
+
 msgid "Save application"
 msgstr ""
 
@@ -6764,6 +6800,9 @@ msgstr ""
 msgid "Suggested change"
 msgstr ""
 
+msgid "Support for custom certificates is disabled. Ask your system's administrator to enable it."
+msgstr ""
+
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -7074,6 +7113,9 @@ msgid "This diff was suppressed by a .gitattributes entry."
 msgstr ""
 
 msgid "This directory"
+msgstr ""
+
+msgid "This domain is not verified. You will need to verify ownership before access is enabled."
 msgstr ""
 
 msgid "This group"
@@ -7404,7 +7446,13 @@ msgstr ""
 msgid "Titles and Filenames"
 msgstr ""
 
+msgid "To %{link_to_help} of your domain, add the above key to a TXT record within to your DNS configuration."
+msgstr ""
+
 msgid "To GitLab"
+msgstr ""
+
+msgid "To access this domain create a new DNS record"
 msgstr ""
 
 msgid "To add an SSH key you need to %{generate_link_start}generate one%{link_end} or use an %{existing_link_start}existing key%{link_end}."
@@ -7644,6 +7692,12 @@ msgstr ""
 msgid "Upload New File"
 msgstr ""
 
+msgid "Upload a certificate for your domain with all intermediates"
+msgstr ""
+
+msgid "Upload a private key for your certificate"
+msgstr ""
+
 msgid "Upload file"
 msgstr ""
 
@@ -7759,6 +7813,9 @@ msgid "Various email settings."
 msgstr ""
 
 msgid "Various settings that affect GitLab performance."
+msgstr ""
+
+msgid "Verification status"
 msgstr ""
 
 msgid "Verified"
@@ -8364,6 +8421,9 @@ msgid_plural "merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "missing"
+msgstr ""
+
 msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
 msgstr ""
 
@@ -8659,6 +8719,9 @@ msgid "username"
 msgstr ""
 
 msgid "uses Kubernetes clusters to deploy your code!"
+msgstr ""
+
+msgid "verify ownership"
 msgstr ""
 
 msgid "view it on GitLab"
