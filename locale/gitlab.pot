@@ -504,6 +504,9 @@ msgstr ""
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
+msgid "All issues for this milestone are closed. You may close this milestone now."
+msgstr ""
+
 msgid "All users"
 msgstr ""
 
@@ -763,6 +766,9 @@ msgid "Assign labels"
 msgstr ""
 
 msgid "Assign milestone"
+msgstr ""
+
+msgid "Assign some issues to this milestone."
 msgstr ""
 
 msgid "Assign to"
@@ -1494,6 +1500,9 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Close milestone"
+msgstr ""
+
 msgid "Closed"
 msgstr ""
 
@@ -1543,6 +1552,9 @@ msgid "ClusterIntegration|An error occurred while trying to fetch zone machine t
 msgstr ""
 
 msgid "ClusterIntegration|Applications"
+msgstr ""
+
+msgid "ClusterIntegration|Apply for credit"
 msgstr ""
 
 msgid "ClusterIntegration|Are you sure you want to remove this Kubernetes cluster's integration? This will not delete your actual Kubernetes cluster."
@@ -2294,6 +2306,9 @@ msgstr ""
 msgid "Create merge request and branch"
 msgstr ""
 
+msgid "Create milestone"
+msgstr ""
+
 msgid "Create new branch"
 msgstr ""
 
@@ -2753,6 +2768,9 @@ msgid "Edit"
 msgstr ""
 
 msgid "Edit Label"
+msgstr ""
+
+msgid "Edit Milestone"
 msgstr ""
 
 msgid "Edit Pipeline Schedule %{id}"
@@ -4008,6 +4026,9 @@ msgstr ""
 msgid "Kubernetes Cluster"
 msgstr ""
 
+msgid "Kubernetes Clusters"
+msgstr ""
+
 msgid "Kubernetes cluster creation time exceeds timeout; %{timeout}"
 msgstr ""
 
@@ -4581,6 +4602,9 @@ msgstr[1] ""
 msgid "New Label"
 msgstr ""
 
+msgid "New Milestone"
+msgstr ""
+
 msgid "New Pages Domain"
 msgstr ""
 
@@ -4621,6 +4645,9 @@ msgid "New label"
 msgstr ""
 
 msgid "New merge request"
+msgstr ""
+
+msgid "New milestone"
 msgstr ""
 
 msgid "New pipelines will cancel older, pending pipelines on the same branch"
@@ -4702,6 +4729,9 @@ msgid "No merge requests found"
 msgstr ""
 
 msgid "No messages were logged"
+msgstr ""
+
+msgid "No milestones to show"
 msgstr ""
 
 msgid "No other labels with such name or description"
@@ -4986,6 +5016,9 @@ msgid "Part of merge request changes"
 msgstr ""
 
 msgid "Password"
+msgstr ""
+
+msgid "Past due"
 msgstr ""
 
 msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
@@ -5891,6 +5924,9 @@ msgid "Rename file"
 msgstr ""
 
 msgid "Rename folder"
+msgstr ""
+
+msgid "Reopen milestone"
 msgstr ""
 
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
@@ -8074,6 +8110,9 @@ msgid "Withdraw Access Request"
 msgstr ""
 
 msgid "Write a comment or drag your files here…"
+msgstr ""
+
+msgid "Write milestone description..."
 msgstr ""
 
 msgid "Yes"
