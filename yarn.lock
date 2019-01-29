@@ -658,10 +658,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.47.0.tgz#c03dda41aefd3889cbfed95a391836106ae2ac4d"
   integrity sha512-0Bx/HxqR8xpqqaLnZiFAHIh1jTAFQPFToVZ6Wi3QyhsAwmXRAbgw1SlkRMZ7w3e6l+G71Wnw+GnI4rx1gK8JLQ==
 
-"@gitlab/ui@^1.20.0":
-  version "1.20.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-1.20.0.tgz#50bd4b092646a2c6337f0f462779af8e702dda05"
-  integrity sha512-EJgrqon/tYCUPoOgnNNAXbrDXOEAajJwKHr4aR2R6vkJI3kVZiq66RNIe5ftGIUoNqYCDnRIkpLyo7MqzJPgcw==
+"@gitlab/ui@^1.22.1":
+  version "1.22.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-1.22.1.tgz#92ed77216c5702776049b9ac41eb717c1acd864e"
+  integrity sha512-pWbEaXOOcp8Xt2TjJtPas3lXwWVvizrBOf0M8yN0XAn2GgIRCVnRMpjNEN7/oNeBcEM9CrmPYApEM/hZO+maqQ==
   dependencies:
     babel-standalone "^6.26.0"
     bootstrap-vue "^2.0.0-rc.11"
@@ -719,9 +719,9 @@
   integrity sha512-eajkMXG812/w3w4a1OcBlaTwsFPO5F7fJ/amy+tieQxEMWBlbV1JGSjkFM+zkHNf81Cad+dfIRA+IBkvmvdAeA==
 
 "@types/node@^10.3.2":
-  version "10.12.18"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.18.tgz#1d3ca764718915584fcd9f6344621b7672665c67"
-  integrity sha512-fh+pAqt4xRzPfqA6eh3Z2y6fyZavRIumvjhaCL753+TVkGKGhpPeyrJG2JftD0T9q4GF00KjefsQ+PQNDdWQaQ==
+  version "10.12.19"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.19.tgz#ca1018c26be01f07e66ac7fefbeb6407e4490c61"
+  integrity sha512-2NVovndCjJQj6fUUn9jCgpP4WSqr+u1SoUZMZyJkhGeBFsm6dE46l31S7lPUYt9uQ28XI+ibrJA1f5XyH5HNtA==
 
 "@types/parse5@^5":
   version "5.0.0"
