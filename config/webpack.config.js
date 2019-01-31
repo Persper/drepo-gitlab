@@ -108,6 +108,11 @@ module.exports = {
       drepo_icons: path.join(ROOT_PATH, 'drepo/app/views/shared/icons'),
       drepo_images: path.join(ROOT_PATH, 'drepo/app/assets/images'),
       drepo_spec: path.join(ROOT_PATH, 'drepo/spec/javascripts'),
+
+      // the following resolves files which are different between CE and EE
+      ee_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
+      // the following resolves files which are different between CE and Drepo 
+      drepo_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
     },
   },
 
