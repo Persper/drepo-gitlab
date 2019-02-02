@@ -16,7 +16,7 @@
         <span class="label-text">Private Key</span>
       </label>
     </div>
-    <div class="col-lg-5">
+    <div class="ether-form col-lg-5">
       <div v-if="unlockOption === 'metamask'">
         <h4 class="col-lg-12">MetaMask</h4>
         <p v-if="isMetaMaskSupportedBrowser && !isMetaMaskTurnedOn" class="col-lg-12">
@@ -70,7 +70,7 @@
           class="btn btn-success btn-ether col-lg-4"
           :disabled="!isUnlockByPrivateKeyButtonClickable"
           value="Unlock"
-          @click.stop.prevent="unlockByPrivateKey($event)"
+          @click.stop.prevent="unlockByPrivateKey()"
         />
       </div>
     </div>
@@ -83,23 +83,30 @@
         />
       </div>
     </div>
-    <div class="col-lg-12"><hr /></div>
-    <div class="col-lg-8">
-      <input
-        type="button"
-        class="btn btn-success btn-ether col-lg-3"
-        :disabled="!isStartDrepoSyncButtonClickable"
-        value="Start Drepo!"
-        @click.stop.prevent="startDrepoSync($event)"
-      />
-    </div>
-    <div class="col-lg-4">
-      <input
-        type="button"
-        class="btn btn-ether col-lg-4"
-        value="Cancel"
-        @click.stop.prevent="cancelDrepoSync()"
-      />
+    <div class="col-lg-8"></div>
+    <div class="col-lg-12">
+      <div class="middle-block row-content-block">
+        <div class="float-right">
+          <input
+            type="button"
+            class="btn btn-cancel"
+            value="Cancel"
+            @click.stop.prevent="cancelDrepoSync()"
+          />
+        </div>
+        <span class="append-right-10">
+          <input
+            type="submit"
+            class="btn btn-success col-lg-2"
+            :disabled="!isStartDrepoSyncButtonClickable"
+            value="Start Drepo!"
+            @click.stop.prevent="startDrepoSync()"
+          />
+        </span>
+        <div class="inline prepend-top-10">
+          Please review the commits and changes below before starting Drepo!
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -350,17 +357,23 @@ export default {
   max-width: 100%;
   overflow-x: hidden;
   text-align: left;
-  padding-left: 60px;
+  padding-left: 20px;
   margin-top: 30px;
+}
+
+.ether-form {
+  height: 200px;
 }
 
 .label-text {
   padding-left: 5px;
 }
+
 .btn-ether {
   text-align: center;
   margin-top: 20px;
 }
+
 .ratio {
   position: relative;
   margin: 15px 0;
