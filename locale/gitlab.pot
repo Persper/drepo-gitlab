@@ -552,9 +552,6 @@ msgstr ""
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
 msgstr ""
 
-msgid "An error accured whilst committing your changes."
-msgstr ""
-
 msgid "An error has occurred"
 msgstr ""
 
@@ -637,6 +634,9 @@ msgid "An error occurred while saving assignees"
 msgstr ""
 
 msgid "An error occurred while validating username"
+msgstr ""
+
+msgid "An error occurred whilst committing your changes."
 msgstr ""
 
 msgid "An error occurred whilst fetching the job trace."
@@ -2426,6 +2426,9 @@ msgstr ""
 msgid "DashboardProjects|Personal"
 msgstr ""
 
+msgid "Data is still calculating..."
+msgstr ""
+
 msgid "Debug"
 msgstr ""
 
@@ -2705,6 +2708,9 @@ msgid "Discuss a specific suggestion or question that needs to be resolved"
 msgstr ""
 
 msgid "Dismiss"
+msgstr ""
+
+msgid "Dismiss ConvDev introduction"
 msgstr ""
 
 msgid "Dismiss Cycle Analytics introduction box"
@@ -2992,6 +2998,9 @@ msgstr ""
 msgid "Error Tracking"
 msgstr ""
 
+msgid "Error deleting  %{issuableType}"
+msgstr ""
+
 msgid "Error fetching contributors data."
 msgstr ""
 
@@ -3038,6 +3047,9 @@ msgid "Error rendering markdown preview"
 msgstr ""
 
 msgid "Error saving label update."
+msgstr ""
+
+msgid "Error updating %{issuableType}"
 msgstr ""
 
 msgid "Error updating status for all todos."
@@ -3831,6 +3843,9 @@ msgstr ""
 msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
 msgstr ""
 
+msgid "In order to gather accurate feature usage data, it can take 1 to 2 weeks to see your index."
+msgstr ""
+
 msgid "In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
@@ -3898,6 +3913,9 @@ msgid "Interval Pattern"
 msgstr ""
 
 msgid "Introducing Cycle Analytics"
+msgstr ""
+
+msgid "Introducing Your Conversational Development Index"
 msgstr ""
 
 msgid "Invitation"
@@ -4137,6 +4155,9 @@ msgid "Latest changes"
 msgstr ""
 
 msgid "Latest pipeline for this branch"
+msgstr ""
+
+msgid "Lead"
 msgstr ""
 
 msgid "Learn more"
@@ -5510,6 +5531,9 @@ msgstr ""
 msgid "Profiles|Username successfully changed"
 msgstr ""
 
+msgid "Profiles|Using emojis in names seems fun, but please try to set a status message instead"
+msgstr ""
+
 msgid "Profiles|What's your status?"
 msgstr ""
 
@@ -6519,6 +6543,9 @@ msgid "Snippet Contents"
 msgstr ""
 
 msgid "Snippets"
+msgstr ""
+
+msgid "Someone edited this issue at the same time you did. The description has been updated and you will need to make your changes again."
 msgstr ""
 
 msgid "Something went wrong on our end"
@@ -7707,6 +7734,9 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
+msgid "Update failed"
+msgstr ""
+
 msgid "Update now"
 msgstr ""
 
@@ -8121,6 +8151,9 @@ msgstr ""
 msgid "Yesterday"
 msgstr ""
 
+msgid "You"
+msgstr ""
+
 msgid "You are an admin, which means granting access to <strong>%{client_name}</strong> will allow them to interact with GitLab as an admin as well. Proceed with caution."
 msgstr ""
 
@@ -8257,6 +8290,9 @@ msgid "You're receiving this email because of your account on %{host}. %{manage_
 msgstr ""
 
 msgid "YouTube"
+msgstr ""
+
+msgid "Your Conversational Development Index gives an overview of how you are using GitLab from a feature perspective. View how you compare with other organizations, discover features you are not using, and learn best practices through blog posts and white papers."
 msgstr ""
 
 msgid "Your Groups"
@@ -8423,6 +8459,9 @@ msgid "in group %{link_to_group}"
 msgstr ""
 
 msgid "in project %{link_to_project}"
+msgstr ""
+
+msgid "index"
 msgstr ""
 
 msgid "issue boards"
@@ -8708,6 +8747,9 @@ msgid "reply"
 msgid_plural "replies"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "score"
+msgstr ""
 
 msgid "should be higher than %{access} inherited membership from group %{group_name}"
 msgstr ""
