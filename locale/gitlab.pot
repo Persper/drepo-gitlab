@@ -4393,7 +4393,13 @@ msgstr ""
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
 
+msgid "MergeRequests|Add a reply"
+msgstr ""
+
 msgid "MergeRequests|Jump to next unresolved discussion"
+msgstr ""
+
+msgid "MergeRequests|Reply..."
 msgstr ""
 
 msgid "MergeRequests|Resolve this discussion in a new issue"
@@ -4432,10 +4438,10 @@ msgstr ""
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr ""
 
-msgid "MergeRequest|Filter files"
+msgid "MergeRequest|No files found"
 msgstr ""
 
-msgid "MergeRequest|No files found"
+msgid "MergeRequest|Search files"
 msgstr ""
 
 msgid "Merged"
@@ -8701,6 +8707,15 @@ msgid "none"
 msgstr ""
 
 msgid "notification emails"
+msgstr ""
+
+msgid "nounSeries|%{firstItem} and %{lastItem}"
+msgstr ""
+
+msgid "nounSeries|%{item}, %{nextItem}"
+msgstr ""
+
+msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
 msgid "or"
