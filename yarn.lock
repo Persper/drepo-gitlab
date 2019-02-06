@@ -3930,9 +3930,9 @@ destroy@~1.0.4:
   integrity sha1-l4hXRCxEdJ5CBmE+N5RiBYJqvYA=
 
 detect-browser@^4.0.3:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/detect-browser/-/detect-browser-4.0.4.tgz#295cd005a91a3eba21ba5eb09a6dc5992bc7bdb9"
-  integrity sha512-dNDdnWUiZNwgHxbNGgs0jCLH8BnbuCKVlC3PVxb981ZkbD6KMh3XjROayPMJBLqp2EtFwWWU8fSWZtHiT2sn7Q==
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/detect-browser/-/detect-browser-4.1.0.tgz#4f1cd47952be8fb16511053c37275f513b96d74a"
+  integrity sha512-YKQf1QQDXXJrwNE07xHujoD+meBnjhsYFdPwxFEXS1ylJWD9GKd21lKBjuqtXzAkz4CQjwBO3DYXBU/wWwZCGA==
 
 detect-file@^1.0.0:
   version "1.0.0"
