@@ -24,4 +24,3 @@ module Drepo
     end
   end
 end
-

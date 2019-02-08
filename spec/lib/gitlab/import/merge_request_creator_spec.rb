@@ -11,7 +11,7 @@ describe Gitlab::Import::MergeRequestCreator do
     context 'merge request already exists' do
       let(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
       let(:commits) { merge_request.merge_request_diffs.first.commits }
-      let(:attributes) { HashWithIndifferentAccess.new(merge_request.attributes.except("merge_params")) }
+      let(:attributes) { HashWithIndifferentAccess.new(merge_request.attributes.except("merge_params", "drepo_uuid")) }
 
       it 'updates the data' do
         commits_count = commits.count
@@ -28,7 +28,7 @@ describe Gitlab::Import::MergeRequestCreator do
 
     context 'new merge request' do
       let(:merge_request) { build(:merge_request, target_project: project, source_project: project) }
-      let(:attributes) { HashWithIndifferentAccess.new(merge_request.attributes.except("merge_params")) }
+      let(:attributes) { HashWithIndifferentAccess.new(merge_request.attributes.except("merge_params", "drepo_uuid")) }
 
       it 'creates a new merge request' do
         attributes.delete(:id)
