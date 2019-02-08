@@ -22,4 +22,3 @@ class ProjectExportWorker
     Gitlab::ImportExport::AfterExportStrategyBuilder.build!(strategy_klass, after_export_strategy)
   end
 end
-
