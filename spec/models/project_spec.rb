@@ -41,7 +41,6 @@ describe Project do
     it { is_expected.to have_one(:pipelines_email_service) }
     it { is_expected.to have_one(:irker_service) }
     it { is_expected.to have_one(:pivotaltracker_service) }
-    it { is_expected.to have_one(:hipchat_service) }
     it { is_expected.to have_one(:flowdock_service) }
     it { is_expected.to have_one(:assembla_service) }
     it { is_expected.to have_one(:slack_slash_commands_service) }
@@ -2542,6 +2541,14 @@ describe Project do
   describe '#deployment_variables' do
     context 'when project has no deployment service' do
       let(:project) { create(:project) }
+
+      it 'returns an empty array' do
+        expect(project.deployment_variables).to eq []
+      end
+    end
+
+    context 'when project uses mock deployment service' do
+      let(:project) { create(:mock_deployment_project) }
 
       it 'returns an empty array' do
         expect(project.deployment_variables).to eq []
