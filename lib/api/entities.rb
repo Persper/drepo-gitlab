@@ -502,9 +502,6 @@ module API
       expose :state, :created_at, :updated_at
       expose :due_date
       expose :start_date
-      expose :percentage_complete do |milestone, options|
-        milestone.percent_complete(options[:current_user])
-      end
 
       expose :web_url do |milestone, _options|
         Gitlab::UrlBuilder.build(milestone)
@@ -1034,6 +1031,9 @@ module API
     class ProjectLabel < Label
       expose :priority do |label, options|
         label.priority(options[:parent])
+      end
+      expose :is_project_label do |label, options|
+        label.is_a?(::ProjectLabel)
       end
     end
 
