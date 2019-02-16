@@ -2,3 +2,34 @@
 - page_title "New Drepo Sync"
 
 #ether_wallet{ data: { projectPath: project_path(@project) } }
+
+.mr-compare.merge-request.js-merge-request-new-submit{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
+  - if @commits.empty? && @issues.empty?
+    .commits-empty
+      %h4
+        There are no changes yet since last Drepo sync.
+      = custom_icon ('illustration_no_commits')
+  - else
+    .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
+      .merge-request-tabs-container
+        .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
+          .fade-left= icon('angle-left')
+          .fade-right= icon('angle-right')
+          %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.js-tabs-affix
+            %li.commits-tab.new-tab
+              = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
+                Issues
+                %span.badge.badge-pill= @total_commit_count
+            %li.diffs-tab
+              = link_to url_for(safe_params), data: {target: 'div#commits', action: 'diffs', toggle: 'tabvue'} do
+                Changes
+                %span.badge.badge-pill 5
+
+    #diff-notes-app.tab-content
+      #new.commits.tab-pane.active
+        "hello"
+      #diffs.diffs.tab-pane
+        "world"
+
+  .mr-loading-status
+    = spinner
