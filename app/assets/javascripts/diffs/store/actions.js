@@ -16,6 +16,7 @@ import {
   MR_TREE_SHOW_KEY,
   TREE_LIST_STORAGE_KEY,
   WHITESPACE_STORAGE_KEY,
+  TREE_LIST_WIDTH_STORAGE_KEY,
 } from '../constants';
 import { diffViewerModes } from '~/ide/constants';
 
@@ -129,6 +130,8 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
 
   return checkItem();
 };
+
+export const setRenderIt = ({ commit }, file) => commit(types.RENDER_FILE, file);
 
 export const setInlineDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
@@ -300,6 +303,10 @@ export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = fals
 
 export const toggleFileFinder = ({ commit }, visible) => {
   commit(types.TOGGLE_FILE_FINDER_VISIBLE, visible);
+};
+
+export const cacheTreeListWidth = (_, size) => {
+  localStorage.setItem(TREE_LIST_WIDTH_STORAGE_KEY, size);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

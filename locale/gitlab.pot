@@ -117,6 +117,9 @@ msgstr ""
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
+msgid "%{label_for_message} unavailable"
+msgstr ""
+
 msgid "%{link_start}Read more%{link_end} about role permissions"
 msgstr ""
 
@@ -1321,6 +1324,9 @@ msgid "ChangeTypeAction|Revert"
 msgstr ""
 
 msgid "ChangeTypeAction|This will create a new commit in order to revert the existing changes."
+msgstr ""
+
+msgid "Changes"
 msgstr ""
 
 msgid "Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision."
@@ -3483,7 +3489,13 @@ msgstr ""
 msgid "From the Kubernetes cluster details view, install Runner from the applications list"
 msgstr ""
 
+msgid "GPG Key ID:"
+msgstr ""
+
 msgid "GPG Keys"
+msgstr ""
+
+msgid "GPG signature (loading...)"
 msgstr ""
 
 msgid "General"
@@ -3953,6 +3965,9 @@ msgstr ""
 msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
 msgstr ""
 
+msgid "Import/Export illustration"
+msgstr ""
+
 msgid "ImportProjects|Importing the project failed"
 msgstr ""
 
@@ -4056,6 +4071,9 @@ msgid "Introducing Cycle Analytics"
 msgstr ""
 
 msgid "Introducing Your Conversational Development Index"
+msgstr ""
+
+msgid "Invalid input, please avoid emojis"
 msgstr ""
 
 msgid "Invitation"
@@ -4316,6 +4334,9 @@ msgid "Learn more about Kubernetes"
 msgstr ""
 
 msgid "Learn more about protected branches"
+msgstr ""
+
+msgid "Learn more about signing commits"
 msgstr ""
 
 msgid "Learn more in the"
@@ -5470,6 +5491,9 @@ msgstr ""
 msgid "Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again."
 msgstr ""
 
+msgid "Please create a username with only alphanumeric characters."
+msgstr ""
+
 msgid "Please fill in a descriptive name for your group."
 msgstr ""
 
@@ -5828,6 +5852,9 @@ msgid "Project export link has expired. Please generate a new export from your p
 msgstr ""
 
 msgid "Project export started. A download link will be sent by email."
+msgstr ""
+
+msgid "Project has too many %{label_for_message} to search"
 msgstr ""
 
 msgid "Project members"
@@ -7369,6 +7396,21 @@ msgstr ""
 msgid "This branch has changed since you started editing. Would you like to create a new branch?"
 msgstr ""
 
+msgid "This commit is part of merge request %{link_to_merge_request}. Comments created here will be created in the context of that merge request."
+msgstr ""
+
+msgid "This commit was signed with a <strong>verified</strong> signature and the committer email is verified to belong to the same user."
+msgstr ""
+
+msgid "This commit was signed with a different user's verified signature."
+msgstr ""
+
+msgid "This commit was signed with a verified signature, but the committer email is <strong>not verified</strong> to belong to the same user."
+msgstr ""
+
+msgid "This commit was signed with an <strong>unverified</strong> signature."
+msgstr ""
+
 msgid "This container registry has been scheduled for deletion."
 msgstr ""
 
@@ -7382,6 +7424,9 @@ msgid "This directory"
 msgstr ""
 
 msgid "This domain is not verified. You will need to verify ownership before access is enabled."
+msgstr ""
+
+msgid "This field is required."
 msgstr ""
 
 msgid "This group"
@@ -8619,6 +8664,9 @@ msgid "assign yourself"
 msgstr ""
 
 msgid "attach a new file"
+msgstr ""
+
+msgid "authored"
 msgstr ""
 
 msgid "branch name"
