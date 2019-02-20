@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(version: 20190301182457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "uuid-ossp"
   enable_extension "pg_trgm"
 
   create_table "abuse_reports", force: :cascade do |t|
@@ -24,6 +25,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "updated_at"
     t.text "message_html"
     t.integer "cached_markdown_version"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_abuse_reports_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_abuse_reports_on_drepo_uuid", using: :btree
   end
 
   create_table "appearances", force: :cascade do |t|
@@ -35,16 +40,20 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime_with_timezone "updated_at", null: false
     t.text "description_html"
     t.integer "cached_markdown_version"
+    t.string "favicon"
     t.text "new_project_guidelines"
     t.text "new_project_guidelines_html"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.text "header_message"
     t.text "header_message_html"
     t.text "footer_message"
     t.text "footer_message_html"
     t.text "message_background_color"
     t.text "message_font_color"
-    t.string "favicon"
     t.boolean "email_header_and_footer_enabled", default: false, null: false
+    t.index ["drepo_updated_at"], name: "index_appearances_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_appearances_on_drepo_uuid", using: :btree
   end
 
   create_table "application_setting_terms", force: :cascade do |t|
@@ -137,6 +146,7 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "clientside_sentry_enabled", default: false, null: false
     t.string "clientside_sentry_dsn"
     t.boolean "prometheus_metrics_enabled", default: true, null: false
+    t.boolean "authorized_keys_enabled", default: true, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
     t.integer "performance_bar_allowed_group_id"
@@ -152,31 +162,34 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "throttle_authenticated_web_enabled", default: false, null: false
     t.integer "throttle_authenticated_web_requests_per_period", default: 7200, null: false
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
-    t.boolean "password_authentication_enabled_for_web"
-    t.boolean "password_authentication_enabled_for_git", default: true
     t.integer "gitaly_timeout_default", default: 55, null: false
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
-    t.boolean "authorized_keys_enabled", default: true, null: false
+    t.boolean "password_authentication_enabled_for_web"
+    t.boolean "password_authentication_enabled_for_git", default: true, null: false
     t.string "auto_devops_domain"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
-    t.string "user_default_internal_regex"
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
+    t.string "user_default_internal_regex"
     t.boolean "enforce_terms", default: false
     t.boolean "mirror_available", default: true, null: false
     t.boolean "hide_third_party_offers", default: false, null: false
     t.boolean "instance_statistics_visibility_private", default: false, null: false
+    t.integer "receive_max_input_size"
     t.boolean "web_ide_clientside_preview_enabled", default: false, null: false
     t.boolean "user_show_add_ssh_key_message", default: true, null: false
     t.integer "usage_stats_set_by_user_id"
-    t.integer "receive_max_input_size"
     t.integer "diff_max_patch_bytes", default: 102400, null: false
     t.integer "archive_builds_in_seconds"
     t.string "commit_email_hostname"
+    t.integer "first_day_of_week", default: 0, null: false
     t.boolean "protected_ci_variables", default: false, null: false
     t.string "runners_registration_token_encrypted"
     t.integer "local_markdown_version", default: 0, null: false
-    t.integer "first_day_of_week", default: 0, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_application_settings_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_application_settings_on_drepo_uuid", using: :btree
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
@@ -188,17 +201,25 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.text "details"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_audit_events_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_audit_events_on_drepo_uuid", using: :btree
     t.index ["entity_id", "entity_type"], name: "index_audit_events_on_entity_id_and_entity_type", using: :btree
   end
 
   create_table "award_emoji", force: :cascade do |t|
     t.string "name"
     t.integer "user_id"
-    t.integer "awardable_id"
     t.string "awardable_type"
+    t.integer "awardable_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_award_emoji_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_award_emoji_on_drepo_uuid", using: :btree
     t.index ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
   end
 
@@ -210,6 +231,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "type", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_badges_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_badges_on_drepo_uuid", using: :btree
     t.index ["group_id"], name: "index_badges_on_group_id", using: :btree
     t.index ["project_id"], name: "index_badges_on_project_id", using: :btree
   end
@@ -220,7 +245,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "user_id"
     t.integer "board_id"
     t.integer "group_id"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["board_id"], name: "index_board_group_recent_visits_on_board_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_board_group_recent_visits_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_board_group_recent_visits_on_drepo_uuid", using: :btree
     t.index ["group_id"], name: "index_board_group_recent_visits_on_group_id", using: :btree
     t.index ["user_id", "group_id", "board_id"], name: "index_board_group_recent_visits_on_user_group_and_board", unique: true, using: :btree
     t.index ["user_id"], name: "index_board_group_recent_visits_on_user_id", using: :btree
@@ -232,7 +261,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "user_id"
     t.integer "project_id"
     t.integer "board_id"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["board_id"], name: "index_board_project_recent_visits_on_board_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_board_project_recent_visits_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_board_project_recent_visits_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_board_project_recent_visits_on_project_id", using: :btree
     t.index ["user_id", "project_id", "board_id"], name: "index_board_project_recent_visits_on_user_project_and_board", unique: true, using: :btree
     t.index ["user_id"], name: "index_board_project_recent_visits_on_user_id", using: :btree
@@ -243,6 +276,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "group_id"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_boards_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_boards_on_drepo_uuid", using: :btree
     t.index ["group_id"], name: "index_boards_on_group_id", using: :btree
     t.index ["project_id"], name: "index_boards_on_project_id", using: :btree
   end
@@ -257,6 +294,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "font"
     t.text "message_html", null: false
     t.integer "cached_markdown_version"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_broadcast_messages_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_broadcast_messages_on_drepo_uuid", using: :btree
     t.index ["starts_at", "ends_at", "id"], name: "index_broadcast_messages_on_starts_at_and_ends_at_and_id", using: :btree
   end
 
@@ -270,6 +311,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "last_used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_chat_names_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_chat_names_on_drepo_uuid", using: :btree
     t.index ["service_id", "team_id", "chat_id"], name: "index_chat_names_on_service_id_and_team_id_and_chat_id", unique: true, using: :btree
     t.index ["user_id", "service_id"], name: "index_chat_names_on_user_id_and_service_id", unique: true, using: :btree
   end
@@ -280,6 +325,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_chat_teams_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_chat_teams_on_drepo_uuid", using: :btree
     t.index ["namespace_id"], name: "index_chat_teams_on_namespace_id", unique: true, using: :btree
   end
 
@@ -356,6 +405,8 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "failure_reason"
     t.datetime_with_timezone "scheduled_at"
     t.string "token_encrypted"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
     t.index ["auto_canceled_by_id"], name: "index_ci_builds_on_auto_canceled_by_id", using: :btree
     t.index ["commit_id", "artifacts_expire_at", "id"], name: "index_ci_builds_on_commit_id_and_artifacts_expireatandidpartial", where: "(((type)::text = 'Ci::Build'::text) AND ((retried = false) OR (retried IS NULL)) AND ((name)::text = ANY (ARRAY[('sast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('sast:container'::character varying)::text, ('container_scanning'::character varying)::text, ('dast'::character varying)::text])))", using: :btree
@@ -363,6 +414,8 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.index ["commit_id", "status", "type"], name: "index_ci_builds_on_commit_id_and_status_and_type", using: :btree
     t.index ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
     t.index ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
+    t.index ["drepo_updated_at"], name: "index_ci_builds_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_ci_builds_on_drepo_uuid", using: :btree
     t.index ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
     t.index ["project_id", "status"], name: "index_ci_builds_project_id_and_status_for_live_jobs_partial2", where: "(((type)::text = 'Ci::Build'::text) AND ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text])))", using: :btree
     t.index ["protected"], name: "index_ci_builds_on_protected", using: :btree
@@ -406,7 +459,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "protected", default: false, null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.boolean "masked", default: false, null: false
+    t.index ["drepo_updated_at"], name: "index_ci_group_variables_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_ci_group_variables_on_drepo_uuid", using: :btree
     t.index ["group_id", "key"], name: "index_ci_group_variables_on_group_id_and_key", unique: true, using: :btree
   end
 
@@ -414,15 +471,19 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "project_id", null: false
     t.integer "job_id", null: false
     t.integer "file_type", null: false
-    t.integer "file_store"
     t.bigint "size"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.datetime_with_timezone "expire_at"
     t.string "file"
+    t.integer "file_store"
     t.binary "file_sha256"
     t.integer "file_format", limit: 2
     t.integer "file_location", limit: 2
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_ci_job_artifacts_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_ci_job_artifacts_on_drepo_uuid", using: :btree
     t.index ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
     t.index ["file_store"], name: "index_ci_job_artifacts_on_file_store", using: :btree
     t.index ["job_id", "file_type"], name: "index_ci_job_artifacts_on_job_id_and_file_type", unique: true, using: :btree
@@ -446,6 +507,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "pipeline_schedule_id", null: false
     t.datetime_with_timezone "created_at"
     t.datetime_with_timezone "updated_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_ci_pipeline_schedule_variables_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_ci_pipeline_schedule_variables_on_drepo_uuid", using: :btree
     t.index ["pipeline_schedule_id", "key"], name: "index_ci_pipeline_schedule_variables_on_schedule_id_and_key", unique: true, using: :btree
   end
 
@@ -460,6 +525,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "active", default: true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_ci_pipeline_schedules_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_ci_pipeline_schedules_on_drepo_uuid", using: :btree
     t.index ["next_run_at", "active"], name: "index_ci_pipeline_schedules_on_next_run_at_and_active", using: :btree
     t.index ["owner_id"], name: "index_ci_pipeline_schedules_on_owner_id", using: :btree
     t.index ["project_id"], name: "index_ci_pipeline_schedules_on_project_id", using: :btree
@@ -494,14 +563,18 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
     t.integer "source"
-    t.integer "config_source"
     t.boolean "protected"
+    t.integer "config_source"
     t.integer "failure_reason"
     t.integer "iid"
     t.integer "merge_request_id"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.binary "source_sha"
     t.binary "target_sha"
     t.index ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_ci_pipelines_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_ci_pipelines_on_drepo_uuid", using: :btree
     t.index ["merge_request_id"], name: "index_ci_pipelines_on_merge_request_id", where: "(merge_request_id IS NOT NULL)", using: :btree
     t.index ["pipeline_schedule_id"], name: "index_ci_pipelines_on_pipeline_schedule_id", using: :btree
     t.index ["project_id", "iid"], name: "index_ci_pipelines_on_project_id_and_iid", unique: true, where: "(iid IS NOT NULL)", using: :btree
@@ -527,6 +600,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "project_id"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_ci_runner_projects_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_ci_runner_projects_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_ci_runner_projects_on_project_id", using: :btree
     t.index ["runner_id"], name: "index_ci_runner_projects_on_runner_id", using: :btree
   end
@@ -547,11 +624,15 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
     t.integer "access_level", default: 0, null: false
-    t.string "ip_address"
     t.integer "maximum_timeout"
+    t.string "ip_address"
     t.integer "runner_type", limit: 2, null: false
     t.string "token_encrypted"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
+    t.index ["drepo_updated_at"], name: "index_ci_runners_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_ci_runners_on_drepo_uuid", using: :btree
     t.index ["is_shared"], name: "index_ci_runners_on_is_shared", using: :btree
     t.index ["locked"], name: "index_ci_runners_on_locked", using: :btree
     t.index ["runner_type"], name: "index_ci_runners_on_runner_type", using: :btree
@@ -568,6 +649,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "status"
     t.integer "lock_version"
     t.integer "position"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_ci_stages_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_ci_stages_on_drepo_uuid", using: :btree
     t.index ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", unique: true, using: :btree
     t.index ["pipeline_id", "position"], name: "index_ci_stages_on_pipeline_id_and_position", using: :btree
     t.index ["pipeline_id"], name: "index_ci_stages_on_pipeline_id", using: :btree
@@ -580,7 +665,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "commit_id"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["commit_id"], name: "index_ci_trigger_requests_on_commit_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_ci_trigger_requests_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_ci_trigger_requests_on_drepo_uuid", using: :btree
     t.index ["trigger_id"], name: "index_ci_trigger_requests_on_trigger_id", using: :btree
   end
 
@@ -592,6 +681,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "owner_id"
     t.string "description"
     t.string "ref"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_ci_triggers_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_ci_triggers_on_drepo_uuid", using: :btree
     t.index ["owner_id"], name: "index_ci_triggers_on_owner_id", using: :btree
     t.index ["project_id"], name: "index_ci_triggers_on_project_id", using: :btree
   end
@@ -629,7 +722,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.text "encrypted_token"
     t.string "encrypted_token_iv"
     t.integer "authorization_type", limit: 2
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["cluster_id"], name: "index_cluster_platforms_kubernetes_on_cluster_id", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_cluster_platforms_kubernetes_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_cluster_platforms_kubernetes_on_drepo_uuid", using: :btree
   end
 
   create_table "cluster_projects", force: :cascade do |t|
@@ -637,7 +734,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "cluster_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["cluster_id"], name: "index_cluster_projects_on_cluster_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_cluster_projects_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_cluster_projects_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_cluster_projects_on_project_id", using: :btree
   end
 
@@ -656,7 +757,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.text "encrypted_access_token"
     t.string "encrypted_access_token_iv"
     t.boolean "legacy_abac", default: false, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["cluster_id"], name: "index_cluster_providers_gcp_on_cluster_id", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_cluster_providers_gcp_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_cluster_providers_gcp_on_drepo_uuid", using: :btree
   end
 
   create_table "clusters", force: :cascade do |t|
@@ -670,6 +775,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "environment_scope", default: "*", null: false
     t.integer "cluster_type", limit: 2, default: 3, null: false
     t.string "domain"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_clusters_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_clusters_on_drepo_uuid", using: :btree
     t.index ["enabled"], name: "index_clusters_on_enabled", using: :btree
     t.index ["user_id"], name: "index_clusters_on_user_id", using: :btree
   end
@@ -682,7 +791,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.text "status_reason"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["cluster_id"], name: "index_clusters_applications_cert_managers_on_cluster_id", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_clusters_applications_cert_managers_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_clusters_applications_cert_managers_on_drepo_uuid", using: :btree
   end
 
   create_table "clusters_applications_helm", force: :cascade do |t|
@@ -695,7 +808,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.text "encrypted_ca_key"
     t.text "encrypted_ca_key_iv"
     t.text "ca_cert"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["cluster_id"], name: "index_clusters_applications_helm_on_cluster_id", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_clusters_applications_helm_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_clusters_applications_helm_on_drepo_uuid", using: :btree
   end
 
   create_table "clusters_applications_ingress", force: :cascade do |t|
@@ -709,7 +826,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.text "status_reason"
     t.string "external_ip"
     t.string "external_hostname"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["cluster_id"], name: "index_clusters_applications_ingress_on_cluster_id", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_clusters_applications_ingress_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_clusters_applications_ingress_on_drepo_uuid", using: :btree
   end
 
   create_table "clusters_applications_jupyter", force: :cascade do |t|
@@ -721,7 +842,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.text "status_reason"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["cluster_id"], name: "index_clusters_applications_jupyter_on_cluster_id", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_clusters_applications_jupyter_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_clusters_applications_jupyter_on_drepo_uuid", using: :btree
     t.index ["oauth_application_id"], name: "index_clusters_applications_jupyter_on_oauth_application_id", using: :btree
   end
 
@@ -735,7 +860,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.text "status_reason"
     t.string "external_ip"
     t.string "external_hostname"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["cluster_id"], name: "index_clusters_applications_knative_on_cluster_id", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_clusters_applications_knative_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_clusters_applications_knative_on_drepo_uuid", using: :btree
   end
 
   create_table "clusters_applications_prometheus", force: :cascade do |t|
@@ -745,7 +874,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.text "status_reason"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["cluster_id"], name: "index_clusters_applications_prometheus_on_cluster_id", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_clusters_applications_prometheus_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_clusters_applications_prometheus_on_drepo_uuid", using: :btree
   end
 
   create_table "clusters_applications_runners", force: :cascade do |t|
@@ -757,7 +890,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "version", null: false
     t.text "status_reason"
     t.boolean "privileged", default: true, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["cluster_id"], name: "index_clusters_applications_runners_on_cluster_id", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_clusters_applications_runners_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_clusters_applications_runners_on_drepo_uuid", using: :btree
     t.index ["runner_id"], name: "index_clusters_applications_runners_on_runner_id", using: :btree
   end
 
@@ -767,13 +904,17 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "cluster_project_id"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
-    t.text "encrypted_service_account_token"
     t.string "encrypted_service_account_token_iv"
     t.string "namespace", null: false
     t.string "service_account_name"
+    t.text "encrypted_service_account_token"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["cluster_id", "namespace"], name: "kubernetes_namespaces_cluster_and_namespace", unique: true, using: :btree
     t.index ["cluster_id"], name: "index_clusters_kubernetes_namespaces_on_cluster_id", using: :btree
     t.index ["cluster_project_id"], name: "index_clusters_kubernetes_namespaces_on_cluster_project_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_clusters_kubernetes_namespaces_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_clusters_kubernetes_namespaces_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_clusters_kubernetes_namespaces_on_project_id", using: :btree
   end
 
@@ -782,6 +923,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_container_repositories_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_container_repositories_on_drepo_uuid", using: :btree
     t.index ["project_id", "name"], name: "index_container_repositories_on_project_id_and_name", unique: true, using: :btree
     t.index ["project_id"], name: "index_container_repositories_on_project_id", using: :btree
   end
@@ -819,6 +964,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.float "percentage_notes", default: 0.0, null: false
     t.float "percentage_projects_prometheus_active", default: 0.0, null: false
     t.float "percentage_service_desk_issues", default: 0.0, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_conversational_development_index_metrics_on_drepo_updated", using: :btree
+    t.index ["drepo_uuid"], name: "index_conversational_development_index_metrics_on_drepo_uuid", using: :btree
   end
 
   create_table "deploy_keys_projects", force: :cascade do |t|
@@ -827,6 +976,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "can_push", default: false, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_deploy_keys_projects_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_deploy_keys_projects_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
   end
 
@@ -855,10 +1008,14 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "on_stop"
-    t.integer "status", limit: 2, null: false
     t.datetime_with_timezone "finished_at"
+    t.integer "status", limit: 2, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["created_at"], name: "index_deployments_on_created_at", using: :btree
     t.index ["deployable_type", "deployable_id"], name: "index_deployments_on_deployable_type_and_deployable_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_deployments_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_deployments_on_drepo_uuid", using: :btree
     t.index ["environment_id", "id"], name: "index_deployments_on_environment_id_and_id", using: :btree
     t.index ["environment_id", "iid", "project_id"], name: "index_deployments_on_environment_id_and_iid_and_project_id", using: :btree
     t.index ["environment_id", "status"], name: "index_deployments_on_environment_id_and_status", using: :btree
@@ -876,7 +1033,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "confirmation_token"
     t.datetime_with_timezone "confirmed_at"
     t.datetime_with_timezone "confirmation_sent_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["confirmation_token"], name: "index_emails_on_confirmation_token", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_emails_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_emails_on_drepo_uuid", using: :btree
     t.index ["email"], name: "index_emails_on_email", unique: true, using: :btree
     t.index ["user_id"], name: "index_emails_on_user_id", using: :btree
   end
@@ -890,6 +1051,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "environment_type"
     t.string "state", default: "available", null: false
     t.string "slug", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_environments_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_environments_on_drepo_uuid", using: :btree
     t.index ["project_id", "name"], name: "index_environments_on_project_id_and_name", unique: true, using: :btree
     t.index ["project_id", "slug"], name: "index_environments_on_project_id_and_slug", unique: true, using: :btree
   end
@@ -902,8 +1067,12 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime_with_timezone "updated_at", null: false
     t.integer "action", limit: 2, null: false
     t.string "target_type"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["action"], name: "index_events_on_action", using: :btree
     t.index ["author_id", "project_id"], name: "index_events_on_author_id_and_project_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_events_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_events_on_drepo_uuid", using: :btree
     t.index ["project_id", "created_at"], name: "index_events_on_project_id_and_created_at", using: :btree
     t.index ["project_id", "id"], name: "index_events_on_project_id_and_id", using: :btree
     t.index ["target_type", "target_id"], name: "index_events_on_target_type_and_target_id", using: :btree
@@ -915,6 +1084,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_feature_gates_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_feature_gates_on_drepo_uuid", using: :btree
     t.index ["feature_key", "key", "value"], name: "index_feature_gates_on_feature_key_and_key_and_value", unique: true, using: :btree
   end
 
@@ -922,6 +1095,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "key", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_features_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_features_on_drepo_uuid", using: :btree
     t.index ["key"], name: "index_features_on_key", unique: true, using: :btree
   end
 
@@ -945,6 +1122,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "forked_from_project_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_forked_project_links_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_forked_project_links_on_drepo_uuid", using: :btree
     t.index ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
   end
 
@@ -964,6 +1145,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.binary "primary_keyid"
     t.binary "fingerprint"
     t.text "key"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_gpg_keys_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_gpg_keys_on_drepo_uuid", using: :btree
     t.index ["fingerprint"], name: "index_gpg_keys_on_fingerprint", unique: true, using: :btree
     t.index ["primary_keyid"], name: "index_gpg_keys_on_primary_keyid", unique: true, using: :btree
     t.index ["user_id"], name: "index_gpg_keys_on_user_id", using: :btree
@@ -980,7 +1165,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.text "gpg_key_user_email"
     t.integer "verification_status", limit: 2, default: 0, null: false
     t.integer "gpg_key_subkey_id"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["commit_sha"], name: "index_gpg_signatures_on_commit_sha", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_gpg_signatures_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_gpg_signatures_on_drepo_uuid", using: :btree
     t.index ["gpg_key_id"], name: "index_gpg_signatures_on_gpg_key_id", using: :btree
     t.index ["gpg_key_primary_keyid"], name: "index_gpg_signatures_on_gpg_key_primary_keyid", using: :btree
     t.index ["gpg_key_subkey_id"], name: "index_gpg_signatures_on_gpg_key_subkey_id", using: :btree
@@ -993,6 +1182,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "group_id", null: false
     t.string "key", null: false
     t.string "value", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_group_custom_attributes_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_group_custom_attributes_on_drepo_uuid", using: :btree
     t.index ["group_id", "key"], name: "index_group_custom_attributes_on_group_id_and_key", unique: true, using: :btree
     t.index ["key", "value"], name: "index_group_custom_attributes_on_key_and_value", using: :btree
   end
@@ -1003,6 +1196,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_identities_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_identities_on_drepo_uuid", using: :btree
     t.index ["user_id"], name: "index_identities_on_user_id", using: :btree
   end
 
@@ -1011,6 +1208,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "project_id"
     t.text "import_file"
     t.text "export_file"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_import_export_uploads_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_import_export_uploads_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_import_export_uploads_on_project_id", using: :btree
     t.index ["updated_at"], name: "index_import_export_uploads_on_updated_at", using: :btree
   end
@@ -1040,6 +1241,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "first_added_to_board_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_issue_metrics_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_issue_metrics_on_drepo_uuid", using: :btree
     t.index ["issue_id"], name: "index_issue_metrics", using: :btree
   end
 
@@ -1068,10 +1273,14 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "discussion_locked"
     t.datetime_with_timezone "closed_at"
     t.integer "closed_by_id"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["author_id"], name: "index_issues_on_author_id", using: :btree
     t.index ["closed_by_id"], name: "index_issues_on_closed_by_id", using: :btree
     t.index ["confidential"], name: "index_issues_on_confidential", using: :btree
     t.index ["description"], name: "index_issues_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+    t.index ["drepo_updated_at"], name: "index_issues_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_issues_on_drepo_uuid", using: :btree
     t.index ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
     t.index ["moved_to_id"], name: "index_issues_on_moved_to_id", where: "(moved_to_id IS NOT NULL)", using: :btree
     t.index ["project_id", "created_at", "id", "state"], name: "index_issues_on_project_id_and_created_at_and_id_and_state", using: :btree
@@ -1095,6 +1304,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "fingerprint"
     t.boolean "public", default: false, null: false
     t.datetime "last_used_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_keys_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_keys_on_drepo_uuid", using: :btree
     t.index ["fingerprint"], name: "index_keys_on_fingerprint", unique: true, using: :btree
     t.index ["user_id"], name: "index_keys_on_user_id", using: :btree
   end
@@ -1105,6 +1318,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "target_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_label_links_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_label_links_on_drepo_uuid", using: :btree
     t.index ["label_id"], name: "index_label_links_on_label_id", using: :btree
     t.index ["target_id", "target_type"], name: "index_label_links_on_target_id_and_target_type", using: :btree
   end
@@ -1115,6 +1332,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "priority", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_label_priorities_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_label_priorities_on_drepo_uuid", using: :btree
     t.index ["label_id"], name: "index_label_priorities_on_label_id", using: :btree
     t.index ["priority"], name: "index_label_priorities_on_priority", using: :btree
     t.index ["project_id", "label_id"], name: "index_label_priorities_on_project_id_and_label_id", unique: true, using: :btree
@@ -1132,6 +1353,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "type"
     t.integer "group_id"
     t.integer "cached_markdown_version"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_labels_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_labels_on_drepo_uuid", using: :btree
     t.index ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
     t.index ["project_id"], name: "index_labels_on_project_id", using: :btree
     t.index ["template"], name: "index_labels_on_template", where: "template", using: :btree
@@ -1155,6 +1380,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "updated_at"
     t.string "file"
     t.integer "file_store"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_lfs_objects_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_lfs_objects_on_drepo_uuid", using: :btree
     t.index ["file_store"], name: "index_lfs_objects_on_file_store", using: :btree
     t.index ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
   end
@@ -1164,6 +1393,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "project_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_lfs_objects_projects_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_lfs_objects_projects_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_lfs_objects_projects_on_project_id", using: :btree
   end
 
@@ -1174,7 +1407,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["board_id", "label_id"], name: "index_lists_on_board_id_and_label_id", unique: true, using: :btree
+    t.index ["drepo_updated_at"], name: "index_lists_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_lists_on_drepo_uuid", using: :btree
     t.index ["label_id"], name: "index_lists_on_label_id", using: :btree
     t.index ["list_type"], name: "index_lists_on_list_type", using: :btree
   end
@@ -1194,7 +1431,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "invite_accepted_at"
     t.datetime "requested_at"
     t.date "expires_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["access_level"], name: "index_members_on_access_level", using: :btree
+    t.index ["drepo_updated_at"], name: "index_members_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_members_on_drepo_uuid", using: :btree
     t.index ["invite_token"], name: "index_members_on_invite_token", unique: true, using: :btree
     t.index ["requested_at"], name: "index_members_on_requested_at", using: :btree
     t.index ["source_id", "source_type"], name: "index_members_on_source_id_and_source_type", using: :btree
@@ -1247,6 +1488,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "external_diff"
     t.integer "external_diff_store"
     t.boolean "stored_externally"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_merge_request_diffs_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_merge_request_diffs_on_drepo_uuid", using: :btree
     t.index ["merge_request_id", "id"], name: "index_merge_request_diffs_on_merge_request_id_and_id", using: :btree
   end
 
@@ -1262,6 +1507,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "merged_by_id"
     t.integer "latest_closed_by_id"
     t.datetime_with_timezone "latest_closed_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_merge_request_metrics_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_merge_request_metrics_on_drepo_uuid", using: :btree
     t.index ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at", using: :btree
     t.index ["latest_closed_by_id"], name: "index_merge_request_metrics_on_latest_closed_by_id", using: :btree
     t.index ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
@@ -1290,6 +1539,7 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "merge_when_pipeline_succeeds", default: false, null: false
     t.integer "merge_user_id"
     t.string "merge_commit_sha"
+    t.string "rebase_commit_sha"
     t.string "in_progress_merge_commit_sha"
     t.integer "lock_version"
     t.text "title_html"
@@ -1302,13 +1552,16 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
-    t.string "rebase_commit_sha"
-    t.boolean "squash", default: false, null: false
     t.boolean "allow_maintainer_to_push"
+    t.boolean "squash", default: false, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
     t.index ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
     t.index ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
     t.index ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+    t.index ["drepo_updated_at"], name: "index_merge_requests_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_merge_requests_on_drepo_uuid", using: :btree
     t.index ["head_pipeline_id"], name: "index_merge_requests_on_head_pipeline_id", using: :btree
     t.index ["id", "merge_jid"], name: "index_merge_requests_on_id_and_merge_jid", where: "((merge_jid IS NOT NULL) AND ((state)::text = 'locked'::text))", using: :btree
     t.index ["latest_merge_request_diff_id"], name: "index_merge_requests_on_latest_merge_request_diff_id", using: :btree
@@ -1331,6 +1584,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "issue_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_merge_requests_closing_issues_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_merge_requests_closing_issues_on_drepo_uuid", using: :btree
     t.index ["issue_id"], name: "index_merge_requests_closing_issues_on_issue_id", using: :btree
     t.index ["merge_request_id"], name: "index_merge_requests_closing_issues_on_merge_request_id", using: :btree
   end
@@ -1349,7 +1606,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.date "start_date"
     t.integer "cached_markdown_version"
     t.integer "group_id"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["description"], name: "index_milestones_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+    t.index ["drepo_updated_at"], name: "index_milestones_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_milestones_on_drepo_uuid", using: :btree
     t.index ["due_date"], name: "index_milestones_on_due_date", using: :btree
     t.index ["group_id"], name: "index_milestones_on_group_id", using: :btree
     t.index ["project_id", "iid"], name: "index_milestones_on_project_id_and_iid", unique: true, using: :btree
@@ -1378,7 +1639,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "runners_token"
     t.string "runners_token_encrypted"
     t.boolean "auto_devops_enabled"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["created_at"], name: "index_namespaces_on_created_at", using: :btree
+    t.index ["drepo_updated_at"], name: "index_namespaces_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_namespaces_on_drepo_uuid", using: :btree
     t.index ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
     t.index ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
     t.index ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
@@ -1428,10 +1693,14 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "cached_markdown_version"
     t.text "change_position"
     t.boolean "resolved_by_push"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["author_id"], name: "index_notes_on_author_id", using: :btree
     t.index ["commit_id"], name: "index_notes_on_commit_id", using: :btree
     t.index ["created_at"], name: "index_notes_on_created_at", using: :btree
     t.index ["discussion_id"], name: "index_notes_on_discussion_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_notes_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_notes_on_drepo_uuid", using: :btree
     t.index ["line_code"], name: "index_notes_on_line_code", using: :btree
     t.index ["note"], name: "index_notes_on_note_trigram", using: :gin, opclasses: {"note"=>"gin_trgm_ops"}
     t.index ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
@@ -1441,8 +1710,8 @@ ActiveRecord::Schema.define(version: 20190301182457) do
 
   create_table "notification_settings", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.integer "source_id"
     t.string "source_type"
+    t.integer "source_id"
     t.integer "level", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1460,6 +1729,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "success_pipeline"
     t.boolean "push_to_merge_request"
     t.boolean "issue_due"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_notification_settings_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_notification_settings_on_drepo_uuid", using: :btree
     t.index ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
     t.index ["user_id", "source_id", "source_type"], name: "index_notifications_on_user_id_and_source_id_and_source_type", unique: true, using: :btree
     t.index ["user_id"], name: "index_notification_settings_on_user_id", using: :btree
@@ -1502,6 +1775,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "owner_id"
     t.string "owner_type"
     t.boolean "trusted", default: false, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_oauth_applications_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_oauth_applications_on_drepo_uuid", using: :btree
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
   end
@@ -1539,6 +1816,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "scopes", default: "--- []\n", null: false
     t.boolean "impersonation", default: false, null: false
     t.string "token_digest"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_personal_access_tokens_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_personal_access_tokens_on_drepo_uuid", using: :btree
     t.index ["token_digest"], name: "index_personal_access_tokens_on_token_digest", unique: true, using: :btree
     t.index ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
   end
@@ -1575,6 +1856,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "enabled"
     t.string "domain"
     t.integer "deploy_strategy", default: 0, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_project_auto_devops_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_project_auto_devops_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_project_auto_devops_on_project_id", unique: true, using: :btree
   end
 
@@ -1591,6 +1876,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "project_id", null: false
     t.string "key", null: false
     t.string "value", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_project_custom_attributes_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_project_custom_attributes_on_drepo_uuid", using: :btree
     t.index ["key", "value"], name: "index_project_custom_attributes_on_key_and_value", using: :btree
     t.index ["project_id", "key"], name: "index_project_custom_attributes_on_project_id_and_key", unique: true, using: :btree
   end
@@ -1630,6 +1919,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "updated_at"
     t.integer "repository_access_level", default: 20, null: false
     t.integer "pages_access_level", default: 20, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_project_features_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_project_features_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_project_features_on_project_id", unique: true, using: :btree
   end
 
@@ -1640,6 +1933,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "updated_at"
     t.integer "group_access", default: 30, null: false
     t.date "expires_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_project_group_links_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_project_group_links_on_drepo_uuid", using: :btree
     t.index ["group_id"], name: "index_project_group_links_on_group_id", using: :btree
     t.index ["project_id"], name: "index_project_group_links_on_project_id", using: :btree
   end
@@ -1699,8 +1996,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "avatar"
     t.string "import_status"
     t.integer "star_count", default: 0, null: false
+    t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.string "import_type"
     t.string "import_source"
+    t.boolean "merge_requests_ff_only_enabled", default: false, null: false
     t.text "import_error"
     t.integer "ci_id"
     t.boolean "shared_runners_enabled", default: true, null: false
@@ -1716,6 +2015,7 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "only_allow_merge_if_pipeline_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
+    t.boolean "repository_read_only"
     t.boolean "request_access_enabled", default: false, null: false
     t.boolean "has_external_wiki"
     t.string "ci_config_path"
@@ -1730,19 +2030,20 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "last_repository_updated_at"
     t.integer "storage_version", limit: 2
     t.boolean "resolve_outdated_diff_discussions"
-    t.boolean "repository_read_only"
-    t.boolean "merge_requests_ff_only_enabled", default: false
-    t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.integer "jobs_cache_index"
     t.boolean "pages_https_only", default: true
     t.boolean "remote_mirror_available_overridden"
     t.bigint "pool_repository_id"
     t.string "runners_token_encrypted"
     t.string "bfg_object_map"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["ci_id"], name: "index_projects_on_ci_id", using: :btree
     t.index ["created_at"], name: "index_projects_on_created_at", using: :btree
     t.index ["creator_id"], name: "index_projects_on_creator_id", using: :btree
     t.index ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+    t.index ["drepo_updated_at"], name: "index_projects_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_projects_on_drepo_uuid", using: :btree
     t.index ["id"], name: "index_projects_on_id_partial_for_visibility", unique: true, where: "(visibility_level = ANY (ARRAY[10, 20]))", using: :btree
     t.index ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
     t.index ["last_repository_check_at"], name: "index_projects_on_last_repository_check_at", where: "(last_repository_check_at IS NOT NULL)", using: :btree
@@ -1774,7 +2075,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime_with_timezone "updated_at", null: false
     t.boolean "common", default: false, null: false
     t.string "identifier"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["common"], name: "index_prometheus_metrics_on_common", using: :btree
+    t.index ["drepo_updated_at"], name: "index_prometheus_metrics_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_prometheus_metrics_on_drepo_uuid", using: :btree
     t.index ["group"], name: "index_prometheus_metrics_on_group", using: :btree
     t.index ["identifier"], name: "index_prometheus_metrics_on_identifier", unique: true, using: :btree
     t.index ["project_id"], name: "index_prometheus_metrics_on_project_id", using: :btree
@@ -1785,6 +2090,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "access_level", default: 40, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_protected_branch_merge_access_levels_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_protected_branch_merge_access_levels_on_drepo_uuid", using: :btree
     t.index ["protected_branch_id"], name: "index_protected_branch_merge_access", using: :btree
   end
 
@@ -1793,6 +2102,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "access_level", default: 40, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_protected_branch_push_access_levels_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_protected_branch_push_access_levels_on_drepo_uuid", using: :btree
     t.index ["protected_branch_id"], name: "index_protected_branch_push_access", using: :btree
   end
 
@@ -1801,6 +2114,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_protected_branches_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_protected_branches_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
   end
 
@@ -1811,6 +2128,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_protected_tag_create_access_levels_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_protected_tag_create_access_levels_on_drepo_uuid", using: :btree
     t.index ["group_id"], name: "index_protected_tag_create_access_levels_on_group_id", using: :btree
     t.index ["protected_tag_id"], name: "index_protected_tag_create_access", using: :btree
     t.index ["user_id"], name: "index_protected_tag_create_access_levels_on_user_id", using: :btree
@@ -1821,6 +2142,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_protected_tags_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_protected_tags_on_drepo_uuid", using: :btree
     t.index ["project_id", "name"], name: "index_protected_tags_on_project_id_and_name", unique: true, using: :btree
     t.index ["project_id"], name: "index_protected_tags_on_project_id", using: :btree
   end
@@ -1843,7 +2168,12 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "path", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_redirect_routes_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_redirect_routes_on_drepo_uuid", using: :btree
     t.index ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
+    t.index ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
     t.index ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
   end
 
@@ -1853,6 +2183,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "name", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_release_links_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_release_links_on_drepo_uuid", using: :btree
     t.index ["release_id", "name"], name: "index_release_links_on_release_id_and_name", unique: true, using: :btree
     t.index ["release_id", "url"], name: "index_release_links_on_release_id_and_url", unique: true, using: :btree
   end
@@ -1868,7 +2202,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "author_id"
     t.string "name"
     t.string "sha"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["author_id"], name: "index_releases_on_author_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_releases_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_releases_on_drepo_uuid", using: :btree
     t.index ["project_id", "tag"], name: "index_releases_on_project_id_and_tag", using: :btree
     t.index ["project_id"], name: "index_releases_on_project_id", using: :btree
   end
@@ -1890,6 +2228,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "error_notification_sent"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_remote_mirrors_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_remote_mirrors_on_drepo_uuid", using: :btree
     t.index ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
     t.index ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
   end
@@ -1924,6 +2266,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "name"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_routes_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_routes_on_drepo_uuid", using: :btree
     t.index ["path"], name: "index_routes_on_path", unique: true, using: :btree
     t.index ["path"], name: "index_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
     t.index ["source_type", "source_id"], name: "index_routes_on_source_type_and_source_id", unique: true, using: :btree
@@ -1931,8 +2277,8 @@ ActiveRecord::Schema.define(version: 20190301182457) do
 
   create_table "sent_notifications", force: :cascade do |t|
     t.integer "project_id"
-    t.integer "noteable_id"
     t.string "noteable_type"
+    t.integer "noteable_id"
     t.integer "recipient_id"
     t.string "commit_id"
     t.string "reply_key", null: false
@@ -1965,6 +2311,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "commit_events", default: true, null: false
     t.boolean "job_events", default: false, null: false
     t.boolean "confidential_note_events", default: true
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_services_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_services_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_services_on_project_id", using: :btree
     t.index ["template"], name: "index_services_on_template", using: :btree
     t.index ["type"], name: "index_services_on_type", using: :btree
@@ -1990,7 +2340,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "cached_markdown_version"
     t.text "description"
     t.text "description_html"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["author_id"], name: "index_snippets_on_author_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_snippets_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_snippets_on_drepo_uuid", using: :btree
     t.index ["file_name"], name: "index_snippets_on_file_name_trigram", using: :gin, opclasses: {"file_name"=>"gin_trgm_ops"}
     t.index ["project_id"], name: "index_snippets_on_project_id", using: :btree
     t.index ["title"], name: "index_snippets_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
@@ -2010,16 +2364,24 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "updated_at", null: false
     t.boolean "submitted_as_ham", default: false, null: false
     t.boolean "recaptcha_verified", default: false, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_spam_logs_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_spam_logs_on_drepo_uuid", using: :btree
   end
 
   create_table "subscriptions", force: :cascade do |t|
     t.integer "user_id"
-    t.integer "subscribable_id"
     t.string "subscribable_type"
+    t.integer "subscribable_id"
     t.boolean "subscribed"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "project_id"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_subscriptions_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_subscriptions_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_subscriptions_on_project_id", using: :btree
     t.index ["subscribable_id", "subscribable_type", "user_id", "project_id"], name: "index_subscriptions_on_subscribable_and_user_id_and_project_id", unique: true, using: :btree
   end
@@ -2032,6 +2394,7 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.text "from_content", null: false
     t.text "to_content", null: false
     t.index ["note_id", "relative_order"], name: "index_suggestions_on_note_id_and_relative_order", unique: true, using: :btree
+    t.index ["note_id"], name: "index_suggestions_on_note_id", using: :btree
   end
 
   create_table "system_note_metadata", force: :cascade do |t|
@@ -2040,6 +2403,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "action"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_system_note_metadata_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_system_note_metadata_on_drepo_uuid", using: :btree
     t.index ["note_id"], name: "index_system_note_metadata_on_note_id", unique: true, using: :btree
   end
 
@@ -2070,6 +2437,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "accepted", default: false, null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_term_agreements_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_term_agreements_on_drepo_uuid", using: :btree
     t.index ["term_id"], name: "index_term_agreements_on_term_id", using: :btree
     t.index ["user_id", "term_id"], name: "term_agreements_unique_index", unique: true, using: :btree
     t.index ["user_id"], name: "index_term_agreements_on_user_id", using: :btree
@@ -2083,6 +2454,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "issue_id"
     t.integer "merge_request_id"
     t.datetime_with_timezone "spent_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_timelogs_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_timelogs_on_drepo_uuid", using: :btree
     t.index ["issue_id"], name: "index_timelogs_on_issue_id", using: :btree
     t.index ["merge_request_id"], name: "index_timelogs_on_merge_request_id", using: :btree
     t.index ["user_id"], name: "index_timelogs_on_user_id", using: :btree
@@ -2091,8 +2466,8 @@ ActiveRecord::Schema.define(version: 20190301182457) do
   create_table "todos", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id"
-    t.integer "target_id"
     t.string "target_type", null: false
+    t.integer "target_id"
     t.integer "author_id", null: false
     t.integer "action", null: false
     t.string "state", null: false
@@ -2101,8 +2476,12 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "note_id"
     t.string "commit_id"
     t.integer "group_id"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["author_id"], name: "index_todos_on_author_id", using: :btree
     t.index ["commit_id"], name: "index_todos_on_commit_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_todos_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_todos_on_drepo_uuid", using: :btree
     t.index ["group_id"], name: "index_todos_on_group_id", using: :btree
     t.index ["note_id"], name: "index_todos_on_note_id", using: :btree
     t.index ["project_id"], name: "index_todos_on_project_id", using: :btree
@@ -2126,6 +2505,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_u2f_registrations_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_u2f_registrations_on_drepo_uuid", using: :btree
     t.index ["key_handle"], name: "index_u2f_registrations_on_key_handle", using: :btree
     t.index ["user_id"], name: "index_u2f_registrations_on_user_id", using: :btree
   end
@@ -2134,13 +2517,13 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.bigint "size", null: false
     t.string "path", limit: 511, null: false
     t.string "checksum", limit: 64
-    t.integer "model_id"
     t.string "model_type"
+    t.integer "model_id"
     t.string "uploader", null: false
     t.datetime "created_at", null: false
+    t.integer "store"
     t.string "mount_point"
     t.string "secret"
-    t.integer "store"
     t.index ["checksum"], name: "index_uploads_on_checksum", using: :btree
     t.index ["model_id", "model_type"], name: "index_uploads_on_model_id_and_model_type", using: :btree
     t.index ["store"], name: "index_uploads_on_store", using: :btree
@@ -2155,6 +2538,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "submitted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_user_agent_details_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_user_agent_details_on_drepo_uuid", using: :btree
     t.index ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
   end
 
@@ -2171,6 +2558,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "user_id", null: false
     t.string "key", null: false
     t.string "value", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_user_custom_attributes_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_user_custom_attributes_on_drepo_uuid", using: :btree
     t.index ["key", "value"], name: "index_user_custom_attributes_on_key_and_value", using: :btree
     t.index ["user_id", "key"], name: "index_user_custom_attributes_on_user_id_and_key", unique: true, using: :btree
   end
@@ -2191,10 +2582,14 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "first_day_of_week"
     t.string "issues_sort"
     t.string "merge_requests_sort"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_user_preferences_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_user_preferences_on_drepo_uuid", using: :btree
     t.index ["user_id"], name: "index_user_preferences_on_user_id", unique: true, using: :btree
   end
 
-  create_table "user_statuses", primary_key: "user_id", force: :cascade do |t|
+  create_table "user_statuses", primary_key: "user_id", id: :integer, force: :cascade do |t|
     t.integer "cached_markdown_version"
     t.string "emoji", default: "speech_balloon", null: false
     t.string "message", limit: 100
@@ -2275,15 +2670,19 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "notified_of_own_activity"
     t.string "preferred_language"
     t.integer "theme_id", limit: 2
-    t.integer "accepted_term_id"
-    t.string "feed_token"
-    t.boolean "private_profile"
     t.boolean "include_private_contributions"
+    t.string "feed_token"
+    t.integer "accepted_term_id"
+    t.boolean "private_profile"
     t.string "commit_email"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["accepted_term_id"], name: "index_users_on_accepted_term_id", using: :btree
     t.index ["admin"], name: "index_users_on_admin", using: :btree
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
     t.index ["created_at"], name: "index_users_on_created_at", using: :btree
+    t.index ["drepo_updated_at"], name: "index_users_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_users_on_drepo_uuid", using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["email"], name: "index_users_on_email_trigram", using: :gin, opclasses: {"email"=>"gin_trgm_ops"}
     t.index ["feed_token"], name: "index_users_on_feed_token", using: :btree
@@ -2302,6 +2701,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_users_star_projects_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_users_star_projects_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_users_star_projects_on_project_id", using: :btree
     t.index ["user_id", "project_id"], name: "index_users_star_projects_on_user_id_and_project_id", unique: true, using: :btree
   end
@@ -2319,7 +2722,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "internal_error_message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["created_at", "web_hook_id"], name: "index_web_hook_logs_on_created_at_and_web_hook_id", using: :btree
+    t.index ["drepo_updated_at"], name: "index_web_hook_logs_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_web_hook_logs_on_drepo_uuid", using: :btree
     t.index ["web_hook_id"], name: "index_web_hook_logs_on_web_hook_id", using: :btree
   end
 
@@ -2346,6 +2753,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "encrypted_token_iv"
     t.string "encrypted_url"
     t.string "encrypted_url_iv"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
+    t.index ["drepo_updated_at"], name: "index_web_hooks_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_web_hooks_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
     t.index ["type"], name: "index_web_hooks_on_type", using: :btree
   end
@@ -2405,11 +2816,11 @@ ActiveRecord::Schema.define(version: 20190301182457) do
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_cert_managers", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
-  add_foreign_key "clusters_applications_ingress", "clusters", name: "fk_753a7b41c1", on_delete: :cascade
+  add_foreign_key "clusters_applications_ingress", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_jupyter", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_jupyter", "oauth_applications", on_delete: :nullify
   add_foreign_key "clusters_applications_knative", "clusters", on_delete: :cascade
-  add_foreign_key "clusters_applications_prometheus", "clusters", name: "fk_557e773639", on_delete: :cascade
+  add_foreign_key "clusters_applications_prometheus", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_runners", "ci_runners", column: "runner_id", name: "fk_02de2ded36", on_delete: :nullify
   add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade
   add_foreign_key "clusters_kubernetes_namespaces", "cluster_projects", on_delete: :nullify
@@ -2526,7 +2937,7 @@ ActiveRecord::Schema.define(version: 20190301182457) do
   add_foreign_key "term_agreements", "users", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
-  add_foreign_key "todos", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "todos", "namespaces", column: "group_id", name: "fk_a27c483435", on_delete: :cascade
   add_foreign_key "todos", "notes", name: "fk_91d1f47b13", on_delete: :cascade
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "todos", "users", column: "author_id", name: "fk_ccf0373936", on_delete: :cascade
@@ -2535,8 +2946,8 @@ ActiveRecord::Schema.define(version: 20190301182457) do
   add_foreign_key "u2f_registrations", "users"
   add_foreign_key "user_callouts", "users", on_delete: :cascade
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
-  add_foreign_key "user_interacted_projects", "projects", name: "fk_722ceba4f7", on_delete: :cascade
-  add_foreign_key "user_interacted_projects", "users", name: "fk_0894651f08", on_delete: :cascade
+  add_foreign_key "user_interacted_projects", "projects", on_delete: :cascade
+  add_foreign_key "user_interacted_projects", "users", on_delete: :cascade
   add_foreign_key "user_preferences", "users", on_delete: :cascade
   add_foreign_key "user_statuses", "users", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
