@@ -515,6 +515,7 @@ rspec-pg:
 ## Drepo-specific drepo not support mysql END
 
 .rspec-quarantine: &rspec-quarantine
+  retry: 0
   script:
     - export CACHE_CLASSES=true
     - scripts/gitaly-test-spawn

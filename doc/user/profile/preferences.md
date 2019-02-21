@@ -57,7 +57,10 @@ and default views of your dashboard and the projects' landing pages.
 ### Layout width
 
 GitLab can be set up to use different widths depending on your liking. Choose
-between the fixed (max. 1200px) and the fluid (100%) application layout.
+between the fixed (max. `1280px`) and the fluid (`100%`) application layout.
+
+NOTE: **Note:**
+While `1280px` is the standard max width when using fixed layout, some pages still use 100% width, depending on the content.
 
 ### Default dashboard
 
@@ -89,6 +92,12 @@ You can choose between 3 options:
 - Activity
 
 ## Localization
+
+### Language
+
+Select your preferred language from a list of supported languages.
+
+*This feature is experimental and translations are not complete yet.*
 
 ### First day of the week
 

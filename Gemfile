@@ -143,7 +143,7 @@ gem 'diffy', '~> 3.1.0'
 gem 'rack', '2.0.6'
 
 group :unicorn do
-  gem 'unicorn', '~> 5.1.0'
+  gem 'unicorn', '~> 5.4.1'
   gem 'unicorn-worker-killer', '~> 0.4.4'
 end
 
@@ -380,7 +380,7 @@ group :test do
   gem 'shoulda-matchers', '~> 3.1.2', require: false
   gem 'email_spec', '~> 2.2.0'
   gem 'json-schema', '~> 2.8.0'
-  gem 'webmock', '~> 2.3.2'
+  gem 'webmock', '~> 3.5.1'
   gem 'rails-controller-testing'
   gem 'sham_rack', '~> 1.3.6'
   gem 'concurrent-ruby', '~> 1.1'
@@ -410,7 +410,7 @@ gem 'sys-filesystem', '~> 1.1.6'
 
 # SSH host key support
 gem 'net-ssh', '~> 5.0'
-gem 'sshkey', '~> 1.9.0'
+gem 'sshkey', '~> 2.0'
 
 # Required for ED25519 SSH host key support
 group :ed25519 do

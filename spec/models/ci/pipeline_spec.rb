@@ -22,6 +22,7 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to have_many(:builds) }
   it { is_expected.to have_many(:auto_canceled_pipelines) }
   it { is_expected.to have_many(:auto_canceled_jobs) }
+  it { is_expected.to have_one(:chat_data) }
 
   it { is_expected.to validate_presence_of(:sha) }
   it { is_expected.to validate_presence_of(:status) }
@@ -1172,8 +1173,26 @@ describe Ci::Pipeline, :mailer do
         pipeline.update_column(:before_sha, Gitlab::Git::BLANK_SHA)
       end
 
-      it 'raises an error' do
-        expect { pipeline.modified_paths }.to raise_error(ArgumentError)
+      it 'returns nil' do
+        expect(pipeline.modified_paths).to be_nil
+      end
+    end
+
+    context 'when source is merge request' do
+      let(:pipeline) do
+        create(:ci_pipeline, source: :merge_request, merge_request: merge_request)
+      end
+
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: project,
+               source_branch: 'feature',
+               target_project: project,
+               target_branch: 'master')
+      end
+
+      it 'returns merge request modified paths' do
+        expect(pipeline.modified_paths).to match(merge_request.modified_paths)
       end
     end
   end
