@@ -16,19 +16,19 @@
           .fade-left= icon('angle-left')
           .fade-right= icon('angle-right')
           %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.js-tabs-affix
-            %li.commits-tab.new-tab
-              = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
+            %li.new-tab
+              = link_to url_for(safe_params), data: {target: 'div#issues', action: 'new', toggle: 'tabvue'} do
                 Issues
                 %span.badge.badge-pill= @total_commit_count
-            %li.diffs-tab
-              = link_to url_for(safe_params), data: {target: 'div#commits', action: 'diffs', toggle: 'tabvue'} do
+            %li.commits-tab
+              = link_to url_for(safe_params), data: {target: 'div#commits', action: 'commits', toggle: 'tabvue'} do
                 Changes
                 %span.badge.badge-pill 5
 
     #diff-notes-app.tab-content
-      #new.commits.tab-pane.active
+      #new.tab-pane.active
         "hello"
-      #diffs.diffs.tab-pane
+      #commits.tab-pane
         "world"
 
   .mr-loading-status
