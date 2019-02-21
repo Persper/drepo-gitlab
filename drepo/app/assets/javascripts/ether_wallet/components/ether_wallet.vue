@@ -357,7 +357,6 @@ export default {
   max-width: 100%;
   overflow-x: hidden;
   text-align: left;
-  padding-left: 20px;
   margin-top: 30px;
 }
 
