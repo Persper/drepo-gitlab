@@ -3295,7 +3295,7 @@ msgstr ""
 msgid "Failed to load emoji list."
 msgstr ""
 
-msgid "Failed to load errors from Sentry"
+msgid "Failed to load errors from Sentry. Error message: %{errorMessage}"
 msgstr ""
 
 msgid "Failed to remove issue from board, please try again."
@@ -4115,7 +4115,7 @@ msgstr ""
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
-msgid "Issues, merge requests, pushes and comments."
+msgid "Issues, merge requests, pushes, and comments."
 msgstr ""
 
 msgid "It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected."
