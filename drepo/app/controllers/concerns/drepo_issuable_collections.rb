@@ -4,8 +4,6 @@ module DrepoIssuableCollections
 
   private
 
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
-
   def default_state
     'all'
   end
