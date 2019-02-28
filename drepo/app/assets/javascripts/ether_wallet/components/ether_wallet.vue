@@ -1,5 +1,8 @@
 <template>
   <div id="js-ether-wallet-access" class="row ether-wallet-container">
+    <div class="col-lg-12">
+      <label>Select a way to access your wallet:</label>
+    </div>
     <div class="col-lg-3">
       <label for="metamask" class="ratio">
         <input id="metamask" v-model="unlockOption" type="radio" value="metamask" />

@@ -1,6 +1,10 @@
 - breadcrumb_title "New Drepo Sync"
 - page_title "New Drepo Sync"
 
+%h3.page-title
+  New Drepo Sync
+%hr
+
 #ether_wallet{ data: { projectPath: project_path(@project) } }
 
 .mr-compare.merge-request.js-merge-request-new-submit{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
@@ -17,19 +21,20 @@
           .fade-right= icon('angle-right')
           %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.js-tabs-affix
             %li.new-tab
-              = link_to url_for(safe_params), data: {target: 'div#issues', action: 'new', toggle: 'tabvue'} do
-                Issues
+              = link_to url_for(safe_params), data: {target: 'div#new', action: 'new', toggle: 'tabvue'} do
+                Commits
                 %span.badge.badge-pill= @total_commit_count
-            %li.commits-tab
-              = link_to url_for(safe_params), data: {target: 'div#commits', action: 'commits', toggle: 'tabvue'} do
-                Changes
-                %span.badge.badge-pill 5
+            %li.issues-tab
+              = link_to url_for(safe_params), data: {target: 'div#issues', action: 'issues', toggle: 'tabvue'} do
+                Issues
+                %span.badge.badge-pill
+                  = @issues.total_count
 
     #diff-notes-app.tab-content
       #new.tab-pane.active
-        "hello"
-      #commits.tab-pane
         "world"
+      #issues.tab-pane
+        = render 'projects/drepo_syncs/issues/issues'
 
   .mr-loading-status
     = spinner

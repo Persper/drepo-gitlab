@@ -280,11 +280,19 @@ export default class DrepoPreviewTabs {
     this.currentAction = action;
 
     // Remove a trailing '/commits' '/diffs' '/pipelines'
-    let newState = location.pathname.replace(/\/(commits|diffs|pipelines)(\.html)?\/?$/, '');
+    let newState = location.pathname.replace(/\/(issues|commits|diffs|pipelines)(\.html)?\/?$/, '');
 
     // Append the new action if we're on a tab other than 'notes'
     if (this.currentAction !== 'show' && this.currentAction !== 'new') {
       newState += `/${this.currentAction}`;
+
+      // if (this.currentAction === 'issues') {
+      //   if (location.search === '') {
+      //     location.search = '?tab=issues';
+      //   } else if (!/tab=issues/.test(location.search)) {
+      //     location.search += '&tab=issues';
+      //   }
+      // }
     }
 
     // Ensure parameters and hash come along for the ride
