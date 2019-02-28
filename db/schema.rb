@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20190220150130) do
     t.text "message_background_color"
     t.text "message_font_color"
     t.string "favicon"
+    t.boolean "email_header_and_footer_enabled", default: false, null: false
   end
 
   create_table "application_setting_terms", force: :cascade do |t|
@@ -1575,6 +1576,7 @@ ActiveRecord::Schema.define(version: 20190220150130) do
   create_table "project_ci_cd_settings", force: :cascade do |t|
     t.integer "project_id", null: false
     t.boolean "group_runners_enabled", default: true, null: false
+    t.boolean "merge_pipelines_enabled"
     t.index ["project_id"], name: "index_project_ci_cd_settings_on_project_id", unique: true, using: :btree
   end
 
