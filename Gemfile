@@ -184,7 +184,7 @@ gem 're2', '~> 1.1.1'
 
 # Misc
 
-gem 'version_sorter', '~> 2.1.0'
+gem 'version_sorter', '~> 2.2.4'
 
 # Export Ruby Regex to Javascript
 gem 'js_regex', '~> 3.1'
@@ -419,7 +419,8 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.10.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.12.0', require: 'gitaly'
+
 gem 'grpc', '~> 1.15.0'
 
 gem 'google-protobuf', '~> 3.6'

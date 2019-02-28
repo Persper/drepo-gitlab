@@ -86,15 +86,20 @@ To add an existing Kubernetes cluster to your project:
 1. Click **Add Kubernetes cluster**.
 1. Click **Add an existing Kubernetes cluster** and fill in the details:
     - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
-    - **Environment scope** (required)- The
+    - **Environment scope** (required) - The
       [associated environment](#setting-the-environment-scope) to this cluster.
     - **API URL** (required) -
       It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
       exposes several APIs, we want the "base" URL that is common to all of them,
       e.g., `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
-    - **CA certificate** (optional) -
-      If the API is using a self-signed TLS certificate, you'll also need to include
-      the `ca.crt` contents here.
+    - **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the EKS cluster. We will use the certificate created by default.
+      -  List the secrets with `kubectl get secrets`, and one should named similar to
+       `default-token-xxxxx`. Copy that token name for use below.
+      -  Get the certificate by running this command:
+
+        ```sh
+        kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
+        ```
     - **Token** -
       GitLab authenticates against Kubernetes using service tokens, which are
       scoped to a particular `namespace`.
@@ -102,36 +107,81 @@ To add an existing Kubernetes cluster to your project:
       [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
       privileges.** To create this service account:
 
-      1. Create a `gitlab` service account in the `default` namespace:
+      1. Create a file called `gitlab-admin-service-account.yaml` with contents:
 
-          ```bash
-          kubectl create -f - <<EOF
-            apiVersion: v1
-            kind: ServiceAccount
-            metadata:
-              name: gitlab
-              namespace: default
-          EOF
-          ```
-      1. Create a cluster role binding to give the `gitlab` service account
-         `cluster-admin` privileges:
-
-          ```bash
-          kubectl create -f - <<EOF
-          kind: ClusterRoleBinding
-          apiVersion: rbac.authorization.k8s.io/v1
+          ```yaml
+          apiVersion: v1
+          kind: ServiceAccount
           metadata:
-            name: gitlab-cluster-admin
-          subjects:
-          - kind: ServiceAccount
-            name: gitlab
-            namespace: default
+            name: gitlab-admin
+            namespace: kube-system
+          ```
+
+      2. Apply the service account to your cluster:
+
+          ```bash
+          kubectl apply -f gitlab-admin-service-account.yaml
+          ```
+
+          Output:
+
+            ```bash
+            serviceaccount "gitlab-admin" created
+            ```
+
+      3. Create a file called `gitlab-admin-cluster-role-binding.yaml` with contents:
+
+          ```yaml
+          apiVersion: rbac.authorization.k8s.io/v1beta1
+          kind: ClusterRoleBinding
+          metadata:
+            name: gitlab-admin
           roleRef:
+            apiGroup: rbac.authorization.k8s.io
             kind: ClusterRole
             name: cluster-admin
-            apiGroup: rbac.authorization.k8s.io
-          EOF
+          subjects:
+          - kind: ServiceAccount
+            name: gitlab-admin
+            namespace: kube-system
           ```
+
+      4. Apply the cluster role binding to your cluster:
+
+          ```bash
+          kubectl apply -f gitlab-admin-cluster-role-binding.yaml
+          ```
+
+          Output:
+
+          ```bash
+          clusterrolebinding "gitlab-admin" created
+          ```
+
+      5. Retrieve the token for the `gitlab-admin` service account:
+
+          ```bash
+          kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab-admin | awk '{print $1}')
+          ```
+
+      Copy the `<authentication_token>` value from the output:
+
+      ```yaml
+      Name:         gitlab-admin-token-b5zv4
+      Namespace:    kube-system
+      Labels:       <none>
+      Annotations:  kubernetes.io/service-account.name=gitlab-admin
+                    kubernetes.io/service-account.uid=bcfe66ac-39be-11e8-97e8-026dce96b6e8
+
+      Type:  kubernetes.io/service-account-token
+
+      Data
+      ====
+      ca.crt:     1025 bytes
+      namespace:  11 bytes
+      token:      <authentication_token>
+      ```
+      
       NOTE: **Note:**
       For GKE clusters, you will need the
       `container.clusterRoleBindings.create` permission to create a cluster
@@ -306,6 +356,28 @@ If you have an existing Kubernetes cluster with Tiller already installed,
 you should be careful as GitLab cannot detect it. In this case, installing
 Tiller via the applications will result in the cluster having it twice, which
 can lead to confusion during deployments.
+
+### Upgrading applications
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24789)
+in GitLab 11.8.
+
+Users can perform a one-click upgrade for the GitLab Runner application,
+when there is an upgrade available.
+
+To upgrade the GitLab Runner application:
+
+1. Navigate to your project's **Operations > Kubernetes**.
+1. Select your cluster.
+1. Click the **Upgrade** button for the Runnner application.
+
+The **Upgrade** button will not be shown if there is no upgrade
+available.
+
+NOTE: **Note:**
+Upgrades will reset values back to the values built into the `runner`
+chart plus the values set by
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/vendor/runner/values.yaml)
 
 ## Getting the external IP address
 

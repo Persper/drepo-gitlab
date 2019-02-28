@@ -285,6 +285,21 @@ msgstr ""
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr ""
 
+msgid "A .NET Core console application template, customizable for any .NET Core project"
+msgstr ""
+
+msgid "A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
+msgid "A Hexo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
+msgid "A Hugo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
+msgid "A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr ""
 
@@ -298,6 +313,9 @@ msgid "A member of GitLab's abuse team will review your report as soon as possib
 msgstr ""
 
 msgid "A new branch will be created in your fork and a new merge request will be started."
+msgstr ""
+
+msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
 msgstr ""
 
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
@@ -594,10 +612,10 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
-msgid "An error occured while fetching the releases. Please try again."
+msgid "An error occurred creating the new branch."
 msgstr ""
 
-msgid "An error occurred creating the new branch."
+msgid "An error occurred fetching the dropdown data."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -634,6 +652,9 @@ msgid "An error occurred while fetching the jobs."
 msgstr ""
 
 msgid "An error occurred while fetching the pipeline."
+msgstr ""
+
+msgid "An error occurred while fetching the releases. Please try again."
 msgstr ""
 
 msgid "An error occurred while getting projects"
@@ -949,6 +970,9 @@ msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
 msgid "Average per day: %{average}"
+msgstr ""
+
+msgid "Background Color"
 msgstr ""
 
 msgid "Background Jobs"
@@ -1542,9 +1566,6 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
-msgid "Closed (moved)"
-msgstr ""
-
 msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
 msgstr ""
 
@@ -1587,10 +1608,10 @@ msgstr ""
 msgid "ClusterIntegration|Alternatively"
 msgstr ""
 
-msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
+msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
 msgstr ""
 
-msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
+msgid "ClusterIntegration|An error occurred while trying to fetch project zones: %{error}"
 msgstr ""
 
 msgid "ClusterIntegration|An error occurred while trying to fetch your projects: %{error}"
@@ -2453,6 +2474,9 @@ msgstr ""
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
 msgstr ""
 
+msgid "Customize colors"
+msgstr ""
+
 msgid "Customize how FogBugz email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
@@ -3295,7 +3319,7 @@ msgstr ""
 msgid "Failed to load emoji list."
 msgstr ""
 
-msgid "Failed to load errors from Sentry"
+msgid "Failed to load errors from Sentry. Error message: %{errorMessage}"
 msgstr ""
 
 msgid "Failed to remove issue from board, please try again."
@@ -3433,6 +3457,12 @@ msgid "FogBugz import"
 msgstr ""
 
 msgid "Follow the steps below to export your Google Code project data."
+msgstr ""
+
+msgid "Font Color"
+msgstr ""
+
+msgid "Footer message"
 msgstr ""
 
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
@@ -3583,6 +3613,9 @@ msgid "Given access %{time_ago}"
 msgstr ""
 
 msgid "Go Back"
+msgstr ""
+
+msgid "Go Micro is a framework for micro service development."
 msgstr ""
 
 msgid "Go back"
@@ -3760,6 +3793,9 @@ msgid "GroupsTree|No groups or projects matched your search"
 msgstr ""
 
 msgid "GroupsTree|Search by name"
+msgstr ""
+
+msgid "Header message"
 msgstr ""
 
 msgid "Health Check"
@@ -4097,6 +4133,9 @@ msgstr ""
 msgid "Invoke Time"
 msgstr ""
 
+msgid "IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})"
+msgstr ""
+
 msgid "Issue"
 msgstr ""
 
@@ -4115,7 +4154,7 @@ msgstr ""
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
-msgid "Issues, merge requests, pushes and comments."
+msgid "Issues, merge requests, pushes, and comments."
 msgstr ""
 
 msgid "It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected."
@@ -4847,9 +4886,6 @@ msgstr ""
 msgid "New Snippet"
 msgstr ""
 
-msgid "New Snippets"
-msgstr ""
-
 msgid "New branch"
 msgstr ""
 
@@ -4908,6 +4944,9 @@ msgid "No"
 msgstr ""
 
 msgid "No %{providerTitle} repositories available to import"
+msgstr ""
+
+msgid "No Tag"
 msgstr ""
 
 msgid "No activities found"
@@ -5195,6 +5234,9 @@ msgid "Operations"
 msgstr ""
 
 msgid "Operations Dashboard"
+msgstr ""
+
+msgid "Operations Settings"
 msgstr ""
 
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
@@ -6710,7 +6752,13 @@ msgstr ""
 msgid "Sherlock Transactions"
 msgstr ""
 
+msgid "Show all activity"
+msgstr ""
+
 msgid "Show command"
+msgstr ""
+
+msgid "Show comments only"
 msgstr ""
 
 msgid "Show complete raw log"
@@ -6770,6 +6818,24 @@ msgid "Snippet Contents"
 msgstr ""
 
 msgid "Snippets"
+msgstr ""
+
+msgid "SnippetsEmptyState|Explore public snippets"
+msgstr ""
+
+msgid "SnippetsEmptyState|New snippet"
+msgstr ""
+
+msgid "SnippetsEmptyState|No snippets found"
+msgstr ""
+
+msgid "SnippetsEmptyState|Snippets are small pieces of code or notes that you want to keep."
+msgstr ""
+
+msgid "SnippetsEmptyState|There are no snippets to show."
+msgstr ""
+
+msgid "SnippetsEmptyState|They can be either public or private."
 msgstr ""
 
 msgid "Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again."
@@ -7048,6 +7114,9 @@ msgstr ""
 msgid "Starts at (UTC)"
 msgstr ""
 
+msgid "State your message to activate"
+msgstr ""
+
 msgid "Status"
 msgstr ""
 
@@ -7127,6 +7196,9 @@ msgid "System Info"
 msgstr ""
 
 msgid "System default (%{default})"
+msgstr ""
+
+msgid "System header and footer"
 msgstr ""
 
 msgid "System metrics (Custom)"
@@ -8595,6 +8667,9 @@ msgid "You won't be able to pull or push project code via SSH until you add an S
 msgstr ""
 
 msgid "You'll need to use different branch names to get a valid comparison."
+msgstr ""
+
+msgid "You're only seeing %{startTag}other activity%{endTag} in the feed. To add a comment, switch to one of the following options."
 msgstr ""
 
 msgid "You're receiving this email because %{reason}."

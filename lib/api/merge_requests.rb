@@ -369,11 +369,11 @@ module API
 
         merge_request.update(squash: params[:squash]) if params[:squash]
 
-        merge_params = {
+        merge_params = HashWithIndifferentAccess.new(
           commit_message: params[:merge_commit_message],
           squash_commit_message: params[:squash_commit_message],
           should_remove_source_branch: params[:should_remove_source_branch]
-        }
+        )
 
         if merge_when_pipeline_succeeds && merge_request.head_pipeline && merge_request.head_pipeline.active?
           ::MergeRequests::MergeWhenPipelineSucceedsService
@@ -386,6 +386,31 @@ module API
         end
 
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+      end
+
+      desc 'Merge a merge request to its default temporary merge ref path'
+      params do
+        optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
+      end
+      put ':id/merge_requests/:merge_request_iid/merge_to_ref' do
+        merge_request = find_project_merge_request(params[:merge_request_iid])
+
+        authorize! :admin_merge_request, user_project
+
+        merge_params = {
+          commit_message: params[:merge_commit_message]
+        }
+
+        result = ::MergeRequests::MergeToRefService
+          .new(merge_request.target_project, current_user, merge_params)
+          .execute(merge_request)
+
+        if result[:status] == :success
+          present result.slice(:commit_id), 200
+        else
+          http_status = result[:http_status] || 400
+          render_api_error!(result[:message], http_status)
+        end
       end
 
       desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do

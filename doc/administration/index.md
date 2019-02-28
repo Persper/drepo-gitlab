@@ -51,8 +51,9 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
 - [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
 - [Diff limits](../user/admin_area/diff_limits.md): Configure the diff rendering size limits of branch comparison pages.
-- [Merge request diffs](merge_request_diffs.md): Configure the diffs shown on merge requests
+- [Merge request diffs storage](merge_request_diffs.md): Configure merge requests diffs external storage.
 - [Broadcast Messages](../user/admin_area/broadcast_messages.md): Send messages to GitLab users through the UI.
+- [Admin Area](../user/admin_area/index.md): for self-managed instance-wide configuration and maintenance.
 
 #### Customizing GitLab's appearance
 

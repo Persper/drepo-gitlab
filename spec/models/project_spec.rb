@@ -50,6 +50,7 @@ describe Project do
     it { is_expected.to have_one(:teamcity_service) }
     it { is_expected.to have_one(:jira_service) }
     it { is_expected.to have_one(:redmine_service) }
+    it { is_expected.to have_one(:youtrack_service) }
     it { is_expected.to have_one(:custom_issue_tracker_service) }
     it { is_expected.to have_one(:bugzilla_service) }
     it { is_expected.to have_one(:gitlab_issue_tracker_service) }
@@ -428,6 +429,30 @@ describe Project do
     end
   end
 
+  describe '#ci_pipelines' do
+    let(:project) { create(:project) }
+
+    before do
+      create(:ci_pipeline, project: project, ref: 'master', source: :web)
+      create(:ci_pipeline, project: project, ref: 'master', source: :external)
+    end
+
+    it 'has ci pipelines' do
+      expect(project.ci_pipelines.size).to eq(2)
+    end
+
+    context 'when builds are disabled' do
+      before do
+        project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+      end
+
+      it 'should return .external pipelines' do
+        expect(project.ci_pipelines).to all(have_attributes(source: 'external'))
+        expect(project.ci_pipelines.size).to eq(1)
+      end
+    end
+  end
+
   describe 'project token' do
     it 'sets an random token if none provided' do
       project = FactoryBot.create(:project, runners_token: '')
@@ -458,6 +483,7 @@ describe Project do
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:group_clusters_enabled?).to(:group).with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:root_ancestor).to(:namespace).with_arguments(allow_nil: true) }
+    it { is_expected.to delegate_method(:last_pipeline).to(:commit).with_arguments(allow_nil: true) }
   end
 
   describe '#to_reference_with_postfix' do
@@ -2335,6 +2361,18 @@ describe Project do
     end
   end
 
+  describe '#daily_statistics_enabled?' do
+    it { is_expected.to be_daily_statistics_enabled }
+
+    context 'when :project_daily_statistics is disabled for the project' do
+      before do
+        stub_feature_flags(project_daily_statistics: { thing: subject, enabled: false })
+      end
+
+      it { is_expected.not_to be_daily_statistics_enabled }
+    end
+  end
+
   describe '#change_head' do
     let(:project) { create(:project, :repository) }
 
@@ -2483,6 +2521,16 @@ describe Project do
       allow(project).to receive(:git_transfer_in_progress?) { true }
 
       expect(project.set_repository_read_only!).to be_falsey
+    end
+  end
+
+  describe '#set_repository_writable!' do
+    it 'sets repository_read_only to false' do
+      project = create(:project, :read_only)
+
+      expect { project.set_repository_writable! }
+        .to change(project, :repository_read_only)
+        .from(true).to(false)
     end
   end
 

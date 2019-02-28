@@ -53,6 +53,8 @@ future GitLab releases.**
 | Variable                                  | GitLab | Runner | Description |
 |-------------------------------------------|--------|--------|-------------|
 | **ARTIFACT_DOWNLOAD_ATTEMPTS**            | 8.15   | 1.9    | Number of attempts to download artifacts running a job |
+| **CHAT_INPUT**                            | 10.6   | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command |
+| **CHAT_CHANNEL**                          | 10.6   | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command |
 | **CI**                                    | all    | 0.4    | Mark that job is executed in CI environment |
 | **CI_COMMIT_BEFORE_SHA**                  | 11.2   | all    | The previous latest commit present on a branch before a push request. |
 | **CI_COMMIT_DESCRIPTION**                 | 10.8   | all    | The description of the commit: the message without first line, if the title is shorter than 100 characters; full message in other case. |
@@ -84,10 +86,12 @@ future GitLab releases.**
 | **CI_MERGE_REQUEST_PROJECT_URL**          | 11.6   | all    | The URL of the project of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) (e.g. `http://192.168.10.15:3000/namespace/awesome-project`) |
 | **CI_MERGE_REQUEST_REF_PATH**             | 11.6   | all    | The ref path of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md). (e.g. `refs/merge-requests/1/head`) |
 | **CI_MERGE_REQUEST_SOURCE_BRANCH_NAME**   | 11.6   | all    | The source branch name of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_SOURCE_BRANCH_SHA**    | 11.9   | all    | The HEAD sha of the source branch of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
 | **CI_MERGE_REQUEST_SOURCE_PROJECT_ID**    | 11.6   | all    | The ID of the source project of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
 | **CI_MERGE_REQUEST_SOURCE_PROJECT_PATH**  | 11.6   | all    | The path of the source project of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
 | **CI_MERGE_REQUEST_SOURCE_PROJECT_URL**   | 11.6   | all    | The URL of the source project of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
 | **CI_MERGE_REQUEST_TARGET_BRANCH_NAME**   | 11.6   | all    | The target branch name of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_TARGET_BRANCH_SHA**    | 11.9   | all    | The HEAD sha of the target branch of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
 | **CI_NODE_INDEX**                         | 11.5   | all    | Index of the job in the job set. If the job is not parallelized, this variable is not set. |
 | **CI_NODE_TOTAL**                         | 11.5   | all    | Total number of instances of this job running in parallel. If the job is not parallelized, this variable is set to `1`. |
 | **CI_API_V4_URL**                         | 11.7   | all    | The GitLab API v4 root URL |
