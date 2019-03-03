@@ -1,9 +1,7 @@
 <template>
   <div id="js-ether-wallet-access" class="row ether-wallet-container">
-    <div class="col-lg-12">
-      <label>Select a way to access your wallet:</label>
-    </div>
     <div class="col-lg-3">
+      <label>Select a way to access your wallet:</label>
       <label for="metamask" class="ratio">
         <input id="metamask" v-model="unlockOption" type="radio" value="metamask" />
         <span class="label-text">MetaMask</span>
@@ -45,7 +43,7 @@
         <h4 class="col-lg-12">Paste Your Mnemonic Phrase</h4>
         <textarea
           v-model="mnemonicPhraseInput"
-          class="col-lg-12"
+          class="col-lg-12 ether-input"
           placeholder="Mnemonic Phrase"
         ></textarea>
         <label class="col-lg-12"
@@ -53,7 +51,7 @@
         </label>
         <input
           v-model="addressIndexInput"
-          class="col-lg-12"
+          class="col-lg-12 ether-input"
           type="text"
           placeholder="Address Index"
         />
@@ -67,7 +65,7 @@
       </div>
       <div v-else-if="unlockOption === 'private_key'">
         <h4 class="col-lg-12">Paste Your Private Key</h4>
-        <textarea v-model="privateKeyInput" class="col-lg-12" placeholder="Private Key"></textarea>
+        <textarea v-model="privateKeyInput" class="col-lg-12 ether-input" placeholder="Private Key"></textarea>
         <input
           type="button"
           class="btn btn-success btn-ether col-lg-4"
@@ -374,6 +372,11 @@ export default {
 .btn-ether {
   text-align: center;
   margin-top: 20px;
+  margin-left: 15px;
+}
+
+.ether-input {
+  margin-left: 15px;
 }
 
 .ratio {
