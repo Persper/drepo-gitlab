@@ -20,6 +20,10 @@
     <div class="ether-form col-lg-5">
       <div v-if="unlockOption === 'metamask'">
         <h4 class="col-lg-12">MetaMask</h4>
+        <p class="col-lg-12">
+          MetaMask is a browser extension that allows you to access your wallet quickly, safely &
+          easily.
+        </p>
         <p v-if="isMetaMaskSupportedBrowser && !isMetaMaskTurnedOn" class="col-lg-12">
           Your brower supports MetaMask, you can install the extension or turn it on if you've
           installed.
