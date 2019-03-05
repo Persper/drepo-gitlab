@@ -83,7 +83,7 @@
         />
       </div>
     </div>
-    <div class="col-lg-4">
+    <div class="col-lg-4 account-info">
       <div id="account-info">
         <AccountInfo
           v-if="isUnlocked"
@@ -393,5 +393,9 @@ export default {
   font-weight: 500;
   padding: 0 1.5rem;
   margin: 0.5rem 0;
+}
+
+.account-info {
+  padding: 1.5rem 3rem;
 }
 </style>
