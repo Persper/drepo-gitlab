@@ -4,6 +4,7 @@ class Projects::DrepoSyncsController < Projects::IssuesController
   include ExtractsPath
   include RendersCommits
 
+  prepend_before_action(only: [:new]) { params[:ref] ||= 'master' }
   before_action :authenticate_user!
   before_action :set_issuables_index
   before_action :assign_ref_vars, except: :commits_root
