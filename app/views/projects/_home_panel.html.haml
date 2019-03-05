@@ -46,7 +46,7 @@
       .count-buttons.d-inline-flex
         = render 'projects/buttons/star'
         = render 'projects/buttons/fork'
-        - if @project.public? && @project.owner.present? && @project.owner == current_user
+        - if @project.public? && can?(current_user, :owner_access, @project)
           = render_if_exists 'projects/buttons/drepo'
 
       - if can?(current_user, :download_code, @project)

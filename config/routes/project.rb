@@ -462,6 +462,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       scope path: 'drepo_syncs', controller: 'drepo_syncs' do
         scope path: 'new', as: :new_drepo_sync do
           get '', action: :new
+
+          scope constraints: { format: nil }, action: :new do
+            get :issues, defaults: { tab: 'issues' }, as: :issues_tab
+          end
         end
       end
       # Drepo-specific
