@@ -20,7 +20,7 @@ class Projects::DrepoSyncsController < Projects::IssuesController
 
       format.json do
         pager_json(
-          'projects/commits/_commits',
+          'projects/drepo_syncs/commits/_commits',
           @commits.size,
           project: @project,
           ref: @ref)
@@ -36,7 +36,7 @@ class Projects::DrepoSyncsController < Projects::IssuesController
 
   def set_commits
     render_404 unless @path.empty? || request.format == :atom || @repository.blob_at(@commit.id, @path) || @repository.tree(@commit.id, @path).entries.present?
-    @limit, @offset = (params[:limit] || 20).to_i, (params[:offset] || 0).to_i
+    @limit, @offset = (params[:limit] || 40).to_i, (params[:offset] || 0).to_i
     search = params[:commits_search]
 
     @commits =
