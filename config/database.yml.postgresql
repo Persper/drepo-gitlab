@@ -9,6 +9,7 @@ production:
   username: git
   password: "secure password"
   host: localhost
+  schema_search_path: public,shared_extensions
 
 #
 # Development specific
@@ -21,6 +22,7 @@ development:
   username: postgres
   password: "secure password"
   host: localhost
+  schema_search_path: public,shared_extensions
 
 #
 # Staging specific
@@ -33,6 +35,7 @@ staging:
   username: git
   password: "secure password"
   host: localhost
+  schema_search_path: public,shared_extensions
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -46,3 +49,4 @@ test: &test
   password:
   host: localhost
   prepared_statements: false
+  schema_search_path: public,shared_extensions
