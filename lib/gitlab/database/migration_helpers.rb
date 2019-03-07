@@ -3,6 +3,8 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      prepend Drepo::Database::MigrationHelpers
+
       BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
       BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
 
