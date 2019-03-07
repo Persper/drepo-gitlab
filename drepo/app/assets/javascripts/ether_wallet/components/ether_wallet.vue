@@ -1,8 +1,9 @@
 <template>
   <div id="js-ether-wallet-access" class="merge-request-form common-note-form">
-    <div class="ether-container row">
+    <div class="row">
       <div class="col-lg-3">
         <label>Select a way to access your wallet:</label>
+        <br />
         <label for="metamask" class="ratio">
           <input id="metamask" v-model="unlockOption" type="radio" value="metamask" />
           <span class="label-text">MetaMask</span>
@@ -361,13 +362,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.ether-wallet-container {
-  max-width: 100%;
-  overflow-x: hidden;
-  text-align: left;
-  margin-top: 30px;
-}
-
 .ether-form {
   height: 200px;
 }
