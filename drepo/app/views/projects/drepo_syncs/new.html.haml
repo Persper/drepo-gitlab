@@ -23,7 +23,6 @@
             %li.new-tab
               = link_to url_for(safe_params), data: {target: 'div#new', action: 'new', toggle: 'tabvue'} do
                 Commits
-                %span.badge.badge-pill= @total_commit_count
             %li.issues-tab
               = link_to url_for(safe_params), data: {target: 'div#issues', action: 'issues', toggle: 'tabvue'} do
                 Issues
@@ -44,8 +43,9 @@
                     = commits_breadcrumbs
                 .tree-controls.d-none.d-sm-none.d-md-block
                   .control
-                    -#= form_tag(project_commits_path(@project, @id), method: :get, class: 'commits-search-form js-signature-container', data: { 'signatures-path' => namespace_project_signatures_path }) do
-                      -#= search_field_tag :search, params[:search], { placeholder: _('Filter by commit message'), id: 'commits-search', class: 'form-control search-text-input input-short', spellcheck: false }
+                    = form_tag(project_new_drepo_sync_path(@project), method: :get, class: 'commits-search-form js-signature-container') do
+                      = hidden_field_tag :ref, @ref
+                      = search_field_tag :search, params[:search], { placeholder: _('Filter by commit message'), id: 'commits-search', class: 'form-control search-text-input input-short', spellcheck: false }
 
             %div{ id: dom_id(@project) }
               %ol#commits-list.list-unstyled.content_list
