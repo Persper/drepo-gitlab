@@ -1,120 +1,120 @@
 <template>
-  <div id="js-ether-wallet-access" class="row ether-wallet-container">
-    <div class="col-lg-3">
-      <label>Select a way to access your wallet:</label>
-      <label for="metamask" class="ratio">
-        <input id="metamask" v-model="unlockOption" type="radio" value="metamask" />
-        <span class="label-text">MetaMask</span>
-      </label>
-      <br />
-      <label for="mnemonic-phrase" class="ratio">
-        <input id="mnemonic-phrase" v-model="unlockOption" type="radio" value="mnemonic_phrase" />
-        <span class="label-text">Mnemonic Phrase</span>
-      </label>
-      <br />
-      <label for="private-key" class="ratio">
-        <input id="private-key" v-model="unlockOption" type="radio" value="private_key" />
-        <span class="label-text">Private Key</span>
-      </label>
-    </div>
-    <div class="ether-form col-lg-5">
-      <div v-if="unlockOption === 'metamask'">
-        <h4 class="col-lg-12">MetaMask</h4>
-        <p class="col-lg-12">
-          MetaMask is a browser extension that allows you to access your wallet quickly, safely &
-          easily.
-        </p>
-        <p v-if="isMetaMaskSupportedBrowser && !isMetaMaskTurnedOn" class="col-lg-12">
-          Your brower supports MetaMask, you can install the extension or turn it on if you've
-          installed.
-        </p>
-        <p v-if="isMetaMaskTurnedOn && !isMetaMaskLoggedIn" class="col-lg-12">
-          Please login your MetaMask first.
-          <a href="#" @click.stop.prevent="loginMetaMask()">login now</a>
-        </p>
-        <p v-if="!isMetaMaskSupportedBrowser" class="col-lg-12">
-          Your brower not supports MetaMask extension.
-        </p>
-        <input
-          type="button"
-          class="btn btn-success btn-ether"
-          :disabled="!isConnectToMetaMaskButtonClickable"
-          value="Connect to MetaMask"
-          @click.stop.prevent="connectToMetaMask()"
-        />
-      </div>
-      <div v-else-if="unlockOption === 'mnemonic_phrase'">
-        <h4 class="col-lg-12">Paste Your Mnemonic Phrase</h4>
-        <textarea
-          v-model="mnemonicPhraseInput"
-          class="col-lg-12 ether-input"
-          placeholder="Mnemonic Phrase"
-        ></textarea>
-        <label class="col-lg-12"
-          >Address Index(optional, the first one will be used by default) :
+  <div id="js-ether-wallet-access" class="merge-request-form common-note-form">
+    <div class="row">
+      <div class="col-lg-3">
+        <label>Select a way to access your wallet:</label>
+        <br />
+        <label for="metamask" class="ratio">
+          <input id="metamask" v-model="unlockOption" type="radio" value="metamask" />
+          <span class="label-text">MetaMask</span>
         </label>
-        <input
-          v-model="addressIndexInput"
-          class="col-lg-12 ether-input"
-          type="text"
-          placeholder="Address Index"
-        />
-        <input
-          type="button"
-          class="btn btn-success btn-ether col-lg-4"
-          :disabled="!isUnlockByMnemonicPhraseButtonClickable"
-          value="Unlock"
-          @click.stop.prevent="unlockByMnemonicPhrase()"
-        />
+        <br />
+        <label for="mnemonic-phrase" class="ratio">
+          <input id="mnemonic-phrase" v-model="unlockOption" type="radio" value="mnemonic_phrase" />
+          <span class="label-text">Mnemonic Phrase</span>
+        </label>
+        <br />
+        <label for="private-key" class="ratio">
+          <input id="private-key" v-model="unlockOption" type="radio" value="private_key" />
+          <span class="label-text">Private Key</span>
+        </label>
       </div>
-      <div v-else-if="unlockOption === 'private_key'">
-        <h4 class="col-lg-12">Paste Your Private Key</h4>
-        <textarea
-          v-model="privateKeyInput"
-          class="col-lg-12 ether-input"
-          placeholder="Private Key"
-        ></textarea>
-        <input
-          type="button"
-          class="btn btn-success btn-ether col-lg-4"
-          :disabled="!isUnlockByPrivateKeyButtonClickable"
-          value="Unlock"
-          @click.stop.prevent="unlockByPrivateKey()"
-        />
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <div id="account-info">
-        <AccountInfo
-          v-if="isUnlocked"
-          :account-balance="accountBalance"
-          :account-address="accountAddress"
-        />
-      </div>
-    </div>
-    <div class="col-lg-8"></div>
-    <div class="col-lg-12">
-      <div class="middle-block row-content-block">
-        <div class="float-right">
+      <div class="ether-form col-lg-5">
+        <div v-if="unlockOption === 'metamask'">
+          <h4 class="col-lg-12">MetaMask</h4>
+          <p class="col-lg-12">
+            MetaMask is a browser extension that allows you to access your wallet quickly, safely &
+            easily.
+          </p>
+          <p v-if="isMetaMaskSupportedBrowser && !isMetaMaskTurnedOn" class="col-lg-12">
+            Your brower supports MetaMask, you can install the extension or turn it on if you've
+            installed.
+          </p>
+          <p v-if="isMetaMaskTurnedOn && !isMetaMaskLoggedIn" class="col-lg-12">
+            Please login your MetaMask first.
+            <a href="#" @click.stop.prevent="loginMetaMask()">login now</a>
+          </p>
+          <p v-if="!isMetaMaskSupportedBrowser" class="col-lg-12">
+            Your brower not supports MetaMask extension.
+          </p>
           <input
             type="button"
-            class="btn btn-cancel"
-            value="Cancel"
-            @click.stop.prevent="cancelDrepoSync()"
+            class="btn btn-success btn-ether"
+            :disabled="!isConnectToMetaMaskButtonClickable"
+            value="Connect to MetaMask"
+            @click.stop.prevent="connectToMetaMask()"
           />
         </div>
-        <span class="append-right-10">
+        <div v-else-if="unlockOption === 'mnemonic_phrase'">
+          <h4 class="col-lg-12">Paste Your Mnemonic Phrase</h4>
+          <textarea
+            v-model="mnemonicPhraseInput"
+            class="col-lg-12 ether-input"
+            placeholder="Mnemonic Phrase"
+          ></textarea>
+          <label class="col-lg-12"
+            >Address Index(optional, the first one will be used by default) :
+          </label>
           <input
-            type="submit"
-            class="btn btn-success col-lg-2"
-            :disabled="!isStartDrepoSyncButtonClickable"
-            value="Start Drepo!"
-            @click.stop.prevent="startDrepoSync()"
+            v-model="addressIndexInput"
+            class="col-lg-12 ether-input"
+            type="text"
+            placeholder="Address Index"
           />
-        </span>
-        <div class="inline prepend-top-10">
-          Please review the commits and changes below before starting Drepo!
+          <input
+            type="button"
+            class="btn btn-success btn-ether col-lg-4"
+            :disabled="!isUnlockByMnemonicPhraseButtonClickable"
+            value="Unlock"
+            @click.stop.prevent="unlockByMnemonicPhrase()"
+          />
         </div>
+        <div v-else-if="unlockOption === 'private_key'">
+          <h4 class="col-lg-12">Paste Your Private Key</h4>
+          <textarea
+            v-model="privateKeyInput"
+            class="col-lg-12 ether-input"
+            placeholder="Private Key"
+          ></textarea>
+          <input
+            type="button"
+            class="btn btn-success btn-ether col-lg-4"
+            :disabled="!isUnlockByPrivateKeyButtonClickable"
+            value="Unlock"
+            @click.stop.prevent="unlockByPrivateKey()"
+          />
+        </div>
+      </div>
+      <div class="col-lg-4 account-info">
+        <div id="account-info">
+          <AccountInfo
+            v-if="isUnlocked"
+            :account-balance="accountBalance"
+            :account-address="accountAddress"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="middle-block row-content-block">
+      <div class="float-right">
+        <input
+          type="button"
+          class="btn btn-cancel"
+          value="Cancel"
+          @click.stop.prevent="cancelDrepoSync()"
+        />
+      </div>
+      <span class="append-right-10">
+        <input
+          type="submit"
+          class="btn btn-success col-lg-2"
+          :disabled="!isStartDrepoSyncButtonClickable"
+          value="Start Drepo!"
+          @click.stop.prevent="startDrepoSync()"
+        />
+      </span>
+      <div class="inline prepend-top-10">
+        Please review the commits and changes below before starting Drepo!
       </div>
     </div>
   </div>
@@ -362,13 +362,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.ether-wallet-container {
-  max-width: 100%;
-  overflow-x: hidden;
-  text-align: left;
-  margin-top: 30px;
-}
-
 .ether-form {
   height: 200px;
 }
@@ -393,5 +386,9 @@ export default {
   font-weight: 500;
   padding: 0 1.5rem;
   margin: 0.5rem 0;
+}
+
+.account-info {
+  padding: 1.5rem 3rem;
 }
 </style>

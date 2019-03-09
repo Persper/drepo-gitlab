@@ -4,7 +4,7 @@
       <img :src="blockiesImage" class="avatar s36 d-none d-sm-inline" />
     </div>
     <span class="mono wrap ng-binding">{{ accountAddress }}</span>
-    <p class="ether-amount">Ether: {{ accountBalance }}</p>
+    <p class="ether-amount"><b>Ether:</b> {{ accountBalance }}</p>
   </div>
 </template>
 
@@ -50,6 +50,6 @@ export default {
   word-wrap: break-word;
 }
 .ether-amount {
-  margin-top: 40px;
+  margin-top: 1.5rem;
 }
 </style>

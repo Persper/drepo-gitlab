@@ -1,5 +1,6 @@
 import initEtherWallet from '../../../../ether_wallet/index';
 import DrepoPreview from '../../../../drepo_preview';
+import CommitsList from '~/commits';
 
 document.addEventListener('DOMContentLoaded', () => {
   const etherWalletElement = document.getElementById('ether_wallet');
@@ -10,4 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   new DrepoPreview({
     action: mrNewSubmitNode.dataset.mrSubmitAction,
   });
+
+  new CommitsList(document.querySelector('.js-project-commits-show').dataset.commitsLimit); // eslint-disable-line no-new
 });
