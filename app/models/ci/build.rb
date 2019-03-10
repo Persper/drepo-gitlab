@@ -138,7 +138,7 @@ module Ci
 
     acts_as_taggable
 
-    add_authentication_token_field :token, encrypted: true, fallback: true
+    add_authentication_token_field :token, encrypted: :optional
 
     before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_save :ensure_token
@@ -426,11 +426,11 @@ module Ci
           .concat(pipeline.persisted_variables)
           .append(key: 'CI_JOB_ID', value: id.to_s)
           .append(key: 'CI_JOB_URL', value: Gitlab::Routing.url_helpers.project_job_url(project, self))
-          .append(key: 'CI_JOB_TOKEN', value: token.to_s, public: false)
+          .append(key: 'CI_JOB_TOKEN', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_BUILD_ID', value: id.to_s)
-          .append(key: 'CI_BUILD_TOKEN', value: token.to_s, public: false)
+          .append(key: 'CI_BUILD_TOKEN', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER)
-          .append(key: 'CI_REGISTRY_PASSWORD', value: token.to_s, public: false)
+          .append(key: 'CI_REGISTRY_PASSWORD', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url.to_s, public: false)
           .concat(deploy_token_variables)
       end
@@ -454,7 +454,7 @@ module Ci
         break variables unless gitlab_deploy_token
 
         variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.username)
-        variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false)
+        variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false, masked: true)
       end
     end
 
@@ -735,7 +735,7 @@ module Ci
 
     # Virtual deployment status depending on the environment status.
     def deployment_status
-      return nil unless starts_environment?
+      return unless starts_environment?
 
       if success?
         return successful_deployment_status

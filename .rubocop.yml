@@ -196,3 +196,6 @@ Cop/InjectEnterpriseEditionModule:
     - 'spec/**/*'
     - 'ee/spec/**/*'
     - 'drepo/spec/**/*'
+
+Style/ReturnNil:
+  Enabled: true
