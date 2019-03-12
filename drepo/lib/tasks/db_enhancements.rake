@@ -53,7 +53,7 @@ namespace :db do
               'CREATE INDEX IF NOT EXISTS index_' || T.myTable || '_on_drepo_updated_at ON public.' || T.myTable || ' USING btree (drepo_updated_at);' as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='updated_at' AND table_name NOT IN ('ar_internal_metadata', 'schema_migrations')
+                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='updated_at' AND table_name NOT IN (#{exclude_tables.join(',')})
               ) t
         loop
         execute r.script;
@@ -88,7 +88,7 @@ namespace :db do
               'CREATE TRIGGER trig_drepo_touch BEFORE INSERT OR UPDATE ON public.' || T.myTable || ' FOR EACH ROW EXECUTE PROCEDURE shared_extensions.func_drepo_touch()' as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='updated_at' AND table_name NOT IN ('ar_internal_metadata', 'schema_migrations')
+                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='updated_at' AND table_name NOT IN (#{exclude_tables.join(',')})
               ) t
         loop
         execute r.script;
@@ -206,7 +206,7 @@ namespace :db do
               as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='updated_at' AND table_name NOT IN ('ar_internal_metadata', 'schema_migrations')
+                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='updated_at' AND table_name NOT IN (#{exclude_tables.join(',')})
               ) t
         loop
         execute r.script;
@@ -227,7 +227,7 @@ namespace :db do
               as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND table_name NOT IN ('ar_internal_metadata', 'schema_migrations')
+                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND table_name NOT IN (#{exclude_tables.join(',')})
               ) t
         loop
         execute r.script;
@@ -236,6 +236,10 @@ namespace :db do
         $$;
       })
     end
+  end
+
+  def exclude_tables
+    %w('ar_internal_metadata' 'schema_migrations' 'prometheus_metrics')
   end
 end
 

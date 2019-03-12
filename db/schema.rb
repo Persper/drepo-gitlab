@@ -43,8 +43,6 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.string "favicon"
     t.text "new_project_guidelines"
     t.text "new_project_guidelines_html"
-    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
-    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.text "header_message"
     t.text "header_message_html"
     t.text "footer_message"
@@ -52,6 +50,8 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.text "message_background_color"
     t.text "message_font_color"
     t.boolean "email_header_and_footer_enabled", default: false, null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["drepo_updated_at"], name: "index_appearances_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_appearances_on_drepo_uuid", using: :btree
   end
@@ -459,9 +459,9 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.boolean "protected", default: false, null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.boolean "masked", default: false, null: false
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
-    t.boolean "masked", default: false, null: false
     t.index ["drepo_updated_at"], name: "index_ci_group_variables_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_ci_group_variables_on_drepo_uuid", using: :btree
     t.index ["group_id", "key"], name: "index_ci_group_variables_on_group_id_and_key", unique: true, using: :btree
@@ -568,10 +568,10 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.integer "failure_reason"
     t.integer "iid"
     t.integer "merge_request_id"
-    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
-    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.binary "source_sha"
     t.binary "target_sha"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }, null: false
     t.index ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
     t.index ["drepo_updated_at"], name: "index_ci_pipelines_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_ci_pipelines_on_drepo_uuid", using: :btree
@@ -2173,7 +2173,6 @@ ActiveRecord::Schema.define(version: 20190301182457) do
     t.index ["drepo_updated_at"], name: "index_redirect_routes_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_redirect_routes_on_drepo_uuid", using: :btree
     t.index ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
-    t.index ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
     t.index ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
   end
 
@@ -2569,7 +2568,6 @@ ActiveRecord::Schema.define(version: 20190301182457) do
   create_table "user_interacted_projects", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id", null: false
-    t.index ["project_id", "user_id"], name: "index_user_interacted_projects_on_project_id_and_user_id", unique: true, using: :btree
     t.index ["user_id"], name: "index_user_interacted_projects_on_user_id", using: :btree
   end
 
