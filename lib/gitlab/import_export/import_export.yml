@@ -1,73 +1,74 @@
 # Model relationships to be included in the project import/export
+
 project_tree:
   - labels:
       :priorities
   - milestones:
-    - events:
-      - :push_event_payload
+      - events:
+          - :push_event_payload
   - issues:
-    - events:
-      - :push_event_payload
-    - :timelogs
-    - notes:
-      - :author
       - events:
-        - :push_event_payload
-    - label_links:
-      - label:
-          :priorities
-    - milestone:
-      - events:
-        - :push_event_payload
-    - resource_label_events:
-      - label:
-          :priorities
-    - :issue_assignees
+          - :push_event_payload
+      - :timelogs
+      - notes:
+          - :author
+          - events:
+              - :push_event_payload
+      - label_links:
+          - label:
+              :priorities
+      - milestone:
+          - events:
+              - :push_event_payload
+      - resource_label_events:
+          - label:
+              :priorities
+      - :issue_assignees
   - snippets:
-    - :award_emoji
-    - notes:
-        :author
+      - :award_emoji
+      - notes:
+          :author
   - releases:
-    - :links
+      - :links
   - project_members:
-    - :user
+      - :user
   - merge_requests:
-    - :metrics
-    - notes:
-      - :author
+      - :metrics
+      - notes:
+          - :author
+          - events:
+              - :push_event_payload
+      - merge_request_diff:
+          - :merge_request_diff_commits
+          - :merge_request_diff_files
       - events:
-        - :push_event_payload
-    - merge_request_diff:
-      - :merge_request_diff_commits
-      - :merge_request_diff_files
-    - events:
-      - :push_event_payload
-    - :timelogs
-    - label_links:
-      - label:
-          :priorities
-    - milestone:
-      - events:
-        - :push_event_payload
-    - resource_label_events:
-      - label:
-          :priorities
+          - :push_event_payload
+      - :timelogs
+      - label_links:
+          - label:
+              :priorities
+      - milestone:
+          - events:
+              - :push_event_payload
+      - resource_label_events:
+          - label:
+              :priorities
   - ci_pipelines:
-    - notes:
-      - :author
-      - events:
-        - :push_event_payload
-    - stages:
-      - :statuses
+      - notes:
+          - :author
+          - events:
+              - :push_event_payload
+      - stages:
+          - :statuses
   - :auto_devops
   - :triggers
   - :pipeline_schedules
   - :services
   - protected_branches:
-    - :merge_access_levels
-    - :push_access_levels
+      - :merge_access_levels
+      - :push_access_levels
   - protected_tags:
-    - :create_access_levels
+      - :create_access_levels
   - :project_feature
   - :custom_attributes
   - :prometheus_metrics
@@ -118,9 +119,11 @@ excluded_attributes:
     - :repository_languages
     - :bfg_object_map
     - :tag_list
+    - :drepo_uuid
   namespaces:
     - :runners_token
     - :runners_token_encrypted
+    - :drepo_uuid
   project_import_state:
     - :last_error
     - :jid
@@ -129,21 +132,25 @@ excluded_attributes:
     - :identifier
   snippets:
     - :expired_at
+    - :drepo_uuid
   merge_request_diff:
     - :external_diff
     - :stored_externally
     - :external_diff_store
+    - :drepo_uuid
   merge_request_diff_files:
     - :diff
     - :external_diff_offset
     - :external_diff_size
   issues:
     - :milestone_id
+    - :drepo_uuid
   merge_requests:
     - :milestone_id
     - :ref_fetched
     - :merge_jid
     - :latest_merge_request_diff_id
+    - :drepo_uuid
   award_emoji:
     - :awardable_id
   statuses:
@@ -154,10 +161,12 @@ excluded_attributes:
     - :artifacts_file
     - :artifacts_metadata
     - :commands
+    - :drepo_uuid
   push_event_payload:
     - :event_id
   project_badges:
     - :group_id
+    - :drepo_uuid
   resource_label_events:
     - :reference
     - :reference_html
@@ -167,10 +176,45 @@ excluded_attributes:
     - :token_encrypted
   services:
     - :template
+    - :drepo_uuid
   error_tracking_setting:
     - :encrypted_token
     - :encrypted_token_iv
     - :enabled
+  milestones:
+    - drepo_uuid
+  notes:
+    - drepo_uuid
+  events:
+    - drepo_uuid
+  milestone:
+    - drepo_uuid
+  releases:
+    - drepo_uuid
+  project_members:
+    - drepo_uuid
+  label_links:
+    - drepo_uuid
+  labels:
+    - drepo_uuid
+  label:
+    - drepo_uuid
+  priorities:
+    - drepo_uuid
+  protected_branches:
+    - drepo_uuid
+  merge_access_levels:
+    - drepo_uuid
+  push_access_levels:
+    - drepo_uuid
+  protected_tags:
+    - drepo_uuid
+  create_access_levels:
+    - drepo_uuid
+  project_feature:
+    - drepo_uuid
+  metrics:
+    - drepo_uuid
 
 methods:
   labels:

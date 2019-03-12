@@ -5,6 +5,21 @@ module Drepo
     module MigrationHelpers
       extend ::Gitlab::Utils::Override
 
+      override :postgres_exists_by_name?
+      def postgres_exists_by_name?(table, name)
+        index_sql = <<~SQL
+          SELECT COUNT(*)
+          FROM pg_index
+          JOIN pg_class i ON (indexrelid=i.oid)
+          JOIN pg_class t ON (indrelid=t.oid)
+          WHERE i.relname = '#{name}'
+            AND t.relname = '#{table}'
+            AND i.relnamespace IN (SELECT oid FROM pg_namespace WHERE nspname = ANY (current_schemas(false)) )
+        SQL
+
+        connection.select_value(index_sql).to_i > 0
+      end
+
       override :disable_statement_timeout
       def disable_statement_timeout
         unless ::Gitlab::Database.postgresql?

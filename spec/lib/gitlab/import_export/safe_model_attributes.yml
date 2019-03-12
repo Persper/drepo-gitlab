@@ -26,6 +26,8 @@ Issue:
 - last_edited_at
 - last_edited_by_id
 - discussion_locked
+- drepo_uuid
+- drepo_updated_at
 Event:
 - id
 - target_type
@@ -35,6 +37,8 @@ Event:
 - updated_at
 - action
 - author_id
+- drepo_uuid
+- drepo_updated_at
 PushEventPayload:
 - commit_count
 - action
@@ -43,6 +47,8 @@ PushEventPayload:
 - commit_to
 - ref
 - commit_title
+- drepo_uuid
+- drepo_updated_at
 Note:
 - id
 - note
@@ -67,6 +73,8 @@ Note:
 - resolved_by_push
 - discussion_id
 - original_discussion_id
+- drepo_uuid
+- drepo_updated_at
 LabelLink:
 - id
 - label_id
@@ -74,6 +82,8 @@ LabelLink:
 - target_type
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 ProjectLabel:
 - id
 - title
@@ -86,6 +96,8 @@ ProjectLabel:
 - template
 - description
 - priority
+- drepo_uuid
+- drepo_updated_at
 Milestone:
 - id
 - title
@@ -98,6 +110,8 @@ Milestone:
 - updated_at
 - state
 - iid
+- drepo_uuid
+- drepo_updated_at
 ProjectSnippet:
 - id
 - title
@@ -110,6 +124,8 @@ ProjectSnippet:
 - file_name
 - type
 - visibility_level
+- drepo_uuid
+- drepo_updated_at
 Release:
 - id
 - name
@@ -120,6 +136,8 @@ Release:
 - project_id
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 Releases::Link:
 - id
 - release_id
@@ -127,6 +145,8 @@ Releases::Link:
 - name
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 ProjectMember:
 - id
 - access_level
@@ -143,10 +163,14 @@ ProjectMember:
 - invite_accepted_at
 - requested_at
 - expires_at
+- drepo_uuid
+- drepo_updated_at
 User:
 - id
 - username
 - email
+- drepo_uuid
+- drepo_updated_at
 MergeRequest:
 - id
 - target_branch
@@ -181,6 +205,8 @@ MergeRequest:
 - head_pipeline_id
 - discussion_locked
 - allow_maintainer_to_push
+- drepo_uuid
+- drepo_updated_at
 MergeRequestDiff:
 - id
 - state
@@ -192,6 +218,8 @@ MergeRequestDiff:
 - head_commit_sha
 - start_commit_sha
 - commits_count
+- drepo_uuid
+- drepo_updated_at
 MergeRequestDiffCommit:
 - merge_request_diff_id
 - relative_order
@@ -203,6 +231,8 @@ MergeRequestDiffCommit:
 - committer_name
 - committer_email
 - message
+- drepo_uuid
+- drepo_updated_at
 MergeRequestDiffFile:
 - merge_request_diff_id
 - relative_order
@@ -215,6 +245,8 @@ MergeRequestDiffFile:
 - b_mode
 - too_large
 - binary
+- drepo_uuid
+- drepo_updated_at
 MergeRequest::Metrics:
 - id
 - created_at
@@ -228,6 +260,8 @@ MergeRequest::Metrics:
 - latest_build_started_at
 - latest_build_finished_at
 - first_deployed_to_production_at
+- drepo_uuid
+- drepo_updated_at
 Ci::Pipeline:
 - id
 - project_id
@@ -256,6 +290,8 @@ Ci::Pipeline:
 - protected
 - iid
 - merge_request_id
+- drepo_uuid
+- drepo_updated_at
 Ci::Stage:
 - id
 - name
@@ -266,6 +302,8 @@ Ci::Stage:
 - pipeline_id
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 CommitStatus:
 - id
 - project_id
@@ -314,6 +352,8 @@ CommitStatus:
 - protected
 - failure_reason
 - scheduled_at
+- drepo_uuid
+- drepo_updated_at
 Ci::Variable:
 - id
 - project_id
@@ -322,6 +362,8 @@ Ci::Variable:
 - encrypted_value
 - encrypted_value_salt
 - encrypted_value_iv
+- drepo_uuid
+- drepo_updated_at
 Ci::Trigger:
 - id
 - token
@@ -331,6 +373,8 @@ Ci::Trigger:
 - owner_id
 - description
 - ref
+- drepo_uuid
+- drepo_updated_at
 Ci::PipelineSchedule:
 - id
 - description
@@ -343,6 +387,8 @@ Ci::PipelineSchedule:
 - active
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 Clusters::Cluster:
 - id
 - user_id
@@ -352,12 +398,16 @@ Clusters::Cluster:
 - platform_type
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 Clusters::Project:
 - id
 - project_id
 - cluster_id
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 Clusters::Providers::Gcp:
 - id
 - cluster_id
@@ -373,6 +423,8 @@ Clusters::Providers::Gcp:
 - encrypted_access_token_iv
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 Clusters::Platforms::Kubernetes:
 - id
 - cluster_id
@@ -386,6 +438,8 @@ Clusters::Platforms::Kubernetes:
 - encrypted_token_iv
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 DeployKey:
 - id
 - user_id
@@ -398,6 +452,8 @@ DeployKey:
 - public
 - can_push
 - last_used_at
+- drepo_uuid
+- drepo_updated_at
 Service:
 - id
 - type
@@ -421,6 +477,8 @@ Service:
 - wiki_page_events
 - confidential_issues_events
 - confidential_note_events
+- drepo_uuid
+- drepo_updated_at
 ProjectHook:
 - id
 - url
@@ -444,18 +502,24 @@ ProjectHook:
 - confidential_issues_events
 - confidential_note_events
 - repository_update_events
+- drepo_uuid
+- drepo_updated_at
 ProtectedBranch:
 - id
 - project_id
 - name
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 ProtectedTag:
 - id
 - project_id
 - name
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 Project:
 - description
 - issues_enabled
@@ -495,8 +559,12 @@ Project:
 - merge_requests_rebase_enabled
 - jobs_cache_index
 - pages_https_only
+- drepo_uuid
+- drepo_updated_at
 Author:
 - name
+- drepo_uuid
+- drepo_updated_at
 ProjectFeature:
 - id
 - project_id
@@ -509,18 +577,24 @@ ProjectFeature:
 - pages_access_level
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 ProtectedBranch::MergeAccessLevel:
 - id
 - protected_branch_id
 - access_level
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 ProtectedBranch::PushAccessLevel:
 - id
 - protected_branch_id
 - access_level
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 ProtectedTag::CreateAccessLevel:
 - id
 - protected_tag_id
@@ -529,6 +603,8 @@ ProtectedTag::CreateAccessLevel:
 - updated_at
 - user_id
 - group_id
+- drepo_uuid
+- drepo_updated_at
 AwardEmoji:
 - id
 - user_id
@@ -536,6 +612,8 @@ AwardEmoji:
 - awardable_type
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 LabelPriority:
 - id
 - project_id
@@ -543,6 +621,8 @@ LabelPriority:
 - priority
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 Timelog:
 - id
 - time_spent
@@ -552,6 +632,8 @@ Timelog:
 - spent_at
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 ProjectAutoDevops:
 - id
 - enabled
@@ -560,9 +642,13 @@ ProjectAutoDevops:
 - project_id
 - created_at
 - updated_at
+- drepo_uuid
+- drepo_updated_at
 IssueAssignee:
 - user_id
 - issue_id
+- drepo_uuid
+- drepo_updated_at
 ProjectCustomAttribute:
 - id
 - created_at
@@ -570,6 +656,8 @@ ProjectCustomAttribute:
 - project_id
 - key
 - value
+- drepo_uuid
+- drepo_updated_at
 PrometheusMetric:
 - id
 - created_at
@@ -583,6 +671,8 @@ PrometheusMetric:
 - group
 - common
 - identifier
+- drepo_uuid
+- drepo_updated_at
 Badge:
 - id
 - link_url
@@ -592,8 +682,12 @@ Badge:
 - created_at
 - updated_at
 - type
+- drepo_uuid
+- drepo_updated_at
 ProjectCiCdSetting:
 - group_runners_enabled
+- drepo_uuid
+- drepo_updated_at
 ResourceLabelEvent:
 - id
 - action
@@ -602,9 +696,13 @@ ResourceLabelEvent:
 - label_id
 - user_id
 - created_at
+- drepo_uuid
+- drepo_updated_at
 ErrorTracking::ProjectErrorTrackingSetting:
 - id
 - api_url
 - project_id
 - project_name
 - organization_name
+- drepo_uuid
+- drepo_updated_at
