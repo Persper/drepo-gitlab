@@ -121,7 +121,7 @@ describe Gitlab::DataBuilder::Note do
     end
 
     let!(:note) do
-      create(:note_on_project_snippet, noteable: snippet,
+      create(:note_on_project_snippet, noteable: snippet.reload,
                                        project: project)
     end
 

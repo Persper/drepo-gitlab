@@ -92,7 +92,7 @@ module Drepo
 
       def extend_insert_columns(table_name)
         if has_timestamp?(table_name)
-          %Q{"original_created_at","original_updated_at","drepo_id"}
+          %q{"original_created_at","original_updated_at","drepo_id"}
         else
           '"drepo_id"'
         end
@@ -107,7 +107,7 @@ module Drepo
       end
 
       def timestamp_tables
-        sql = %Q{
+        sql = %q{
           SELECT DISTINCT table_name
           FROM information_schema.columns
           WHERE table_schema='public'

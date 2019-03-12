@@ -1100,7 +1100,8 @@ class Project < ActiveRecord::Base
   # rubocop: disable CodeReuse/ServiceClass
   def create_labels
     Label.templates.each do |label|
-      params = label.attributes.except('id', 'template', 'created_at', 'updated_at', 'type')
+      params = label.attributes.except('id', 'template', 'created_at', 'updated_at', 'type',
+                                       'drepo_uuid', 'drepo_updated_at')
       Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end

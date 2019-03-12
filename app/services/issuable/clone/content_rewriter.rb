@@ -26,6 +26,7 @@ module Issuable
         original_entity.notes_with_associations.find_each do |note|
           new_note = note.dup
           new_params = {
+            drepo_uuid: nil,
             project: new_entity.project, noteable: new_entity,
             note: rewrite_content(new_note.note),
             created_at: note.created_at,
