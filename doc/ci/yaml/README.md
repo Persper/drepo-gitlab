@@ -367,10 +367,11 @@ job:
     - branches@gitlab-org/gitlab-ce
   except:
     - master@gitlab-org/gitlab-ce
+    - release/.*@gitlab-org/gitlab-ce
 ```
 
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
-except master.
+except `master` and those with names prefixed with `release/`.
 
 If a job does not have an `only` rule, `only: ['branches', 'tags']` is set by
 default. If it doesn't have an `except` rule, it is empty.
@@ -1756,7 +1757,7 @@ include:
 ```
 
 All [nested includes](#nested-includes) will be executed in the scope of the target project,
-so it is possible to used local (relative to target project), project, remote
+so it is possible to use local (relative to target project), project, remote
 or template includes.
 
 #### `include:template`
@@ -1802,7 +1803,7 @@ configuration), you have to re-create pipeline.
 
 #### Nested includes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/56836) in GitLab 11.9.
 
 Nested includes allow you to compose a set of includes.
 A total of 50 includes is allowed.
