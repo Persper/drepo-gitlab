@@ -34,6 +34,7 @@ module Issues
       new_params = {
                      id: nil,
                      iid: nil,
+                     drepo_uuid: nil,
                      project: @target_project,
                      author: original_entity.author,
                      assignee_ids: original_entity.assignee_ids

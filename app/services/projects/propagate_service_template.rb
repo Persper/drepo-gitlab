@@ -74,7 +74,8 @@ module Projects
     def service_hash
       @service_hash ||=
         begin
-          template_hash = @template.as_json(methods: :type).except('id', 'template', 'project_id')
+          template_hash = @template.as_json(methods: :type).except('id', 'template', 'project_id',
+                                                                   'drepo_uuid', 'drepo_updated_at')
 
           template_hash.each_with_object({}) do |(key, value), service_hash|
             value = value.is_a?(Hash) ? value.to_json : value

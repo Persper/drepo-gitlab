@@ -87,7 +87,7 @@ module Gitlab
                                 time, time, time, time)
           end
 
-          query
+          query.where("pg_class.relnamespace IN (SELECT oid FROM pg_namespace WHERE nspname = ANY (current_schemas(false)))")
         end
       end
     end

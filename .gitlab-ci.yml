@@ -591,6 +591,7 @@ docs lint:
 
 downtime_check:
   <<: *rake-exec
+  <<: *use-pg
   except:
     - master
     - tags

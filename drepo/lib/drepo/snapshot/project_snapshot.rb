@@ -3,6 +3,7 @@
 module Drepo
   module Snapshot
     class ProjectSnapshot < BaseSnapshot
+      # rubocop:disable CodeReuse/ActiveRecord
       attr_accessor :project, :user_ids
 
       def initialize(options)
@@ -116,7 +117,6 @@ module Drepo
         connection.execute(generate_snapshot_sql(MergeRequestDiffCommit.where(merge_request_diff_id: diff_ids)))
         connection.execute(generate_snapshot_sql(MergeRequestsClosingIssues.where(merge_request_id: mr_ids)))
 
-
         # Issuable, lable_links copied in #copy_labels, notes copied in #copy_notes
         connection.execute(generate_snapshot_sql(MergeRequest::Metrics.where(merge_request_id: mr_ids)))
         copy_award_emoji(mr_ids, 'MergeRequest')
@@ -180,7 +180,8 @@ module Drepo
         # Here we drop down group members as project members
         project_members = MembersFinder.new(project, nil).execute(include_descendants: true)
         result = connection.query(generate_snapshot_sql(
-                                    Member.none, select_statement: project_members.to_sql,
+                                    Member.none,
+                                    select_statement: project_members.to_sql,
                                     returning: %w(id user_id)))
         member_ids, u_ids = result.each_with_object([[], []]) do |element, two_arr|
           two_arr[0] << element[0]
@@ -248,6 +249,7 @@ module Drepo
       def project_association_tables
         %w(milestones labels issues notes events label_priorities merge_requests snippets members)
       end
+      # rubocop:enable CodeReuse/ActiveRecord
     end
   end
 end
