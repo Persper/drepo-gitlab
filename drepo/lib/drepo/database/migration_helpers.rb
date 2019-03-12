@@ -5,12 +5,6 @@ module Drepo
     module MigrationHelpers
       extend ::Gitlab::Utils::Override
 
-      override :index_exists_by_name?
-      # Assume rails > 5
-      def index_exists_by_name?(table, index)
-        indexes(table).map(&:name).include?(index.to_s)
-      end
-
       override :disable_statement_timeout
       def disable_statement_timeout
         unless ::Gitlab::Database.postgresql?
