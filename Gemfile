@@ -438,5 +438,5 @@ gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
 
 # Drepo-specific start
-gem 'apartment'
+gem 'apartment', git: 'https://gitlab.com/persper/apartment.git', ref: 'fix_drop_task'
 # Drepo-specific end
