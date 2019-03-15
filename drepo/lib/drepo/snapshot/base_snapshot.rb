@@ -138,7 +138,7 @@ module Drepo
                 'DELETE FROM #{to_schema}.' || T.myTable || ' WHERE #{to_schema}.' || T.myTable || '.drepo_id = #{last_drepo_id}' as script
               from
                 (
-                  SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='#{to_schema}' AND column_name='drepo_id' AND table_name NOT IN ('ar_internal_metadata', 'schema_migrations')
+                  SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='#{to_schema}' AND column_name='drepo_id'
                 ) t
           loop
           execute r.script;
