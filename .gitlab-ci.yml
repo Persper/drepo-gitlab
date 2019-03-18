@@ -537,7 +537,7 @@ rspec-pg:
   script:
     - export CACHE_CLASSES=true
     - scripts/gitaly-test-spawn
-    - bin/rspec --color --format documentation --tag quarantine spec/
+    - bin/rspec --color --format documentation --tag quarantine spec/ drepo/spec/
 
 rspec-pg-quarantine:
   <<: *rspec-metadata-pg
