@@ -48,11 +48,13 @@ module Drepo
         # copy label priority
         connection.execute(generate_snapshot_sql(LabelPriority.where(label_id: label_ids)))
 
-        # copy resource label event
-        u_ids = connection.query(generate_snapshot_sql(
-                                   ResourceLabelEvent.where(label_id: label_ids),
-                                   returning: 'user_id'))
-        collect_user_ids(u_ids)
+        delay_after('Issue', 'MergeRequest') do
+          # copy resource label event
+          u_ids = connection.query(generate_snapshot_sql(
+                                     ResourceLabelEvent.where(label_id: label_ids),
+                                     returning: 'user_id'))
+          collect_user_ids(u_ids)
+        end
 
         label_ids
       end
@@ -93,6 +95,9 @@ module Drepo
         # Spammable
         copy_user_agent_detail(issue_ids, 'Issue')
 
+        # run delay
+        run_delay('Issue')
+
         issue_ids
       end
 
@@ -127,6 +132,9 @@ module Drepo
 
         # Spammable
         copy_user_agent_detail(mr_ids, 'MergeRequest')
+
+        # run delay
+        run_delay('MergeRequest')
 
         mr_ids
       end

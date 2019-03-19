@@ -4,6 +4,7 @@ module Drepo
   module Snapshot
     class BaseSnapshot
       attr_reader :drepo_id, :last_drepo_id, :root_id, :from_schema, :to_schema, :connection
+      attr_reader :delay_actions
 
       # schemas
       PUBLIC = 'public'
@@ -18,6 +19,24 @@ module Drepo
         @from_schema = from_schema
         @to_schema = to_schema
         @connection = ActiveRecord::Base.connection
+        @delay_actions = Hash.new { |h, k| h[k] = {} }
+      end
+
+      def delay_after(*tables)
+        if block_given?
+          proc = Proc.new { yield }
+          @delay_actions[proc] = tables.dup
+        end
+      end
+
+      def run_delay(table)
+        @delay_actions.delete_if do |proc, tables|
+          tables.delete table
+          if tables.empty?
+            proc.call
+            true
+          end
+        end
       end
 
       def generate_snapshot_sql(relation, returning: nil, select_statement: nil)
