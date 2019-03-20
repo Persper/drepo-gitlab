@@ -24,7 +24,7 @@ module Drepo
 
       def delay_after(*tables)
         if block_given?
-          proc = Proc.new { yield }
+          proc = proc { yield }
           @delay_actions[proc] = tables.dup
         end
       end
@@ -32,6 +32,7 @@ module Drepo
       def run_delay(table)
         @delay_actions.delete_if do |proc, tables|
           tables.delete table
+
           if tables.empty?
             proc.call
             true
