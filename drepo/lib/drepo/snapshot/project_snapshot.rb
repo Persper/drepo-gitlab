@@ -25,7 +25,6 @@ module Drepo
 
         copy_project_members
 
-        # TODO: copy releases
         copy_releases
 
         # @user_ids will be collected in the above functions

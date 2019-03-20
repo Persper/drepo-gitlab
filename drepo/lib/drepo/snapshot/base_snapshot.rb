@@ -22,11 +22,8 @@ module Drepo
         @delay_actions = Hash.new { |h, k| h[k] = {} }
       end
 
-      def delay_after(*tables)
-        if block_given?
-          proc = proc { yield }
-          @delay_actions[proc] = tables.dup
-        end
+      def delay_after(*tables, &block)
+        @delay_actions[block] = tables
       end
 
       def run_delay(table)

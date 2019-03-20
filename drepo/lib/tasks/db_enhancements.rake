@@ -198,6 +198,7 @@ namespace :db do
         for r in
             select
               'ALTER TABLE #{schema}.' || T.myTable || ' ADD COLUMN IF NOT EXISTS drepo_uuid UUID NOT NULL;' ||
+              'ALTER TABLE #{schema}.' || T.myTable || ' ALTER COLUMN drepo_uuid DROP DEFAULT;' ||
               'CREATE INDEX IF NOT EXISTS index_' || T.myTable || '_on_drepo_uuid ON #{schema}.' || T.myTable || ' USING btree (drepo_uuid);' ||
               'ALTER TABLE #{schema}.' || T.myTable || ' ADD COLUMN IF NOT EXISTS drepo_updated_at timestamp without time zone;' ||
               'CREATE INDEX IF NOT EXISTS index_' || T.myTable || '_on_drepo_updated_at ON #{schema}.' || T.myTable || ' USING btree (drepo_updated_at);' ||
