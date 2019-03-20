@@ -26,6 +26,7 @@ module Drepo
         copy_project_members
 
         # TODO: copy releases
+        copy_releases
 
         # @user_ids will be collected in the above functions
         copy_users
@@ -214,7 +215,23 @@ module Drepo
           two_arr[1] << element[1]
         end
         collect_user_ids(u_ids)
+
         award_emoji_ids
+      end
+
+      def copy_releases
+        result = connection.query(generate_snapshot_sql(
+                                    Release.where(project_id: root_id), returning: %w(id author_id)))
+        release_ids, u_ids = result.each_with_object([[], []]) do |element, two_arr|
+          two_arr[0] << element[0]
+          two_arr[1] << element[1]
+        end
+        collect_user_ids(u_ids)
+
+        # release links
+        connection.query(generate_snapshot_sql(Releases::Link.where(release_id: release_ids)))
+
+        release_ids
       end
 
       def copy_users
@@ -244,18 +261,18 @@ module Drepo
       end
 
       def user_association_tables
-        %w(issues notes events resource_label_events merge_requests award_emoji snippets members)
+        %w(issues notes events resource_label_events merge_requests award_emoji snippets members releases)
       end
 
       def all_tables
         %w(projects milestones labels users issues notes events push_event_payloads
            label_links resource_label_events label_priorities merge_requests merge_request_diffs
            merge_request_diff_files merge_request_diff_commits user_agent_details
-           merge_requests_closing_issues award_emoji snippets members)
+           merge_requests_closing_issues award_emoji snippets members releases)
       end
 
       def project_association_tables
-        %w(milestones labels issues notes events label_priorities merge_requests snippets members)
+        %w(milestones labels issues notes events label_priorities merge_requests snippets members releases)
       end
       # rubocop:enable CodeReuse/ActiveRecord
     end
