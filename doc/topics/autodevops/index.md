@@ -901,7 +901,7 @@ increasing the rollout up to 100%.
 
 If `INCREMENTAL_ROLLOUT_MODE` is set to `manual` in your project, then instead
 of the standard `production` job, 4 different
-[manual jobs](../../ci/pipelines.md#manual-actions-from-the-pipeline-graph)
+[manual jobs](../../ci/pipelines.md#manual-actions-from-pipeline-graphs)
 will be created:
 
 1. `rollout 10%`
@@ -1022,6 +1022,10 @@ planned for a subsequent release.
   buildpack](#custom-buildpacks).
 - Auto Test may fail because of a mismatch between testing frameworks. In this
   case, you may need to customize your `.gitlab-ci.yml` with your test commands.
+- Auto Deploy may fail if it is unable to create a Kubernetes namespace and
+  service account for your project. See the
+  [troubleshooting failed deployments](../../user/project/clusters/index.md#troubleshooting-failed-deployment-jobs)
+  section to debug why these resources were not created.
 
 ### Disable the banner instance wide
 

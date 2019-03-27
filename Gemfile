@@ -128,7 +128,7 @@ gem 'asciidoctor', '~> 1.5.8'
 gem 'asciidoctor-plantuml', '0.0.8'
 gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.11'
-gem 'bootstrap_form', '~> 2.7.0'
+gem 'bootstrap_form', '~> 4.2.0'
 gem 'nokogiri', '~> 1.10.1'
 gem 'escape_utils', '~> 1.1'
 
@@ -170,7 +170,7 @@ gem 'gitlab-sidekiq-fetcher', '~> 0.4.0', require: 'sidekiq-reliable-fetch'
 gem 'fugit', '~> 1.1'
 
 # HTTP requests
-gem 'httparty', '~> 0.13.3'
+gem 'httparty', '~> 0.16.4'
 
 # Colored output to console
 gem 'rainbow', '~> 3.0'

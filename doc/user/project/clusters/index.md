@@ -69,7 +69,7 @@ new Kubernetes cluster to your project:
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
    - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
      of the Virtual Machine instance that the cluster will be based on.
-   - **RBAC-enabled cluster** - Leave this checked if using default GKE creation options, see the [RBAC section](#role-based-access-control-rbac-core-only) for more information.
+   - **RBAC-enabled cluster** - Leave this checked if using default GKE creation options, see the [RBAC section](#role-based-access-control-rbac) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed
@@ -101,14 +101,20 @@ To add an existing Kubernetes cluster to your project:
       It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
       exposes several APIs, we want the "base" URL that is common to all of them,
       e.g., `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
-    - **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the EKS cluster. We will use the certificate created by default.
-      -  List the secrets with `kubectl get secrets`, and one should named similar to
-       `default-token-xxxxx`. Copy that token name for use below.
-      -  Get the certificate by running this command:
 
-        ```sh
-        kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
-        ```
+      Get the API URL by running this command:
+
+      ```sh
+      kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'
+      ```
+    - **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the EKS cluster. We will use the certificate created by default.
+      - List the secrets with `kubectl get secrets`, and one should named similar to
+       `default-token-xxxxx`. Copy that token name for use below.
+      - Get the certificate by running this command:
+
+      ```sh
+      kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
+      ```
     - **Token** -
       GitLab authenticates against Kubernetes using service tokens, which are
       scoped to a particular `namespace`.
@@ -124,23 +130,7 @@ To add an existing Kubernetes cluster to your project:
           metadata:
             name: gitlab-admin
             namespace: kube-system
-          ```
-
-      2. Apply the service account to your cluster:
-
-          ```bash
-          kubectl apply -f gitlab-admin-service-account.yaml
-          ```
-
-          Output:
-
-            ```bash
-            serviceaccount "gitlab-admin" created
-            ```
-
-      3. Create a file called `gitlab-admin-cluster-role-binding.yaml` with contents:
-
-          ```yaml
+          ---
           apiVersion: rbac.authorization.k8s.io/v1beta1
           kind: ClusterRoleBinding
           metadata:
@@ -155,41 +145,42 @@ To add an existing Kubernetes cluster to your project:
             namespace: kube-system
           ```
 
-      4. Apply the cluster role binding to your cluster:
+      1. Apply the service account and cluster role binding to your cluster:
 
           ```bash
-          kubectl apply -f gitlab-admin-cluster-role-binding.yaml
+          kubectl apply -f gitlab-admin-service-account.yaml
           ```
 
           Output:
 
           ```bash
+          serviceaccount "gitlab-admin" created
           clusterrolebinding "gitlab-admin" created
           ```
 
-      5. Retrieve the token for the `gitlab-admin` service account:
+      1. Retrieve the token for the `gitlab-admin` service account:
 
           ```bash
           kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab-admin | awk '{print $1}')
           ```
 
-      Copy the `<authentication_token>` value from the output:
+         Copy the `<authentication_token>` value from the output:
 
-      ```yaml
-      Name:         gitlab-admin-token-b5zv4
-      Namespace:    kube-system
-      Labels:       <none>
-      Annotations:  kubernetes.io/service-account.name=gitlab-admin
-                    kubernetes.io/service-account.uid=bcfe66ac-39be-11e8-97e8-026dce96b6e8
+         ```yaml
+         Name:         gitlab-admin-token-b5zv4
+         Namespace:    kube-system
+         Labels:       <none>
+         Annotations:  kubernetes.io/service-account.name=gitlab-admin
+                       kubernetes.io/service-account.uid=bcfe66ac-39be-11e8-97e8-026dce96b6e8
 
-      Type:  kubernetes.io/service-account-token
+         Type:  kubernetes.io/service-account-token
 
-      Data
-      ====
-      ca.crt:     1025 bytes
-      namespace:  11 bytes
-      token:      <authentication_token>
-      ```
+         Data
+         ====
+         ca.crt:     1025 bytes
+         namespace:  11 bytes
+         token:      <authentication_token>
+         ```
 
       NOTE: **Note:**
       For GKE clusters, you will need the
@@ -211,14 +202,6 @@ To add an existing Kubernetes cluster to your project:
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed
 to install some [pre-defined applications](#installing-applications).
-
-To determine the:
-
-- API URL, run `kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'`.
-- Token:
-  1. List the secrets by running: `kubectl get secrets`. Note the name of the secret you need the token for.
-  1. Get the token for the appropriate secret by running: `kubectl get secret <SECRET_NAME> -o jsonpath="{['data']['token']}" | base64 --decode`.
-- CA certificate, run `kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode`.
 
 ## Security implications
 
@@ -360,8 +343,8 @@ by GitLab before installing any of the applications.
 | [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps] or deploy your own web apps. | [stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress) |
 | [Cert-Manager](https://docs.cert-manager.io/en/latest/) | 11.6+ | Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert-Manager on your cluster will issue a certificate by [Let's Encrypt](https://letsencrypt.org/) and ensure that certificates are valid and up-to-date. | [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager) |
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications. | [stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus) |
-| [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. | [runner/gitlab-runner](https://gitlab.com/charts/gitlab-runner) |
-| [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use a [custom Jupyter image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) that installs additional useful packages on top of the base Jupyter. Authentication will be enabled only for [project members](../members/index.md) with [Developer or higher](../../permissions.md) access to the project. You will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix). More information on creating executable runbooks can be found in [our Nurtch documentation](runbooks/index.md#nurtch-executable-runbooks). | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
+| [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](../../../ci/README.md), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. | [runner/gitlab-runner](https://gitlab.com/charts/gitlab-runner) |
+| [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use a [custom Jupyter image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) that installs additional useful packages on top of the base Jupyter. Authentication will be enabled only for [project members](../members/index.md) with [Developer or higher](../../permissions.md) access to the project. You will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix). More information on creating executable runbooks can be found in [our Nurtch documentation](runbooks/index.md#nurtch-executable-runbooks). Note that Ingress must be installed and have an IP address assigned before JupyterHub can be installed. | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
 | [Knative](https://cloud.google.com/knative) | 11.5+ | Knative provides a platform to create, deploy, and manage serverless workloads from a Kubernetes cluster. It is used in conjunction with, and includes [Istio](https://istio.io) to provide an external IP address for all programs hosted by Knative. You will be prompted to enter a wildcard domain where your applications will be exposed. Configure your DNS server to use the external IP address for that domain. For any application created and installed, they will be accessible as `<program_name>.<kubernetes_namespace>.<domain_name>`. This will require your kubernetes cluster to have [RBAC enabled](#role-based-access-control-rbac). | [knative/knative](https://storage.googleapis.com/triggermesh-charts)
 
 With the exception of Knative, the applications will be installed in a dedicated
@@ -556,26 +539,27 @@ NOTE: **NOTE:**
 Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main
 service account of the cluster integration.
 
-### Troubleshooting missing `KUBECONFIG` or `KUBE_TOKEN`
+### Troubleshooting failed deployment jobs
 
-GitLab will create a new service account specifically for your CI builds. The
-new service account is created when the cluster is added to the project.
-Sometimes there may be errors that cause the service account creation to fail.
+GitLab will create a namespace and service account specifically for your
+deployment jobs. These resources are created just before the deployment
+job starts. Sometimes there may be errors that cause their creation to fail.
 
-In such instances, your build will not be passed the `KUBECONFIG` or
-`KUBE_TOKEN` variables and, if you are using Auto DevOps, your Auto DevOps
-pipelines will no longer trigger a `production` deploy build. You will need to
-check the [logs](../../../administration/logs.md) to debug why the service
-account creation failed.
+In such instances, your job will fail with the message:
+
+```The job failed to complete prerequisite tasks```
+
+You will need to check the [logs](../../../administration/logs.md) to debug
+why the namespace and service account creation failed.
 
 A common reason for failure is that the token you gave GitLab did not have
 [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
 privileges as GitLab expects.
 
-Another common problem for why these variables are not being passed to your
-builds is that they must have a matching
+Another common problem is caused by a missing `KUBECONFIG` or `KUBE_TOKEN`.
+To be passed to your job, it must have a matching
 [`environment:name`](../../../ci/environments.md#defining-environments). If
-your build has no `environment:name` set, it will not be passed the Kubernetes
+your job has no `environment:name` set, it will not be passed the Kubernetes
 credentials.
 
 ## Monitoring your Kubernetes cluster **[ULTIMATE]**

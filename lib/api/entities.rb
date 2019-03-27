@@ -86,6 +86,10 @@ module API
       expose :admin?, as: :is_admin
     end
 
+    class UserDetailsWithAdmin < UserWithAdmin
+      expose :highest_role
+    end
+
     class UserStatus < Grape::Entity
       expose :emoji
       expose :message
@@ -271,7 +275,7 @@ module API
       expose :printing_merge_request_link_enabled
       expose :merge_method
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
-        options[:statistics] && Ability.allowed?(options[:current_user], :download_code, project)
+        options[:statistics] && Ability.allowed?(options[:current_user], :read_statistics, project)
       }
 
       # rubocop: disable CodeReuse/ActiveRecord

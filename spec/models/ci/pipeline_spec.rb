@@ -362,6 +362,30 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#matches_sha_or_source_sha?' do
+    subject { pipeline.matches_sha_or_source_sha?(sample_sha) }
+
+    let(:sample_sha) { Digest::SHA1.hexdigest(SecureRandom.hex) }
+
+    context 'when sha matches' do
+      let(:pipeline) { build(:ci_pipeline, sha: sample_sha) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when source_sha matches' do
+      let(:pipeline) { build(:ci_pipeline, source_sha: sample_sha) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when both sha and source_sha do not matche' do
+      let(:pipeline) { build(:ci_pipeline, sha: 'test', source_sha: 'test') }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '.triggered_for_branch' do
     subject { described_class.triggered_for_branch(ref) }
 
@@ -1201,16 +1225,28 @@ describe Ci::Pipeline, :mailer do
     end
 
     describe '#started_at' do
-      it 'updates on transitioning to running' do
-        build.run
+      let(:pipeline) { create(:ci_empty_pipeline, status: from_status) }
 
-        expect(pipeline.reload.started_at).not_to be_nil
+      %i[created preparing pending].each do |status|
+        context "from #{status}" do
+          let(:from_status) { status }
+
+          it 'updates on transitioning to running' do
+            pipeline.run
+
+            expect(pipeline.started_at).not_to be_nil
+          end
+        end
       end
 
-      it 'does not update on transitioning to success' do
-        build.success
+      context 'from created' do
+        let(:from_status) { :created }
 
-        expect(pipeline.reload.started_at).to be_nil
+        it 'does not update on transitioning to success' do
+          pipeline.succeed
+
+          expect(pipeline.started_at).to be_nil
+        end
       end
     end
 
@@ -1229,23 +1265,45 @@ describe Ci::Pipeline, :mailer do
     end
 
     describe 'merge request metrics' do
-      let(:project) { create(:project, :repository) }
-      let(:pipeline) { FactoryBot.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
-      let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
+      let(:pipeline) { create(:ci_empty_pipeline, status: from_status) }
 
       before do
         expect(PipelineMetricsWorker).to receive(:perform_async).with(pipeline.id)
       end
 
       context 'when transitioning to running' do
-        it 'schedules metrics workers' do
-          pipeline.run
+        %i[created preparing pending].each do |status|
+          context "from #{status}" do
+            let(:from_status) { status }
+
+            it 'schedules metrics workers' do
+              pipeline.run
+            end
+          end
         end
       end
 
       context 'when transitioning to success' do
+        let(:from_status) { 'created' }
+
         it 'schedules metrics workers' do
           pipeline.succeed
+        end
+      end
+    end
+
+    describe 'merge on success' do
+      let(:pipeline) { create(:ci_empty_pipeline, status: from_status) }
+
+      %i[created preparing pending running].each do |status|
+        context "from #{status}" do
+          let(:from_status) { status }
+
+          it 'schedules pipeline success worker' do
+            expect(PipelineSuccessWorker).to receive(:perform_async).with(pipeline.id)
+
+            pipeline.succeed
+          end
         end
       end
     end
@@ -1767,6 +1825,18 @@ describe Ci::Pipeline, :mailer do
     end
 
     subject { pipeline.reload.status }
+
+    context 'on prepare' do
+      before do
+        # Prevent skipping directly to 'pending'
+        allow(build).to receive(:prerequisites).and_return([double])
+        allow(Ci::BuildPrepareWorker).to receive(:perform_async)
+
+        build.enqueue
+      end
+
+      it { is_expected.to eq('preparing') }
+    end
 
     context 'on queuing' do
       before do
