@@ -1574,3 +1574,5 @@ class User < ApplicationRecord
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)
   end
 end
+
+User.prepend(Drepo::User)

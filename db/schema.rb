@@ -826,9 +826,9 @@ ActiveRecord::Schema.define(version: 20190325165127) do
     t.string "cluster_ip"
     t.text "status_reason"
     t.string "external_ip"
-    t.string "external_hostname"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "external_hostname"
     t.index ["cluster_id"], name: "index_clusters_applications_ingress_on_cluster_id", unique: true, using: :btree
     t.index ["drepo_updated_at"], name: "index_clusters_applications_ingress_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_clusters_applications_ingress_on_drepo_uuid", using: :btree
@@ -860,9 +860,9 @@ ActiveRecord::Schema.define(version: 20190325165127) do
     t.string "hostname"
     t.text "status_reason"
     t.string "external_ip"
-    t.string "external_hostname"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "external_hostname"
     t.index ["cluster_id"], name: "index_clusters_applications_knative_on_cluster_id", unique: true, using: :btree
     t.index ["drepo_updated_at"], name: "index_clusters_applications_knative_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_clusters_applications_knative_on_drepo_uuid", using: :btree
@@ -1024,6 +1024,21 @@ ActiveRecord::Schema.define(version: 20190325165127) do
     t.index ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
     t.index ["project_id", "status", "created_at"], name: "index_deployments_on_project_id_and_status_and_created_at", using: :btree
     t.index ["project_id", "status"], name: "index_deployments_on_project_id_and_status", using: :btree
+  end
+
+  create_table "drepo_snapshots", force: :cascade do |t|
+    t.integer "target_id"
+    t.string "target_type"
+    t.jsonb "repo_refs"
+    t.string "state"
+    t.integer "author_id"
+    t.datetime "snapped_at"
+    t.datetime "chained_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chained_at"], name: "index_drepo_snapshots_on_chained_at", using: :btree
+    t.index ["snapped_at"], name: "index_drepo_snapshots_on_snapped_at", using: :btree
+    t.index ["target_id", "target_type"], name: "index_drepo_snapshots_on_target_id_and_target_type", using: :btree
   end
 
   create_table "emails", force: :cascade do |t|

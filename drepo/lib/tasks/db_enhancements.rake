@@ -242,7 +242,7 @@ namespace :db do
   end
 
   def exclude_tables
-    %w(ar_internal_metadata schema_migrations prometheus_metrics)
+    %w(ar_internal_metadata schema_migrations prometheus_metrics drepo_snapshot)
   end
 end
 
