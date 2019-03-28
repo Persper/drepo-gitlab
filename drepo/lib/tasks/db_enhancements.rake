@@ -11,38 +11,50 @@
 ##################################################
 
 namespace :db do
-  desc 'Also create shared_extensions Schema'
-  task extensions: :environment do
-    $stdout.puts "Create shared_extensions schema"
-    # Create Schema
-    ActiveRecord::Base.connection.execute 'CREATE SCHEMA IF NOT EXISTS shared_extensions;'
-    # Enable UUID-OSSP
-    ActiveRecord::Base.connection.execute 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA shared_extensions;'
-    ActiveRecord::Base.connection.execute 'ALTER EXTENSION "uuid-ossp" SET SCHEMA shared_extensions;'
-    # Enable pg_trgm
-    ActiveRecord::Base.connection.execute 'CREATE EXTENSION IF NOT EXISTS "pg_trgm" SCHEMA shared_extensions;'
-    ActiveRecord::Base.connection.execute 'ALTER EXTENSION "pg_trgm" SET SCHEMA shared_extensions;'
-    # Grant usage to public
-    ActiveRecord::Base.connection.execute 'GRANT usage ON SCHEMA shared_extensions to public;'
-
-    $stdout.puts "Set database default search_path"
-    config = ActiveRecord::Base.connection_config
-    ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.execute "ALTER DATABASE #{config[:database]} set search_path = #{config[:schema_search_path]};"
+  namespace :drepo do
+    desc 'Initialize drepo schema'
+    task init: :environment do
+      Rake::Task["db:drepo:create_extensions"].invoke
+      Rake::Task["db:drepo:create_schemas"].invoke
+      Rake::Task["db:drepo:extend_columns_triggers"].invoke
+      Rake::Task["db:drepo:remove_foreign_keys"]
     end
 
-    $stdout.puts "Create drepo project schema"
-    # Create drepo_project schema
-    Apartment::Tenant.create 'drepo_project_pending'
-    Apartment::Tenant.create 'drepo_project_completed'
-  end
+    desc 'Also create shared_extensions Schema'
+    task create_extensions: :environment do
+      $stdout.puts "Create shared_extensions schema"
+      # Create Schema
+      ActiveRecord::Base.connection.execute 'CREATE SCHEMA IF NOT EXISTS shared_extensions;'
+      # Enable UUID-OSSP
+      ActiveRecord::Base.connection.execute 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA shared_extensions;'
+      ActiveRecord::Base.connection.execute 'ALTER EXTENSION "uuid-ossp" SET SCHEMA shared_extensions;'
+      # Enable pg_trgm
+      ActiveRecord::Base.connection.execute 'CREATE EXTENSION IF NOT EXISTS "pg_trgm" SCHEMA shared_extensions;'
+      ActiveRecord::Base.connection.execute 'ALTER EXTENSION "pg_trgm" SET SCHEMA shared_extensions;'
+      # Grant usage to public
+      ActiveRecord::Base.connection.execute 'GRANT usage ON SCHEMA shared_extensions to public;'
 
-  desc 'Add drepo extend columns and triggers'
-  task drepo_extend: :environment do
-    $stdout.puts "Add extend columns to drepo project tables, and create triggers"
-    # public schema add drepo_updated_at column
-    ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.execute(%Q{
+      $stdout.puts "Set database default search_path"
+      config = ActiveRecord::Base.connection_config
+      ActiveRecord::Base.connection_pool.with_connection do |conn|
+        conn.execute "ALTER DATABASE #{config[:database]} set search_path = #{config[:schema_search_path]};"
+      end
+    end
+
+    desc 'Create multiple schemas'
+    task create_schemas: :environment do
+      $stdout.puts "Create drepo project schema"
+      # Create drepo_project schema
+      Apartment::Tenant.create 'drepo_project_pending' unless schema_present?('drepo_project_pending')
+      Apartment::Tenant.create 'drepo_project_completed' unless schema_present?('drepo_project_completed')
+    end
+
+    desc 'Add drepo extend columns and triggers'
+    task extend_columns_triggers: :environment do
+      $stdout.puts "Add extend columns to drepo project tables, and create triggers"
+      # public schema add drepo_updated_at column
+      ActiveRecord::Base.connection_pool.with_connection do |conn|
+        conn.execute(%Q{
         do $$
         declare
             r record;
@@ -63,11 +75,11 @@ namespace :db do
         end;
         $$;
       })
-    end
+      end
 
-    # add function
-    ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.execute(%Q{
+      # add function
+      ActiveRecord::Base.connection_pool.with_connection do |conn|
+        conn.execute(%Q{
         create or replace function shared_extensions.func_drepo_touch() returns trigger as $$
           begin
             NEW.drepo_updated_at := NOW();
@@ -75,11 +87,11 @@ namespace :db do
           end;
         $$ language plpgsql;
       })
-    end
+      end
 
-    # add trigger to every table
-    ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.execute(%Q{
+      # add trigger to every table
+      ActiveRecord::Base.connection_pool.with_connection do |conn|
+        conn.execute(%Q{
         do $$
         declare
            r record;
@@ -98,28 +110,33 @@ namespace :db do
         end;
         $$;
       })
+      end
     end
 
-    # drepo_project schema add extend columns
-    add_extend_columns 'drepo_project_pending'
-    add_extend_columns 'drepo_project_completed'
+    desc 'Remove foreign keys'
+    task remove_foreign_keys: :environment do
+      $stdout.puts "Remove foreign keys in pending and completed schemas"
 
-    # remove foreign keys point to users table
-    remove_fk_by_foreign_table('drepo_project_pending', 'users')
-    remove_fk_by_foreign_table('drepo_project_completed', 'users')
+      # drepo_project schema add extend columns
+      add_extend_columns 'drepo_project_pending'
+      add_extend_columns 'drepo_project_completed'
 
-    # remove foreign keys of table column
-    remove_fk_by_column('drepo_project_pending', 'merge_requests', 'head_pipeline_id')
-    remove_fk_by_column('drepo_project_completed', 'merge_requests', 'head_pipeline_id')
-    remove_fk_by_column('drepo_project_pending', 'merge_requests', 'latest_merge_request_diff_id')
-    remove_fk_by_column('drepo_project_completed', 'merge_requests', 'latest_merge_request_diff_id')
-    remove_fk_by_column('drepo_project_pending', 'merge_request_metrics', 'pipeline_id')
-    remove_fk_by_column('drepo_project_completed', 'merge_request_metrics', 'pipeline_id')
-  end
+      # remove foreign keys point to users table
+      remove_fk_by_foreign_table('drepo_project_pending', 'users')
+      remove_fk_by_foreign_table('drepo_project_completed', 'users')
 
-  def remove_fk_by_foreign_table(schema, foreign_table)
-    ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.execute(%Q{
+      # remove foreign keys of table column
+      remove_fk_by_column('drepo_project_pending', 'merge_requests', 'head_pipeline_id')
+      remove_fk_by_column('drepo_project_completed', 'merge_requests', 'head_pipeline_id')
+      remove_fk_by_column('drepo_project_pending', 'merge_requests', 'latest_merge_request_diff_id')
+      remove_fk_by_column('drepo_project_completed', 'merge_requests', 'latest_merge_request_diff_id')
+      remove_fk_by_column('drepo_project_pending', 'merge_request_metrics', 'pipeline_id')
+      remove_fk_by_column('drepo_project_completed', 'merge_request_metrics', 'pipeline_id')
+    end
+
+    def remove_fk_by_foreign_table(schema, foreign_table)
+      ActiveRecord::Base.connection_pool.with_connection do |conn|
+        conn.execute(%Q{
         do $$
         declare
             r record;
@@ -149,12 +166,12 @@ namespace :db do
         end;
         $$;
       })
+      end
     end
-  end
 
-  def remove_fk_by_column(schema, table, column)
-    ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.execute(%Q{
+    def remove_fk_by_column(schema, table, column)
+      ActiveRecord::Base.connection_pool.with_connection do |conn|
+        conn.execute(%Q{
         do $$
         declare
             r record;
@@ -185,12 +202,12 @@ namespace :db do
         end;
         $$;
       })
+      end
     end
-  end
 
-  def add_extend_columns(schema)
-    ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.execute(%Q{
+    def add_extend_columns(schema)
+      ActiveRecord::Base.connection_pool.with_connection do |conn|
+        conn.execute(%Q{
         do $$
         declare
             r record;
@@ -218,7 +235,7 @@ namespace :db do
         $$;
       })
 
-      conn.execute(%Q{
+        conn.execute(%Q{
         do $$
         declare
             r record;
@@ -238,22 +255,35 @@ namespace :db do
         end;
         $$;
       })
+      end
+    end
+
+    def exclude_tables
+      %w(ar_internal_metadata schema_migrations prometheus_metrics drepo_snapshots)
+    end
+
+    def schema_present?(schema)
+      sql = 'select schema_name from information_schema.schemata;'
+      ActiveRecord::Base.connection.query(sql).flatten.include? schema
     end
   end
+end
 
-  def exclude_tables
-    %w(ar_internal_metadata schema_migrations prometheus_metrics drepo_snapshot)
+%w(db:create db:test:purge).each do |task|
+  Rake::Task[task].enhance do
+    Rake::Task["db:drepo:create_extensions"].invoke
+    Rake::Task["db:drepo:create_schemas"].invoke
   end
 end
-
-Rake::Task["db:create"].enhance do
-  Rake::Task["db:extensions"].invoke
-end
-
-Rake::Task["db:test:purge"].enhance do
-  Rake::Task["db:extensions"].invoke
-end
-
-Rake::Task["db:setup"].enhance do
-  Rake::Task["db:drepo_extend"].invoke
-end
+#
+# %w(db:schema:load db:structure:load db:test:load_schema db:test:load_structure).each do |task|
+#   Rake::Task[task].enhance do
+#     Rake::Task["db:drepo:create_extensions"].invoke
+#     Rake::Task["db:drepo:create_schemas"].invoke
+#     Rake::Task["db:drepo:extend_columns_triggers"].invoke
+#   end
+# end
+#
+# Rake::Task["db:migrate"].enhance do
+#   Rake::Task["db:drepo:extend_columns_triggers"].invoke
+# end
