@@ -15,7 +15,7 @@ module Drepo
           drepo_migrate_path = Rails.root.join('drepo/', relative_migrate_path)
 
           next if relative_migrate_path.to_s.start_with?('drepo/') ||
-            Rails.application.config.paths['db/migrate'].include?(drepo_migrate_path.to_s)
+              Rails.application.config.paths['db/migrate'].include?(drepo_migrate_path.to_s)
 
           Rails.application.config.paths['db/migrate'] << drepo_migrate_path.to_s
           ActiveRecord::Migrator.migrations_paths << drepo_migrate_path.to_s
