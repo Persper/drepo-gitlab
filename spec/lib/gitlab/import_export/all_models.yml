@@ -320,6 +320,7 @@ project:
 - pool_repository
 - kubernetes_namespaces
 - error_tracking_setting
+- snapshots
 award_emoji:
 - awardable
 - user
@@ -355,3 +356,6 @@ error_tracking_setting:
 - project
 suggestions:
 - note
+snapshots:
+- author
+- target

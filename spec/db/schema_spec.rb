@@ -55,7 +55,8 @@ describe 'Database schema' do
     users: %w[color_scheme_id created_by_id theme_id],
     users_star_projects: %w[user_id],
     web_hooks: %w[service_id],
-    suggestions: %w[commit_id]
+    suggestions: %w[commit_id],
+    drepo_snapshots: %w[author_id target_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do
