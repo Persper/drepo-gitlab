@@ -34,9 +34,9 @@ class CreateDrepoSnapshots < ActiveRecord::Migration[5.0]
       t.string :target_type
       t.jsonb :repo_refs
       t.string :state
-      t.integer :snapped_by
+      t.integer :snapped_by_id
       t.datetime :snapped_at
-      t.integer :chained_by
+      t.integer :chained_by_id
       t.datetime :chained_at
 
       t.timestamps null: false

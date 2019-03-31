@@ -12,14 +12,6 @@
 
 namespace :db do
   namespace :drepo do
-    desc 'Initialize drepo schema'
-    task init: :environment do
-      Rake::Task["db:drepo:create_extensions"].invoke
-      Rake::Task["db:drepo:create_schemas"].invoke
-      Rake::Task["db:drepo:extend_columns_triggers"].invoke
-      Rake::Task["db:drepo:remove_foreign_keys"]
-    end
-
     desc 'Also create shared_extensions Schema'
     task create_extensions: :environment do
       $stdout.puts "Create shared_extensions schema"
@@ -67,7 +59,7 @@ namespace :db do
               'CREATE INDEX IF NOT EXISTS index_' || T.myTable || '_on_drepo_updated_at ON public.' || T.myTable || ' USING btree (drepo_updated_at);' as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='updated_at' AND table_name NOT IN (#{exclude_tables.map { |t| conn.quote(t) }.join(',')})
+                SELECT DISTINCT table_name as myTable FROM information_schema.tables WHERE table_schema='public' AND table_name NOT IN (#{exclude_tables})
               ) t
         loop
         execute r.script;
@@ -102,7 +94,7 @@ namespace :db do
               'CREATE TRIGGER trig_drepo_touch BEFORE INSERT OR UPDATE ON public.' || T.myTable || ' FOR EACH ROW EXECUTE PROCEDURE shared_extensions.func_drepo_touch()' as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='updated_at' AND table_name NOT IN (#{exclude_tables.map { |t| conn.quote(t) }.join(',')})
+                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='drepo_updated_at' AND table_name NOT IN (#{exclude_tables})
               ) t
         loop
         execute r.script;
@@ -111,15 +103,15 @@ namespace :db do
         $$;
       })
       end
+
+      # drepo_project schema add extend columns
+      add_extend_columns 'drepo_project_pending'
+      add_extend_columns 'drepo_project_completed'
     end
 
     desc 'Remove foreign keys'
     task remove_foreign_keys: :environment do
       $stdout.puts "Remove foreign keys in pending and completed schemas"
-
-      # drepo_project schema add extend columns
-      add_extend_columns 'drepo_project_pending'
-      add_extend_columns 'drepo_project_completed'
 
       # remove foreign keys point to users table
       remove_fk_by_foreign_table('drepo_project_pending', 'users')
@@ -226,7 +218,7 @@ namespace :db do
               as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='updated_at' AND table_name NOT IN (#{exclude_tables.map { |t| conn.quote(t) }.join(',')})
+                SELECT DISTINCT table_name as myTable FROM information_schema.tables WHERE table_schema='public' AND table_name NOT IN (#{exclude_tables})
               ) t
         loop
         execute r.script;
@@ -247,7 +239,7 @@ namespace :db do
               as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND table_name NOT IN (#{exclude_tables.map { |t| conn.quote(t) }.join(',')})
+                SELECT DISTINCT table_name as myTable FROM information_schema.tables WHERE table_schema='public' AND table_name NOT IN (#{exclude_tables})
               ) t
         loop
         execute r.script;
@@ -259,13 +251,21 @@ namespace :db do
     end
 
     def exclude_tables
-      %w(ar_internal_metadata schema_migrations prometheus_metrics drepo_snapshots)
+      Snapshot::EXCLUDE_TABLES.map { |t| ActiveRecord::Base.connection.quote(t) }.join(',')
     end
 
     def schema_present?(schema)
       sql = 'select schema_name from information_schema.schemata;'
       ActiveRecord::Base.connection.query(sql).flatten.include? schema
     end
+  end
+
+  desc 'Initialize drepo schema'
+  task init: :environment do
+    Rake::Task["db:drepo:create_extensions"].invoke
+    Rake::Task["db:drepo:create_schemas"].invoke
+    Rake::Task["db:drepo:extend_columns_triggers"].invoke
+    Rake::Task["db:drepo:remove_foreign_keys"].invoke
   end
 end
 
