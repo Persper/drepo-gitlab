@@ -258,14 +258,14 @@ namespace :db do
       sql = 'select schema_name from information_schema.schemata;'
       ActiveRecord::Base.connection.query(sql).flatten.include? schema
     end
-  end
 
-  desc 'Initialize drepo schema'
-  task init: :environment do
-    Rake::Task["db:drepo:create_extensions"].invoke
-    Rake::Task["db:drepo:create_schemas"].invoke
-    Rake::Task["db:drepo:extend_columns_triggers"].invoke
-    Rake::Task["db:drepo:remove_foreign_keys"].invoke
+    desc 'Initialize drepo schema'
+    task init: :environment do
+      Rake::Task["db:drepo:create_extensions"].invoke
+      Rake::Task["db:drepo:create_schemas"].invoke
+      Rake::Task["db:drepo:extend_columns_triggers"].invoke
+      Rake::Task["db:drepo:remove_foreign_keys"].invoke
+    end
   end
 end
 
