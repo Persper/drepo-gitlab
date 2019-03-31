@@ -32,7 +32,11 @@ module Drepo
           project_json['description'] = @params[:description]
         end
 
-        project_json['project_members'].merge!(group_members_json.map { |g| [g['id'], g] }.to_h)
+        if @params[:export_format] == :fingerprint
+          project_json['project_members'].merge!(group_members_json.map { |g| [g['id'], g] }.to_h)
+        else
+          project_json['project_members'] += group_members_json
+        end
 
         RelationRenameService.add_new_associations(project_json)
 
@@ -40,12 +44,16 @@ module Drepo
       end
 
       def project_json
-        # @project_json ||= @project.as_json(reader.project_tree)
-        @project_json ||= Drepo::ImportExport::Serialization.new.as_json(
-          @project,
-          @project.model_name.element,
-          reader.project_tree
-        )
+        @project_json ||=
+          if @params[:export_format] == :fingerprint
+            Drepo::ImportExport::Serialization.new.as_json(
+              @project,
+              @project.model_name.element,
+              reader.project_tree
+            )
+          else
+            @project.as_json(reader.project_tree)
+          end
       end
 
       def reader
