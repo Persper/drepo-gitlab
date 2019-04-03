@@ -1452,11 +1452,10 @@ ActiveRecord::Schema.define(version: 20190325165127) do
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
-    t.boolean "allow_maintainer_to_push"
-    t.integer "state_id", limit: 2
     t.string "rebase_commit_sha"
     t.boolean "squash", default: false, null: false
     t.boolean "allow_maintainer_to_push"
+    t.integer "state_id", limit: 2
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
     t.index ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
