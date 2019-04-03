@@ -753,6 +753,7 @@ karma:
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   script:
+    - cat tmp/tests/gitlab-test_bare/packed-refs
     - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
     - date
     - scripts/gitaly-test-spawn

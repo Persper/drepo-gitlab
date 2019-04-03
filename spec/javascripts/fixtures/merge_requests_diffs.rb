@@ -35,11 +35,19 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
   end
 
   it 'merge_request_diffs/with_commit.json' do |example|
+    $stdout.puts "merge_request.all_commits.to_sql: #{merge_request.all_commits.to_sql}"
+
+    merge_request.all_commits.each do |c|
+      $stdout.puts "--->[DEBUG] commit sha: #{c.sha}, relative_order: #{c.relative_order}, drepo_updated_at: #{c.drepo_updated_at}, drepo_uuid: #{c.drepo_uuid}, merge_request_diff_id: #{c.merge_request_diff_id}"
+    end
+
     # Create a user that matches the selected commit author
     # This is so that the "author" information will be populated
     create(:user, email: selected_commit.author_email, name: selected_commit.author_name)
 
     render_merge_request(example.description, merge_request, commit_id: selected_commit.sha)
+
+    $stdout.puts "--->[DEBUG] #{File.read('spec/javascripts/fixtures/merge_request_diffs/with_commit.json')}"
   end
 
   it 'merge_request_diffs/inline_changes_tab_with_comments.json' do |example|

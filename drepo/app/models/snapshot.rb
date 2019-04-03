@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Snapshot < ActiveRecord::Base
+class Snapshot < ApplicationRecord
   self.table_name = 'drepo_snapshots'
 
   TARGET_TYPES = HashWithIndifferentAccess.new(
