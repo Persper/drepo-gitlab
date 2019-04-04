@@ -556,6 +556,7 @@ rspec-pg-quarantine:
 
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
+  <<: *use-pg
   dependencies:
     - compile-assets
     - setup-test-env
@@ -591,6 +592,7 @@ docs lint:
 
 downtime_check:
   <<: *rake-exec
+  <<: *use-pg
   except:
     - master
     - tags

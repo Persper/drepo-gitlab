@@ -124,6 +124,7 @@ class ProjectTeam
     source_members.map! do |member|
       new_member = member.dup
       new_member.id = nil
+      new_member.drepo_uuid = nil
       new_member.source = target_project
       new_member.created_by = current_user
       new_member

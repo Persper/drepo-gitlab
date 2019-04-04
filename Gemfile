@@ -435,3 +435,9 @@ gem 'flipper-active_support_cache_store', '~> 0.13.0'
 # Structured logging
 gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
+
+# Drepo-specific start
+# rubocop:disable Cop/GemFetcher
+gem 'apartment', git: 'https://gitlab.com/persper/apartment.git', ref: 'fix_drop_task'
+# rubocop:enable Cop/GemFetcher
+# Drepo-specific end

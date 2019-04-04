@@ -282,6 +282,7 @@ class Service < ApplicationRecord
 
   def self.build_from_template(project_id, template)
     service = template.dup
+    service.drepo_uuid = nil
     service.template = false
     service.project_id = project_id
     service.active = false if service.active? && !service.valid?
