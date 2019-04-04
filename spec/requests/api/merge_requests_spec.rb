@@ -729,6 +729,14 @@ describe API::MergeRequests do
   end
 
   describe "GET /projects/:id/merge_requests/:merge_request_iid" do
+    it 'matches json schema' do
+      merge_request = create(:merge_request, :with_test_reports, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/merge_request')
+    end
+
     it 'exposes known attributes' do
       create(:award_emoji, :downvote, awardable: merge_request)
       create(:award_emoji, :upvote, awardable: merge_request)
@@ -1353,7 +1361,12 @@ describe API::MergeRequests do
     end
 
     it 'returns 405 if the build failed for a merge request that requires success' do
-      allow_any_instance_of(MergeRequest).to receive(:mergeable_ci_state?).and_return(false)
+      project.update!(only_allow_merge_if_pipeline_succeeds: true)
+
+      create(:ci_pipeline,
+             :failed,
+             sha: merge_request.diff_head_sha,
+             merge_requests_as_head_pipeline: [merge_request])
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
