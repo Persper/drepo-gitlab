@@ -321,9 +321,6 @@ msgstr ""
 msgid "A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
 msgstr ""
 
-msgid "A collection of graphs regarding Continuous Integration"
-msgstr ""
-
 msgid "A default branch cannot be chosen for an empty project."
 msgstr ""
 
@@ -454,6 +451,9 @@ msgid "Add italic text"
 msgstr ""
 
 msgid "Add license"
+msgstr ""
+
+msgid "Add list"
 msgstr ""
 
 msgid "Add new application"
@@ -1518,9 +1518,6 @@ msgstr ""
 msgid "Choose <strong>Next</strong> at the bottom of the page."
 msgstr ""
 
-msgid "Choose File ..."
-msgstr ""
-
 msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
 msgstr ""
 
@@ -1542,7 +1539,7 @@ msgstr ""
 msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
 
-msgid "Choose file..."
+msgid "Choose file…"
 msgstr ""
 
 msgid "Choose the top-level group for your repository imports."
@@ -2526,9 +2523,6 @@ msgid "Create New Domain"
 msgstr ""
 
 msgid "Create a new branch"
-msgstr ""
-
-msgid "Create a new branch and merge request"
 msgstr ""
 
 msgid "Create a new issue"
@@ -5495,6 +5489,9 @@ msgstr ""
 msgid "Not now"
 msgstr ""
 
+msgid "Not ready yet. Try again later."
+msgstr ""
+
 msgid "Not started"
 msgstr ""
 
@@ -6379,9 +6376,6 @@ msgstr ""
 msgid "Project avatar"
 msgstr ""
 
-msgid "Project avatar in repository: %{link}"
-msgstr ""
-
 msgid "Project details"
 msgstr ""
 
@@ -7031,6 +7025,9 @@ msgstr ""
 msgid "Scope not supported with disabled 'users_search' feature!"
 msgstr ""
 
+msgid "Scoped label"
+msgstr ""
+
 msgid "Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right."
 msgstr ""
 
@@ -7667,6 +7664,9 @@ msgid "Stars"
 msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
+msgstr ""
+
+msgid "Start a new merge request"
 msgstr ""
 
 msgid "Start and due date"
@@ -8332,9 +8332,6 @@ msgid "This namespace has already been taken! Please choose another one."
 msgstr ""
 
 msgid "This option is disabled as you don't have write permissions for the current branch"
-msgstr ""
-
-msgid "This option is disabled while you still have unstaged changes"
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."
@@ -10050,6 +10047,9 @@ msgid "personal access token"
 msgstr ""
 
 msgid "private"
+msgstr ""
+
+msgid "processing"
 msgstr ""
 
 msgid "project"
