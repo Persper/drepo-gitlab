@@ -238,6 +238,9 @@ msgid_plural "%d closed merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 day"
+msgstr ""
+
 msgid "1 merged merge request"
 msgid_plural "%d merged merge requests"
 msgstr[0] ""
@@ -258,6 +261,9 @@ msgid_plural "%d pipelines"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 week"
+msgstr ""
+
 msgid "1st contribution!"
 msgstr ""
 
@@ -265,6 +271,15 @@ msgid "2FA"
 msgstr ""
 
 msgid "2FA enabled"
+msgstr ""
+
+msgid "3 days"
+msgstr ""
+
+msgid "3 hours"
+msgstr ""
+
+msgid "30 minutes"
 msgstr ""
 
 msgid "403|Please contact your GitLab administrator to get permission."
@@ -280,6 +295,9 @@ msgid "404|Page Not Found"
 msgstr ""
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
+msgid "8 hours"
 msgstr ""
 
 msgid "<code>\"johnsmith@example.com\": \"@johnsmith\"</code> will add \"By <a href=\"#\">@johnsmith</a>\" to all issues and comments originally created by johnsmith@example.com, and will set <a href=\"#\">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com."
@@ -3178,6 +3196,9 @@ msgstr ""
 msgid "Ends at (UTC)"
 msgstr ""
 
+msgid "Enter at least three characters to search"
+msgstr ""
+
 msgid "Enter in your Bitbucket Server URL and personal access token below"
 msgstr ""
 
@@ -5106,6 +5127,12 @@ msgstr ""
 msgid "Metrics|No deployed environments"
 msgstr ""
 
+msgid "Metrics|Not enough data to display"
+msgstr ""
+
+msgid "Metrics|Show last"
+msgstr ""
+
 msgid "Metrics|There was an error fetching the environments data, please try again"
 msgstr ""
 
@@ -5920,12 +5947,6 @@ msgstr ""
 msgid "Pipeline|Coverage"
 msgstr ""
 
-msgid "Pipeline|Create for"
-msgstr ""
-
-msgid "Pipeline|Create pipeline"
-msgstr ""
-
 msgid "Pipeline|Duration"
 msgstr ""
 
@@ -5936,6 +5957,9 @@ msgid "Pipeline|Pipeline"
 msgstr ""
 
 msgid "Pipeline|Run Pipeline"
+msgstr ""
+
+msgid "Pipeline|Run for"
 msgstr ""
 
 msgid "Pipeline|Search branches"
@@ -6410,6 +6434,21 @@ msgid "Project:"
 msgstr ""
 
 msgid "ProjectActivityRSS|Subscribe"
+msgstr ""
+
+msgid "ProjectCreationLevel|Allowed to create projects"
+msgstr ""
+
+msgid "ProjectCreationLevel|Default project creation protection"
+msgstr ""
+
+msgid "ProjectCreationLevel|Developers + Maintainers"
+msgstr ""
+
+msgid "ProjectCreationLevel|Maintainers"
+msgstr ""
+
+msgid "ProjectCreationLevel|No one"
 msgstr ""
 
 msgid "ProjectFileTree|Name"
@@ -7076,6 +7115,9 @@ msgstr ""
 msgid "Search users"
 msgstr ""
 
+msgid "Search your projects"
+msgstr ""
+
 msgid "SearchAutocomplete|All GitLab"
 msgstr ""
 
@@ -7471,7 +7513,13 @@ msgstr ""
 msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
+msgid "Something went wrong, unable to search projects"
+msgstr ""
+
 msgid "Something went wrong. Please try again."
+msgstr ""
+
+msgid "Sorry, no projects matched your search"
 msgstr ""
 
 msgid "Sorry, your filter produced no results"

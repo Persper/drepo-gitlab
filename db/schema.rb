@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(version: 20190325165127) do
     t.string "runners_registration_token_encrypted"
     t.integer "local_markdown_version", default: 0, null: false
     t.integer "first_day_of_week", default: 0, null: false
+    t.integer "default_project_creation", default: 2, null: false
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
@@ -1536,6 +1537,7 @@ ActiveRecord::Schema.define(version: 20190325165127) do
     t.integer "cached_markdown_version"
     t.string "runners_token"
     t.string "runners_token_encrypted"
+    t.integer "project_creation_level"
     t.boolean "auto_devops_enabled"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
