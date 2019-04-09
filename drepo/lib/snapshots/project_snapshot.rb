@@ -22,7 +22,8 @@ module Snapshots
       copy_notes
       copy_events
 
-      copy_project_members
+      copy_namespace
+      copy_members
 
       copy_releases
 
@@ -180,7 +181,19 @@ module Snapshots
       event_ids
     end
 
-    def copy_project_members
+    def copy_namespace
+      result = connection.query(generate_snapshot_sql(
+                                  Namespace.where(id: @project.namespace_id), returning: %w(id owner_id)))
+      namespace_ids, u_ids = result.each_with_object([[], []]) do |element, two_arr|
+        two_arr[0] << element[0]
+        two_arr[1] << element[1]
+      end
+      collect_user_ids(u_ids)
+
+      namespace_ids
+    end
+
+    def copy_members
       # Users have different abilities depending on the access level they have in a
       # particular group or project. If a user is both in a group's project and the
       # project itself, the highest permission level is used.
@@ -197,24 +210,6 @@ module Snapshots
       collect_user_ids(u_ids)
 
       member_ids
-    end
-
-    def copy_user_agent_detail(subject_id, subject_type)
-      connection.query(generate_snapshot_sql(
-                         UserAgentDetail.where(subject_id: subject_id, subject_type: subject_type)))
-    end
-
-    def copy_award_emoji(awardable_id, awardable_type)
-      result = connection.query(generate_snapshot_sql(
-                                  AwardEmoji.where(awardable_id: awardable_id, awardable_type: awardable_type),
-                                  returning: %w(id user_id)))
-      award_emoji_ids, u_ids = result.each_with_object([[], []]) do |element, two_arr|
-        two_arr[0] << element[0]
-        two_arr[1] << element[1]
-      end
-      collect_user_ids(u_ids)
-
-      award_emoji_ids
     end
 
     def copy_releases
@@ -249,6 +244,24 @@ module Snapshots
       }
       puts sql
       connection.execute(sql)
+    end
+
+    def copy_user_agent_detail(subject_id, subject_type)
+      connection.query(generate_snapshot_sql(
+                         UserAgentDetail.where(subject_id: subject_id, subject_type: subject_type)))
+    end
+
+    def copy_award_emoji(awardable_id, awardable_type)
+      result = connection.query(generate_snapshot_sql(
+                                  AwardEmoji.where(awardable_id: awardable_id, awardable_type: awardable_type),
+                                  returning: %w(id user_id)))
+      award_emoji_ids, u_ids = result.each_with_object([[], []]) do |element, two_arr|
+        two_arr[0] << element[0]
+        two_arr[1] << element[1]
+      end
+      collect_user_ids(u_ids)
+
+      award_emoji_ids
     end
 
     def collect_user_ids(ids)
