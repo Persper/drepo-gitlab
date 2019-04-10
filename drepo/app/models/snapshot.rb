@@ -103,7 +103,37 @@ class Snapshot < ApplicationRecord
     web_hooks
   ].freeze
 
-  belongs_to :target, polymorphic: true, inverse_of: :snapshot
+  belongs_to :target, polymorphic: true, inverse_of: :snapshots
   belongs_to :snapped_by, class_name: 'User'
   belongs_to :chained_by, class_name: 'User'
+
+  def project_snapshot?
+    target_type == 'Project'
+  end
+
+  def build_branches
+    return unless project_snapshot?
+
+    branch_names = target.repository.branch_names
+
+    self.branches = branch_names.each_with_object([]) do |name, object|
+      branch = target.repository.find_branch name
+      object << { name: name, sha: branch.dereferenced_target.id }
+    rescue
+      # just drop this branch
+    end
+  end
+
+  def build_tags
+    return unless project_snapshot?
+
+    tag_names = target.repository.tag_names
+
+    self.tags = tag_names.each_with_object([]) do |name, object|
+      tag = target.repository.find_tag name
+      object << { name: name, sha: tag.dereferenced_target.id }
+    rescue
+      # just drop this tag
+    end
+  end
 end
