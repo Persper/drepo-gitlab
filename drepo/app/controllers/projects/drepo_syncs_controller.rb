@@ -1,18 +1,19 @@
 class Projects::DrepoSyncsController < Projects::IssuesController
-  # prepend a modified IssuableCollections for drepo Issues objects
-  prepend DrepoIssuableCollections
   include ExtractsPath
   include RendersCommits
 
   prepend_before_action(only: [:new]) { params[:ref] ||= 'master' }
   before_action :authenticate_user!
-  before_action :set_issuables_index
-  before_action :assign_ref_vars, except: :commits_root
-  before_action :validate_ref!, except: :commits_root
-  before_action :set_commits, except: :commits_root
+  before_action :assign_ref_vars, except: [:commits_root, :drepo_issue]
+  before_action :validate_ref!, except: [:commits_root, :drepo_issue]
+  before_action :set_commits, except: [:commits_root, :drepo_issue]
 
   def new
-    @issues = @issuables
+    Apartment::Tenant.switch 'drepo_project_pending' do
+      @project = Project.find(@project.id)
+      @issues_total_count = @project.issues.count
+      @issues = @project.issues.includes(:labels, :assignees, :events).page(params[:page]).load
+    end
 
     respond_to do |format|
       format.html
@@ -28,7 +29,28 @@ class Projects::DrepoSyncsController < Projects::IssuesController
     end
   end
 
+  # show the issue
+  def drepo_issue
+    #Apartment::Tenant.switch 'drepo_project_pending' do
+      @project = Project.find(@project.id)
+      @issue = Issue.includes(includes_options).find_by(iid: params[:id])
+      #@issuable_sidebar = serializer.represent(@issue, serializer: 'sidebar') # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    #end
+
+    respond_to do |format|
+      format.html { render 'projects/drepo_syncs/issues/show' }
+    end
+  end
+
   private
+
+  def includes_options
+    [:labels, :assignees, :milestone, :events, :project, project: :namespace]
+  end
+
+  def serializer
+    IssueSerializer.new(current_user: current_user, project: @issue.project)
+  end
 
   def validate_ref!
     render_404 unless valid_ref?(@ref)
