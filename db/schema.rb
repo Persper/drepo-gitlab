@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190326164045) do
+ActiveRecord::Schema.define(version: 20190410104522) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -894,7 +894,6 @@ ActiveRecord::Schema.define(version: 20190326164045) do
   create_table "drepo_snapshots", force: :cascade do |t|
     t.integer "target_id"
     t.string "target_type"
-    t.jsonb "repo_refs"
     t.string "state"
     t.integer "snapped_by_id"
     t.datetime "snapped_at"
@@ -902,6 +901,9 @@ ActiveRecord::Schema.define(version: 20190326164045) do
     t.datetime "chained_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "reason"
+    t.jsonb "branches"
+    t.jsonb "tags"
     t.index ["chained_at"], name: "index_drepo_snapshots_on_chained_at", using: :btree
     t.index ["snapped_at"], name: "index_drepo_snapshots_on_snapped_at", using: :btree
     t.index ["target_id", "target_type"], name: "index_drepo_snapshots_on_target_id_and_target_type", using: :btree
