@@ -224,7 +224,7 @@ The `name` and `url` parameters for dynamic environments can use most available 
 including:
 
 - [Predefined environment variables](variables/README.md#predefined-environment-variables)
-- [Project and group variables](variables/README.md#variables)
+- [Project and group variables](variables/README.md#gitlab-cicd-environment-variables)
 - [`.gitlab-ci.yml` variables](yaml/README.md#variables)
 
 However, you cannot use variables defined:
@@ -664,7 +664,7 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ### Scoping environments with specs **[PREMIUM]**
 
 Some GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) features can behave differently for each
-environment. For example, you can [create a secret variable to be injected only into a production environment](variables/README.md#limiting-environment-scopes-of-variables-premium).
+environment. For example, you can [create a secret variable to be injected only into a production environment](https://docs.gitlab.com/ee/ci/variables/#limiting-environment-scopes-of-environment-variables-premium).
 
 In most cases, these features use the _environment specs_ mechanism, which offers
 an efficient way to implement scoping within each environment group.

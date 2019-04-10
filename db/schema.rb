@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190325165127) do
+ActiveRecord::Schema.define(version: 20190326164045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(version: 20190325165127) do
     t.string "runners_registration_token_encrypted"
     t.integer "local_markdown_version", default: 0, null: false
     t.integer "first_day_of_week", default: 0, null: false
+    t.integer "default_project_creation", default: 2, null: false
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
@@ -1536,6 +1537,7 @@ ActiveRecord::Schema.define(version: 20190325165127) do
     t.integer "cached_markdown_version"
     t.string "runners_token"
     t.string "runners_token_encrypted"
+    t.integer "project_creation_level"
     t.boolean "auto_devops_enabled"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
@@ -2462,6 +2464,10 @@ ActiveRecord::Schema.define(version: 20190325165127) do
     t.boolean "submitted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.index ["drepo_updated_at"], name: "index_user_agent_details_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_user_agent_details_on_drepo_uuid", using: :btree
     t.index ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
   end
 

@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid " Please sign in."
+msgstr ""
+
 msgid " Status"
 msgstr ""
 
@@ -141,6 +144,9 @@ msgstr ""
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
 msgstr ""
 
+msgid "%{mrText}, this issue will be closed automatically."
+msgstr ""
+
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
@@ -238,6 +244,9 @@ msgid_plural "%d closed merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 day"
+msgstr ""
+
 msgid "1 merged merge request"
 msgid_plural "%d merged merge requests"
 msgstr[0] ""
@@ -258,6 +267,9 @@ msgid_plural "%d pipelines"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 week"
+msgstr ""
+
 msgid "1st contribution!"
 msgstr ""
 
@@ -265,6 +277,15 @@ msgid "2FA"
 msgstr ""
 
 msgid "2FA enabled"
+msgstr ""
+
+msgid "3 days"
+msgstr ""
+
+msgid "3 hours"
+msgstr ""
+
+msgid "30 minutes"
 msgstr ""
 
 msgid "403|Please contact your GitLab administrator to get permission."
@@ -280,6 +301,9 @@ msgid "404|Page Not Found"
 msgstr ""
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
+msgid "8 hours"
 msgstr ""
 
 msgid "<code>\"johnsmith@example.com\": \"@johnsmith\"</code> will add \"By <a href=\"#\">@johnsmith</a>\" to all issues and comments originally created by johnsmith@example.com, and will set <a href=\"#\">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com."
@@ -321,9 +345,6 @@ msgstr ""
 msgid "A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
 msgstr ""
 
-msgid "A collection of graphs regarding Continuous Integration"
-msgstr ""
-
 msgid "A default branch cannot be chosen for an empty project."
 msgstr ""
 
@@ -331,6 +352,12 @@ msgid "A deleted user"
 msgstr ""
 
 msgid "A member of GitLab's abuse team will review your report as soon as possible."
+msgstr ""
+
+msgid "A merge commit is created for every merge, and merging is allowed as long as there are no conflicts."
+msgstr ""
+
+msgid "A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible. This way you could make sure that if this merge request would build, after merging to target branch it would also build."
 msgstr ""
 
 msgid "A new branch will be created in your fork and a new merge request will be started."
@@ -382,6 +409,9 @@ msgid "Accept terms"
 msgstr ""
 
 msgid "Access Tokens"
+msgstr ""
+
+msgid "Access denied for your LDAP account."
 msgstr ""
 
 msgid "Access denied! Please verify you can add deploy keys to this repository."
@@ -454,6 +484,9 @@ msgid "Add italic text"
 msgstr ""
 
 msgid "Add license"
+msgstr ""
+
+msgid "Add list"
 msgstr ""
 
 msgid "Add new application"
@@ -981,10 +1014,16 @@ msgstr ""
 msgid "Authentication Log"
 msgstr ""
 
+msgid "Authentication failed: %{error_message}"
+msgstr ""
+
 msgid "Authentication log"
 msgstr ""
 
 msgid "Authentication method"
+msgstr ""
+
+msgid "Authentication method updated"
 msgstr ""
 
 msgid "Authentication via U2F device failed."
@@ -1003,6 +1042,9 @@ msgid "Authorize"
 msgstr ""
 
 msgid "Authorize %{link_to_client} to use your account?"
+msgstr ""
+
+msgid "Authorized %{new_chat_name}"
 msgstr ""
 
 msgid "Authorized At"
@@ -1045,6 +1087,9 @@ msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if 
 msgstr ""
 
 msgid "Automatically marked as default internal user"
+msgstr ""
+
+msgid "Automatically resolve merge request diff discussions when they become outdated"
 msgstr ""
 
 msgid "Automatically resolved"
@@ -1437,6 +1482,12 @@ msgstr ""
 msgid "Cannot be merged automatically"
 msgstr ""
 
+msgid "Cannot create the abuse report. The user has been deleted."
+msgstr ""
+
+msgid "Cannot create the abuse report. This user has been blocked."
+msgstr ""
+
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
@@ -1518,9 +1569,6 @@ msgstr ""
 msgid "Choose <strong>Next</strong> at the bottom of the page."
 msgstr ""
 
-msgid "Choose File ..."
-msgstr ""
-
 msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
 msgstr ""
 
@@ -1542,7 +1590,7 @@ msgstr ""
 msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
 
-msgid "Choose file..."
+msgid "Choose file…"
 msgstr ""
 
 msgid "Choose the top-level group for your repository imports."
@@ -2498,10 +2546,16 @@ msgstr ""
 msgid "Copy token to clipboard"
 msgstr ""
 
+msgid "Could not authorize chat nickname. Try again!"
+msgstr ""
+
 msgid "Could not connect to FogBugz, check your URL"
 msgstr ""
 
 msgid "Could not create Wiki Repository at this time. Please try again later."
+msgstr ""
+
+msgid "Could not delete chat nickname %{chat_name}."
 msgstr ""
 
 msgid "Could not remove the trigger."
@@ -2511,6 +2565,9 @@ msgid "Could not retrieve the pipeline status. For troubleshooting steps, read t
 msgstr ""
 
 msgid "Could not revoke impersonation token %{token_name}."
+msgstr ""
+
+msgid "Could not revoke personal access token %{personal_access_token_name}."
 msgstr ""
 
 msgid "Coverage"
@@ -2525,10 +2582,10 @@ msgstr ""
 msgid "Create New Domain"
 msgstr ""
 
-msgid "Create a new branch"
+msgid "Create a GitLab account first, and then connect it to your %{label} account."
 msgstr ""
 
-msgid "Create a new branch and merge request"
+msgid "Create a new branch"
 msgstr ""
 
 msgid "Create a new issue"
@@ -2778,6 +2835,12 @@ msgid "Delete this attachment"
 msgstr ""
 
 msgid "Deleted"
+msgstr ""
+
+msgid "Deleted chat nickname: %{chat_name}!"
+msgstr ""
+
+msgid "Denied authorization of chat nickname %{user_name}."
 msgstr ""
 
 msgid "Deny"
@@ -3182,6 +3245,9 @@ msgid "Enabled sources for code import during project creation. OmniAuth must be
 msgstr ""
 
 msgid "Ends at (UTC)"
+msgstr ""
+
+msgid "Enter at least three characters to search"
 msgstr ""
 
 msgid "Enter in your Bitbucket Server URL and personal access token below"
@@ -3616,6 +3682,12 @@ msgstr ""
 msgid "Failed to save new settings"
 msgstr ""
 
+msgid "Failed to save preferences (%{error_message})."
+msgstr ""
+
+msgid "Failed to save preferences."
+msgstr ""
+
 msgid "Failed to update issues, please try again."
 msgstr ""
 
@@ -3623,6 +3695,9 @@ msgid "Failed to upload object map file"
 msgstr ""
 
 msgid "Failure"
+msgstr ""
+
+msgid "Fast-forward merge"
 msgstr ""
 
 msgid "Fast-forward merge without a merge commit"
@@ -4998,7 +5073,13 @@ msgstr ""
 msgid "Merge Requests"
 msgstr ""
 
+msgid "Merge commit"
+msgstr ""
+
 msgid "Merge commit message"
+msgstr ""
+
+msgid "Merge commit with semi-linear history"
 msgstr ""
 
 msgid "Merge events"
@@ -5008,6 +5089,9 @@ msgid "Merge immediately"
 msgstr ""
 
 msgid "Merge in progress"
+msgstr ""
+
+msgid "Merge method"
 msgstr ""
 
 msgid "Merge request"
@@ -5110,6 +5194,12 @@ msgid "Metrics|Learn about environments"
 msgstr ""
 
 msgid "Metrics|No deployed environments"
+msgstr ""
+
+msgid "Metrics|Not enough data to display"
+msgstr ""
+
+msgid "Metrics|Show last"
 msgstr ""
 
 msgid "Metrics|There was an error fetching the environments data, please try again"
@@ -5435,6 +5525,9 @@ msgstr ""
 msgid "No license. All rights reserved"
 msgstr ""
 
+msgid "No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. When fast-forward merge is not possible, the user is given the option to rebase."
+msgstr ""
+
 msgid "No merge requests found"
 msgstr ""
 
@@ -5493,6 +5586,9 @@ msgid "Not found."
 msgstr ""
 
 msgid "Not now"
+msgstr ""
+
+msgid "Not ready yet. Try again later."
 msgstr ""
 
 msgid "Not started"
@@ -5623,6 +5719,12 @@ msgstr ""
 msgid "Only admins"
 msgstr ""
 
+msgid "Only allow merge requests to be merged if all discussions are resolved"
+msgstr ""
+
+msgid "Only allow merge requests to be merged if the pipeline succeeds"
+msgstr ""
+
 msgid "Only mirror protected branches"
 msgstr ""
 
@@ -5743,6 +5845,9 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
+msgid "Password authentication is unavailable."
+msgstr ""
+
 msgid "Past due"
 msgstr ""
 
@@ -5804,6 +5909,9 @@ msgid "Pipeline Schedules"
 msgstr ""
 
 msgid "Pipeline triggers"
+msgstr ""
+
+msgid "Pipeline: %{status}"
 msgstr ""
 
 msgid "PipelineCharts|Failed:"
@@ -5875,6 +5983,9 @@ msgstr ""
 msgid "Pipelines for last year"
 msgstr ""
 
+msgid "Pipelines need to be configured to enable this feature."
+msgstr ""
+
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
 msgstr ""
 
@@ -5923,12 +6034,6 @@ msgstr ""
 msgid "Pipeline|Coverage"
 msgstr ""
 
-msgid "Pipeline|Create for"
-msgstr ""
-
-msgid "Pipeline|Create pipeline"
-msgstr ""
-
 msgid "Pipeline|Duration"
 msgstr ""
 
@@ -5939,6 +6044,9 @@ msgid "Pipeline|Pipeline"
 msgstr ""
 
 msgid "Pipeline|Run Pipeline"
+msgstr ""
+
+msgid "Pipeline|Run for"
 msgstr ""
 
 msgid "Pipeline|Search branches"
@@ -6007,10 +6115,16 @@ msgstr ""
 msgid "Please choose a group URL with no special characters."
 msgstr ""
 
+msgid "Please complete your profile with email address"
+msgstr ""
+
 msgid "Please convert them to %{link_to_git}, and go through the %{link_to_import_flow} again."
 msgstr ""
 
 msgid "Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again."
+msgstr ""
+
+msgid "Please create a password for your new account."
 msgstr ""
 
 msgid "Please create a username with only alphanumeric characters."
@@ -6044,6 +6158,9 @@ msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
 msgid "Preferences"
+msgstr ""
+
+msgid "Preferences saved."
 msgstr ""
 
 msgid "Preferences|Navigation theme"
@@ -6238,6 +6355,9 @@ msgstr ""
 msgid "Profiles|The maximum file size allowed is 200KB."
 msgstr ""
 
+msgid "Profiles|There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
+msgstr ""
+
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr ""
 
@@ -6379,9 +6499,6 @@ msgstr ""
 msgid "Project avatar"
 msgstr ""
 
-msgid "Project avatar in repository: %{link}"
-msgstr ""
-
 msgid "Project details"
 msgstr ""
 
@@ -6416,6 +6533,21 @@ msgid "Project:"
 msgstr ""
 
 msgid "ProjectActivityRSS|Subscribe"
+msgstr ""
+
+msgid "ProjectCreationLevel|Allowed to create projects"
+msgstr ""
+
+msgid "ProjectCreationLevel|Default project creation protection"
+msgstr ""
+
+msgid "ProjectCreationLevel|Developers + Maintainers"
+msgstr ""
+
+msgid "ProjectCreationLevel|Maintainers"
+msgstr ""
+
+msgid "ProjectCreationLevel|No one"
 msgstr ""
 
 msgid "ProjectFileTree|Name"
@@ -6917,6 +7049,9 @@ msgstr ""
 msgid "Revoked impersonation token %{token_name}!"
 msgstr ""
 
+msgid "Revoked personal access token %{personal_access_token_name}!"
+msgstr ""
+
 msgid "Run untagged jobs"
 msgstr ""
 
@@ -7031,6 +7166,9 @@ msgstr ""
 msgid "Scope not supported with disabled 'users_search' feature!"
 msgstr ""
 
+msgid "Scoped label"
+msgstr ""
+
 msgid "Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right."
 msgstr ""
 
@@ -7077,6 +7215,9 @@ msgid "Search projects"
 msgstr ""
 
 msgid "Search users"
+msgstr ""
+
+msgid "Search your projects"
 msgstr ""
 
 msgid "SearchAutocomplete|All GitLab"
@@ -7196,7 +7337,22 @@ msgstr ""
 msgid "Serverless"
 msgstr ""
 
+msgid "ServerlessDetails|Function invocation metrics require Prometheus to be installed first."
+msgstr ""
+
+msgid "ServerlessDetails|Install Prometheus"
+msgstr ""
+
+msgid "ServerlessDetails|Invocation metrics loading or not available at this time."
+msgstr ""
+
+msgid "ServerlessDetails|Invocations"
+msgstr ""
+
 msgid "ServerlessDetails|Kubernetes Pods"
+msgstr ""
+
+msgid "ServerlessDetails|More information"
 msgstr ""
 
 msgid "ServerlessDetails|Number of Kubernetes pods in use over time based on necessity."
@@ -7212,9 +7368,6 @@ msgid "ServerlessURL|Copy URL to clipboard"
 msgstr ""
 
 msgid "Serverless| In order to start using functions as a service, you must first install Knative on your Kubernetes cluster."
-msgstr ""
-
-msgid "Serverless|An error occurred while retrieving serverless components"
 msgstr ""
 
 msgid "Serverless|Getting started with serverless"
@@ -7349,6 +7502,9 @@ msgstr ""
 msgid "Show latest version"
 msgstr ""
 
+msgid "Show link to create/view merge request when pushing from the command line"
+msgstr ""
+
 msgid "Show parent pages"
 msgstr ""
 
@@ -7382,6 +7538,12 @@ msgid "Sign-in restrictions"
 msgstr ""
 
 msgid "Sign-up restrictions"
+msgstr ""
+
+msgid "Signing in using %{label} has been disabled"
+msgstr ""
+
+msgid "Signing in using your %{label} account without a pre-existing GitLab account is not allowed."
 msgstr ""
 
 msgid "Similar issues"
@@ -7456,6 +7618,9 @@ msgstr ""
 msgid "Something went wrong while fetching comments. Please try again."
 msgstr ""
 
+msgid "Something went wrong while fetching related merge requests."
+msgstr ""
+
 msgid "Something went wrong while fetching the environments for this merge request. Please try again."
 msgstr ""
 
@@ -7474,7 +7639,13 @@ msgstr ""
 msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
+msgid "Something went wrong, unable to search projects"
+msgstr ""
+
 msgid "Something went wrong. Please try again."
+msgstr ""
+
+msgid "Sorry, no projects matched your search"
 msgstr ""
 
 msgid "Sorry, your filter produced no results"
@@ -7669,6 +7840,9 @@ msgstr ""
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
+msgid "Start a new merge request"
+msgstr ""
+
 msgid "Start and due date"
 msgstr ""
 
@@ -7772,6 +7946,9 @@ msgid "Successfully blocked"
 msgstr ""
 
 msgid "Successfully confirmed"
+msgstr ""
+
+msgid "Successfully deleted U2F device."
 msgstr ""
 
 msgid "Successfully removed email."
@@ -7939,6 +8116,9 @@ msgstr ""
 msgid "Test failed."
 msgstr ""
 
+msgid "Thank you for your report. A GitLab administrator will look into it shortly."
+msgstr ""
+
 msgid "The %{type} contains the following error:"
 msgid_plural "The %{type} contains the following errors:"
 msgstr[0] ""
@@ -7999,6 +8179,12 @@ msgid "The group settings for %{group_links} require you to enable Two-Factor Au
 msgstr ""
 
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
+msgstr ""
+
+msgid "The invitation could not be accepted."
+msgstr ""
+
+msgid "The invitation could not be declined."
 msgstr ""
 
 msgid "The invitation has already been accepted."
@@ -8332,9 +8518,6 @@ msgid "This namespace has already been taken! Please choose another one."
 msgstr ""
 
 msgid "This option is disabled as you don't have write permissions for the current branch"
-msgstr ""
-
-msgid "This option is disabled while you still have unstaged changes"
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."
@@ -9178,6 +9361,14 @@ msgstr ""
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."
 msgstr ""
 
+msgid "When fast-forward merge is not possible, the user is given the option to rebase."
+msgstr ""
+
+msgid "When this merge request is accepted"
+msgid_plural "When these merge requests are accepted"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "When:"
 msgstr ""
 
@@ -9352,6 +9543,9 @@ msgstr ""
 msgid "Write milestone description..."
 msgstr ""
 
+msgid "Wrong extern UID provided. Make sure Auth0 is configured correctly."
+msgstr ""
+
 msgid "Yes"
 msgstr ""
 
@@ -9476,6 +9670,15 @@ msgid "You don't have any authorized applications"
 msgstr ""
 
 msgid "You don't have any deployments right now."
+msgstr ""
+
+msgid "You have been granted %{member_human_access} access to %{label}."
+msgstr ""
+
+msgid "You have been unsubscribed from this thread."
+msgstr ""
+
+msgid "You have declined the invitation to join %{label}."
 msgstr ""
 
 msgid "You have no permissions"
@@ -9632,6 +9835,12 @@ msgid "Your issues will be imported in the background. Once finished, you'll get
 msgstr ""
 
 msgid "Your name"
+msgstr ""
+
+msgid "Your new personal access token has been created."
+msgstr ""
+
+msgid "Your password reset token has expired."
 msgstr ""
 
 msgid "Your project limit is %{limit} projects! Please contact your administrator to increase it"
@@ -10050,6 +10259,9 @@ msgid "personal access token"
 msgstr ""
 
 msgid "private"
+msgstr ""
+
+msgid "processing"
 msgstr ""
 
 msgid "project"

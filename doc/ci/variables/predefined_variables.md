@@ -23,6 +23,9 @@ future GitLab releases.**
 | `CHAT_INPUT`                            | 10.6   | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command |
 | `CHAT_CHANNEL`                          | 10.6   | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command |
 | `CI`                                    | all    | 0.4    | Mark that job is executed in CI environment |
+| `CI_BUILDS_DIR`                         | all    | 11.10  | Top-level directory where builds are executed. |
+| `CI_CONCURRENT_ID`                      | all    | 11.10  | Unique ID of build execution within a single executor. |
+| `CI_CONCURRENT_PROJECT_ID`              | all    | 11.10  | Unique ID of build execution within a single executor and project. |
 | `CI_COMMIT_BEFORE_SHA`                  | 11.2   | all    | The previous latest commit present on a branch before a push request. |
 | `CI_COMMIT_DESCRIPTION`                 | 10.8   | all    | The description of the commit: the message without first line, if the title is shorter than 100 characters; full message in other case. |
 | `CI_COMMIT_MESSAGE`                     | 10.8   | all    | The full commit message. |
@@ -33,7 +36,7 @@ future GitLab releases.**
 | `CI_COMMIT_TAG`                         | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
 | `CI_COMMIT_TITLE`                       | 10.8   | all    | The title of the commit - the full first line of the message |
 | `CI_CONFIG_PATH`                        | 9.4    | 0.5    | The path to CI config file. Defaults to `.gitlab-ci.yml` |
-| `CI_DEBUG_TRACE`                        | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
+| `CI_DEBUG_TRACE`                        | all    | 1.7    | Whether [debug tracing](README.md#debug-tracing) is enabled |
 | `CI_DEPLOY_PASSWORD`                    | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 | `CI_DEPLOY_USER`                        | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 | `CI_DISPOSABLE_ENVIRONMENT`             | all    | 10.1   | Marks that the job is executed in a disposable environment (something that is created only for this job and disposed of/destroyed after the execution - all executors except `shell` and `ssh`). If the environment is disposable, it is set to true, otherwise it is not defined at all. |

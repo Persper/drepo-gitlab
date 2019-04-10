@@ -314,7 +314,7 @@ install it manually.
 
 ## Installing applications
 
-GitLab provides a one-click install for various applications which can
+GitLab provides **GitLab Managed Apps**, a one-click install for various applications which can
 be added directly to your configured cluster. Those applications are
 needed for [Review Apps](../../../ci/review_apps/index.md) and
 [deployments](../../../ci/environments.md). You can install them after you
@@ -545,7 +545,7 @@ The result will then be:
 ## Deployment variables
 
 The Kubernetes cluster integration exposes the following
-[deployment variables](../../../ci/variables/README.md#deployment-variables) in the
+[deployment variables](../../../ci/variables/README.md#deployment-environment-variables) in the
 GitLab CI/CD build environment.
 
 | Variable | Description |

@@ -19,6 +19,7 @@ class Snapshot < ApplicationRecord
     ar_internal_metadata
     schema_migrations
     prometheus_metrics
+    drepo_snapshots
     tags
     taggings
     ci_build_trace_chunks
