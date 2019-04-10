@@ -2464,6 +2464,10 @@ ActiveRecord::Schema.define(version: 20190326164045) do
     t.boolean "submitted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.index ["drepo_updated_at"], name: "index_user_agent_details_on_drepo_updated_at", using: :btree
+    t.index ["drepo_uuid"], name: "index_user_agent_details_on_drepo_uuid", using: :btree
     t.index ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
   end
 
