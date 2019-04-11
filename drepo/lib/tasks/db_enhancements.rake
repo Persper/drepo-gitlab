@@ -29,7 +29,7 @@ namespace :db do
       $stdout.puts "Set database default search_path"
       config = ActiveRecord::Base.connection_config
       ActiveRecord::Base.connection_pool.with_connection do |conn|
-        conn.execute "ALTER DATABASE #{config[:database]} set search_path = #{config[:schema_search_path]};"
+        conn.execute "ALTER DATABASE #{config[:database]} set search_path = #{config[:schema_search_path] || 'public,shared_extensions'};"
       end
     end
 
