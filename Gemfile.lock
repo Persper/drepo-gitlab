@@ -1,7 +1,7 @@
 GIT
   remote: https://gitlab.com/persper/apartment.git
-  revision: d48c2b76de864008fcbc889a6083439ef697462f
-  ref: fix_drop_task
+  revision: 6d4e94ccae04cd6e61b07de9b694aa594c50c73b
+  ref: decentralized_gitlab
   specs:
     apartment (2.2.0)
       activerecord (>= 3.1.2, < 6.0)
