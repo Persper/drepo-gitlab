@@ -435,6 +435,6 @@ gem 'grape_logging', '~> 1.7'
 
 # Drepo-specific start
 # rubocop:disable Cop/GemFetcher
-gem 'apartment', git: 'https://gitlab.com/persper/apartment.git', ref: 'fix_drop_task'
+gem 'apartment', git: 'https://gitlab.com/persper/apartment.git', ref: 'decentralized_gitlab'
 # rubocop:enable Cop/GemFetcher
 # Drepo-specific end
