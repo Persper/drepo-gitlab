@@ -345,14 +345,14 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.10'
 
-  gem 'capybara', '~> 2.16.1'
-  gem 'capybara-screenshot', '~> 1.0.18'
-  gem 'selenium-webdriver', '~> 3.12'
+  gem 'capybara', '~> 2.18.0'
+  gem 'capybara-screenshot', '~> 1.0.22'
+  gem 'selenium-webdriver', '~> 3.141'
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 2.4', require: false
+  gem 'gitlab-styles', '~> 2.5', require: false
   # Pin these dependencies, otherwise a new rule could break the CI pipelines
   gem 'rubocop', '~> 0.54.0'
   gem 'rubocop-rspec', '~> 1.22.1'
