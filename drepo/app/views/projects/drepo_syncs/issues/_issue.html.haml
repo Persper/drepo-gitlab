@@ -10,7 +10,7 @@
             - if issue.confidential?
               %span.has-tooltip{ title: _('Confidential') }
                 = confidential_icon(issue)
-            = link_to issue.title, issue_path(issue)
+            = link_to issue.title, project_drepo_issue_path(@project, issue)
           - if issue.tasks?
             %span.task-status.d-none.d-sm-inline-block
               &nbsp;
@@ -37,7 +37,7 @@
           - if issue.labels.any?
             &nbsp;
             - issue.labels.each do |label|
-              = link_to_label(label, subject: issue.project, css_class: 'label-link')
+              = link_to render_colored_label(label, tooltip: true), '', class: 'label-link'
 
       .issuable-meta
         %ul.controls
@@ -48,7 +48,7 @@
             %li
               = render 'shared/issuable/assignees', project: @project, issue: issue
 
-          = render 'shared/issuable_meta_data', issuable: issue
+          -#= render 'shared/issuable_meta_data', issuable: issue
 
         .float-right.issuable-updated-at.d-none.d-sm-inline-block
           %span updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}
