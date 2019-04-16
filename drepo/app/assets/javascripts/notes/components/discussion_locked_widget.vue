@@ -14,9 +14,7 @@ export default {
   <div class="disabled-comment text-center">
     <span class="issuable-note-warning inline">
       <icon :size="16" name="lock" class="icon" />
-      <span>
-        This is a snapshot of the {{ issuableDisplayName }} for Drepo Syncing.
-      </span>
+      <span> This is a snapshot of the {{ issuableDisplayName }} for Drepo Syncing. </span>
     </span>
   </div>
 </template>
