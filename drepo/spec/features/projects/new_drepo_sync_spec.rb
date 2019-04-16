@@ -10,11 +10,11 @@ describe 'Project Drepo Sync' do
       visit path
     end
 
-    it 'should has a project title' do
+    it 'has a project title' do
       expect(page).to have_css('.home-panel-title')
     end
 
-    it 'should not has a Drepo! link' do
+    it 'not has a Drepo! link' do
       expect(page).not_to have_link('Drepo!', href: project_new_drepo_sync_path(project))
     end
   end
@@ -25,11 +25,11 @@ describe 'Project Drepo Sync' do
       visit path
     end
 
-    it 'should has a project title' do
+    it 'has a project title' do
       expect(page).to have_css('.home-panel-title')
     end
 
-    it 'should has a Drepo! link for admin/owner user' do
+    it 'has a Drepo! link for admin/owner user' do
       expect(page).to have_link('Drepo!', href: project_new_drepo_sync_path(project))
     end
   end
