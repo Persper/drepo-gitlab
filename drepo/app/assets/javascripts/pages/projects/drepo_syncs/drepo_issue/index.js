@@ -2,7 +2,7 @@ import initIssuableSidebar from '~/init_issuable_sidebar';
 import Issue from '~/issue';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import ZenMode from '~/zen_mode';
-import '../../../../notes/index';
+import '../../../../drepo_notes/index';
 import initIssueableApp from '~/issue_show';
 import initSidebarBundle from '~/sidebar/sidebar_bundle';
 
