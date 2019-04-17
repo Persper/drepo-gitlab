@@ -4,9 +4,9 @@ class Projects::DrepoSyncsController < Projects::IssuesController
 
   prepend_before_action(only: [:new]) { params[:ref] ||= 'master' }
   before_action :authenticate_user!
-  before_action :assign_ref_vars, except: [:commits_root, :drepo_issue]
-  before_action :validate_ref!, except: [:commits_root, :drepo_issue]
-  before_action :set_commits, except: [:commits_root, :drepo_issue]
+  before_action :assign_ref_vars, only: [:new]
+  before_action :validate_ref!, only: [:new]
+  before_action :set_commits, only: [:new]
 
   def new
     Apartment::Tenant.switch 'drepo_project_pending' do
@@ -34,7 +34,7 @@ class Projects::DrepoSyncsController < Projects::IssuesController
     Apartment::Tenant.switch 'drepo_project_pending' do
       @project = Project.find(@project.id)
       @issue = Issue.includes(includes_options).find_by(iid: params[:id]) # rubocop:disable CodeReuse/ActiveRecord
-      @issuable_sidebar = serializer.represent(@issue, serializer: 'sidebar') # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      @issuable_sidebar = serializer.represent(@issue, serializer: 'sidebar')
     end
 
     respond_to do |format|
