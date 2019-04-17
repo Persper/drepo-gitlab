@@ -25,10 +25,9 @@ module Snapshots
 
     def create_project_snapshot
       begin
-        project = Project.find(@snapshot.target_id)
         Snapshots::ProjectSnapshot.new(drepo_id: @snapshot.id, root_id: @snapshot.target_id).create
-        @snapshot.branch_names = project.repository.branch_names
-        @snapshot.tag_names = project.repository.tag_names
+        @snapshot.build_branches
+        @snapshot.build_tags
         @snapshot.state = Snapshot::STATES[:snapped]
         @snapshot.snapped_at = Time.now
       rescue StandardError => e
