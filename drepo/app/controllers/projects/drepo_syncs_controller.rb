@@ -12,7 +12,7 @@ class Projects::DrepoSyncsController < Projects::IssuesController
     Apartment::Tenant.switch 'drepo_project_pending' do
       @project = Project.find(@project.id)
       @issues_total_count = @project.issues.count
-      @issues = @project.issues.includes(:labels, :assignees, :events).page(params[:page]).load
+      @issues = @project.issues.includes(:labels, :assignees, :events).page(params[:page]).load # rubocop:disable CodeReuse/ActiveRecord
     end
 
     respond_to do |format|
@@ -33,8 +33,8 @@ class Projects::DrepoSyncsController < Projects::IssuesController
   def drepo_issue
     Apartment::Tenant.switch 'drepo_project_pending' do
       @project = Project.find(@project.id)
-      @issue = Issue.includes(includes_options).find_by(iid: params[:id])
-      #@issuable_sidebar = serializer.represent(@issue, serializer: 'sidebar') # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      @issue = Issue.includes(includes_options).find_by(iid: params[:id]) # rubocop:disable CodeReuse/ActiveRecord
+      @issuable_sidebar = serializer.represent(@issue, serializer: 'sidebar') # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     respond_to do |format|
