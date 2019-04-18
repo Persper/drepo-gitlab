@@ -4,6 +4,7 @@ import { GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import issueCardInner from 'ee_else_ce/boards/mixins/issue_card_inner';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
 import IssueDueDate from './issue_due_date.vue';
@@ -19,11 +20,13 @@ export default {
     TooltipOnTruncate,
     IssueDueDate,
     IssueTimeEstimate,
+    IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
     IssueCardInnerScopedLabel,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [issueCardInner],
   props: {
     issue: {
       type: Object,
@@ -135,14 +138,6 @@ export default {
 
       this.applyFilter(filter);
     },
-    filterByWeight(weight) {
-      if (!this.updateFilters) return;
-
-      const issueWeight = encodeURIComponent(weight);
-      const filter = `weight=${issueWeight}`;
-
-      this.applyFilter(filter);
-    },
     applyFilter(filter) {
       const filterPath = boardsStore.filter.path.split('&');
       const filterIndex = filterPath.indexOf(filter);
@@ -173,7 +168,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="board-card-header">
+    <div class="d-flex board-card-header">
       <h4 class="board-card-title append-bottom-0 prepend-top-0">
         <icon
           v-if="issue.confidential"
@@ -214,11 +209,11 @@ export default {
     </div>
     <div class="board-card-footer d-flex justify-content-between align-items-end">
       <div
-        class="d-flex align-items-start flex-wrap-reverse board-card-number-container js-board-card-number-container"
+        class="d-flex align-items-start flex-wrap-reverse board-card-number-container overflow-hidden js-board-card-number-container"
       >
         <span
           v-if="issue.referencePath"
-          class="board-card-number d-flex append-right-8 prepend-top-8"
+          class="board-card-number overflow-hidden d-flex append-right-8 prepend-top-8"
         >
           <tooltip-on-truncate
             v-if="issueReferencePath"
@@ -232,10 +227,14 @@ export default {
           <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" /><issue-time-estimate
             v-if="issue.timeEstimate"
             :estimate="issue.timeEstimate"
+          /><issue-card-weight
+            v-if="issue.weight"
+            :weight="issue.weight"
+            @click="filterByWeight(issue.weight)"
           />
         </span>
       </div>
-      <div class="board-card-assignee">
+      <div class="board-card-assignee d-flex">
         <user-avatar-link
           v-for="(assignee, index) in issue.assignees"
           v-if="shouldRenderAssignee(index)"
