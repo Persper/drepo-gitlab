@@ -140,6 +140,6 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
       end
     end
 
-    @ref_revision = @ref unless @ref_revision
+    @ref_revision ||= @ref
   end
 end
