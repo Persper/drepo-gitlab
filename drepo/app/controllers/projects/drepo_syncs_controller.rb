@@ -69,17 +69,17 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
       end
 
       if params['search'].present?
-        branches.select! {|s| s.include? params['search'] }
+        branches.select! { |b| b.include? params['search'] }
       end
 
       options['Branches'] = branches
     end
 
     if find_tags
-      tags = @snapshot&.tags&.map { |b| b['name'] }.sort
+      tags = @snapshot&.tags&.map { |t| t['name'] }.sort
 
       if params['search'].present?
-        tags.select! {|s| s.include? params['search'] }
+        tags.select! { |t| t.include? params['search'] }
       end
 
       options['Tags'] = tags
