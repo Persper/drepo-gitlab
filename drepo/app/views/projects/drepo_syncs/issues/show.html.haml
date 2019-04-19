@@ -1,0 +1,71 @@
+- @content_class = "limit-container-width" unless fluid_layout
+- add_to_breadcrumbs "Drepo Issues", project_new_drepo_sync_issues_tab_path(@project)
+- breadcrumb_title @issue.to_reference
+- page_title           "#{@issue.title} (#{@issue.to_reference})", "Issues"
+- page_description     @issue.description
+- page_card_attributes @issue.card_attributes
+
+.detail-page-header
+  .detail-page-header-body
+    .issuable-status-box.status-box.status-box-issue-closed{ class: issue_button_visibility(@issue, false) }
+      = sprite_icon('mobile-issue-close', size: 16, css_class: 'd-block d-sm-none')
+      .d-none.d-sm-block
+        - if @issue.moved?
+          - moved_link_start = "<a href=\"#{issue_path(@issue.moved_to)}\" class=\"text-white text-underline\">".html_safe
+          - moved_link_end = '</a>'.html_safe
+          = s_('IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})').html_safe % {moved_link_start: moved_link_start,
+            moved_link_end: moved_link_end}
+        - else
+          = _("Closed")
+    .issuable-status-box.status-box.status-box-open{ class: issue_button_visibility(@issue, true) }
+      = sprite_icon('issue-open-m', size: 16, css_class: 'd-block d-sm-none')
+      %span.d-none.d-sm-block Open
+
+    -#.issuable-meta
+      - if @issue.confidential
+        .issuable-warning-icon.inline= sprite_icon('eye-slash', size: 16, css_class: 'icon')
+      - if @issue.discussion_locked?
+        .issuable-warning-icon.inline= sprite_icon('lock', size: 16, css_class: 'icon')
+      = issuable_meta(@issue, @project, "Issue")
+
+    %a.btn.btn-default.float-right.d-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
+      = icon('angle-double-left')
+
+  .detail-page-header-actions.js-issuable-actions
+    .clearfix.issue-btn-group.dropdown
+      %button.btn.btn-default.float-left.d-md-none.d-lg-none.d-xl-none{ type: "button", data: { toggle: "dropdown" } }
+        Options
+        = icon('caret-down')
+      .dropdown-menu.dropdown-menu-right.d-lg-none.d-xl-none
+
+.issue-details.issuable-details
+  .detail-page-description.content-block
+    -# haml-lint:disable InlineJavaScript
+    %script#js-issuable-app-initial-data{ type: "application/json" }= issuable_initial_data(@issue).to_json
+    #js-issuable-app
+      %h2.title= markdown_field(@issue, :title)
+      - if @issue.description.present?
+        .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
+          .md= markdown_field(@issue, :description)
+          %textarea.hidden.js-task-list-field= @issue.description
+
+      = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
+
+    #merge-requests{ data: { url: referenced_merge_requests_project_issue_path(@project, @issue) } }
+      // This element is filled in using JavaScript.
+
+    - if can?(current_user, :download_code, @project)
+      #related-branches{ data: { url: related_branches_project_issue_path(@project, @issue) } }
+        // This element is filled in using JavaScript.
+
+  .content-block.emoji-block.emoji-block-sticky
+    .row
+      .col-md-12.col-lg-6.js-noteable-awards
+        -#= render 'award_emoji/awards_block', awardable: @issue, inline: true
+      .col-md-12.col-lg-6.new-branch-col
+        #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
+        -#= render 'new_branch' unless @issue.confidential?
+
+  = render_if_exists 'projects/drepo_syncs/issues/discussion'
+
+-#= render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @issue.assignees
