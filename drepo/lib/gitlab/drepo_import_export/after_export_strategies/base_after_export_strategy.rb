@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     module AfterExportStrategies
       class BaseAfterExportStrategy
-        extend Drepo::ImportExport::CommandLineUtil
+        extend Gitlab::DrepoImportExport::CommandLineUtil
         include ActiveModel::Validations
         extend Forwardable
 

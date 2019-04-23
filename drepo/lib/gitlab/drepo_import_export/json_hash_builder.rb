@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     # Generates a hash that conforms with http://apidock.com/rails/Hash/to_json
     # and its peculiar options.
     class JsonHashBuilder

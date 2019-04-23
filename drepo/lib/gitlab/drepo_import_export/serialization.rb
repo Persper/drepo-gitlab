@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class Serialization
       def as_json(model, root, options = nil)
         hash, fingerprint_hash, _fingerprint = serializable_hash(model, root, {}, options)

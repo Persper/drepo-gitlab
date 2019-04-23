@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class UploadsManager
-      include Drepo::ImportExport::CommandLineUtil
+      include Gitlab::DrepoImportExport::CommandLineUtil
 
       UPLOADS_BATCH_SIZE = 100
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     extend self
 
     # For every version update, the version history in import_export.md has to be kept up to date.
@@ -13,7 +13,7 @@ module Drepo
     end
 
     def storage_path
-      File.join(Settings.shared['path'], 'tmp/drepo/exports')
+      File.join(Settings.shared['path'], 'tmp/drepo_project_exports')
     end
 
     def import_upload_path(filename:)

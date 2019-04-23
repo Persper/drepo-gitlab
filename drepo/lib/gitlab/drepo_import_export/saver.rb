@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class Saver
-      include Drepo::ImportExport::CommandLineUtil
+      include Gitlab::DrepoImportExport::CommandLineUtil
 
       def self.save(*args)
         new(*args).save
@@ -22,7 +22,7 @@ module Drepo
 
           save_upload
         else
-          @shared.error(Drepo::ImportExport::Error.new(error_message))
+          @shared.error(Gitlab::DrepoImportExport::Error.new(error_message))
           false
         end
       rescue => e
@@ -48,7 +48,7 @@ module Drepo
       end
 
       def archive_file
-        @archive_file ||= File.join(@shared.archive_path, Drepo::ImportExport.export_filename(project: @project))
+        @archive_file ||= File.join(@shared.archive_path, Gitlab::DrepoImportExport.export_filename(project: @project))
       end
 
       def save_upload

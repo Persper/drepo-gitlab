@@ -1,20 +1,17 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
-    class AvatarSaver
+module Gitlab
+  module DrepoImportExport
+    class UploadsSaver
       def initialize(project:, shared:)
         @project = project
         @shared = shared
       end
 
       def save
-        return true unless @project.avatar.exists?
-
-        Drepo::ImportExport::UploadsManager.new(
+        Gitlab::DrepoImportExport::UploadsManager.new(
           project: @project,
-          shared: @shared,
-          relative_export_path: 'avatar'
+          shared: @shared
         ).save
       rescue => e
         @shared.error(e)

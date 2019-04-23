@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class AttributesFinder
       def initialize(included_attributes:, excluded_attributes:, methods:, diffs:, inline_associations:)
         @included_attributes = included_attributes || {}

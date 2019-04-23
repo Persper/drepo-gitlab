@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     module AfterExportStrategies
       class DownloadNotificationStrategy < BaseAfterExportStrategy
         private
