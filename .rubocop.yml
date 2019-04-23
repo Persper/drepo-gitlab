@@ -81,6 +81,7 @@ Naming/FileName:
     - 'qa/spec/**/*'
     - 'qa/qa/specs/**/*'
     - 'qa/bin/*'
+    - 'ee/bin/*'
     - 'config/**/*'
     - 'ee/config/**/*'
     - 'drepo/config/**/*'
