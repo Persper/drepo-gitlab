@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     module AfterExportStrategies
       class WebUploadStrategy < BaseAfterExportStrategy
         PUT_METHOD = 'PUT'.freeze
@@ -40,7 +40,7 @@ module Drepo
         private
 
         def send_file
-          ::Gitlab::HTTP.public_send(http_method.downcase, url, send_file_options) # rubocop:disable GitlabSecurity/PublicSend
+          Gitlab::HTTP.public_send(http_method.downcase, url, send_file_options) # rubocop:disable GitlabSecurity/PublicSend
         ensure
           export_file.close if export_file
         end

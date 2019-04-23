@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class RepoSaver
-      include Drepo::ImportExport::CommandLineUtil
+      include Gitlab::DrepoImportExport::CommandLineUtil
 
       attr_reader :full_path
 

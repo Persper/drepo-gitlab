@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class ProjectTreeSaver
-      include Drepo::ImportExport::CommandLineUtil
+      include Gitlab::DrepoImportExport::CommandLineUtil
 
       attr_reader :full_path
 
@@ -46,7 +46,7 @@ module Drepo
       def project_json
         @project_json ||=
           if @params[:export_format] == :fingerprint
-            Drepo::ImportExport::Serialization.new.as_json(
+            Gitlab::DrepoImportExport::Serialization.new.as_json(
               @project,
               @project.model_name.element,
               reader.project_tree
