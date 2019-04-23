@@ -16,8 +16,8 @@
 # When exporting, this class will duplicate the keys in the resulting file.
 # This way, if we open the file in an old version of the exporter it will work
 # and also it will with the newer versions.
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class RelationRenameService
       RENAMES = {
         'pipelines' => 'ci_pipelines' # Added in 11.6, remove in 11.7

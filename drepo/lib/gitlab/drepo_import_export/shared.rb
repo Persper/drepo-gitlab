@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class Shared
       attr_reader :errors, :project
 
@@ -15,11 +15,11 @@ module Drepo
       end
 
       def export_path
-        @export_path ||= Drepo::ImportExport.export_path(relative_path: relative_path)
+        @export_path ||= Gitlab::DrepoImportExport.export_path(relative_path: relative_path)
       end
 
       def archive_path
-        @archive_path ||= Drepo::ImportExport.export_path(relative_path: relative_archive_path)
+        @archive_path ||= Gitlab::DrepoImportExport.export_path(relative_path: relative_archive_path)
       end
 
       def error(error)

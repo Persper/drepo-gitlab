@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class RelationFactory
       OVERRIDES = { snippets: :project_snippets,
                     ci_pipelines: 'Ci::Pipeline',
@@ -179,7 +179,7 @@ module Drepo
       end
 
       def reset_tokens!
-        return unless Drepo::ImportExport.reset_tokens? && TOKEN_RESET_MODELS.include?(@relation_name.to_s)
+        return unless Gitlab::DrepoImportExport.reset_tokens? && TOKEN_RESET_MODELS.include?(@relation_name.to_s)
 
         # If we import/export a project to the same instance, tokens will have to be reset.
         # We also have to reset them to avoid issues when the gitlab secrets file cannot be copied across.
@@ -223,7 +223,7 @@ module Drepo
       end
 
       def parsed_relation_hash
-        @parsed_relation_hash ||= Drepo::ImportExport::AttributeCleaner.clean(relation_hash: @relation_hash,
+        @parsed_relation_hash ||= Gitlab::DrepoImportExport::AttributeCleaner.clean(relation_hash: @relation_hash,
                                                                               relation_class: relation_class)
       end
 

@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class Reader
       attr_reader :tree, :attributes_finder
 
       def initialize(shared:)
         @shared = shared
-        config_hash = YAML.load_file(Drepo::ImportExport.config_file).deep_symbolize_keys
+        config_hash = YAML.load_file(Gitlab::DrepoImportExport.config_file).deep_symbolize_keys
         @tree = config_hash[:project_tree]
-        @attributes_finder = Drepo::ImportExport::AttributesFinder.new(included_attributes: config_hash[:included_attributes],
+        @attributes_finder = Gitlab::DrepoImportExport::AttributesFinder.new(included_attributes: config_hash[:included_attributes],
                                                                        excluded_attributes: config_hash[:excluded_attributes],
                                                                        methods: config_hash[:methods],
                                                                        diffs: config_hash[:diffs],
@@ -40,7 +40,7 @@ module Drepo
       def build_hash(model_list)
         model_list.map do |model_objects|
           if model_objects.is_a?(Hash)
-            Drepo::ImportExport::JsonHashBuilder.build(model_objects, @attributes_finder)
+            Gitlab::DrepoImportExport::JsonHashBuilder.build(model_objects, @attributes_finder)
           else
             @attributes_finder.find(model_objects)
           end

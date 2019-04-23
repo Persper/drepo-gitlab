@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class WikiRepoSaver < RepoSaver
       def save
         @wiki = ProjectWiki.new(@project)

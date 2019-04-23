@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module Drepo
-  module ImportExport
+module Gitlab
+  module DrepoImportExport
     class VersionSaver
-      include Drepo::ImportExport::CommandLineUtil
+      include Gitlab::DrepoImportExport::CommandLineUtil
 
       def initialize(shared:)
         @shared = shared
@@ -12,7 +12,7 @@ module Drepo
       def save
         mkdir_p(@shared.export_path)
 
-        File.write(version_file, Drepo::ImportExport.version, mode: 'w')
+        File.write(version_file, Gitlab::DrepoImportExport.version, mode: 'w')
       rescue => e
         @shared.error(e)
         false
@@ -21,7 +21,7 @@ module Drepo
       private
 
       def version_file
-        File.join(@shared.export_path, Drepo::ImportExport.version_filename)
+        File.join(@shared.export_path, Gitlab::DrepoImportExport.version_filename)
       end
     end
   end
