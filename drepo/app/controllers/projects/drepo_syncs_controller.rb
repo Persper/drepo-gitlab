@@ -173,7 +173,6 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def define_note_vars
     @noteable = @commit
     @note = @project.build_commit_note(commit)
@@ -206,5 +205,4 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
     @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
     @notes = prepare_notes_for_rendering(@notes, @commit)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end
