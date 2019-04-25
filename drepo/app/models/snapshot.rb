@@ -25,6 +25,7 @@ class Snapshot < ApplicationRecord
     schema_migrations
     prometheus_metrics
     drepo_snapshots
+    drepo_snapshot_uploads
     tags
     taggings
     ci_build_trace_chunks
@@ -109,9 +110,9 @@ class Snapshot < ApplicationRecord
     project_metrics_settings
   ].freeze
 
+  belongs_to :creator, class_name: 'User'
   belongs_to :target, polymorphic: true, inverse_of: :snapshots
-  belongs_to :snapped_by, class_name: 'User'
-  belongs_to :chained_by, class_name: 'User'
+  has_one :snapshot_upload, dependent: :destroy
 
   state_machine :state, initial: :created do
     state :snapped
@@ -135,12 +136,8 @@ class Snapshot < ApplicationRecord
       transition [:created, :snapped] => :cancelled
     end
 
-    after_transition created: :snapped do |snapshot|
-      snapshot.snapped_at = Time.now
-    end
-
-    after_transition snapped: :chained do |snapshot|
-      snapshot.chained_at = Time.now
+    after_transition any => any do |snapshot|
+      snapshot.state_updated_at = Time.now
     end
   end
 
@@ -172,5 +169,20 @@ class Snapshot < ApplicationRecord
     rescue
       # just drop this tag
     end
+  end
+
+  def remove_exports
+    return unless export_file_exists?
+
+    snapshot_upload.remove_export_file!
+    snapshot_upload.save unless snapshot_upload.destroyed?
+  end
+
+  def export_file_exists?
+    export_file&.file
+  end
+
+  def export_file
+    snapshot_upload&.export_file
   end
 end

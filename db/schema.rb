@@ -906,21 +906,26 @@ ActiveRecord::Schema.define(version: 20190506135400) do
     t.index ["project_id", "status"], name: "index_deployments_on_project_id_and_status", using: :btree
   end
 
+  create_table "drepo_snapshot_uploads", force: :cascade do |t|
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "snapshot_id"
+    t.text "export_file"
+    t.index ["snapshot_id"], name: "index_drepo_snapshot_uploads_on_snapshot_id", using: :btree
+    t.index ["updated_at"], name: "index_drepo_snapshot_uploads_on_updated_at", using: :btree
+  end
+
   create_table "drepo_snapshots", force: :cascade do |t|
     t.integer "target_id"
     t.string "target_type"
     t.string "state"
-    t.integer "snapped_by_id"
-    t.datetime "snapped_at"
-    t.integer "chained_by_id"
-    t.datetime "chained_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "reason"
     t.jsonb "branches"
     t.jsonb "tags"
-    t.index ["chained_at"], name: "index_drepo_snapshots_on_chained_at", using: :btree
-    t.index ["snapped_at"], name: "index_drepo_snapshots_on_snapped_at", using: :btree
+    t.datetime_with_timezone "state_updated_at"
+    t.integer "creator_id"
+    t.index ["creator_id"], name: "index_drepo_snapshots_on_creator_id", using: :btree
     t.index ["target_id", "target_type"], name: "index_drepo_snapshots_on_target_id_and_target_type", using: :btree
   end
 
@@ -2796,6 +2801,7 @@ ActiveRecord::Schema.define(version: 20190506135400) do
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
+  add_foreign_key "drepo_snapshot_uploads", "drepo_snapshots", column: "snapshot_id", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade

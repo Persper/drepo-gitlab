@@ -22,7 +22,7 @@ module Snapshots
       # rubocop: enable CodeReuse/ActiveRecord
 
       # need snapshot.id, so here must be #create
-      @snapshot = Snapshot.create(params.merge(snapped_by: current_user))
+      @snapshot = Snapshot.create(params.merge(creator: current_user))
 
       case @snapshot.target_type
       when 'Project'
