@@ -78,7 +78,7 @@ module RuboCop
           lib/gitlab/cycle_analytics
           lib/gitlab/database
           lib/gitlab/import_export
-          lib/drepo/import_export
+          lib/gitlab/drepo_import_export
           lib/gitlab/project_authorizations
           lib/gitlab/sql
           lib/system_check

@@ -15,7 +15,7 @@ module Gitlab
       def save
         return true if @project.empty_repo? # it's ok to have no repo
 
-        @full_path = File.join(@shared.export_path, ImportExport.project_bundle_filename)
+        @full_path = File.join(@shared.export_path, DrepoImportExport.project_bundle_filename)
         bundle_to_disk
       end
 
