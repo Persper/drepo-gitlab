@@ -39,7 +39,7 @@ module Gitlab
     def export_filename(project:)
       basename = "#{Time.now.strftime('%Y-%m-%d_%H-%M-%3N')}_#{project.full_path.tr('/', '_')}"
 
-      "#{basename[0..FILENAME_LIMIT]}_export.tar.gz"
+      "#{basename[0..FILENAME_LIMIT]}_drepo_export.tar.gz"
     end
 
     def version
