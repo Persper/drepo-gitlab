@@ -2,13 +2,11 @@
   WARNING: Please keep changes up-to-date with the following files:
   - `assets/javascripts/diffs/components/commit_item.vue`
 -#-----------------------------------------------------------------
-- view_details  = local_assigns.fetch(:view_details, false)
 - merge_request = local_assigns.fetch(:merge_request, nil)
 - project       = local_assigns.fetch(:project) { merge_request&.project }
 - ref           = local_assigns.fetch(:ref) { merge_request&.source_branch }
 - commit_status = commit.present(current_user: current_user).status_for(ref)
 
-- link = commit_path(project, commit, merge_request: merge_request)
 %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
 
   .avatar-cell.d-none.d-sm-block
