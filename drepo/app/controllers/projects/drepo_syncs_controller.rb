@@ -97,18 +97,20 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
   end
 
   def drepo_commit
-    @noteable = @commit ||= @project.commit_by(oid: params[:id]).tap do |commit|
-      # preload author and their status for rendering
-      commit&.author&.status
+    Apartment::Tenant.switch 'drepo_project_pending' do
+      @noteable = @commit ||= @project.commit_by(oid: params[:id]).tap do |commit|
+        # preload author and their status for rendering
+        commit&.author&.status
+      end
+
+      define_note_vars
+
+      opts = diff_options
+      opts[:ignore_whitespace_change] = true if params[:format] == 'diff'
+
+      @diffs = @commit.diffs(opts)
+      @notes_count = @commit.notes.count
     end
-
-    define_note_vars
-
-    opts = diff_options
-    opts[:ignore_whitespace_change] = true if params[:format] == 'diff'
-
-    @diffs = @commit.diffs(opts)
-    @notes_count = @commit.notes.count
 
     respond_to do |format|
       format.html { render 'projects/drepo_syncs/commits/show' }
