@@ -551,8 +551,9 @@ Style/EachWithObject:
     - 'lib/gitlab/hook_data/issuable_builder.rb'
     - 'lib/gitlab/i18n/po_linter.rb'
     - 'lib/gitlab/import_export/members_mapper.rb'
+    - 'drepo/lib/gitlab/drepo_import_export/members_mapper.rb'
     - 'lib/gitlab/import_export/relation_factory.rb'
-    - 'drepo/lib/drepo/import_export/relation_factory.rb'
+    - 'drepo/lib/gitlab/drepo_import_export/relation_factory.rb'
     - 'scripts/static-analysis'
 
 # Offense count: 34
@@ -743,6 +744,7 @@ Style/RedundantBegin:
   Exclude:
     - 'app/models/merge_request.rb'
     - 'app/services/projects/import_service.rb'
+    - 'drepo/app/services/projects/drepo_import_service.rb'
     - 'lib/gitlab/health_checks/base_abstract_check.rb'
 
 # Offense count: 1

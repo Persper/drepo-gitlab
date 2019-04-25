@@ -15,6 +15,11 @@ class Snapshot < ApplicationRecord
     cancelled: 'cancelled'
   ).freeze
 
+  UNCOMPLETED_STATES = HashWithIndifferentAccess.new(
+    created: 'created',
+    snapped: 'snapped'
+  ).freeze
+
   EXCLUDE_TABLES = %w[
     ar_internal_metadata
     schema_migrations
@@ -107,6 +112,37 @@ class Snapshot < ApplicationRecord
   belongs_to :target, polymorphic: true, inverse_of: :snapshots
   belongs_to :snapped_by, class_name: 'User'
   belongs_to :chained_by, class_name: 'User'
+
+  state_machine :state, initial: :created do
+    state :snapped
+    state :chained
+    state :failed
+    state :cancelled
+
+    event :snap do
+      transition created: :snapped
+    end
+
+    event :crash do
+      transition [:created, :snapped] => :failed
+    end
+
+    event :chain do
+      transition snapped: :chained
+    end
+
+    event :cancel do
+      transition [:created, :snapped] => :cancelled
+    end
+
+    after_transition created: :snapped do |snapshot|
+      snapshot.snapped_at = Time.now
+    end
+
+    after_transition snapped: :chained do |snapshot|
+      snapshot.chained_at = Time.now
+    end
+  end
 
   def project_snapshot?
     target_type == 'Project'

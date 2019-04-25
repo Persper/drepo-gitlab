@@ -9,10 +9,14 @@ module Gitlab
 
       def initialize(project:, current_user:, shared:, params: {})
         @params = params
-        @project = project
         @current_user = current_user
         @shared = shared
-        @full_path = File.join(@shared.export_path, ImportExport.project_filename)
+        @full_path = File.join(@shared.export_path, DrepoImportExport.project_filename)
+
+        # reload project from drepo_project_pending schema
+        Apartment::Tenant.switch(Snapshots::BaseSnapshot::DREPO_PROJECT_PENDING) do
+          @project = Project.find project.id
+        end
       end
 
       def save
@@ -28,14 +32,17 @@ module Gitlab
       private
 
       def project_json_tree
-        if @params[:description].present?
-          project_json['description'] = @params[:description]
-        end
+        # export porject tree from drepo_project_pending schema
+        Apartment::Tenant.switch(Snapshots::BaseSnapshot::DREPO_PROJECT_PENDING) do
+          if @params[:description].present?
+            project_json['description'] = @params[:description]
+          end
 
-        if @params[:export_format] == :fingerprint
-          project_json['project_members'].merge!(group_members_json.map { |g| [g['id'], g] }.to_h)
-        else
-          project_json['project_members'] += group_members_json
+          if @params[:export_format] == :fingerprint
+            project_json['project_members'].merge!(group_members_json.map { |g| [g['id'], g] }.to_h)
+          else
+            project_json['project_members'] += group_members_json
+          end
         end
 
         RelationRenameService.add_new_associations(project_json)
