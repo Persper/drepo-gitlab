@@ -52,7 +52,7 @@ module Gitlab
       end
 
       def save_upload
-        upload = ImportExportUpload.find_or_initialize_by(project: @project)
+        upload = SnapshotUpload.find_or_initialize_by(snapshot: @project.snapshots.last)
 
         File.open(archive_file) { |file| upload.export_file = file }
 
