@@ -1890,6 +1890,9 @@ msgstr ""
 msgid "Close milestone"
 msgstr ""
 
+msgid "Close sidebar"
+msgstr ""
+
 msgid "Closed"
 msgstr ""
 
@@ -3257,6 +3260,9 @@ msgid "Discuss a specific suggestion or question"
 msgstr ""
 
 msgid "Discuss a specific suggestion or question that needs to be resolved"
+msgstr ""
+
+msgid "Discussion"
 msgstr ""
 
 msgid "Dismiss"
