@@ -16,10 +16,7 @@
 
   .commit-detail.flex-list
     .commit-content.qa-commit-content
-      - if view_details && merge_request
-        = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "commit-row-message item-title"
-      - else
-        = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
+      = link_to commit.title, project_drepo_commit_path(@project, commit), class: "commit-row-message item-title"
       %span.commit-row-message.d-block.d-sm-none
         &middot;
         = commit.short_id

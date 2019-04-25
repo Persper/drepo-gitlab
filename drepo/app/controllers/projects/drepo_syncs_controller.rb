@@ -1,6 +1,8 @@
 class Projects::DrepoSyncsController < Projects::ApplicationController
   include ExtractsPath
   include RendersCommits
+  include DiffHelper
+  include RendersNotes
 
   prepend_before_action(only: [:new]) { params[:ref] ||= 'master' }
   before_action :authenticate_user!, except: [:drepo_refs]
@@ -94,6 +96,25 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
     render json: options.to_json
   end
 
+  def drepo_commit
+    @noteable = @commit ||= @project.commit_by(oid: params[:id]).tap do |commit|
+      # preload author and their status for rendering
+      commit&.author&.status
+    end
+
+    define_note_vars
+
+    opts = diff_options
+    opts[:ignore_whitespace_change] = true if params[:format] == 'diff'
+
+    @diffs = @commit.diffs(opts)
+    @notes_count = @commit.notes.count
+
+    respond_to do |format|
+      format.html { render 'projects/drepo_syncs/commits/show' }
+    end
+  end
+
   private
 
   def includes_options
@@ -142,4 +163,46 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
 
     @ref_revision ||= @ref
   end
+
+  def commit
+    @noteable = @commit ||= @project.commit_by(oid: params[:id]).tap do |commit|
+      # preload author and their status for rendering
+      commit&.author&.status
+    end
+  end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def define_note_vars
+    @noteable = @commit
+    @note = @project.build_commit_note(commit)
+
+    @new_diff_note_attrs = {
+      noteable_type: 'Commit',
+      commit_id: @commit.id
+    }
+
+    @grouped_diff_discussions = @commit.grouped_diff_discussions
+    @discussions = @commit.discussions
+
+    # if merge_request_iid = params[:merge_request_iid]
+    #   @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: merge_request_iid)
+    #
+    #   if @merge_request
+    #     @new_diff_note_attrs.merge!(
+    #       noteable_type: 'MergeRequest',
+    #       noteable_id: @merge_request.id
+    #     )
+    #
+    #     merge_request_commit_notes = @merge_request.notes.where(commit_id: @commit.id).inc_relations_for_view
+    #     merge_request_commit_diff_discussions = merge_request_commit_notes.grouped_diff_discussions(@commit.diff_refs)
+    #     @grouped_diff_discussions.merge!(merge_request_commit_diff_discussions) do |line_code, left, right|
+    #       left + right
+    #     end
+    #   end
+    # end
+
+    @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
+    @notes = prepare_notes_for_rendering(@notes, @commit)
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 end
