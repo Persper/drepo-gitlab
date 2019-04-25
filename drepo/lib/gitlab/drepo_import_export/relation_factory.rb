@@ -224,7 +224,7 @@ module Gitlab
 
       def parsed_relation_hash
         @parsed_relation_hash ||= Gitlab::DrepoImportExport::AttributeCleaner.clean(relation_hash: @relation_hash,
-                                                                              relation_class: relation_class)
+                                                                                    relation_class: relation_class)
       end
 
       def setup_diff
