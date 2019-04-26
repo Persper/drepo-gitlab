@@ -45,6 +45,8 @@ module Gitlab
           end
         end
 
+        project_json['related_users'] = @params[:snapshot].related_users if @params[:snapshot]
+
         RelationRenameService.add_new_associations(project_json)
 
         project_json.to_json
