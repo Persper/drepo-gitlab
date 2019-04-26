@@ -44,6 +44,9 @@ namespace :db do
     desc 'Add drepo extend columns and triggers'
     task extend_columns_triggers: :environment do
       $stdout.puts "Add extend columns to drepo project tables, and create triggers"
+      # public schema add drepo_username column to user_shared_tables
+      add_drepo_username_column 'public'
+
       # public schema add drepo_updated_at column
       ActiveRecord::Base.connection_pool.with_connection do |conn|
         conn.execute(%Q{
@@ -105,6 +108,8 @@ namespace :db do
       end
 
       # drepo_project schema add extend columns
+      add_drepo_username_column 'drepo_project_pending'
+      add_drepo_username_column 'drepo_project_completed'
       add_extend_columns 'drepo_project_pending'
       add_extend_columns 'drepo_project_completed'
     end
@@ -248,6 +253,34 @@ namespace :db do
         $$;
       })
       end
+    end
+
+    def add_drepo_username_column(schema)
+      ActiveRecord::Base.connection_pool.with_connection do |conn|
+        conn.execute(%Q{
+        do $$
+        declare
+            r record;
+        begin
+        for r in
+            select
+              'ALTER TABLE #{schema}.' || T.myTable || ' ADD COLUMN IF NOT EXISTS drepo_username character varying;'
+              as script
+           from
+              (
+                SELECT DISTINCT table_name as myTable FROM information_schema.tables WHERE table_schema='public' AND table_name IN (#{user_shared_tables})
+              ) t
+        loop
+        execute r.script;
+        end loop;
+        end;
+        $$;
+      })
+      end
+    end
+
+    def user_shared_tables
+      Snapshot::USER_SHARED_TABLE_COLUMNS.keys.map { |t| ActiveRecord::Base.connection.quote(t) }.join(',')
     end
 
     def exclude_tables

@@ -22,7 +22,7 @@ module Projects
 
       def save_all!
         if save_services
-          Gitlab::DrepoImportExport::Saver.save(project: project, shared: @shared)
+          Gitlab::DrepoImportExport::Saver.save(project: project, shared: @shared, params: params)
           notify_success
         else
           cleanup_and_notify_error!

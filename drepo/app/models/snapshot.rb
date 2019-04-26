@@ -20,6 +20,17 @@ class Snapshot < ApplicationRecord
     snapped: 'snapped'
   ).freeze
 
+  # The resources belong to user, but managed by project
+  USER_SHARED_TABLE_COLUMNS = HashWithIndifferentAccess.new(
+    snippets: 'author_id',
+    issues: 'author_id',
+    notes: 'author_id',
+    events: 'author_id',
+    merge_requests: 'author_id',
+    award_emoji: 'user_id',
+    members: 'user_id'
+  ).freeze
+
   EXCLUDE_TABLES = %w[
     ar_internal_metadata
     schema_migrations
@@ -110,7 +121,7 @@ class Snapshot < ApplicationRecord
     project_metrics_settings
   ].freeze
 
-  belongs_to :creator, class_name: 'User'
+  belongs_to :author, class_name: 'User'
   belongs_to :target, polymorphic: true, inverse_of: :snapshots
   has_one :snapshot_upload, dependent: :destroy
 
