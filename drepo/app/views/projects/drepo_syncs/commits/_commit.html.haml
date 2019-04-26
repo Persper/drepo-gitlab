@@ -41,9 +41,6 @@
       - else
         = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
 
-      - if commit_status
-        = render_commit_status(commit, ref: ref)
-
       .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: ref) } }
 
       .commit-sha-group
