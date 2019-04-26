@@ -9,15 +9,17 @@ class AddStateUpdatedAtToSnapshots < ActiveRecord::Migration[5.0]
 
   def up
     add_column :drepo_snapshots, :state_updated_at, :datetime_with_timezone
-    add_column :drepo_snapshots, :creator_id, :integer
+    add_column :drepo_snapshots, :author_id, :integer
+    add_column :drepo_snapshots, :related_users, :jsonb
 
-    add_concurrent_index :drepo_snapshots, :creator_id
+    add_concurrent_index :drepo_snapshots, :author_id
   end
 
   def down
     remove_column :drepo_snapshots, :state_updated_at, :datetime_with_timezone
-    remove_column :drepo_snapshots, :creator_id, :integer
+    remove_column :drepo_snapshots, :author_id, :integer
+    remove_column :drepo_snapshots, :related_users, :jsonb
 
-    remove_concurrent_index :drepo_snapshots, :create_id
+    remove_concurrent_index :drepo_snapshots, :author_id
   end
 end

@@ -29,6 +29,7 @@ Issue:
 - discussion_locked
 - drepo_uuid
 - drepo_updated_at
+- drepo_username
 Event:
 - id
 - target_type
@@ -40,6 +41,7 @@ Event:
 - author_id
 - drepo_uuid
 - drepo_updated_at
+- drepo_username
 PushEventPayload:
 - commit_count
 - action
@@ -76,6 +78,7 @@ Note:
 - original_discussion_id
 - drepo_uuid
 - drepo_updated_at
+- drepo_username
 LabelLink:
 - id
 - label_id
@@ -127,6 +130,7 @@ ProjectSnippet:
 - visibility_level
 - drepo_uuid
 - drepo_updated_at
+- drepo_username
 Release:
 - id
 - name
@@ -166,6 +170,7 @@ ProjectMember:
 - expires_at
 - drepo_uuid
 - drepo_updated_at
+- drepo_username
 User:
 - id
 - username
@@ -209,6 +214,7 @@ MergeRequest:
 - allow_maintainer_to_push
 - drepo_uuid
 - drepo_updated_at
+- drepo_username
 MergeRequestDiff:
 - id
 - state
@@ -617,6 +623,7 @@ AwardEmoji:
 - updated_at
 - drepo_uuid
 - drepo_updated_at
+- drepo_username
 LabelPriority:
 - id
 - project_id

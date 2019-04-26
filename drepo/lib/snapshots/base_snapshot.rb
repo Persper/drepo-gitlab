@@ -2,7 +2,7 @@
 
 module Snapshots
   class BaseSnapshot
-    attr_reader :drepo_id, :last_drepo_id, :root_id, :from_schema, :to_schema, :connection
+    attr_reader :snapshot, :drepo_id, :last_drepo_id, :root_id, :from_schema, :to_schema, :connection
     attr_reader :delay_actions
 
     # schemas
@@ -11,8 +11,9 @@ module Snapshots
     DREPO_PROJECT_COMPLETED = 'drepo_project_completed'
     DREPO_PROJECT_RESTORING = 'drepo_project_restoring'
 
-    def initialize(drepo_id:, last_drepo_id: nil, root_id:, from_schema: PUBLIC, to_schema: DREPO_PROJECT_PENDING)
-      @drepo_id = drepo_id
+    def initialize(snapshot:, last_drepo_id: nil, root_id:, from_schema: PUBLIC, to_schema: DREPO_PROJECT_PENDING)
+      @snapshot = snapshot
+      @drepo_id = @snapshot.id
       @last_drepo_id = last_drepo_id
       @root_id = root_id
       @from_schema = from_schema

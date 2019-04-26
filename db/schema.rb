@@ -211,6 +211,7 @@ ActiveRecord::Schema.define(version: 20190425203040) do
     t.datetime "updated_at"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "drepo_username"
     t.index ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
     t.index ["drepo_updated_at"], name: "index_award_emoji_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_award_emoji_on_drepo_uuid", using: :btree
@@ -918,8 +919,9 @@ ActiveRecord::Schema.define(version: 20190425203040) do
     t.jsonb "branches"
     t.jsonb "tags"
     t.datetime_with_timezone "state_updated_at"
-    t.integer "creator_id"
-    t.index ["creator_id"], name: "index_drepo_snapshots_on_creator_id", using: :btree
+    t.integer "author_id"
+    t.jsonb "related_users"
+    t.index ["author_id"], name: "index_drepo_snapshots_on_author_id", using: :btree
     t.index ["target_id", "target_type"], name: "index_drepo_snapshots_on_target_id_and_target_type", using: :btree
   end
 
@@ -963,6 +965,7 @@ ActiveRecord::Schema.define(version: 20190425203040) do
     t.string "target_type"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "drepo_username"
     t.index ["action"], name: "index_events_on_action", using: :btree
     t.index ["author_id", "project_id"], name: "index_events_on_author_id_and_project_id", using: :btree
     t.index ["drepo_updated_at"], name: "index_events_on_drepo_updated_at", using: :btree
@@ -1162,6 +1165,7 @@ ActiveRecord::Schema.define(version: 20190425203040) do
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
     t.integer "state_id", limit: 2
+    t.string "drepo_username"
     t.index ["author_id"], name: "index_issues_on_author_id", using: :btree
     t.index ["closed_by_id"], name: "index_issues_on_closed_by_id", using: :btree
     t.index ["confidential"], name: "index_issues_on_confidential", using: :btree
@@ -1324,6 +1328,7 @@ ActiveRecord::Schema.define(version: 20190425203040) do
     t.date "expires_at"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "drepo_username"
     t.index ["access_level"], name: "index_members_on_access_level", using: :btree
     t.index ["drepo_updated_at"], name: "index_members_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_members_on_drepo_uuid", using: :btree
@@ -1471,6 +1476,7 @@ ActiveRecord::Schema.define(version: 20190425203040) do
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
     t.integer "state_id", limit: 2
+    t.string "drepo_username"
     t.index ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
     t.index ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
     t.index ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
@@ -1615,6 +1621,7 @@ ActiveRecord::Schema.define(version: 20190425203040) do
     t.boolean "resolved_by_push"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "drepo_username"
     t.index ["author_id"], name: "index_notes_on_author_id", using: :btree
     t.index ["commit_id"], name: "index_notes_on_commit_id", using: :btree
     t.index ["created_at"], name: "index_notes_on_created_at", using: :btree
@@ -2281,6 +2288,7 @@ ActiveRecord::Schema.define(version: 20190425203040) do
     t.text "description_html"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "drepo_username"
     t.index ["author_id"], name: "index_snippets_on_author_id", using: :btree
     t.index ["drepo_updated_at"], name: "index_snippets_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_snippets_on_drepo_uuid", using: :btree

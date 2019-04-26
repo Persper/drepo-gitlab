@@ -9,9 +9,10 @@ module Gitlab
         new(*args).save
       end
 
-      def initialize(project:, shared:)
+      def initialize(project:, shared:, params:)
         @project = project
         @shared = shared
+        @params = params
       end
 
       def save
@@ -52,7 +53,7 @@ module Gitlab
       end
 
       def save_upload
-        upload = SnapshotUpload.find_or_initialize_by(snapshot: @project.snapshots.last)
+        upload = SnapshotUpload.find_or_initialize_by(snapshot: @params[:snapshot])
 
         File.open(archive_file) { |file| upload.export_file = file }
 

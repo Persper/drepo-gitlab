@@ -58,5 +58,9 @@ module Drepo
     def import?
       super || drepo_import?
     end
+
+    def current_snapshot
+      snapshots.last
+    end
   end
 end
