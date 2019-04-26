@@ -2,13 +2,11 @@
   WARNING: Please keep changes up-to-date with the following files:
   - `assets/javascripts/diffs/components/commit_item.vue`
 -#-----------------------------------------------------------------
-- view_details  = local_assigns.fetch(:view_details, false)
 - merge_request = local_assigns.fetch(:merge_request, nil)
 - project       = local_assigns.fetch(:project) { merge_request&.project }
 - ref           = local_assigns.fetch(:ref) { merge_request&.source_branch }
 - commit_status = commit.present(current_user: current_user).status_for(ref)
 
-- link = commit_path(project, commit, merge_request: merge_request)
 %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
 
   .avatar-cell.d-none.d-sm-block
@@ -16,10 +14,7 @@
 
   .commit-detail.flex-list
     .commit-content.qa-commit-content
-      - if view_details && merge_request
-        = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "commit-row-message item-title"
-      - else
-        = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
+      = link_to commit.title, project_drepo_commit_path(@project, commit), class: "commit-row-message item-title"
       %span.commit-row-message.d-block.d-sm-none
         &middot;
         = commit.short_id
@@ -45,9 +40,6 @@
         = render partial: 'projects/commit/signature', object: commit.signature
       - else
         = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
-
-      - if commit_status
-        = render_commit_status(commit, ref: ref)
 
       .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: ref) } }
 

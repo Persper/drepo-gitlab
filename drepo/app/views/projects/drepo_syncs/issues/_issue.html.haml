@@ -46,7 +46,7 @@
               CLOSED
           - if issue.assignees.any?
             %li
-              = render 'shared/drepo_issuable/assignees', project: @project, issue: issue
+              = render 'shared/issuable/drepo/assignees', project: @project, issue: issue
 
           -#= render 'shared/issuable_meta_data', issuable: issue
 

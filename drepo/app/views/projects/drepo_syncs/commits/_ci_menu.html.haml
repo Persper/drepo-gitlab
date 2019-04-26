@@ -1,0 +1,5 @@
+%ul.nav-links.no-top.no-bottom.commit-ci-menu.nav.nav-tabs
+  = nav_link(path: 'commit#show') do
+    = link_to '' do
+      = _('Changes')
+      %span.badge.badge-pill= @diffs.size
