@@ -13,8 +13,8 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
   def new
     Apartment::Tenant.switch 'drepo_project_pending' do
       @project = Project.find(@project.id)
-      @issues_total_count = @project.issues.count
       @issues = @project.issues.includes(:labels, :assignees, :events).page(params[:page]).load # rubocop:disable CodeReuse/ActiveRecord
+      @merge_requests = @project.merge_requests.load
     end
 
     respond_to do |format|
@@ -144,7 +144,6 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
         @repository.commits(@ref_revision, path: @path, limit: @limit, offset: @offset)
       end
 
-    @commits = @commits.with_pipeline_status
     @commits = set_commits_for_rendering(@commits)
   end
 

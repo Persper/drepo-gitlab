@@ -1,0 +1,5 @@
+%ul.content-list.mr-list.issuable-list
+  - if @merge_requests.present?
+    = render partial: "projects/drepo_syncs/merge_requests/merge_request", collection: @merge_requests
+  - else
+    = render 'shared/empty_states/merge_requests'
