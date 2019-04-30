@@ -1,0 +1,59 @@
+%li{ id: dom_id(merge_request), class: mr_css_classes(merge_request), data: { labels: merge_request.label_ids, id: merge_request.id } }
+  - if @can_bulk_update
+    .issue-check.hidden
+      = check_box_tag dom_id(merge_request, "selected"), nil, false, 'data-id' => merge_request.id, class: "selected-issuable"
+
+  .issuable-info-container
+    .issuable-main-info
+      .merge-request-title.title
+        %span.merge-request-title-text
+          = link_to merge_request.title, merge_request_path(merge_request)
+        - if merge_request.tasks?
+          %span.task-status.d-none.d-sm-inline-block
+            &nbsp;
+            = merge_request.task_status
+
+      .issuable-info
+        %span.issuable-reference
+          #{issuable_reference(merge_request)}
+        %span.issuable-authored.d-none.d-sm-inline-block
+          &middot;
+          opened #{time_ago_with_tooltip(merge_request.created_at, placement: 'bottom')}
+          by #{link_to_member(@project, merge_request.author, avatar: false)}
+        - if merge_request.milestone
+          %span.issuable-milestone.d-none.d-sm-inline-block
+            &nbsp;
+            = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
+              = icon('clock-o')
+              = merge_request.milestone.title
+        - if merge_request.target_project.default_branch != merge_request.target_branch
+          %span.project-ref-path.has-tooltip{ title: _('Target branch') }
+            &nbsp;
+            = link_to project_new_drepo_sync_path(merge_request.project, ref: merge_request.target_branch), class: 'ref-name' do
+              = sprite_icon('fork', size: 12, css_class: 'fork-sprite')
+              = merge_request.target_branch
+        - if merge_request.labels.any?
+          &nbsp;
+          - presented_labels_sorted_by_title(merge_request.labels, merge_request.project).each do |label|
+            = link_to render_colored_label(label, tooltip: true), '', class: 'label-link'
+
+    .issuable-meta
+      %ul.controls
+        - if merge_request.merged?
+          %li.issuable-status.d-none.d-sm-inline-block
+            MERGED
+        - elsif merge_request.closed?
+          %li.issuable-status.d-none.d-sm-inline-block
+            = icon('ban')
+            CLOSED
+        - if merge_request.open? && merge_request.broken?
+          %li.issuable-pipeline-broken.d-none.d-sm-inline-block
+            = link_to merge_request_path(merge_request), class: "has-tooltip", title: _('Cannot be merged automatically') do
+              = icon('exclamation-triangle')
+        - if merge_request.assignees.any?
+          %li
+            = render 'shared/issuable/assignees', project: merge_request.project, issuable: merge_request
+        = render_if_exists 'projects/merge_requests/approvals_count', merge_request: merge_request
+
+      .float-right.issuable-updated-at.d-none.d-sm-inline-block
+        %span updated #{time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago')}

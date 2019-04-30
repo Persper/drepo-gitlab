@@ -28,6 +28,11 @@
                 Issues
                 %span.badge.badge-pill
                   = @issues.total_count
+            %li.merge_requests-tab
+              = link_to url_for(safe_params), data: {target: 'div#merge_requests', action: 'merge_requests', toggle: 'tabvue'} do
+                Merge Requests
+                %span.badge.badge-pill
+                  = @merge_requests.length
 
     #diff-notes-app.tab-content
       #new.tab-pane.active
@@ -53,3 +58,6 @@
 
       #issues.tab-pane
         = render 'projects/drepo_syncs/issues/issues'
+
+      #merge_requests.tab-pane
+        = render 'projects/drepo_syncs/merge_requests/merge_requests'

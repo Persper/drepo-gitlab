@@ -22,50 +22,6 @@ import syntaxHighlight from '~/syntax_highlight';
 import Notes from '~/notes';
 import { polyfillSticky } from '~/lib/utils/sticky';
 
-// MergeRequestTabs
-//
-// Handles persisting and restoring the current tab selection and lazily-loading
-// content on the MergeRequests#show page.
-//
-// ### Example Markup
-//
-//   <ul class="nav-links merge-request-tabs">
-//     <li class="notes-tab active">
-//       <a data-action="notes" data-target="#notes" data-toggle="tab" href="/foo/bar/merge_requests/1">
-//         Discussion
-//       </a>
-//     </li>
-//     <li class="commits-tab">
-//       <a data-action="commits" data-target="#commits" data-toggle="tab" href="/foo/bar/merge_requests/1/commits">
-//         Commits
-//       </a>
-//     </li>
-//     <li class="diffs-tab">
-//       <a data-action="diffs" data-target="#diffs" data-toggle="tab" href="/foo/bar/merge_requests/1/diffs">
-//         Diffs
-//       </a>
-//     </li>
-//   </ul>
-//
-//   <div class="tab-content">
-//     <div class="notes tab-pane active" id="notes">
-//       Notes Content
-//     </div>
-//     <div class="commits tab-pane" id="commits">
-//       Commits Content
-//     </div>
-//     <div class="diffs tab-pane" id="diffs">
-//       Diffs Content
-//     </div>
-//   </div>
-//
-//   <div class="mr-loading-status">
-//     <div class="loading">
-//       Loading Animation
-//     </div>
-//   </div>
-//
-
 // Store the `location` object, allowing for easier stubbing in tests
 let { location } = window;
 
@@ -203,9 +159,10 @@ export default class DrepoPreviewTabs {
         this.expandViewContainer();
         this.destroyPipelinesView();
         this.commitsTab.classList.remove('active');
-      } else if (action === 'pipelines') {
+      } else if (action === 'merge_requests') {
+        this.expandView();
         this.resetViewContainer();
-        this.mountPipelinesView();
+        this.destroyPipelinesView();
       } else {
         this.mergeRequestTabPanes.querySelector('#notes').style.display = 'block';
         this.mergeRequestTabs.querySelector('.notes-tab').classList.add('active');
@@ -279,8 +236,8 @@ export default class DrepoPreviewTabs {
   setCurrentAction(action) {
     this.currentAction = action;
 
-    // Remove a trailing '/commits' '/diffs' '/pipelines'
-    let newState = location.pathname.replace(/\/(issues|commits|diffs|pipelines)(\.html)?\/?$/, '');
+    // Remove a trailing '/commits' '/diffs' '/merge_requests'
+    let newState = location.pathname.replace(/\/(issues|commits|diffs|merge_requests)(\.html)?\/?$/, '');
 
     // Append the new action if we're on a tab other than 'notes'
     if (this.currentAction !== 'show' && this.currentAction !== 'new') {

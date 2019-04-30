@@ -475,6 +475,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
           scope constraints: { format: nil }, action: :new do
             get :issues, defaults: { tab: 'issues' }, as: :issues_tab
+            get :merge_requests, defaults: { tab: 'merge_requests' }, as: :merge_requests_tab
           end
         end
       end
