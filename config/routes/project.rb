@@ -468,7 +468,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       scope path: 'drepo_syncs', controller: 'drepo_syncs' do
         get '/issue/:id', action: :drepo_issue, as: :drepo_issue
         get :drepo_refs, as: :drepo_commits_refs
-        get 'commit/:id', action: :drepo_commit, as: :drepo_commit
+        get '/commit/:id', action: :drepo_commit, as: :drepo_commit
+        get '/merge_request/:id', action: :drepo_merge_request, as: :drepo_merge_request
 
         scope path: 'new', as: :new_drepo_sync do
           get '', action: :new
