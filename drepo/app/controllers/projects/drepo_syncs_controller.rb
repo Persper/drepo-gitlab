@@ -117,6 +117,9 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
     end
   end
 
+  def drepo_merge_request
+  end
+
   private
 
   def includes_options
