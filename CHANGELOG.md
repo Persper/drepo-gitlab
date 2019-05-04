@@ -2,6 +2,46 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.10.4 (2019-05-01)
+
+### Fixed (12 changes)
+
+- Fix MR popover on ToDos page. !27382
+- Fix 500 in general pipeline settings when passing an invalid build timeout. !27416
+- Fix bug where system note MR has no popover. !27589
+- Fix bug when project export to remote url fails. !27614
+- `on_stop` is not automatically triggered with pipelines for merge requests. !27618
+- Update Workhorse to v8.5.2. !27631
+- Show proper wiki links in search results. !27634
+- Make `CI_COMMIT_REF_NAME` and `SLUG` variable idempotent. !27663
+- Fix Kubernetes service template deployment jobs broken as of 11.10.0. !27687
+- Prevent text selection when dragging in issue boards. !27724
+- Fix pipelines for merge requests does not show pipeline page when source branch is removed. !27803
+- Fix Metrics Environments dropdown.
+
+### Performance (2 changes)
+
+- Prevent concurrent execution of PipelineScheduleWorker. !27781
+- Fix slow performance with compiling HAML templates. !27782
+
+
+## 11.10.3 (2019-04-30)
+
+### Security (1 change)
+
+- Allow to see project events only with api scope token.
+
+
+## 11.10.2 (2019-04-25)
+
+### Security (4 changes)
+
+- Loosen regex for exception sanitization. !3076
+- Resolve: moving an issue to private repo leaks namespace and project name.
+- Escape path in new merge request mail.
+- Stop sending emails to users who can't read commit.
+
+
 ## 11.10.1 (2019-04-23)
 
 ### Fixed (2 changes)
@@ -251,6 +291,17 @@ entry.
 - Externalize admin deploy keys strings.
 - Removes EE differences for environments_table.vue.
 - Removes EE differences for environment_item.vue.
+
+
+## 11.9.10 (2019-04-26)
+
+### Security (5 changes)
+
+- Loosen regex for exception sanitization. !3077
+- Resolve: moving an issue to private repo leaks namespace and project name.
+- Escape path in new merge request mail.
+- Stop sending emails to users who can't read commit.
+- Upgrade Rails to 5.0.7.2.
 
 
 ## 11.9.9 (2019-04-23)
@@ -609,6 +660,13 @@ entry.
 - Update GitLab Shell to v8.7.1. !25801
 - Bring back Rugged implementation of commit_tree_entry. !25896
 - Removes EE differences for jobs/getters.js.
+
+
+## 11.8.10 (2019-04-30)
+
+### Security (1 change)
+
+- Allow to see project events only with api scope token.
 
 
 ## 11.8.8 (2019-04-23)

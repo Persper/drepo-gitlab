@@ -2123,7 +2123,7 @@ describe MergeRequest do
     end
 
     context 'when merges are not restricted to green builds' do
-      subject { build(:merge_request, target_project: build(:project, only_allow_merge_if_pipeline_succeeds: false)) }
+      subject { build(:merge_request, target_project: create(:project, only_allow_merge_if_pipeline_succeeds: false)) }
 
       context 'and a failed pipeline is associated' do
         before do
@@ -2258,6 +2258,50 @@ describe MergeRequest do
 
       it 'returns an empty array' do
         expect(merge_request.environments_for(user)).to be_empty
+      end
+    end
+  end
+
+  describe "#environments" do
+    subject { merge_request.environments }
+
+    let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
+    let(:project) { merge_request.project }
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+        source: :merge_request_event,
+        merge_request: merge_request, project: project,
+        sha: merge_request.diff_head_sha,
+        merge_requests_as_head_pipeline: [merge_request])
+    end
+
+    let!(:job) { create(:ci_build, :start_review_app, pipeline: pipeline, project: project) }
+
+    it 'returns environments' do
+      is_expected.to eq(pipeline.environments)
+      expect(subject.count).to be(1)
+    end
+
+    context 'when pipeline is not associated with environments' do
+      let!(:job) { create(:ci_build, pipeline: pipeline, project: project) }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when pipeline is not a pipeline for merge request' do
+      let(:pipeline) do
+        create(:ci_pipeline,
+          project: project,
+          ref: 'feature',
+          sha: merge_request.diff_head_sha,
+          merge_requests_as_head_pipeline: [merge_request])
+      end
+
+      it 'returns empty relation' do
+        is_expected.to be_empty
       end
     end
   end

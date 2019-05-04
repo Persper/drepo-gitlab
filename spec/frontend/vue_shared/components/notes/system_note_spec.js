@@ -1,14 +1,15 @@
 import Vue from 'vue';
 import issueSystemNote from '~/vue_shared/components/notes/system_note.vue';
 import createStore from '~/notes/stores';
+import initMRPopovers from '~/mr_popover/index';
+
+jest.mock('~/mr_popover/index', () => jest.fn());
 
 describe('system note component', () => {
   let vm;
   let props;
-  let initMRPopoversSpy;
 
   beforeEach(() => {
-    initMRPopoversSpy = spyOnDependency(issueSystemNote, 'initMRPopovers');
     props = {
       note: {
         id: '1424',
@@ -60,6 +61,6 @@ describe('system note component', () => {
   });
 
   it('should initMRPopovers onMount', () => {
-    expect(initMRPopoversSpy).toHaveBeenCalled();
+    expect(initMRPopovers).toHaveBeenCalled();
   });
 });

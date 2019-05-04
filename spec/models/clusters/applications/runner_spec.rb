@@ -13,6 +13,14 @@ describe Clusters::Applications::Runner do
 
   it { is_expected.to belong_to(:runner) }
 
+  describe '#can_uninstall?' do
+    let(:gitlab_runner) { create(:clusters_applications_runner, runner: ci_runner) }
+
+    subject { gitlab_runner.can_uninstall? }
+
+    it { is_expected.to be_falsey }
+  end
+
   describe '#install_command' do
     let(:kubeclient) { double('kubernetes client') }
     let(:gitlab_runner) { create(:clusters_applications_runner, runner: ci_runner) }
@@ -24,7 +32,7 @@ describe Clusters::Applications::Runner do
     it 'is initialized with 4 arguments' do
       expect(subject.name).to eq('runner')
       expect(subject.chart).to eq('runner/gitlab-runner')
-      expect(subject.version).to eq('0.4.0')
+      expect(subject.version).to eq(Clusters::Applications::Runner::VERSION)
       expect(subject).to be_rbac
       expect(subject.repository).to eq('https://charts.gitlab.io')
       expect(subject.files).to eq(gitlab_runner.files)
@@ -42,7 +50,7 @@ describe Clusters::Applications::Runner do
       let(:gitlab_runner) { create(:clusters_applications_runner, :errored, runner: ci_runner, version: '0.1.13') }
 
       it 'is initialized with the locked version' do
-        expect(subject.version).to eq('0.4.0')
+        expect(subject.version).to eq(Clusters::Applications::Runner::VERSION)
       end
     end
   end

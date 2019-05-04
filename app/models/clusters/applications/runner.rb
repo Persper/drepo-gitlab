@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Runner < ApplicationRecord
-      VERSION = '0.4.0'.freeze
+      VERSION = '0.4.1'.freeze
 
       self.table_name = 'clusters_applications_runners'
 
@@ -27,6 +27,13 @@ module Clusters
 
       def values
         content_values.to_yaml
+      end
+
+      # Need to investigate if pipelines run by this runner will stop upon the
+      # executor pod stopping
+      # I.e.run a pipeline, and uninstall runner while pipeline is running
+      def allowed_to_uninstall?
+        false
       end
 
       def install_command

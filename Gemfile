@@ -79,6 +79,7 @@ gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 # GraphQL API
 gem 'graphql', '~> 1.8.0'
 gem 'graphiql-rails', '~> 1.4.10'
+gem 'apollo_upload_server', '~> 2.0.0.beta3'
 
 # Disable strong_params so that Mash does not respond to :permitted?
 gem 'hashie-forbidden_attributes'
@@ -257,8 +258,7 @@ gem 'chronic_duration', '~> 0.10.6'
 gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
-gem 'sass-rails', '~> 5.0.6'
-gem 'sass', '~> 3.5'
+gem 'sassc-rails', '~> 2.1.0'
 gem 'uglifier', '~> 2.7.2'
 
 gem 'addressable', '~> 2.5.2'
@@ -275,7 +275,7 @@ gem 'sentry-raven', '~> 2.7'
 gem 'premailer-rails', '~> 1.9.7'
 
 # LabKit: Tracing and Correlation
-gem 'gitlab-labkit', '~> 0.1.2'
+gem 'gitlab-labkit', '~> 0.2.0'
 
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false
@@ -284,7 +284,7 @@ gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.3'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
 
-gem 'batch-loader', '~> 1.2.2'
+gem 'batch-loader', '~> 1.4.0'
 
 # Perf bar
 gem 'peek', '~> 1.0.1'
@@ -308,7 +308,7 @@ group :development do
   gem 'foreman', '~> 0.84.0'
   gem 'brakeman', '~> 4.2', require: false
 
-  gem 'letter_opener_web', '~> 1.3.0'
+  gem 'letter_opener_web', '~> 1.3.4'
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
 
   # Better errors handler
@@ -416,7 +416,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.22.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.27.0', require: 'gitaly'
 
 gem 'grpc', '~> 1.19.0'
 

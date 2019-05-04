@@ -101,6 +101,7 @@ class Snapshot < ApplicationRecord
     spam_logs
     web_hook_logs
     web_hooks
+    project_metrics_settings
   ].freeze
 
   belongs_to :target, polymorphic: true, inverse_of: :snapshots

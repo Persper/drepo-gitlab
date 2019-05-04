@@ -56,6 +56,7 @@ class Project < ApplicationRecord
   VALID_MIRROR_PROTOCOLS = %w(http https ssh git).freeze
 
   ignore_column :import_status, :import_jid, :import_error
+  ignore_column :ci_id
 
   cache_markdown_field :description, pipeline: :description
 
@@ -188,6 +189,7 @@ class Project < ApplicationRecord
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :project_repository, inverse_of: :project
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
+  has_one :metrics_setting, inverse_of: :project, class_name: 'ProjectMetricsSetting'
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project
@@ -297,6 +299,7 @@ class Project < ApplicationRecord
                                 reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
+  accepts_nested_attributes_for :metrics_setting, update_only: true, allow_destroy: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -1911,8 +1914,8 @@ class Project < ApplicationRecord
     false
   end
 
-  def full_path_was
-    File.join(namespace.full_path, previous_changes['path'].first)
+  def full_path_before_last_save
+    File.join(namespace.full_path, path_before_last_save)
   end
 
   alias_method :name_with_namespace, :full_name

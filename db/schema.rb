@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190410104522) do
+ActiveRecord::Schema.define(version: 20190426180107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -188,6 +188,8 @@ ActiveRecord::Schema.define(version: 20190410104522) do
     t.string "encrypted_external_auth_client_key_iv"
     t.string "encrypted_external_auth_client_key_pass"
     t.string "encrypted_external_auth_client_key_pass_iv"
+    t.string "lets_encrypt_notification_email"
+    t.boolean "lets_encrypt_terms_of_service_accepted", default: false, null: false
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
@@ -1781,6 +1783,7 @@ ActiveRecord::Schema.define(version: 20190410104522) do
     t.integer "project_id", null: false
     t.boolean "group_runners_enabled", default: true, null: false
     t.boolean "merge_pipelines_enabled"
+    t.boolean "merge_trains_enabled", default: false, null: false
     t.index ["project_id"], name: "index_project_ci_cd_settings_on_project_id", unique: true, using: :btree
   end
 
@@ -1876,6 +1879,10 @@ ActiveRecord::Schema.define(version: 20190410104522) do
     t.index ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
   end
 
+  create_table "project_metrics_settings", primary_key: "project_id", id: :integer, default: nil, force: :cascade do |t|
+    t.string "external_dashboard_url", null: false
+  end
+
   create_table "project_mirror_data", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "status"
@@ -1907,6 +1914,7 @@ ActiveRecord::Schema.define(version: 20190410104522) do
     t.bigint "repository_size", default: 0, null: false
     t.bigint "lfs_objects_size", default: 0, null: false
     t.bigint "build_artifacts_size", default: 0, null: false
+    t.bigint "packages_size"
     t.index ["namespace_id"], name: "index_project_statistics_on_namespace_id", using: :btree
     t.index ["project_id"], name: "index_project_statistics_on_project_id", unique: true, using: :btree
   end
@@ -1929,7 +1937,6 @@ ActiveRecord::Schema.define(version: 20190410104522) do
     t.string "import_type"
     t.string "import_source"
     t.text "import_error"
-    t.integer "ci_id"
     t.boolean "shared_runners_enabled", default: true, null: false
     t.string "runners_token"
     t.string "build_coverage_regex"
@@ -1970,7 +1977,6 @@ ActiveRecord::Schema.define(version: 20190410104522) do
     t.datetime "drepo_updated_at", default: -> { "now()" }
     t.boolean "detected_repository_languages"
     t.string "external_authorization_classification_label"
-    t.index ["ci_id"], name: "index_projects_on_ci_id", using: :btree
     t.index ["created_at"], name: "index_projects_on_created_at", using: :btree
     t.index ["creator_id"], name: "index_projects_on_creator_id", using: :btree
     t.index ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
@@ -2246,6 +2252,7 @@ ActiveRecord::Schema.define(version: 20190410104522) do
     t.boolean "commit_events", default: true, null: false
     t.boolean "job_events", default: false, null: false
     t.boolean "confidential_note_events", default: true
+    t.boolean "deployment_events", default: false, null: false
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
     t.index ["drepo_updated_at"], name: "index_services_on_drepo_updated_at", using: :btree
@@ -2840,6 +2847,7 @@ ActiveRecord::Schema.define(version: 20190410104522) do
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
+  add_foreign_key "project_metrics_settings", "projects", on_delete: :cascade
   add_foreign_key "project_mirror_data", "projects", on_delete: :cascade
   add_foreign_key "project_repositories", "projects", on_delete: :cascade
   add_foreign_key "project_repositories", "shards", on_delete: :restrict

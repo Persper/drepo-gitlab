@@ -26,7 +26,7 @@ class PagesDomain < ApplicationRecord
 
   after_initialize :set_verification_code
   after_create :update_daemon
-  after_update :update_daemon, if: :pages_config_changed?
+  after_update :update_daemon, if: :saved_change_to_pages_config?
   after_destroy :update_daemon
 
   scope :enabled, -> { where('enabled_until >= ?', Time.now ) }
@@ -37,6 +37,8 @@ class PagesDomain < ApplicationRecord
 
     where(verified_at.eq(nil).or(enabled_until.eq(nil).or(enabled_until.lt(threshold))))
   end
+
+  scope :for_removal, -> { where("remove_at < ?", Time.now) }
 
   def verified?
     !!verified_at
@@ -146,7 +148,7 @@ class PagesDomain < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def pages_config_changed?
+  def saved_change_to_pages_config?
     saved_change_to_project_id? ||
       saved_change_to_domain? ||
       saved_change_to_certificate? ||
