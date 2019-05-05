@@ -25,6 +25,7 @@ module Gitlab
         end
 
         @project_members = @tree_hash.delete('project_members')
+        @related_users = @tree_hash.delete('related_users')
 
         RelationRenameService.rename(@tree_hash)
 
@@ -33,6 +34,8 @@ module Gitlab
             create_relations
           end
         end
+
+        # TODO: Maybe here we can send approve request to related_users
       rescue => e
         @shared.error(e)
         false
@@ -50,6 +53,12 @@ module Gitlab
         @members_mapper ||= Gitlab::DrepoImportExport::MembersMapper.new(exported_members: @project_members,
                                                                          user: @user,
                                                                          project: restored_project)
+      end
+
+      def related_users_mapper
+        @related_users_mapper ||= Gitlab::DrepoImportExport::RelatedUsersMapper.new(related_users: @related_users,
+                                                                                    user: @user,
+                                                                                    project: restored_project)
       end
 
       # Loops through the tree of models defined in import_export.yml and
@@ -206,6 +215,7 @@ module Gitlab
           Gitlab::DrepoImportExport::RelationFactory.create(relation_sym: relation.to_sym,
                                                             relation_hash: relation_hash,
                                                             members_mapper: members_mapper,
+                                                            related_users_mapper: related_users_mapper,
                                                             user: @user,
                                                             project: @restored_project,
                                                             excluded_keys: excluded_keys_for_relation(relation))

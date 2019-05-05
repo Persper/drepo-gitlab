@@ -50,10 +50,11 @@ module Gitlab
         relation_name.to_s.constantize
       end
 
-      def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:, excluded_keys: [])
+      def initialize(relation_sym:, relation_hash:, members_mapper:, related_users_mapper:, user:, project:, excluded_keys: [])
         @relation_name = self.class.overrides[relation_sym] || relation_sym
         @relation_hash = relation_hash.except('noteable_id')
         @members_mapper = members_mapper
+        @related_users_mapper = related_users_mapper
         @user = user
         @project = project
         @imported_object_retries = 0
@@ -109,6 +110,13 @@ module Gitlab
             @relation_hash[reference] = @members_mapper.map[@relation_hash[reference]]
           end
         end
+
+        if Snapshot::USER_SHARED_TABLE_COLUMNS.keys.include? @relation_name
+          @relation_hash[Snapshot::USER_SHARED_TABLE_COLUMNS[@relation_name]] = @user.id
+          if has_related_user? @relation_hash['drepo_username']
+            @relation_hash[Snapshot::USER_SHARED_TABLE_COLUMNS[@relation_name]] = @related_users_mapper[@relation_hash['drepo_username']]
+          end
+        end
       end
 
       def remove_duplicate_assignees
@@ -138,6 +146,10 @@ module Gitlab
 
       def has_author?(old_author_id)
         admin_user? && @members_mapper.include?(old_author_id)
+      end
+
+      def has_related_user?(username)
+        @related_users_mapper.include?(username)
       end
 
       def missing_author_note(updated_at, author_name)
