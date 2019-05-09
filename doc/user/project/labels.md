@@ -24,7 +24,7 @@ in the label’s title, using the format `key::value`. For example:
 
 ![A sample scoped label](img/key_value_labels.png)
 
-Two scoped labels with the same key but a different value cannot simultaneeously
+Two scoped labels with the same key but a different value cannot simultaneously
 apply to an issue, epic, or merge request. For example, if an issue already has `priority::3`
 and you apply `priority::2` to it, `priority::3` is automatically removed from the issue.
 
@@ -53,7 +53,7 @@ be able to advance workflow states consistently in issues themselves.
 ## Creating labels
 
 >**Note:**
-A permission level of `Developer` or higher is required to create labels.
+A permission level of Reporter or higher is required to create labels.
 
 ### New project label
 
@@ -91,7 +91,7 @@ From the sidebar of an issue or a merge request, you can create a new **project 
 ## Editing labels
 
 NOTE: **Note:**
-A permission level of `Developer` or higher is required to edit labels.
+A permission level of Reporter or higher is required to edit labels.
 
 You can update a label by navigating to **Issues > Labels** in the project or group and clicking the pencil icon.
 

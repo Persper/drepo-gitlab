@@ -40,6 +40,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html): Replicate your GitLab instance to other geographic locations as a read-only fully operational version. **[PREMIUM ONLY]**
 - [Disaster Recovery](https://docs.gitlab.com/ee/administration/geo/disaster_recovery/index.html): Quickly fail-over to a different site with minimal effort in a disaster situation. **[PREMIUM ONLY]**
 - [Pivotal Tile](https://docs.gitlab.com/ee/install/pivotal/index.html): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry. **[PREMIUM ONLY]**
+- [Add License](../user/admin_area/license.md): Upload a license at install time to unlock features that are in paid tiers of GitLab. **[STARTER ONLY]**
 
 ### Configuring GitLab
 
@@ -72,7 +73,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Branded login page](../customization/branded_login_page.md): Customize the login page with your own logo, title, and description.
 - [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
 - ["New Project" page](../customization/new_project_page.md): Customize the text to be displayed on the page that opens whenever your users create a new project.
-- [Additional custom email text](https://docs.gitlab.com/ee/user/admin_area/settings/email.html#custom-additional-text): Add additional custom text to emails sent from GitLab. **[PREMIUM ONLY]**
+- [Additional custom email text](https://docs.gitlab.com/ee/user/admin_area/settings/email.html#custom-additional-text-premium-only): Add additional custom text to emails sent from GitLab. **[PREMIUM ONLY]**
 
 ### Maintaining GitLab
 
