@@ -16,6 +16,9 @@ If the highest number stable branch is unclear please check the
 [GitLab Blog](https://about.gitlab.com/blog/archives.html) for installation
 guide links by version.
 
+If you are changing from GitLab Community Edition to GitLab Enterprise Edition, see
+the [Upgrading from CE to EE](upgrading_from_ce_to_ee.md) documentation.
+
 ## Guidelines for all versions
 
 This section contains all the steps necessary to upgrade Community Edition or
@@ -49,9 +52,9 @@ Download Ruby and compile it:
 
 ```bash
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.3.tar.gz
-echo 'f919a9fbcdb7abecd887157b49833663c5c15fda  ruby-2.5.3.tar.gz' | shasum -c - && tar xzf ruby-2.5.3.tar.gz
-cd ruby-2.5.3
+curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.3.tar.gz
+echo '2347ed6ca5490a104ebd5684d2b9b5eefa6cd33c  ruby-2.6.3.tar.gz' | shasum -c - && tar xzf ruby-2.6.3.tar.gz
+cd ruby-2.6.3
 
 ./configure --disable-install-rdoc
 make

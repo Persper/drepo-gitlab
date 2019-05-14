@@ -63,7 +63,7 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
     set_snapshot
 
     if find_branches
-      branches = @snapshot&.branches&.map { |b| b['name'] }.sort
+      branches = @snapshot&.branches&.map { |b| b['name'] }&.sort
       index = branches.index('master')
       if index && index > 0
         branches[index] = branches[0]
@@ -78,7 +78,7 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
     end
 
     if find_tags
-      tags = @snapshot&.tags&.map { |t| t['name'] }.sort
+      tags = @snapshot&.tags&.map { |t| t['name'] }&.sort
 
       if params['search'].present?
         tags.select! { |t| t.include? params['search'] }

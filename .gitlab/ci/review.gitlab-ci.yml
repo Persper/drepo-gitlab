@@ -47,14 +47,14 @@
 
 build-qa-image:
   <<: *review-docker
-  stage: prepare
+  stage: test
   script:
     - time docker build --cache-from ${LATEST_QA_IMAGE} --tag ${QA_IMAGE} ./qa/
     - echo "${CI_JOB_TOKEN}" | docker login --username gitlab-ci-token --password-stdin ${CI_REGISTRY}
     - time docker push ${QA_IMAGE}
 
 .review-build-cng-base: &review-build-cng-base
-  image: ruby:2.5-alpine
+  image: ruby:2.6-alpine
   stage: test
   when: manual
   before_script:
@@ -200,12 +200,11 @@ schedule:review-performance:
 schedule:review-cleanup:
   <<: *review-base
   <<: *review-schedules-only
-  stage: review
+  stage: build
   allow_failure: true
-  variables:
-    GIT_DEPTH: "1"
   environment:
     name: review/auto-cleanup
+    action: stop
   before_script:
     - source scripts/utils.sh
     - install_gitlab_gem

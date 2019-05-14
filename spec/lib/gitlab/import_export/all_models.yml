@@ -99,7 +99,7 @@ merge_requests:
 - timelogs
 - head_pipeline
 - latest_merge_request_diff
-- merge_request_pipelines
+- pipelines_for_merge_request
 - merge_request_assignees
 - suggestions
 - assignees
@@ -323,6 +323,7 @@ project:
 - kubernetes_namespaces
 - error_tracking_setting
 - snapshots
+- metrics_setting
 award_emoji:
 - awardable
 - user
@@ -364,3 +365,5 @@ suggestions:
 snapshots:
 - author
 - target
+metrics_setting:
+- project

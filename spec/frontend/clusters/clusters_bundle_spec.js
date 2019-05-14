@@ -1,12 +1,12 @@
 import Clusters from '~/clusters/clusters_bundle';
-import { APPLICATION_STATUS, INGRESS_DOMAIN_SUFFIX } from '~/clusters/constants';
+import { APPLICATION_STATUS, INGRESS_DOMAIN_SUFFIX, APPLICATIONS } from '~/clusters/constants';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { loadHTMLFixture } from 'helpers/fixtures';
 import { setTestTimeout } from 'helpers/timeout';
 import $ from 'jquery';
 
-const { INSTALLING, INSTALLABLE, INSTALLED, NOT_INSTALLABLE } = APPLICATION_STATUS;
+const { INSTALLING, INSTALLABLE, INSTALLED, UNINSTALLING } = APPLICATION_STATUS;
 
 describe('Clusters', () => {
   setTestTimeout(1000);
@@ -212,55 +212,16 @@ describe('Clusters', () => {
   });
 
   describe('installApplication', () => {
-    it('tries to install helm', () => {
+    it.each(APPLICATIONS)('tries to install %s', applicationId => {
       jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
 
-      cluster.store.state.applications.helm.status = INSTALLABLE;
+      cluster.store.state.applications[applicationId].status = INSTALLABLE;
 
-      cluster.installApplication({ id: 'helm' });
+      cluster.installApplication({ id: applicationId });
 
-      expect(cluster.store.state.applications.helm.status).toEqual(INSTALLING);
-      expect(cluster.store.state.applications.helm.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('helm', undefined);
-    });
-
-    it('tries to install ingress', () => {
-      jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
-
-      cluster.store.state.applications.ingress.status = INSTALLABLE;
-
-      cluster.installApplication({ id: 'ingress' });
-
-      expect(cluster.store.state.applications.ingress.status).toEqual(INSTALLING);
-      expect(cluster.store.state.applications.ingress.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('ingress', undefined);
-    });
-
-    it('tries to install runner', () => {
-      jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
-
-      cluster.store.state.applications.runner.status = INSTALLABLE;
-
-      cluster.installApplication({ id: 'runner' });
-
-      expect(cluster.store.state.applications.runner.status).toEqual(INSTALLING);
-      expect(cluster.store.state.applications.runner.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('runner', undefined);
-    });
-
-    it('tries to install jupyter', () => {
-      jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
-
-      cluster.installApplication({
-        id: 'jupyter',
-        params: { hostname: cluster.store.state.applications.jupyter.hostname },
-      });
-
-      cluster.store.state.applications.jupyter.status = INSTALLABLE;
-      expect(cluster.store.state.applications.jupyter.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('jupyter', {
-        hostname: cluster.store.state.applications.jupyter.hostname,
-      });
+      expect(cluster.store.state.applications[applicationId].status).toEqual(INSTALLING);
+      expect(cluster.store.state.applications[applicationId].requestReason).toEqual(null);
+      expect(cluster.service.installApplication).toHaveBeenCalledWith(applicationId, undefined);
     });
 
     it('sets error request status when the request fails', () => {
@@ -272,13 +233,40 @@ describe('Clusters', () => {
 
       const promise = cluster.installApplication({ id: 'helm' });
 
-      expect(cluster.store.state.applications.helm.status).toEqual(INSTALLING);
-      expect(cluster.store.state.applications.helm.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalled();
-
       return promise.then(() => {
         expect(cluster.store.state.applications.helm.status).toEqual(INSTALLABLE);
         expect(cluster.store.state.applications.helm.installFailed).toBe(true);
+
+        expect(cluster.store.state.applications.helm.requestReason).toBeDefined();
+      });
+    });
+  });
+
+  describe('uninstallApplication', () => {
+    it.each(APPLICATIONS)('tries to uninstall %s', applicationId => {
+      jest.spyOn(cluster.service, 'uninstallApplication').mockResolvedValueOnce();
+
+      cluster.store.state.applications[applicationId].status = INSTALLED;
+
+      cluster.uninstallApplication({ id: applicationId });
+
+      expect(cluster.store.state.applications[applicationId].status).toEqual(UNINSTALLING);
+      expect(cluster.store.state.applications[applicationId].requestReason).toEqual(null);
+      expect(cluster.service.uninstallApplication).toHaveBeenCalledWith(applicationId);
+    });
+
+    it('sets error request status when the uninstall request fails', () => {
+      jest
+        .spyOn(cluster.service, 'uninstallApplication')
+        .mockRejectedValueOnce(new Error('STUBBED ERROR'));
+
+      cluster.store.state.applications.helm.status = INSTALLED;
+
+      const promise = cluster.uninstallApplication({ id: 'helm' });
+
+      return promise.then(() => {
+        expect(cluster.store.state.applications.helm.status).toEqual(INSTALLED);
+        expect(cluster.store.state.applications.helm.uninstallFailed).toBe(true);
 
         expect(cluster.store.state.applications.helm.requestReason).toBeDefined();
       });
@@ -317,13 +305,12 @@ describe('Clusters', () => {
     let ingressNewState;
 
     beforeEach(() => {
-      ingressPreviousState = { status: INSTALLABLE };
-      ingressNewState = { status: INSTALLED, externalIp: '127.0.0.1' };
+      ingressPreviousState = { externalIp: null };
+      ingressNewState = { externalIp: '127.0.0.1' };
     });
 
-    describe(`when ingress application new status is ${INSTALLED}`, () => {
+    describe(`when ingress have an external ip assigned`, () => {
       beforeEach(() => {
-        ingressNewState.status = INSTALLED;
         cluster.toggleIngressDomainHelpText(ingressPreviousState, ingressNewState);
       });
 
@@ -338,31 +325,11 @@ describe('Clusters', () => {
       });
     });
 
-    describe(`when ingress application new status is different from ${INSTALLED}`, () => {
+    describe(`when ingress does not have an external ip assigned`, () => {
       it('hides custom domain help text', () => {
-        ingressNewState.status = NOT_INSTALLABLE;
-        cluster.ingressDomainHelpText.classList.remove('hide');
-
-        cluster.toggleIngressDomainHelpText(ingressPreviousState, ingressNewState);
-
-        expect(cluster.ingressDomainHelpText.classList.contains('hide')).toEqual(true);
-      });
-    });
-
-    describe('when ingress application new status and old status are the same', () => {
-      it('does not display custom domain help text', () => {
-        ingressPreviousState.status = INSTALLED;
-        ingressNewState.status = ingressPreviousState.status;
-
-        cluster.toggleIngressDomainHelpText(ingressPreviousState, ingressNewState);
-
-        expect(cluster.ingressDomainHelpText.classList.contains('hide')).toEqual(true);
-      });
-    });
-
-    describe(`when ingress new status is ${INSTALLED} and there isn’t an ip assigned`, () => {
-      it('does not display custom domain help text', () => {
+        ingressPreviousState.externalIp = '127.0.0.1';
         ingressNewState.externalIp = null;
+        cluster.ingressDomainHelpText.classList.remove('hide');
 
         cluster.toggleIngressDomainHelpText(ingressPreviousState, ingressNewState);
 

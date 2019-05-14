@@ -7,6 +7,9 @@
   opacity: 1 !important;
 
   * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
     // !important to make sure no style can override this when dragging
     cursor: grabbing !important;
@@ -207,6 +210,7 @@
   border: 1px solid $gray-200;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   line-height: $gl-padding;
+  list-style: none;
 
   &:not(:last-child) {
     margin-bottom: $gl-padding-8;

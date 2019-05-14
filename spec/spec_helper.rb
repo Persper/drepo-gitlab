@@ -53,6 +53,7 @@ RSpec.configure do |config|
   config.display_try_failure_messages = true
 
   config.infer_spec_type_from_file_location!
+  config.full_backtrace = !!ENV['CI']
 
   config.define_derived_metadata(file_path: %r{/spec/}) do |metadata|
     location = metadata[:location]
@@ -137,7 +138,7 @@ RSpec.configure do |config|
       .and_return(false)
   end
 
-  config.before(:example, :quarantine) do
+  config.around(:example, :quarantine) do
     # Skip tests in quarantine unless we explicitly focus on them.
     skip('In quarantine') unless config.inclusion_filter[:quarantine]
   end

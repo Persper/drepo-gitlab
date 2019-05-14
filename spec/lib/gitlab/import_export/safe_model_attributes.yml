@@ -479,6 +479,7 @@ Service:
 - wiki_page_events
 - confidential_issues_events
 - confidential_note_events
+- deployment_events
 - drepo_uuid
 - drepo_updated_at
 ProjectHook:
@@ -702,7 +703,6 @@ ResourceLabelEvent:
 - drepo_uuid
 - drepo_updated_at
 ErrorTracking::ProjectErrorTrackingSetting:
-- id
 - api_url
 - project_id
 - project_name
@@ -728,3 +728,8 @@ MergeRequestAssignee:
 - merge_request_id
 - drepo_uuid
 - drepo_updated_at
+ProjectMetricsSetting:
+- project_id
+- external_dashboard_url
+- created_at
+- updated_at

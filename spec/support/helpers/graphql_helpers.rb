@@ -61,7 +61,14 @@ module GraphqlHelpers
 
   def variables_for_mutation(name, input)
     graphql_input = input.map { |name, value| [GraphqlHelpers.fieldnamerize(name), value] }.to_h
-    { input_variable_name_for_mutation(name) => graphql_input }.to_json
+    result = { input_variable_name_for_mutation(name) => graphql_input }
+
+    # Avoid trying to serialize multipart data into JSON
+    if graphql_input.values.none? { |value| io_value?(value) }
+      result.to_json
+    else
+      result
+    end
   end
 
   def input_variable_name_for_mutation(mutation_name)
@@ -95,6 +102,7 @@ module GraphqlHelpers
 
   def all_graphql_fields_for(class_name, parent_types = Set.new)
     allow_unlimited_graphql_complexity
+    allow_unlimited_graphql_depth
 
     type = GitlabSchema.types[class_name.to_s]
     return "" unless type
@@ -162,6 +170,10 @@ module GraphqlHelpers
     field.arguments.values.any? { |argument| argument.type.non_null? }
   end
 
+  def io_value?(value)
+    Array.wrap(value).any? { |v| v.respond_to?(:to_io) }
+  end
+
   def field_type(field)
     field_type = field.type
 
@@ -179,4 +191,13 @@ module GraphqlHelpers
     allow_any_instance_of(GitlabSchema).to receive(:max_complexity).and_return nil
     allow(GitlabSchema).to receive(:max_query_complexity).with(any_args).and_return nil
   end
+
+  def allow_unlimited_graphql_depth
+    allow_any_instance_of(GitlabSchema).to receive(:max_depth).and_return nil
+    allow(GitlabSchema).to receive(:max_query_depth).with(any_args).and_return nil
+  end
 end
+
+# This warms our schema, doing this as part of loading the helpers to avoid
+# duplicate loading error when Rails tries autoload the types.
+GitlabSchema.graphql_definition

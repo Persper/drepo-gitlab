@@ -111,7 +111,7 @@ sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libs
 # Download and compile from source
 cd /tmp
 curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.21.0.tar.gz
-echo '85eca51c7404da75e353eba587f87fea9481ba41e162206a6f70ad8118147bee'  git-2.21.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.21.0.tar.gz
+echo '85eca51c7404da75e353eba587f87fea9481ba41e162206a6f70ad8118147bee  git-2.21.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.21.0.tar.gz
 cd git-2.21.0/
 ./configure
 make prefix=/usr/local all
@@ -163,9 +163,9 @@ Download Ruby and compile it:
 
 ```sh
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.3.tar.gz
-echo 'f919a9fbcdb7abecd887157b49833663c5c15fda  ruby-2.5.3.tar.gz' | shasum -c - && tar xzf ruby-2.5.3.tar.gz
-cd ruby-2.5.3
+curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.3.tar.gz
+echo '2347ed6ca5490a104ebd5684d2b9b5eefa6cd33c  ruby-2.6.3.tar.gz' | shasum -c - && tar xzf ruby-2.6.3.tar.gz
+cd ruby-2.6.3
 
 ./configure --disable-install-rdoc
 make
@@ -311,7 +311,7 @@ the guide here.
 sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
 
 # Disable Redis listening on TCP by setting 'port' to 0
-sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
+sudo sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
 
 # Enable Redis socket for default Debian / Ubuntu path
 echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
@@ -320,9 +320,9 @@ echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
 echo 'unixsocketperm 770' | sudo tee -a /etc/redis/redis.conf
 
 # Create the directory which contains the socket
-mkdir /var/run/redis
-chown redis:redis /var/run/redis
-chmod 755 /var/run/redis
+sudo mkdir -p /var/run/redis
+sudo chown redis:redis /var/run/redis
+sudo chmod 755 /var/run/redis
 
 # Persist the directory which contains the socket, if applicable
 if [ -d /etc/tmpfiles.d ]; then
@@ -384,7 +384,7 @@ sudo chmod -R u+rwX tmp/pids/
 sudo chmod -R u+rwX tmp/sockets/
 
 # Create the public/uploads/ directory
-sudo -u git -H mkdir public/uploads/
+sudo -u git -H mkdir -p public/uploads/
 
 # Make sure only the GitLab user has access to the public/uploads/ directory
 # now that files in public/uploads are served by gitlab-workhorse
@@ -447,6 +447,18 @@ sudo -u git cp config/database.yml.postgresql config/database.yml
 
 # MySQL only:
 sudo -u git cp config/database.yml.mysql config/database.yml
+
+# PostgreSQL only:
+# Remove host, username, and password lines from config/database.yml.
+# Once modified, the `production` settings will be as follows:
+#
+#   production:
+#     adapter: postgresql
+#     encoding: unicode
+#     database: gitlabhq_production
+#     pool: 10
+#
+sudo -u git -H editor config/database.yml
 
 # MySQL and remote PostgreSQL only:
 # Update username/password in config/database.yml.
@@ -540,6 +552,7 @@ sudo -u git -H make
 
 ```sh
 # Fetch Gitaly source with Git and compile with Go
+cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production
 ```
 
@@ -564,9 +577,22 @@ sudo -u git -H editor config.toml
 For more information about configuring Gitaly see
 [doc/administration/gitaly](../administration/gitaly).
 
+### Start Gitaly
+
+Gitaly must be running for the next section.
+
+```sh
+gitlab_path=/home/git/gitlab
+gitaly_path=/home/git/gitaly
+
+sudo -u git -H $gitlab_path/bin/daemon_with_pidfile $gitlab_path/tmp/pids/gitaly.pid \
+  $gitaly_path/gitaly $gitaly_path/config.toml >> $gitlab_path/log/gitaly.log 2>&1 &
+```
+
 ### Initialize Database and Activate Advanced Features
 
 ```sh
+cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 # Type 'yes' to create the database tables.
 
@@ -577,10 +603,10 @@ sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production force=yes
 ```
 
 NOTE: **Note:**
-You can set the Administrator/root password and e-mail by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL` respectively, as seen below. If you don't set the password (and it is set to the default one), wait to expose GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login, you'll be forced to change the default password.
+You can set the Administrator/root password and e-mail by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL` respectively, as seen below. If you don't set the password (and it is set to the default one), wait to expose GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login, you'll be forced to change the default password. An Enterprise Edition license may also be installed at this time by supplying a full path in the `GITLAB_LICENSE_FILE` environment variable.
 
 ```sh
-sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword GITLAB_ROOT_EMAIL=youremail
+sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword GITLAB_ROOT_EMAIL=youremail GITLAB_LICENSE_FILE="/path/to/license"
 ```
 
 ### Secure secrets.yml
@@ -636,6 +662,12 @@ sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 ```sh
 sudo -u git -H yarn install --production --pure-lockfile
 sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
+```
+
+If `rake` fails with `JavaScript heap out of memory` error, try to run it with `NODE_OPTIONS` set as follows.
+
+```sh
+sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 ```
 
 ### Start Your GitLab Instance

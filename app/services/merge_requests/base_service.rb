@@ -24,6 +24,11 @@ module MergeRequests
       end
     end
 
+    def cleanup_environments(merge_request)
+      Ci::StopEnvironmentsService.new(merge_request.source_project, current_user)
+                                 .execute_for_merge_request(merge_request)
+    end
+
     private
 
     def handle_wip_event(merge_request)
@@ -76,7 +81,7 @@ module MergeRequests
       ##
       # UpdateMergeRequestsWorker could be retried by an exception.
       # pipelines for merge request should not be recreated in such case.
-      return false if merge_request.merge_request_pipeline_exists?
+      return false if merge_request.find_actual_head_pipeline&.triggered_by_merge_request?
       return false if merge_request.has_no_commits?
 
       true

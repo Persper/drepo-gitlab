@@ -188,6 +188,7 @@ class Project < ApplicationRecord
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :project_repository, inverse_of: :project
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
+  has_one :metrics_setting, inverse_of: :project, class_name: 'ProjectMetricsSetting'
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project
@@ -297,6 +298,7 @@ class Project < ApplicationRecord
                                 reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
+  accepts_nested_attributes_for :metrics_setting, update_only: true, allow_destroy: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -354,7 +356,8 @@ class Project < ApplicationRecord
 
   # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
   scope :sorted_by_activity, -> { reorder("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC") }
-  scope :sorted_by_stars, -> { reorder(star_count: :desc) }
+  scope :sorted_by_stars_desc, -> { reorder(star_count: :desc) }
+  scope :sorted_by_stars_asc, -> { reorder(star_count: :asc) }
 
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
@@ -460,10 +463,12 @@ class Project < ApplicationRecord
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
-  def self.public_or_visible_to_user(user = nil)
+  def self.public_or_visible_to_user(user = nil, min_access_level = nil)
+    min_access_level = nil if user&.admin?
+
     if user
       where('EXISTS (?) OR projects.visibility_level IN (?)',
-            user.authorizations_for_projects,
+            user.authorizations_for_projects(min_access_level: min_access_level),
             Gitlab::VisibilityLevel.levels_for_user(user))
     else
       public_to_user
@@ -473,30 +478,32 @@ class Project < ApplicationRecord
   # project features may be "disabled", "internal", "enabled" or "public". If "internal",
   # they are only available to team members. This scope returns projects where
   # the feature is either public, enabled, or internal with permission for the user.
+  # Note: this scope doesn't enforce that the user has access to the projects, it just checks
+  # that the user has access to the feature. It's important to use this scope with others
+  # that checks project authorizations first.
   #
   # This method uses an optimised version of `with_feature_access_level` for
   # logged in users to more efficiently get private projects with the given
   # feature.
   def self.with_feature_available_for_user(feature, user)
     visible = [ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
-    min_access_level = ProjectFeature.required_minimum_access_level(feature)
 
     if user&.admin?
       with_feature_enabled(feature)
     elsif user
+      min_access_level = ProjectFeature.required_minimum_access_level(feature)
       column = ProjectFeature.quoted_access_level_column(feature)
 
       with_project_feature
-        .where(
-          "(projects.visibility_level > :private AND (#{column} IS NULL OR #{column} >= (:public_visible) OR (#{column} = :private_visible AND EXISTS(:authorizations))))"\
-          " OR (projects.visibility_level = :private AND (#{column} IS NULL OR #{column} >= :private_visible) AND EXISTS(:authorizations))",
-          {
-            private: Gitlab::VisibilityLevel::PRIVATE,
-            public_visible: ProjectFeature::ENABLED,
-            private_visible: ProjectFeature::PRIVATE,
-            authorizations: user.authorizations_for_projects(min_access_level: min_access_level)
-          })
+      .where("#{column} IS NULL OR #{column} IN (:public_visible) OR (#{column} = :private_visible AND EXISTS (:authorizations))",
+            {
+              public_visible: visible,
+              private_visible: ProjectFeature::PRIVATE,
+              authorizations: user.authorizations_for_projects(min_access_level: min_access_level)
+            })
     else
+      # This has to be added to include features whose value is nil in the db
+      visible << nil
       with_feature_access_level(feature, visible)
     end
   end
@@ -541,7 +548,9 @@ class Project < ApplicationRecord
       when 'latest_activity_asc'
         reorder(last_activity_at: :asc)
       when 'stars_desc'
-        sorted_by_stars
+        sorted_by_stars_desc
+      when 'stars_asc'
+        sorted_by_stars_asc
       else
         order_by(method)
       end
@@ -1911,8 +1920,8 @@ class Project < ApplicationRecord
     false
   end
 
-  def full_path_was
-    File.join(namespace.full_path, previous_changes['path'].first)
+  def full_path_before_last_save
+    File.join(namespace.full_path, path_before_last_save)
   end
 
   alias_method :name_with_namespace, :full_name

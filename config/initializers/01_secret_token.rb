@@ -1,3 +1,14 @@
+# WARNING: If you add a new secret to this file, make sure you also
+# update Omnibus GitLab or updates will fail. Omnibus is responsible for
+# writing the `secrets.yml` file.  If Omnibus doesn't know about a
+# secret, Rails will attempt to write to the file, but this will fail
+# because Rails doesn't have write access.
+#
+# As an example:
+# * https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27581
+# * https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/3267
+#
+#
 # This file needs to be loaded BEFORE any initializers that attempt to
 # prepend modules that require access to secrets (e.g. EE's 0_as_concern.rb).
 #
@@ -28,7 +39,8 @@ def create_tokens
     secret_key_base: file_secret_key || generate_new_secure_token,
     otp_key_base: env_secret_key || file_secret_key || generate_new_secure_token,
     db_key_base: generate_new_secure_token,
-    openid_connect_signing_key: generate_new_rsa_private_key
+    openid_connect_signing_key: generate_new_rsa_private_key,
+    lets_encrypt_private_key: generate_lets_encrypt_private_key
   }
 
   missing_secrets = set_missing_keys(defaults)
@@ -47,6 +59,10 @@ end
 
 def generate_new_rsa_private_key
   OpenSSL::PKey::RSA.new(2048).to_pem
+end
+
+def generate_lets_encrypt_private_key
+  OpenSSL::PKey::RSA.new(4096).to_pem
 end
 
 def warn_missing_secret(secret)

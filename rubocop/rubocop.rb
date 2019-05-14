@@ -1,9 +1,9 @@
-# rubocop:disable Naming/FileName
 require_relative 'cop/gitlab/module_with_instance_variables'
 require_relative 'cop/gitlab/predicate_memoization'
 require_relative 'cop/gitlab/httparty'
 require_relative 'cop/gitlab/finder_with_find_by'
 require_relative 'cop/gitlab/union'
+require_relative 'cop/include_action_view_context'
 require_relative 'cop/include_sidekiq_worker'
 require_relative 'cop/safe_params'
 require_relative 'cop/active_record_association_reload'

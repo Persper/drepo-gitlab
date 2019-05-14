@@ -118,6 +118,12 @@ module Gitlab
         gitaly_repository_client.exists?
       end
 
+      def create_repository
+        wrapped_gitaly_errors do
+          gitaly_repository_client.create_repository
+        end
+      end
+
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names
@@ -828,13 +834,28 @@ module Gitlab
         gitaly_repository_client.create_from_snapshot(url, auth)
       end
 
-      def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+      # DEPRECATED: https://gitlab.com/gitlab-org/gitaly/issues/1628
+      def rebase_deprecated(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
         wrapped_gitaly_errors do
           gitaly_operation_client.user_rebase(user, rebase_id,
                                             branch: branch,
                                             branch_sha: branch_sha,
                                             remote_repository: remote_repository,
                                             remote_branch: remote_branch)
+        end
+      end
+
+      def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:, &block)
+        wrapped_gitaly_errors do
+          gitaly_operation_client.rebase(
+            user,
+            rebase_id,
+            branch: branch,
+            branch_sha: branch_sha,
+            remote_repository: remote_repository,
+            remote_branch: remote_branch,
+            &block
+          )
         end
       end
 
@@ -898,6 +919,12 @@ module Gitlab
       def delete_config(*keys)
         wrapped_gitaly_errors do
           gitaly_repository_client.delete_config(keys)
+        end
+      end
+
+      def disconnect_alternates
+        wrapped_gitaly_errors do
+          gitaly_repository_client.disconnect_alternates
         end
       end
 

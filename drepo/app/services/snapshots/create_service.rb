@@ -8,7 +8,7 @@ module Snapshots
 
     def execute
       target_klass = params[:target_type].constantize
-      return unless Snapshot::TARGET_TYPES.values.include? target_klass
+      return unless Snapshot::TARGET_TYPES.value? target_klass
 
       # need snapshot.id, so here must be #create
       @snapshot = Snapshot.create(params.merge(snapped_by: current_user))
