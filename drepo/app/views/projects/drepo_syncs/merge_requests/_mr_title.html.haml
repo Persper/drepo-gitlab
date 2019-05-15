@@ -1,6 +1,3 @@
-- can_update_merge_request = can?(current_user, :update_merge_request, @merge_request)
-- can_reopen_merge_request = can?(current_user, :reopen_merge_request, @merge_request)
-
 - if @merge_request.closed_without_fork?
   .alert.alert-danger
     The source project of this merge request has been removed.
