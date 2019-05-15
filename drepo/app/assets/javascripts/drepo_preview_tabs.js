@@ -237,7 +237,10 @@ export default class DrepoPreviewTabs {
     this.currentAction = action;
 
     // Remove a trailing '/commits' '/diffs' '/merge_requests'
-    let newState = location.pathname.replace(/\/(issues|commits|diffs|merge_requests)(\.html)?\/?$/, '');
+    let newState = location.pathname.replace(
+      /\/(issues|commits|diffs|merge_requests)(\.html)?\/?$/,
+      '',
+    );
 
     // Append the new action if we're on a tab other than 'notes'
     if (this.currentAction !== 'show' && this.currentAction !== 'new') {
