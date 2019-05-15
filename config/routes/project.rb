@@ -476,9 +476,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get :drepo_refs, as: :drepo_commits_refs
         get '/commit/:id', action: :drepo_commit, as: :drepo_commit
 
-        scope path: '/merge_request/:id',  as: :drepo_merge_request do
-          get '', action: :drepo_merge_request
-          get '/commits', action: :mr_commits, format: :json, as: :commits_api
+        scope path: '/merge_request/:id', as: :drepo_merge_request do
+          get '', action: :drepo_merge_request, as: ''
+          get :commits_api, action: :mr_commits, as: :commits_api
+
+          scope constraints: { format: nil }, action: :drepo_merge_request do
+            get :commits, defaults: { tab: 'commits' }
+            get :diffs, defaults: { tab: 'diffs' }
+          end
         end
 
         scope path: 'new', as: :new_drepo_sync do
