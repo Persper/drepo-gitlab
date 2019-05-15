@@ -117,6 +117,7 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def drepo_merge_request
     @issuable = @merge_request ||= @project.merge_requests.includes(author: :status).find_by!(iid: params[:id])
     @note = @project.notes.new(noteable: @merge_request)
@@ -134,6 +135,7 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
 
     render json: { html: view_to_html_string('projects/drepo_syncs/merge_requests/_commits') }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
