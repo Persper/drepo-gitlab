@@ -5,7 +5,7 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
   include RendersNotes
 
   prepend_before_action(only: [:new]) { params[:ref] ||= 'master' }
-  before_action :authenticate_user!, except: [:drepo_refs]
+  before_action :authenticate_user!, except: [:drepo_refs, :mr_commits]
   before_action :assign_ref_vars, only: [:new]
   before_action :validate_ref!, only: [:new]
   before_action :set_commits, only: [:new]
@@ -13,8 +13,8 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
   def new
     Apartment::Tenant.switch 'drepo_project_pending' do
       @project = Project.find(@project.id)
-      @issues_total_count = @project.issues.count
       @issues = @project.issues.includes(:labels, :assignees, :events).page(params[:page]).load # rubocop:disable CodeReuse/ActiveRecord
+      @merge_requests = @project.merge_requests.load
     end
 
     respond_to do |format|
@@ -117,6 +117,26 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
+  def drepo_merge_request
+    @issuable = @merge_request ||= @project.merge_requests.includes(author: :status).find_by!(iid: params[:id])
+    @note = @project.notes.new(noteable: @merge_request)
+    @noteable = @merge_request
+    @commits_count = @merge_request.commits_count
+
+    respond_to do |format|
+      format.html { render 'projects/drepo_syncs/merge_requests/show' }
+    end
+  end
+
+  def mr_commits
+    @merge_request ||= @project.merge_requests.includes(author: :status).find_by!(iid: params[:id])
+    @commits = set_commits_for_rendering(@merge_request.commits)
+
+    render json: { html: view_to_html_string('projects/drepo_syncs/merge_requests/_commits') }
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
   private
 
   def includes_options
@@ -144,7 +164,6 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
         @repository.commits(@ref_revision, path: @path, limit: @limit, offset: @offset)
       end
 
-    @commits = @commits.with_pipeline_status
     @commits = set_commits_for_rendering(@commits)
   end
 
@@ -184,23 +203,6 @@ class Projects::DrepoSyncsController < Projects::ApplicationController
 
     @grouped_diff_discussions = @commit.grouped_diff_discussions
     @discussions = @commit.discussions
-
-    # if merge_request_iid = params[:merge_request_iid]
-    #   @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: merge_request_iid)
-    #
-    #   if @merge_request
-    #     @new_diff_note_attrs.merge!(
-    #       noteable_type: 'MergeRequest',
-    #       noteable_id: @merge_request.id
-    #     )
-    #
-    #     merge_request_commit_notes = @merge_request.notes.where(commit_id: @commit.id).inc_relations_for_view
-    #     merge_request_commit_diff_discussions = merge_request_commit_notes.grouped_diff_discussions(@commit.diff_refs)
-    #     @grouped_diff_discussions.merge!(merge_request_commit_diff_discussions) do |line_code, left, right|
-    #       left + right
-    #     end
-    #   end
-    # end
 
     @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
     @notes = prepare_notes_for_rendering(@notes, @commit)

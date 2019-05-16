@@ -1,0 +1,18 @@
+- if @merge_request.closed_without_fork?
+  .alert.alert-danger
+    The source project of this merge request has been removed.
+
+.detail-page-header
+  .detail-page-header-body
+    .issuable-status-box.status-box{ class: status_box_class(@merge_request) }
+      = sprite_icon(@merge_request.state_icon_name, size: 16, css_class: 'd-block d-sm-none')
+      %span.d-none.d-sm-block
+        = @merge_request.state_human_name
+
+    .issuable-meta
+      - if @merge_request.discussion_locked?
+        .issuable-warning-icon.inline= sprite_icon('lock', size: 16, css_class: 'icon')
+      = issuable_meta(@merge_request, @project, "Merge request")
+
+    %a.btn.btn-default.float-right.d-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
+      = icon('angle-double-left')
