@@ -3620,6 +3620,12 @@ msgstr ""
 msgid "EmailError|Your account has been blocked. If you believe this is in error, contact a staff member."
 msgstr ""
 
+msgid "EmailToken|reset it"
+msgstr ""
+
+msgid "EmailToken|resetting..."
+msgstr ""
+
 msgid "Emails"
 msgstr ""
 
@@ -4215,6 +4221,9 @@ msgid "Failed to load emoji list."
 msgstr ""
 
 msgid "Failed to load errors from Sentry. Error message: %{errorMessage}"
+msgstr ""
+
+msgid "Failed to load related branches"
 msgstr ""
 
 msgid "Failed to promote label due to internal error. Please contact administrators."
@@ -4896,7 +4905,7 @@ msgstr ""
 msgid "I accept the|Terms of Service and Privacy Policy"
 msgstr ""
 
-msgid "I have read and agree to the Let's Encrypt Terms of Service"
+msgid "I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end}"
 msgstr ""
 
 msgid "ID"
@@ -5239,6 +5248,9 @@ msgid "Issue Boards"
 msgstr ""
 
 msgid "Issue events"
+msgstr ""
+
+msgid "Issue update failed"
 msgstr ""
 
 msgid "IssueBoards|Board"
@@ -5923,7 +5935,7 @@ msgstr ""
 msgid "MergeRequest|Error loading full diff. Please try again."
 msgstr ""
 
-msgid "MergeRequest|Filter files"
+msgid "MergeRequest|Filter files or search with %{modifier_key}+p"
 msgstr ""
 
 msgid "MergeRequest|No files found"
@@ -7266,9 +7278,6 @@ msgid "Profiles|Tell us about yourself in fewer than 250 characters"
 msgstr ""
 
 msgid "Profiles|The maximum file size allowed is 200KB."
-msgstr ""
-
-msgid "Profiles|There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
 msgstr ""
 
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
@@ -9131,6 +9140,9 @@ msgstr ""
 msgid "Storage:"
 msgstr ""
 
+msgid "StorageSize|Unknown"
+msgstr ""
+
 msgid "Subgroups"
 msgstr ""
 
@@ -10335,6 +10347,9 @@ msgid "Unable to resolve"
 msgstr ""
 
 msgid "Unable to schedule a pipeline to run immediately"
+msgstr ""
+
+msgid "Unable to update this issue at this time."
 msgstr ""
 
 msgid "Unarchive project"
