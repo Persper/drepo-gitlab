@@ -11,12 +11,12 @@ module Snapshots
     def execute
       target_klass = params[:target_type].constantize
 
-      unless Snapshot::TARGET_TYPES.value? target_klass
-        raise CreateError, "Snapshot target_type must be included in #{Snapshot::TARGET_TYPES.values}"
+      unless Dg::Snapshot::TARGET_TYPES.value? target_klass
+        raise CreateError, "Snapshot target_type must be included in #{Dg::Snapshot::TARGET_TYPES.values}"
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      @snapshot = Snapshot.find_by!(params)
+      @snapshot = Dg::Snapshot.find_by!(params)
       # rubocop: enable CodeReuse/ActiveRecord
 
       @snapshot.cancel!

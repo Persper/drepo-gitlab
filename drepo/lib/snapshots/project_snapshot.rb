@@ -292,7 +292,7 @@ module Snapshots
     end
 
     def update_drepo_username
-      Snapshot::USER_SHARED_TABLE_COLUMNS.each do |table, user_column|
+      Dg::Snapshot::USER_SHARED_TABLE_COLUMNS.each do |table, user_column|
         sql = %Q{
           UPDATE #{table}
           SET drepo_username = (
