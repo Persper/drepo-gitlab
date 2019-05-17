@@ -29,6 +29,11 @@ module Snapshots
 
       # @user_ids will be collected in the above functions
       copy_users
+
+      # set username to drepo_username
+      update_drepo_username
+
+      set_related_users_to_snapshot
     end
 
     def copy_project
@@ -284,6 +289,24 @@ module Snapshots
 
     def project_association_tables
       %w(milestones labels issues notes events label_priorities merge_requests snippets members releases)
+    end
+
+    def update_drepo_username
+      Snapshot::USER_SHARED_TABLE_COLUMNS.each do |table, user_column|
+        sql = %Q{
+          UPDATE #{table}
+          SET drepo_username = (
+            SELECT users.username
+            FROM users
+            WHERE users.id = #{table}.#{user_column}
+          )
+        }
+        connection.execute(sql)
+      end
+    end
+
+    def set_related_users_to_snapshot
+      @snapshot.related_users = User.where(id: @user_ids).pluck(:username)
     end
     # rubocop:enable CodeReuse/ActiveRecord
   end

@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 class RemoveRepoRefsFromDrepoSnapshots < ActiveRecord::Migration[5.0]
-  include Gitlab::Database::MigrationHelpers
-
   DOWNTIME = false
 
   def up
-    remove_column :drepo_snapshots, :repo_refs
+    remove_column :drepo_snapshots, :repo_refs, :jsonb
   end
 
   def down

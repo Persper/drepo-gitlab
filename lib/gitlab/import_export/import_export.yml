@@ -184,39 +184,39 @@ excluded_attributes:
     - :encrypted_token_iv
     - :enabled
   milestones:
-    - drepo_uuid
+    - :drepo_uuid
   notes:
-    - drepo_uuid
+    - :drepo_uuid
   events:
-    - drepo_uuid
+    - :drepo_uuid
   milestone:
-    - drepo_uuid
+    - :drepo_uuid
   releases:
-    - drepo_uuid
+    - :drepo_uuid
   project_members:
-    - drepo_uuid
+    - :drepo_uuid
   label_links:
-    - drepo_uuid
+    - :drepo_uuid
   labels:
-    - drepo_uuid
+    - :drepo_uuid
   label:
-    - drepo_uuid
+    - :drepo_uuid
   priorities:
-    - drepo_uuid
+    - :drepo_uuid
   protected_branches:
-    - drepo_uuid
+    - :drepo_uuid
   merge_access_levels:
-    - drepo_uuid
+    - :drepo_uuid
   push_access_levels:
-    - drepo_uuid
+    - :drepo_uuid
   protected_tags:
-    - drepo_uuid
+    - :drepo_uuid
   create_access_levels:
-    - drepo_uuid
+    - :drepo_uuid
   project_feature:
-    - drepo_uuid
+    - :drepo_uuid
   metrics:
-    - drepo_uuid
+    - :drepo_uuid
 
 methods:
   labels:
