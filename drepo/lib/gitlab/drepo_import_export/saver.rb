@@ -22,6 +22,7 @@ module Gitlab
           Rails.logger.info("Saved project export #{archive_file}")
 
           save_upload
+          save_ipfs
         else
           @shared.error(Gitlab::DrepoImportExport::Error.new(error_message))
           false
@@ -53,11 +54,19 @@ module Gitlab
       end
 
       def save_upload
-        upload = Dg::SnapshotUpload.find_or_initialize_by(snapshot: @params[:snapshot])
+        upload = ::Dg::SnapshotUpload.find_or_initialize_by(snapshot: snapshot)
 
         File.open(archive_file) { |file| upload.export_file = file }
 
         upload.save!
+      end
+
+      def save_ipfs
+        snapshot.ipfs_file = Ipfs::AddService.new(file: archive_file).execute
+      end
+
+      def snapshot
+        @params[:snapshot]
       end
 
       def error_message
