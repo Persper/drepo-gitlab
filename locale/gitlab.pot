@@ -8065,6 +8065,9 @@ msgstr ""
 msgid "Reports|Class"
 msgstr ""
 
+msgid "Reports|Classname"
+msgstr ""
+
 msgid "Reports|Execution time"
 msgstr ""
 

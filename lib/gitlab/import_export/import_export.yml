@@ -219,6 +219,8 @@ excluded_attributes:
     - :drepo_uuid
 
 methods:
+  notes:
+    - :type
   labels:
     - :type
   label:
