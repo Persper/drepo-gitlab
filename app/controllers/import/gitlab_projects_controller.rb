@@ -16,7 +16,7 @@ class Import::GitlabProjectsController < Import::BaseController
       return redirect_back_or_default(options: { alert: _("You need to upload a GitLab project export archive (ending in .gz).") })
     end
 
-    @project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
+    @project = ::Projects::DrepoProjectsImportService.new(current_user, project_params).execute
 
     if @project.saved?
       redirect_to(
@@ -27,6 +27,20 @@ class Import::GitlabProjectsController < Import::BaseController
       redirect_back_or_default(options: { alert: "Project could not be imported: #{@project.errors.full_messages.join(', ')}" })
     end
   end
+
+  # Example: drepo project import
+  # def create
+  #   @project = ::Projects::DrepoProjectsImportService.new(current_user, project_params).execute
+  #
+  #   if @project.saved?
+  #     redirect_to(
+  #       project_path(@project),
+  #       notice: _("Project '%{project_name}' is being imported.") % { project_name: @project.name }
+  #     )
+  #   else
+  #     redirect_back_or_default(options: { alert: "Project could not be imported: #{@project.errors.full_messages.join(', ')}" })
+  #   end
+  # end
 
   private
 
@@ -47,6 +61,13 @@ class Import::GitlabProjectsController < Import::BaseController
       :path, :namespace_id, :file
     )
   end
+
+  # Example: drepo project import
+  # def project_params
+  #   params.permit(
+  #     :path, :namespace_id, :file, :ipfs_path
+  #   )
+  # end
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42437')

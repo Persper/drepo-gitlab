@@ -12,11 +12,11 @@ module Ipfs
       ipfs_path = params[:ipfs_path]
       return if ipfs_path.nil?
 
-      file = params[:file]
+      to_file = params[:to_file]
       client = Ipfs::Client.new Gitlab.config.ipfs.http_api
 
-      if file
-        client.cat_to_file ipfs_path, file
+      if to_file
+        client.cat_to_file ipfs_path, to_file
       else
         client.cat ipfs_path
       end
