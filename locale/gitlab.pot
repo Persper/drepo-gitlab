@@ -976,6 +976,9 @@ msgstr ""
 msgid "Any"
 msgstr ""
 
+msgid "Any Label"
+msgstr ""
+
 msgid "Any Milestone"
 msgstr ""
 
@@ -1184,6 +1187,14 @@ msgid "Attach a file"
 msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
+msgstr ""
+
+msgid "Attaching a file"
+msgid_plural "Attaching %d files"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Attaching the file failed."
 msgstr ""
 
 msgid "Aug"
@@ -4205,6 +4216,12 @@ msgstr ""
 msgid "Failed to connect to the prometheus server"
 msgstr ""
 
+msgid "Failed to create Merge Request. Please try again."
+msgstr ""
+
+msgid "Failed to create a branch for this issue. Please try again."
+msgstr ""
+
 msgid "Failed to create repository via gitlab-shell"
 msgstr ""
 
@@ -4212,6 +4229,9 @@ msgid "Failed to create resources"
 msgstr ""
 
 msgid "Failed to deploy to"
+msgstr ""
+
+msgid "Failed to get ref."
 msgstr ""
 
 msgid "Failed to install."
@@ -4325,6 +4345,9 @@ msgid "File upload error."
 msgstr ""
 
 msgid "Files"
+msgstr ""
+
+msgid "Files, directories, and submodules in the path %{path} for commit reference %{ref}"
 msgstr ""
 
 msgid "Filter"
@@ -5523,6 +5546,9 @@ msgstr ""
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. This action cannot be reversed."
 msgstr ""
 
+msgid "Labels|and %{count} more"
+msgstr ""
+
 msgid "Language"
 msgstr ""
 
@@ -6037,7 +6063,10 @@ msgstr ""
 msgid "Milestones|Promote Milestone"
 msgstr ""
 
-msgid "Milestones|Promoting %{milestoneTitle} will make it available for all projects inside %{groupName}. Existing project milestones with the same title will be merged. This action cannot be reversed."
+msgid "Milestones|Promoting %{milestoneTitle} will make it available for all projects inside %{groupName}. Existing project milestones with the same title will be merged."
+msgstr ""
+
+msgid "Milestones|This action cannot be reversed."
 msgstr ""
 
 msgid "Mirror a repository"
@@ -6289,6 +6318,9 @@ msgid "No"
 msgstr ""
 
 msgid "No %{providerTitle} repositories available to import"
+msgstr ""
+
+msgid "No Label"
 msgstr ""
 
 msgid "No Milestone"
@@ -7538,6 +7570,12 @@ msgstr ""
 msgid "ProjectPage|Project ID: %{project_id}"
 msgstr ""
 
+msgid "ProjectSelect| or group"
+msgstr ""
+
+msgid "ProjectSelect|Search for project"
+msgstr ""
+
 msgid "ProjectSettings|Additional merge request capabilities that influence how and when merges will be performed"
 msgstr ""
 
@@ -8227,6 +8265,12 @@ msgid "Revoked impersonation token %{token_name}!"
 msgstr ""
 
 msgid "Revoked personal access token %{personal_access_token_name}!"
+msgstr ""
+
+msgid "RightSidebar|adding a"
+msgstr ""
+
+msgid "RightSidebar|deleting the"
 msgstr ""
 
 msgid "Run housekeeping"
@@ -9670,6 +9714,9 @@ msgstr ""
 msgid "There was a problem communicating with your device."
 msgstr ""
 
+msgid "There was an error %{message} todo."
+msgstr ""
+
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
@@ -10356,6 +10403,9 @@ msgid "Unable to resolve"
 msgstr ""
 
 msgid "Unable to schedule a pipeline to run immediately"
+msgstr ""
+
+msgid "Unable to update label prioritization at this time"
 msgstr ""
 
 msgid "Unable to update this issue at this time."
