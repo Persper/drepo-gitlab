@@ -4,6 +4,7 @@ class RegistrationsController < Devise::RegistrationsController
   include Recaptcha::Verify
   include AcceptsPendingInvitations
 
+  skip_before_action :drepo_check_username_verification
   before_action :whitelist_query_limiting, only: [:destroy]
   before_action :ensure_terms_accepted,
                 if: -> { Gitlab::CurrentSettings.current_application_settings.enforce_terms? },
@@ -22,6 +23,11 @@ class RegistrationsController < Devise::RegistrationsController
     end
 
     if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
+      
+      if Settings['drepo']['need_check_username']
+        params[resource_name]['username'] = "Drepo_User_#{[('a'..'z'), ('0'..'9')].map(&:to_a).flatten.sample(8).join}"
+      end
+
       accept_pending_invitations
       super do |new_user|
         persist_accepted_terms_if_required(new_user)
