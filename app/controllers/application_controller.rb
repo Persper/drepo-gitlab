@@ -25,6 +25,7 @@ class ApplicationController < ActionController::Base
   before_action :require_email, unless: :devise_controller?
   before_action :set_usage_stats_consent_flag
   before_action :check_impersonation_availability
+  before_action :drepo_check_username_verification
 
   around_action :set_locale
   around_action :set_session_storage
@@ -509,5 +510,14 @@ class ApplicationController < ActionController::Base
 
   def sentry_context
     Gitlab::Sentry.context(current_user)
+  end
+
+  def drepo_check_username_verification
+    return unless current_user
+    return if current_user.username == 'root'
+
+    unless Settings['drepo']['need_check_username'] && current_user.is_username_verified
+      redirect_to drepo_check_username_path
+    end
   end
 end

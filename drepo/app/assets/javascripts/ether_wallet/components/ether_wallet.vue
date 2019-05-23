@@ -196,42 +196,38 @@ export default {
 
   mounted() {
     const browser = detect();
+    if (!browser) return;
 
-    if (browser) {
-      this.isMetaMaskSupportedBrowser = this.isBrowserSupportMetaMask(browser);
+    this.isMetaMaskSupportedBrowser = this.isBrowserSupportMetaMask(browser);
 
-      if (this.isMetaMaskSupportedBrowser) {
-        // to help decide the default unlock option is metamask
-        this.unlockOption = 'metamask';
+    if (!this.isMetaMaskSupportedBrowser) {
+      // the browser not support MetaMask
+      this.unlockOption = 'mnemonic_phrase';
+      return;
+    }
 
-        if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
-          // the MetaMask extension is on
-          this.isMetaMaskTurnedOn = true;
-          // if the user login the MetaMask account
-          window.web3.eth.getAccounts((err, accounts) => {
-            if (err != null) {
-              // console.error('An error occurred: ' + err);
-              this.isMetaMaskLoggedIn = false;
-            } else if (accounts.length > 0) {
-              // console.log('User is logged in to MetaMask');
-              this.isMetaMaskLoggedIn = true;
-            } else {
-              // console.log('User is not logged in to MetaMask');
-              this.isMetaMaskLoggedIn = false;
-            }
-          });
+    // to help decide the default unlock option is metamask
+    this.unlockOption = 'metamask';
 
-          const self = this;
-          window.ethereum.on('accountsChanged', accounts => {
-            if (accounts[0] && self.web3Client && self.unlockOption === 'metamask') {
-              self.updateAccountInfo(accounts[0]);
-            }
-          });
+    if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
+      this.isMetaMaskTurnedOn = true;
+      // if the user login the MetaMask account
+      window.web3.eth.getAccounts((err, accounts) => {
+        if (err != null) {
+          this.isMetaMaskLoggedIn = false;
+        } else if (accounts.length > 0) {
+          this.isMetaMaskLoggedIn = true;
+        } else {
+          this.isMetaMaskLoggedIn = false;
         }
-      } else {
-        // the browser not support MetaMask
-        this.unlockOption = 'mnemonic_phrase';
-      }
+      });
+
+      const self = this;
+      window.ethereum.on('accountsChanged', accounts => {
+        if (accounts[0] && self.web3Client && self.unlockOption === 'metamask') {
+          self.updateAccountInfo(accounts[0]);
+        }
+      });
     }
   },
 
@@ -263,12 +259,10 @@ export default {
     unlockByPrivateKey() {
       if (this.isUnlockByPrivateKeyButtonClicked) return;
       this.isUnlockByPrivateKeyButtonClicked = true;
-      // console.log('>>>>>>>>>>>>>>> PrivateKey <<<<<<<<<<<<<<<<');
       const provider = new HDWalletProvider(
         `0x${this.privateKeyInput}`,
         'https://rinkeby.infura.io/v3/8d1ba1e9ef484906ba94d560cc1d3a87',
       );
-      // console.log(provider);
       this.web3Client = new Web3One(provider);
       this.updateAccountInfo();
       this.isUnlockByPrivateKeyButtonClicked = false;
@@ -277,14 +271,12 @@ export default {
     unlockByMnemonicPhrase() {
       if (this.isUnlockByMnemonicPhraseButtonClicked) return;
       this.isUnlockByMnemonicPhraseButtonClicked = true;
-      // console.log('>>>>>>>>>>>>>>> Mnemonic Phrase <<<<<<<<<<<<<<<<');
       if (this.addressIndexInput < 1) return;
       const provider = new HDWalletProvider(
         this.mnemonicPhraseInput,
         'https://rinkeby.infura.io/v3/8d1ba1e9ef484906ba94d560cc1d3a87',
         this.addressIndexInput - 1,
       );
-      // console.log(provider);
       this.web3Client = new Web3One(provider);
       this.updateAccountInfo();
       this.isUnlockByMnemonicPhraseButtonClicked = false;
@@ -310,7 +302,6 @@ export default {
       this.web3Client.eth.getBalance(this.accountAddress, (err, balance) => {
         if (err) return;
 
-        // console.log(this.accountBalance);
         if (!balance) {
           this.accountBalance = 'Query balance failed';
         } else if (this.unlockOption === 'metamask') {
