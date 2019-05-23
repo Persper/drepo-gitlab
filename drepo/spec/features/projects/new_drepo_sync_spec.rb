@@ -36,9 +36,12 @@ describe 'Project Drepo Sync' do
 
   context 'check a Drepo Sync page when current user is admin' do
     let(:path) { project_new_drepo_sync_path(project) }
+    let(:admin) { create(:admin) }
 
     before do
-      sign_in(create(:admin))
+      sign_in(admin)
+      stub_ipfs_add
+      project.create_snapshot(admin)
       visit path
     end
 

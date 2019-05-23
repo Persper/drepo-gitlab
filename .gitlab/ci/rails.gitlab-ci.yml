@@ -81,6 +81,19 @@
     - /(^docs[\/-].*|.*-docs$)/
     - /(^qa[\/-].*|.*-qa$)/
 
+.rspec-metadata-drepo: &rspec-metadata-drepo
+  <<: *rspec-metadata
+  stage: test
+  script:
+    - JOB_NAME=( $CI_JOB_NAME )
+    - TEST_TOOL=${JOB_NAME[0]}
+    - export KNAPSACK_TEST_FILE_PATTERN="drepo/spec/**{,/*/**}/*_spec.rb" KNAPSACK_GENERATE_REPORT=true CACHE_CLASSES=true
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${TEST_TOOL}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - cp ${DREPO_KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
+    - scripts/gitaly-test-spawn
+    - bundle exec rake db:drepo:init
+    - knapsack rspec "-Ispec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml"
+
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
   <<: *use-pg
@@ -89,6 +102,10 @@
   <<: *rspec-metadata
   <<: *use-pg-10
   image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-golang-1.11-git-2.21-chrome-73.0-node-10.x-yarn-1.12-postgresql-10-graphicsmagick-1.3.29"
+
+.rspec-metadata-pg-drepo: &rspec-metadata-pg-drepo
+  <<: *rspec-metadata-drepo
+  <<: *use-pg
 
 ## Drepo-specific drepo not support mysql START
 #.rspec-metadata-mysql: &rspec-metadata-mysql
@@ -152,6 +169,10 @@ rspec-pg-10:
   <<: *only-schedules-master
   parallel: 50
 
+rspec-pg-drepo:
+  <<: *rspec-metadata-pg-drepo
+  parallel: 5
+
 ## Drepo-specific drepo not support mysql START
 #rspec-mysql:
 #  <<: *rspec-metadata-mysql
@@ -174,6 +195,18 @@ rspec-fast-spec-helper:
 rspec-pg-quarantine:
   <<: *rspec-metadata-pg
   <<: *rspec-quarantine
+  allow_failure: true
+
+.rspec-quarantine-drepo: &rspec-quarantine-drepo
+  <<: *only-schedules-master
+  script:
+    - export CACHE_CLASSES=true
+    - scripts/gitaly-test-spawn
+    - bin/rspec --color --format documentation --tag quarantine drepo/spec/
+
+rspec-pg-quarantine-drepo:
+  <<: *rspec-metadata-pg
+  <<: *rspec-quarantine-drepo
   allow_failure: true
 
 ## Drepo-specific drepo not support mysql START
