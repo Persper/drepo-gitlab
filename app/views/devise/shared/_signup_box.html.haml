@@ -6,7 +6,7 @@
       .name.form-group
         = f.label :name, 'Full name', class: 'label-bold'
         = f.text_field :name, class: "form-control top qa-new-user-name js-block-emoji", required: true, title: _("This field is required.")
-      - unless Settings['drepo']['need_check_username']
+      - unless Settings['drepo'] || (Settings['drepo'] && !Settings['drepo']['need_check_username'])
         .username.form-group
           = f.label :username, class: 'label-bold'
           = f.text_field :username, class: "form-control middle qa-new-user-username js-block-emoji", pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS, required: true, title: _("Please create a username with only alphanumeric characters.")
