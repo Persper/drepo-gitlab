@@ -75,4 +75,3 @@ end
 get :check_username, to: 'drepo_users#check_username', as: :drepo_check_username
 patch :username_verified, to: 'drepo_users#verified', as: :drepo_username_verified
 # Drepo-specific
-
