@@ -19,7 +19,7 @@
       = _('Projects that belong to a group are prefixed with the group namespace. Existing projects may be moved into a group.')
 
   .col-lg-9
-    = form_for @user, as: :drepo_users, url: :drepo_username_verified, method: :patch, html: { class: 'group-form gl-show-field-errors' } do |f|
+    = form_for @user, as: :drepo_users, url: drepo_username_verified_path, method: :patch, html: { class: 'group-form gl-show-field-errors' } do |f|
       = form_errors(@user)
       .row
         .form-group.group-name-holder.col-sm-12

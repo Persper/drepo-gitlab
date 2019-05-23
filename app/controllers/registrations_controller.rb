@@ -23,7 +23,7 @@ class RegistrationsController < Devise::RegistrationsController
       params[resource_name] = params.delete(:"new_#{resource_name}")
     end
 
-    if Settings['drepo']['need_check_username']
+    if Settings['drepo'] && Settings['drepo']['need_check_username']
       params[resource_name]['username'] = "Drepo_User_#{[('a'..'z'), ('0'..'9')].map(&:to_a).flatten.sample(8).join}"
     end
 

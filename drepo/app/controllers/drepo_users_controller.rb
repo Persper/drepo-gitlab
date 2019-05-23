@@ -29,7 +29,8 @@ class DrepoUsersController < ApplicationController
   def check_username_verified
     return unless current_user
 
-    if current_user.username == 'root' || current_user.is_username_verified
+    if !Settings['drepo'] || (Settings['drepo'] && !Settings['drepo']['need_check_username']) ||
+        current_user.username == 'root' || current_user.is_username_verified
       redirect_to root_path
     end
   end
