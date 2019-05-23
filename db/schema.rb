@@ -1526,10 +1526,6 @@ ActiveRecord::Schema.define(version: 20190529142545) do
     t.integer "pipeline_id"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
-    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
-    t.datetime "drepo_updated_at", default: -> { "now()" }
-    t.index ["drepo_updated_at"], name: "index_merge_trains_on_drepo_updated_at", using: :btree
-    t.index ["drepo_uuid"], name: "index_merge_trains_on_drepo_uuid", using: :btree
     t.index ["merge_request_id"], name: "index_merge_trains_on_merge_request_id", unique: true, using: :btree
     t.index ["pipeline_id"], name: "index_merge_trains_on_pipeline_id", using: :btree
     t.index ["user_id"], name: "index_merge_trains_on_user_id", using: :btree
@@ -2143,7 +2139,6 @@ ActiveRecord::Schema.define(version: 20190529142545) do
     t.index ["drepo_updated_at"], name: "index_redirect_routes_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_redirect_routes_on_drepo_uuid", using: :btree
     t.index ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
-    t.index ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
     t.index ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
   end
 
