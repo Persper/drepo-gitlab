@@ -10,6 +10,7 @@ class SessionsController < Devise::SessionsController
   skip_before_action :check_two_factor_requirement, only: [:destroy]
   # replaced with :require_no_authentication_without_flash
   skip_before_action :require_no_authentication, only: [:new, :create]
+  skip_before_action :drepo_check_username_verification
 
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,

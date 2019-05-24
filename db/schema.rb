@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190516011213) do
+ActiveRecord::Schema.define(version: 20190521034634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2668,6 +2668,7 @@ ActiveRecord::Schema.define(version: 20190516011213) do
     t.string "commit_email"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.boolean "is_username_verified", default: false, null: false
     t.index ["accepted_term_id"], name: "index_users_on_accepted_term_id", using: :btree
     t.index ["admin"], name: "index_users_on_admin", using: :btree
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

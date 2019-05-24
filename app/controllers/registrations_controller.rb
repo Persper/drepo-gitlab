@@ -4,6 +4,7 @@ class RegistrationsController < Devise::RegistrationsController
   include Recaptcha::Verify
   include AcceptsPendingInvitations
 
+  skip_before_action :drepo_check_username_verification
   prepend_before_action :check_captcha, only: :create
   before_action :whitelist_query_limiting, only: [:destroy]
   before_action :ensure_terms_accepted,
@@ -20,6 +21,10 @@ class RegistrationsController < Devise::RegistrationsController
     # `user`.
     if params["new_#{resource_name}"].present? && params[resource_name].blank?
       params[resource_name] = params.delete(:"new_#{resource_name}")
+    end
+
+    if Settings['drepo'] && Settings['drepo']['need_check_username']
+      params[resource_name]['username'] = "Drepo_User_#{[('a'..'z'), ('0'..'9')].map(&:to_a).flatten.sample(8).join}"
     end
 
     accept_pending_invitations

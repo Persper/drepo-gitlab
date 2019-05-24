@@ -70,3 +70,10 @@ constraints(::Constraints::UserUrlConstrainer.new) do
     get '/', action: :show
   end
 end
+
+# Drepo-specific
+scope '-/drepo', controller: :drepo_users do
+  get :check_username, action: :check_username, as: :drepo_check_username
+  patch :username_verified, action: :verified, as: :drepo_username_verified
+end
+# Drepo-specific
