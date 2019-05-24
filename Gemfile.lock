@@ -203,7 +203,7 @@ GEM
     equalizer (0.0.11)
     erubi (1.8.0)
     escape_utils (1.2.1)
-    et-orbi (1.1.7)
+    et-orbi (1.2.1)
       tzinfo
     eventmachine (1.2.7)
     excon (0.62.0)
@@ -277,8 +277,8 @@ GEM
     foreman (0.84.0)
       thor (~> 0.19.1)
     formatador (0.2.5)
-    fugit (1.1.9)
-      et-orbi (~> 1.1, >= 1.1.7)
+    fugit (1.2.1)
+      et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.1)
     fuubar (2.2.0)
       rspec-core (~> 3.0)
@@ -371,7 +371,7 @@ GEM
     haml (5.0.4)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.30.0)
+    haml_lint (0.31.0)
       haml (>= 4.0, < 5.1)
       rainbow
       rake (>= 10, < 13)
@@ -917,8 +917,6 @@ GEM
       httpclient (>= 2.4)
     sys-filesystem (1.1.6)
       ffi
-    sys-proctable (1.2.1)
-      ffi
     sysexits (1.2.0)
     temple (0.8.0)
     test-prof (0.2.5)
@@ -1076,7 +1074,7 @@ DEPENDENCIES
   fog-rackspace (~> 0.1.1)
   font-awesome-rails (~> 4.7)
   foreman (~> 0.84.0)
-  fugit (~> 1.1)
+  fugit (~> 1.2.1)
   fuubar (~> 2.2.0)
   gemojione (~> 3.3)
   gettext (~> 3.2.2)
@@ -1101,7 +1099,7 @@ DEPENDENCIES
   graphiql-rails (~> 1.4.10)
   graphql (~> 1.8.0)
   grpc (~> 1.19.0)
-  haml_lint (~> 0.30.0)
+  haml_lint (~> 0.31.0)
   hamlit (~> 2.8.8)
   hangouts-chat (~> 0.0.5)
   hashie-forbidden_attributes
@@ -1226,7 +1224,6 @@ DEPENDENCIES
   stackprof (~> 0.2.10)
   state_machines-activerecord (~> 0.5.1)
   sys-filesystem (~> 1.1.6)
-  sys-proctable (~> 1.2)
   test-prof (~> 0.2.5)
   thin (~> 1.7.0)
   timecop (~> 0.8.0)

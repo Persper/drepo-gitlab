@@ -140,6 +140,8 @@ module Ci
       where("EXISTS (?)", matcher)
     end
 
+    scope :queued_before, ->(time) { where(arel_table[:queued_at].lt(time)) }
+
     ##
     # TODO: Remove these mounters when we remove :ci_enable_legacy_artifacts feature flag
     mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
@@ -378,8 +380,6 @@ module Ci
     end
 
     def any_unmet_prerequisites?
-      return false unless Feature.enabled?(:ci_preparing_state, default_enabled: true)
-
       prerequisites.present?
     end
 

@@ -215,6 +215,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.datetime "updated_at"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "drepo_username"
     t.index ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
     t.index ["drepo_updated_at"], name: "index_award_emoji_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_award_emoji_on_drepo_uuid", using: :btree
@@ -397,6 +398,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.index ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
     t.index ["project_id", "status"], name: "index_ci_builds_project_id_and_status_for_live_jobs_partial2", where: "(((type)::text = 'Ci::Build'::text) AND ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text])))", using: :btree
     t.index ["protected"], name: "index_ci_builds_on_protected", using: :btree
+    t.index ["queued_at"], name: "index_ci_builds_on_queued_at", using: :btree
     t.index ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
     t.index ["scheduled_at"], name: "partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs", where: "((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text))", using: :btree
     t.index ["stage_id", "stage_idx"], name: "tmp_build_stage_position_index", where: "(stage_idx IS NOT NULL)", using: :btree
@@ -908,21 +910,27 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.index ["project_id", "status"], name: "index_deployments_on_project_id_and_status", using: :btree
   end
 
+  create_table "drepo_snapshot_uploads", force: :cascade do |t|
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "snapshot_id"
+    t.text "export_file"
+    t.index ["snapshot_id"], name: "index_drepo_snapshot_uploads_on_snapshot_id", using: :btree
+    t.index ["updated_at"], name: "index_drepo_snapshot_uploads_on_updated_at", using: :btree
+  end
+
   create_table "drepo_snapshots", force: :cascade do |t|
     t.integer "target_id"
     t.string "target_type"
     t.string "state"
-    t.integer "snapped_by_id"
-    t.datetime "snapped_at"
-    t.integer "chained_by_id"
-    t.datetime "chained_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "reason"
     t.jsonb "branches"
     t.jsonb "tags"
-    t.index ["chained_at"], name: "index_drepo_snapshots_on_chained_at", using: :btree
-    t.index ["snapped_at"], name: "index_drepo_snapshots_on_snapped_at", using: :btree
+    t.datetime_with_timezone "state_updated_at"
+    t.integer "author_id"
+    t.jsonb "related_users"
+    t.index ["author_id"], name: "index_drepo_snapshots_on_author_id", using: :btree
     t.index ["target_id", "target_type"], name: "index_drepo_snapshots_on_target_id_and_target_type", using: :btree
   end
 
@@ -966,6 +974,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.string "target_type"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "drepo_username"
     t.index ["action"], name: "index_events_on_action", using: :btree
     t.index ["author_id", "project_id"], name: "index_events_on_author_id_and_project_id", using: :btree
     t.index ["drepo_updated_at"], name: "index_events_on_drepo_updated_at", using: :btree
@@ -1165,6 +1174,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
     t.integer "state_id", limit: 2
+    t.string "drepo_username"
     t.index ["author_id"], name: "index_issues_on_author_id", using: :btree
     t.index ["closed_by_id"], name: "index_issues_on_closed_by_id", using: :btree
     t.index ["confidential"], name: "index_issues_on_confidential", using: :btree
@@ -1327,6 +1337,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.date "expires_at"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "drepo_username"
     t.index ["access_level"], name: "index_members_on_access_level", using: :btree
     t.index ["drepo_updated_at"], name: "index_members_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_members_on_drepo_uuid", using: :btree
@@ -1483,6 +1494,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
     t.integer "state_id", limit: 2
+    t.string "drepo_username"
     t.index ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
     t.index ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
     t.index ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
@@ -1638,6 +1650,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.boolean "resolved_by_push"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "drepo_username"
     t.index ["author_id"], name: "index_notes_on_author_id", using: :btree
     t.index ["commit_id"], name: "index_notes_on_commit_id", using: :btree
     t.index ["created_at"], name: "index_notes_on_created_at", using: :btree
@@ -2310,6 +2323,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.text "description_html"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "drepo_username"
     t.index ["author_id"], name: "index_snippets_on_author_id", using: :btree
     t.index ["drepo_updated_at"], name: "index_snippets_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_snippets_on_drepo_uuid", using: :btree
@@ -2799,6 +2813,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
+  add_foreign_key "drepo_snapshot_uploads", "drepo_snapshots", column: "snapshot_id", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade

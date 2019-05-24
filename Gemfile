@@ -169,7 +169,7 @@ gem 'redis-namespace', '~> 1.6.0'
 gem 'gitlab-sidekiq-fetcher', '~> 0.4.0', require: 'sidekiq-reliable-fetch'
 
 # Cron Parser
-gem 'fugit', '~> 1.1'
+gem 'fugit', '~> 1.2.1'
 
 # HTTP requests
 gem 'httparty', '~> 0.16.4'
@@ -360,7 +360,7 @@ group :development, :test do
   gem 'rubocop-rspec', '~> 1.22.1'
 
   gem 'scss_lint', '~> 0.56.0', require: false
-  gem 'haml_lint', '~> 0.30.0', require: false
+  gem 'haml_lint', '~> 0.31.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
@@ -409,7 +409,6 @@ gem 'health_check', '~> 2.6.0'
 # System information
 gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
-gem 'sys-proctable', '~> 1.2'
 
 # SSH host key support
 gem 'net-ssh', '~> 5.0'

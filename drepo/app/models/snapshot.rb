@@ -15,11 +15,28 @@ class Snapshot < ApplicationRecord
     cancelled: 'cancelled'
   ).freeze
 
+  UNCOMPLETED_STATES = HashWithIndifferentAccess.new(
+    created: 'created',
+    snapped: 'snapped'
+  ).freeze
+
+  # The resources belong to user, but managed by project
+  USER_SHARED_TABLE_COLUMNS = HashWithIndifferentAccess.new(
+    snippets: 'author_id',
+    issues: 'author_id',
+    notes: 'author_id',
+    events: 'author_id',
+    merge_requests: 'author_id',
+    award_emoji: 'user_id',
+    members: 'user_id'
+  ).freeze
+
   EXCLUDE_TABLES = %w[
     ar_internal_metadata
     schema_migrations
     prometheus_metrics
     drepo_snapshots
+    drepo_snapshot_uploads
     tags
     taggings
     ci_build_trace_chunks
@@ -104,9 +121,36 @@ class Snapshot < ApplicationRecord
     project_metrics_settings
   ].freeze
 
+  belongs_to :author, class_name: 'User'
   belongs_to :target, polymorphic: true, inverse_of: :snapshots
-  belongs_to :snapped_by, class_name: 'User'
-  belongs_to :chained_by, class_name: 'User'
+  has_one :snapshot_upload, dependent: :destroy
+
+  state_machine :state, initial: :created do
+    state :snapped
+    state :chained
+    state :failed
+    state :cancelled
+
+    event :snap do
+      transition created: :snapped
+    end
+
+    event :crash do
+      transition [:created, :snapped] => :failed
+    end
+
+    event :chain do
+      transition snapped: :chained
+    end
+
+    event :cancel do
+      transition [:created, :snapped] => :cancelled
+    end
+
+    after_transition any => any do |snapshot|
+      snapshot.state_updated_at = Time.now
+    end
+  end
 
   def project_snapshot?
     target_type == 'Project'
@@ -136,5 +180,20 @@ class Snapshot < ApplicationRecord
     rescue
       # just drop this tag
     end
+  end
+
+  def remove_exports
+    return unless export_file_exists?
+
+    snapshot_upload.remove_export_file!
+    snapshot_upload.save unless snapshot_upload.destroyed?
+  end
+
+  def export_file_exists?
+    export_file&.file
+  end
+
+  def export_file
+    snapshot_upload&.export_file
   end
 end

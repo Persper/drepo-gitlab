@@ -397,6 +397,14 @@ GitLab can scan and report any vulnerabilities found in your project.
 
 [Read more about security reports.](https://docs.gitlab.com/ee/user/application_security/index.html)
 
+## JUnit test reports
+
+Configure your CI jobs to use JUnit test reports, and let GitLab display a report
+on the merge request so that it’s easier and faster to identify the failure
+without having to check the entire job log.
+
+[Read more about JUnit test reports](../../../ci/junit_test_reports.md).
+
 ## Live preview with Review Apps
 
 If you configured [Review Apps](https://about.gitlab.com/features/review-apps/) for your project,
@@ -539,13 +547,13 @@ Add the following alias to your `~/.gitconfig`:
 
 Now you can check out a particular merge request from any repository and any
 remote. For example, to check out the merge request with ID 5 as shown in GitLab
-from the `upstream` remote, do:
+from the `origin` remote, do:
 
 ```
-git mr upstream 5
+git mr origin 5
 ```
 
-This will fetch the merge request into a local `mr-upstream-5` branch and check
+This will fetch the merge request into a local `mr-origin-5` branch and check
 it out.
 
 #### Checkout locally by modifying `.git/config` for a given repository
