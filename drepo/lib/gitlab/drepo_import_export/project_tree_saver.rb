@@ -8,10 +8,11 @@ module Gitlab
       attr_reader :full_path
 
       def initialize(project:, current_user:, shared:, params: {})
-        @params = params
+        @params = HashWithIndifferentAccess.new(params)
         @current_user = current_user
         @shared = shared
         @full_path = File.join(@shared.export_path, DrepoImportExport.project_filename)
+        @snapshot = ::Dg::Snapshot.find_by(id: @params[:snapshot_id])
 
         # reload project from drepo_project_pending schema
         Apartment::Tenant.switch(Snapshots::BaseSnapshot::DREPO_PROJECT_PENDING) do
@@ -45,7 +46,7 @@ module Gitlab
           end
         end
 
-        project_json['related_users'] = @params[:snapshot].related_users if @params[:snapshot]
+        project_json['related_users'] = @snapshot.related_users if @snapshot
 
         RelationRenameService.add_new_associations(project_json)
 

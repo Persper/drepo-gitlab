@@ -12,7 +12,8 @@ module Gitlab
       def initialize(project:, shared:, params:)
         @project = project
         @shared = shared
-        @params = params
+        @params = HashWithIndifferentAccess.new(params)
+        @snapshot = ::Dg::Snapshot.find(@params[:snapshot_id])
       end
 
       def save
@@ -54,7 +55,7 @@ module Gitlab
       end
 
       def save_upload
-        upload = ::Dg::SnapshotUpload.find_or_initialize_by(snapshot: snapshot)
+        upload = ::Dg::SnapshotUpload.find_or_initialize_by(snapshot: @snapshot)
 
         File.open(archive_file) { |file| upload.export_file = file }
 
@@ -62,11 +63,8 @@ module Gitlab
       end
 
       def save_ipfs
-        snapshot.ipfs_file = Ipfs::AddService.new(file: archive_file).execute
-      end
-
-      def snapshot
-        @params[:snapshot]
+        @snapshot.ipfs_file = Ipfs::AddService.new(file: archive_file).execute
+        @snapshot.export!
       end
 
       def error_message

@@ -8,7 +8,7 @@ describe Projects::DrepoImportExport::ExportService do
     let(:project) { create(:project) }
     let(:shared) { project.drepo_import_export_shared }
     let(:snapshot) { create(:snapshot, target: project, author: user) }
-    let(:params) { { snapshot: snapshot } }
+    let(:params) { { snapshot_id: snapshot.id } }
     let(:service) { described_class.new(project, user, params) }
     let!(:after_export_strategy) { Gitlab::DrepoImportExport::AfterExportStrategies::DownloadNotificationStrategy.new }
 
