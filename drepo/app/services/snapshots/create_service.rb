@@ -43,9 +43,9 @@ module Snapshots
       @snapshot.build_tags
       # must be execute after creating project snapshot in drepo_project_pending schema
       # will read snapshot.related_users
-      Projects::DrepoImportExport::ExportService.new(@snapshot.target, @current_user, snapshot: @snapshot)
-        .execute(Gitlab::DrepoImportExport::AfterExportStrategies::DownloadNotificationStrategy.new)
       @snapshot.snap!
+      # export to a tar fild and upload to ipfs, it is a sidekiq job
+      @snapshot.target.add_drepo_export_job(current_user: current_user, params: { snapshot_id: @snapshot.id })
     rescue StandardError => e
       @snapshot.reason = e.message
       @snapshot.crash!

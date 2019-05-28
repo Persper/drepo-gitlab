@@ -11,6 +11,7 @@ module Dg
     STATES = HashWithIndifferentAccess.new(
       created: 'created',
       snapped: 'snapped',
+      exported: 'exported',
       chained: 'chained',
       failed: 'failed',
       cancelled: 'cancelled'
@@ -18,7 +19,8 @@ module Dg
 
     UNCOMPLETED_STATES = HashWithIndifferentAccess.new(
       created: 'created',
-      snapped: 'snapped'
+      snapped: 'snapped',
+      exported: 'exported'
     ).freeze
 
     # The resources belong to user, but managed by project
@@ -128,6 +130,7 @@ module Dg
 
     state_machine :state, initial: :created do
       state :snapped
+      state :exported
       state :chained
       state :failed
       state :cancelled
@@ -136,16 +139,20 @@ module Dg
         transition created: :snapped
       end
 
+      event :export do
+        transition snapped: :exported
+      end
+
       event :crash do
-        transition [:created, :snapped] => :failed
+        transition [:created, :snapped, :exported] => :failed
       end
 
       event :chain do
-        transition snapped: :chained
+        transition exported: :chained
       end
 
       event :cancel do
-        transition [:created, :snapped] => :cancelled
+        transition [:created, :snapped, :exported] => :cancelled
       end
 
       after_transition any => any do |snapshot|
