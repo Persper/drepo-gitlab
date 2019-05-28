@@ -6,7 +6,7 @@ module Drepo
     extend ::Gitlab::Utils::Override
 
     prepended do
-      has_many :snapshots, as: :target, dependent: :destroy
+      has_many :snapshots, class_name: 'Dg::Snapshot', as: :target, dependent: :destroy
     end
 
     def create_snapshot(current_user)

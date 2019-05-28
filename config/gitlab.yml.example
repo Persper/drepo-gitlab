@@ -791,6 +791,9 @@ production: &base
       # Ban an IP for one hour (3600s) after too many auth attempts
       # bantime: 3600
 
+  ipfs:
+    http_api: 'https://ipfs.infura.io:5001'
+
 development:
   <<: *base
 
@@ -957,6 +960,10 @@ test:
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
+
+  ipfs:
+    http_api: 'https://ipfs.example.com:5001'
+    storage_path: 'tmp/test/ipfs'
 
 staging:
   <<: *base

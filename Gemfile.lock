@@ -429,6 +429,8 @@ GEM
       cause
       json
     ipaddress (0.8.3)
+    ipfs-http-client (0.3.1)
+      http (~> 3.0)
     jaeger-client (0.10.0)
       opentracing (~> 0.3)
       thrift
@@ -1124,6 +1126,7 @@ DEPENDENCIES
   httparty (~> 0.16.4)
   icalendar
   influxdb (~> 0.2)
+  ipfs-http-client (~> 0.3)
   jira-ruby (~> 1.4)
   js_regex (~> 3.1)
   json-schema (~> 2.8.0)

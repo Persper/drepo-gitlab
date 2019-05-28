@@ -58,11 +58,9 @@ module Gitlab
       end
 
       def copy_archive
-        return if @archive_file
-
         @archive_file = File.join(@shared.archive_path, Gitlab::DrepoImportExport.export_filename(project: @project))
 
-        download_or_copy_upload(@project.import_export_upload.import_file, @archive_file)
+        download_file_from_ipfs
       end
 
       def remove_symlinks
@@ -79,6 +77,17 @@ module Gitlab
 
       def extracted_files
         Dir.glob("#{@shared.export_path}/**/*", File::FNM_DOTMATCH).reject { |f| IGNORED_FILENAMES.include?(File.basename(f)) }
+      end
+
+      def download_file_from_ipfs
+        cat_params = {
+          ipfs_path: @project.import_source,
+          to_file: @archive_file
+        }
+
+        unless Ipfs::CatService.new(cat_params).execute
+          raise Projects::ImportService::Error.new("Unable to download file #{@project.import_source} from IPFS")
+        end
       end
     end
   end

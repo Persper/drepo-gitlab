@@ -471,7 +471,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.index ["pipeline_id"], name: "index_ci_pipeline_chat_data_on_pipeline_id", unique: true, using: :btree
   end
 
-  create_table "ci_pipeline_schedule_variables", force: :cascade do |t|
+  create_table "ci_pipeline_schedule_variables", id: :serial, force: :cascade do |t|
     t.string "key", null: false
     t.text "value"
     t.text "encrypted_value"
@@ -910,7 +910,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.index ["project_id", "status"], name: "index_deployments_on_project_id_and_status", using: :btree
   end
 
-  create_table "drepo_snapshot_uploads", force: :cascade do |t|
+  create_table "drepo_snapshot_uploads", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "updated_at", null: false
     t.integer "snapshot_id"
     t.text "export_file"
@@ -918,7 +918,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.index ["updated_at"], name: "index_drepo_snapshot_uploads_on_updated_at", using: :btree
   end
 
-  create_table "drepo_snapshots", force: :cascade do |t|
+  create_table "drepo_snapshots", id: :serial, force: :cascade do |t|
     t.integer "target_id"
     t.string "target_type"
     t.string "state"
@@ -930,11 +930,30 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.datetime_with_timezone "state_updated_at"
     t.integer "author_id"
     t.jsonb "related_users"
+    t.jsonb "ipfs_file"
     t.index ["author_id"], name: "index_drepo_snapshots_on_author_id", using: :btree
     t.index ["target_id", "target_type"], name: "index_drepo_snapshots_on_target_id_and_target_type", using: :btree
   end
 
-  create_table "emails", force: :cascade do |t|
+  create_table "drepo_tasks", id: :serial, force: :cascade do |t|
+    t.integer "author_id"
+    t.integer "source_id", null: false
+    t.string "source_type", null: false
+    t.string "type"
+    t.jsonb "parameter"
+    t.string "state"
+    t.text "state_reason"
+    t.integer "lock_version"
+    t.datetime_with_timezone "state_updated_at"
+    t.datetime_with_timezone "started_at"
+    t.datetime_with_timezone "finished_at"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["author_id"], name: "index_drepo_tasks_on_author_id", using: :btree
+    t.index ["source_id", "source_type"], name: "index_drepo_tasks_on_source_id_and_source_type", using: :btree
+  end
+
+  create_table "emails", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "email", null: false
     t.datetime "created_at"
@@ -1347,7 +1366,7 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.index ["user_id"], name: "index_members_on_user_id", using: :btree
   end
 
-  create_table "merge_request_assignees", force: :cascade do |t|
+  create_table "merge_request_assignees", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "merge_request_id", null: false
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
@@ -2291,9 +2310,9 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.boolean "commit_events", default: true, null: false
     t.boolean "job_events", default: false, null: false
     t.boolean "confidential_note_events", default: true
-    t.boolean "deployment_events", default: false, null: false
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.boolean "deployment_events", default: false, null: false
     t.index ["drepo_updated_at"], name: "index_services_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_services_on_drepo_uuid", using: :btree
     t.index ["project_id"], name: "index_services_on_project_id", using: :btree
@@ -2570,11 +2589,11 @@ ActiveRecord::Schema.define(version: 20190521034634) do
     t.integer "first_day_of_week"
     t.string "issues_sort"
     t.string "merge_requests_sort"
+    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
+    t.datetime "drepo_updated_at", default: -> { "now()" }
     t.string "timezone"
     t.boolean "time_display_relative"
     t.boolean "time_format_in_24h"
-    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
-    t.datetime "drepo_updated_at", default: -> { "now()" }
     t.index ["drepo_updated_at"], name: "index_user_preferences_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_user_preferences_on_drepo_uuid", using: :btree
     t.index ["user_id"], name: "index_user_preferences_on_user_id", unique: true, using: :btree
