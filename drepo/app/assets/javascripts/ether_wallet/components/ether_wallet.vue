@@ -48,7 +48,8 @@
         <div v-else-if="unlockOption === 'mnemonic_phrase'">
           <h4 class="col-lg-12">Paste Your Mnemonic Phrase</h4>
           <textarea
-            v-model="mnemonicPhraseInput"
+            :value="mnemonicPhraseInput"
+            @input="updateMnemonicPhraseInput"
             class="col-lg-12 ether-input"
             placeholder="Mnemonic Phrase"
           ></textarea>
@@ -56,7 +57,8 @@
             >Address Index(optional, the first one will be used by default) :
           </label>
           <input
-            v-model="addressIndexInput"
+            :value="addressIndexInput"
+            @input="updateAddressIndexInput"
             class="col-lg-12 ether-input"
             type="text"
             placeholder="Address Index"
@@ -72,7 +74,8 @@
         <div v-else-if="unlockOption === 'private_key'">
           <h4 class="col-lg-12">Paste Your Private Key</h4>
           <textarea
-            v-model="privateKeyInput"
+            :value="privateKeyInput"
+            @input="updatePrivateKeyInput"
             class="col-lg-12 ether-input"
             placeholder="Private Key"
           ></textarea>
@@ -121,9 +124,7 @@
 </template>
 
 <script>
-import * as Web3One from 'web3';
-import { detect } from 'detect-browser';
-import HDWalletProvider from 'truffle-hdwallet-provider';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import AccountInfo from './account_info.vue';
 
 export default {
@@ -144,49 +145,39 @@ export default {
     },
   },
 
-  data() {
-    return {
-      web3Client: null,
-      accountAddress: '',
-      unlockOption: '',
-      isMetaMaskSupportedBrowser: false,
-      isMetaMaskTurnedOn: false,
-      isMetaMaskLoggedIn: false,
-      accountBalance: '0',
-      isConnectToMetaMaskButtonClicked: false,
-      isUnlockByPrivateKeyButtonClicked: false,
-      isUnlockByMnemonicPhraseButtonClicked: false,
-      isStartDrepoSyncButtonClicked: false,
-      mnemonicPhraseInput: '',
-      addressIndexInput: 1,
-      privateKeyInput: '',
-      gasLimit: 1000000,
-      transactionObject: {
-        from: this.accountAddress,
-        gas: this.gasLimit,
-      },
-    };
-  },
-
   computed: {
-    isUnlocked() {
-      return this.accountAddress !== '' && this.accountBalance !== '';
-    },
+    ...mapState([
+      'web3Client',
+      'accountAddress',
+      'unlockOptionState',
+      'isMetaMaskSupportedBrowser',
+      'isMetaMaskTurnedOn',
+      'isMetaMaskLoggedIn',
+      'accountBalance',
+      'isConnectToMetaMaskButtonClicked',
+      'isUnlockByPrivateKeyButtonClicked',
+      'isUnlockByMnemonicPhraseButtonClicked',
+      'isStartDrepoSyncButtonClicked',
+      'mnemonicPhraseInput',
+      'addressIndexInput',
+      'privateKeyInput',
+      'gasLimit',
+    ]),
 
-    isConnectToMetaMaskButtonClickable() {
-      return !this.isConnectToMetaMaskButtonClicked && this.isMetaMaskLoggedIn;
-    },
+    ...mapGetters([
+      'isUnlocked',
+      'isConnectToMetaMaskButtonClickable',
+      'isUnlockByPrivateKeyButtonClickable',
+      'isUnlockByMnemonicPhraseButtonClickable'
+    ]),
 
-    isUnlockByPrivateKeyButtonClickable() {
-      return (
-        !this.isUnlockByPrivateKeyButtonClicked && this.privateKeyInput.trim().match(/^\w{64}$/)
-      );
-    },
-
-    isUnlockByMnemonicPhraseButtonClickable() {
-      return (
-        !this.isUnlockByMnemonicPhraseButtonClicked && this.mnemonicPhraseInput.trim().length > 11
-      );
+    unlockOption: {
+      get () {
+        return this.unlockOptionState;
+      },
+      set (value) {
+        this.updateUnlockOption(value);
+      },
     },
 
     isStartDrepoSyncButtonClickable() {
@@ -195,122 +186,23 @@ export default {
   },
 
   mounted() {
-    const browser = detect();
-    if (!browser) return;
-
-    this.isMetaMaskSupportedBrowser = this.isBrowserSupportMetaMask(browser);
-
-    if (!this.isMetaMaskSupportedBrowser) {
-      // the browser not support MetaMask
-      this.unlockOption = 'mnemonic_phrase';
-      return;
-    }
-
-    // to help decide the default unlock option is metamask
-    this.unlockOption = 'metamask';
-
-    if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
-      this.isMetaMaskTurnedOn = true;
-      // if the user login the MetaMask account
-      window.web3.eth.getAccounts((err, accounts) => {
-        if (err != null) {
-          this.isMetaMaskLoggedIn = false;
-        } else if (accounts.length > 0) {
-          this.isMetaMaskLoggedIn = true;
-        } else {
-          this.isMetaMaskLoggedIn = false;
-        }
-      });
-
-      const self = this;
-      window.ethereum.on('accountsChanged', accounts => {
-        if (accounts[0] && self.web3Client && self.unlockOption === 'metamask') {
-          self.updateAccountInfo(accounts[0]);
-        }
-      });
-    }
+    this.initialDetectBrowser();
   },
 
   methods: {
-    isBrowserSupportMetaMask(browser) {
-      switch (browser && browser.name) {
-        case 'chrome':
-        case 'firefox':
-        case 'opera':
-          return true;
-        default:
-          return false;
-      }
-    },
-
-    loginMetaMask() {
-      if (!this.isMetaMaskLoggedIn) window.ethereum.enable();
-    },
-
-    connectToMetaMask() {
-      if (this.isConnectToMetaMaskButtonClicked) return;
-      this.isConnectToMetaMaskButtonClicked = true;
-      // console.log('>>>>>>>>>>>>>>> MetaMask <<<<<<<<<<<<<<<<');
-      this.web3Client = new window.Web3(window.web3.currentProvider);
-      this.updateAccountInfo();
-      this.isConnectToMetaMaskButtonClicked = false;
-    },
-
-    unlockByPrivateKey() {
-      if (this.isUnlockByPrivateKeyButtonClicked) return;
-      this.isUnlockByPrivateKeyButtonClicked = true;
-      const provider = new HDWalletProvider(
-        `0x${this.privateKeyInput}`,
-        'https://rinkeby.infura.io/v3/8d1ba1e9ef484906ba94d560cc1d3a87',
-      );
-      this.web3Client = new Web3One(provider);
-      this.updateAccountInfo();
-      this.isUnlockByPrivateKeyButtonClicked = false;
-    },
-
-    unlockByMnemonicPhrase() {
-      if (this.isUnlockByMnemonicPhraseButtonClicked) return;
-      this.isUnlockByMnemonicPhraseButtonClicked = true;
-      if (this.addressIndexInput < 1) return;
-      const provider = new HDWalletProvider(
-        this.mnemonicPhraseInput,
-        'https://rinkeby.infura.io/v3/8d1ba1e9ef484906ba94d560cc1d3a87',
-        this.addressIndexInput - 1,
-      );
-      this.web3Client = new Web3One(provider);
-      this.updateAccountInfo();
-      this.isUnlockByMnemonicPhraseButtonClicked = false;
-    },
-
-    updateAccountInfo(account) {
-      if (account && this.web3Client) {
-        this.web3Client.eth.defaultAccount = account;
-        this.accountAddress = account;
-        this.getBalance();
-      } else {
-        this.web3Client.eth.getAccounts((err, accounts) => {
-          if (err || accounts.length < 1) return;
-          const [firstAccount] = accounts;
-          this.accountAddress = firstAccount;
-          this.web3Client.eth.defaultAccount = firstAccount;
-          if (this.accountAddress) this.getBalance();
-        });
-      }
-    },
-
-    getBalance() {
-      this.web3Client.eth.getBalance(this.accountAddress, (err, balance) => {
-        if (err) return;
-
-        if (!balance) {
-          this.accountBalance = 'Query balance failed';
-        } else if (this.unlockOption === 'metamask') {
-          this.accountBalance = this.web3Client.fromWei(balance, 'ether').toString();
-        } else {
-          this.accountBalance = this.web3Client.utils.fromWei(balance, 'ether').toString();
-        }
-      });
-    },
+    ...mapActions([
+      'isBrowserSupportMetaMask',
+      'initialDetectBrowser',
+      'loginMetaMask',
+      'connectToMetaMask',
+      'unlockByPrivateKey',
+      'unlockByMnemonicPhrase',
+      'updateAccountInfo',
+      'updateUnlockOption',
+      'updateMnemonicPhraseInput',
+      'updateAddressIndexInput',
+      'updatePrivateKeyInput',
+    ]),
 
     web3Contract() {
       const contractData = JSON.parse(this.contractInfo.interface);
@@ -325,7 +217,10 @@ export default {
         const myContract = new this.web3Client.eth.Contract(
           contractData,
           this.contractInfo.address,
-          this.transactionObject,
+          {
+            from: this.accountAddress,
+            gas: this.gasLimit,
+          },
         );
         myContract.methods
           .setMessage('hello world! mmmmm')
