@@ -1,29 +1,7 @@
-import { detect } from 'detect-browser';
 import * as types from './mutation_types';
 
-export const isBrowserSupportMetaMask = browser => {
-  switch (browser && browser.name) {
-    case 'chrome':
-    case 'firefox':
-    case 'opera':
-      return true;
-    default:
-      return false;
-  }
-};
-
-export const initialDetectBrowser = ({ state, commit, dispatch }) => {
-  const browser = detect();
-  if (!browser) return;
-
-  const isMetaMaskSupported = dispatch('isBrowserSupportMetaMask', browser);
+export const initialDetectBrowser = ({ commit }, isMetaMaskSupported) => {
   commit(types.INITIAL_DETECT_BROWSER, isMetaMaskSupported);
-
-  window.ethereum.on('accountsChanged', accounts => {
-    if (accounts[0] && state.web3Client && state.unlockOption === 'metamask') {
-      dispatch('updateAccountInfo', accounts[0]);
-    }
-  });
 };
 
 export const loginMetaMask = ({ state }) => {

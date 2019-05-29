@@ -41,13 +41,20 @@ export default {
           });
         }
       });
+
+      window.ethereum.on('accountsChanged', accounts => {
+        if (accounts[0] && state.web3Client && state.unlockOptionState === 'metamask') {
+          this.commit(types.UPDATE_ACCOUNT_INFO, accounts[0]);
+        }
+      });
     }
   },
 
   [types.UPDATE_ACCOUNT_INFO](state, account) {
     if (account && state.web3Client) {
-      Object.assign(state.web3Client.eth.defaultAccount, account);
-      Object.assign(state.accountAddress, account);
+      Object.assign(state, {
+        accountAddress: account,
+      });
       this.commit(types.UPDATE_BALANCE);
     } else {
       state.web3Client.eth.getAccounts((err, accounts) => {

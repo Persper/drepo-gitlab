@@ -35,7 +35,7 @@
             <a href="#" @click.stop.prevent="loginMetaMask()">login now</a>
           </p>
           <p v-if="!isMetaMaskSupportedBrowser" class="col-lg-12">
-            Your brower not supports MetaMask extension.
+            Your brower does <b>not</b> supports MetaMask extension.
           </p>
           <input
             type="button"
@@ -124,6 +124,7 @@
 </template>
 
 <script>
+import { detect } from 'detect-browser';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import AccountInfo from './account_info.vue';
 
@@ -186,12 +187,15 @@ export default {
   },
 
   mounted() {
-    this.initialDetectBrowser();
+    const browser = detect();
+    if (!browser) return;
+
+    const isMetaMaskSupported = this.isBrowserSupportMetaMask(browser);
+    this.initialDetectBrowser(isMetaMaskSupported);
   },
 
   methods: {
     ...mapActions([
-      'isBrowserSupportMetaMask',
       'initialDetectBrowser',
       'loginMetaMask',
       'connectToMetaMask',
@@ -203,6 +207,17 @@ export default {
       'updateAddressIndexInput',
       'updatePrivateKeyInput',
     ]),
+
+    isBrowserSupportMetaMask(browser) {
+      switch (browser && browser.name) {
+        case 'chrome':
+        case 'firefox':
+        case 'opera':
+          return true;
+        default:
+          return false;
+      }
+    },
 
     web3Contract() {
       const contractData = JSON.parse(this.contractInfo.interface);
