@@ -9,7 +9,5 @@ export const isUnlockByPrivateKeyButtonClickable = state =>
 export const isUnlockByMnemonicPhraseButtonClickable = state =>
   !state.isUnlockByMnemonicPhraseButtonClicked && state.mnemonicPhraseInput.trim().length > 11;
 
-// export const isStartDrepoSyncButtonClickable = state => !state.isStartDrepoSyncButtonClicked && state.isUnlocked;
-
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
-//export default () => {};
+export default () => {};

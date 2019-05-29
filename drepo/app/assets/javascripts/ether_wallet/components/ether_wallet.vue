@@ -49,19 +49,19 @@
           <h4 class="col-lg-12">Paste Your Mnemonic Phrase</h4>
           <textarea
             :value="mnemonicPhraseInput"
-            @input="updateMnemonicPhraseInput"
             class="col-lg-12 ether-input"
             placeholder="Mnemonic Phrase"
+            @input="updateMnemonicPhraseInput"
           ></textarea>
           <label class="col-lg-12"
             >Address Index(optional, the first one will be used by default) :
           </label>
           <input
             :value="addressIndexInput"
-            @input="updateAddressIndexInput"
             class="col-lg-12 ether-input"
             type="text"
             placeholder="Address Index"
+            @input="updateAddressIndexInput"
           />
           <input
             type="button"
@@ -75,9 +75,9 @@
           <h4 class="col-lg-12">Paste Your Private Key</h4>
           <textarea
             :value="privateKeyInput"
-            @input="updatePrivateKeyInput"
             class="col-lg-12 ether-input"
             placeholder="Private Key"
+            @input="updatePrivateKeyInput"
           ></textarea>
           <input
             type="button"
