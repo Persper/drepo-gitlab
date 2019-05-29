@@ -168,14 +168,14 @@ export default {
       'isUnlocked',
       'isConnectToMetaMaskButtonClickable',
       'isUnlockByPrivateKeyButtonClickable',
-      'isUnlockByMnemonicPhraseButtonClickable'
+      'isUnlockByMnemonicPhraseButtonClickable',
     ]),
 
     unlockOption: {
-      get () {
+      get() {
         return this.unlockOptionState;
       },
-      set (value) {
+      set(value) {
         this.updateUnlockOption(value);
       },
     },
