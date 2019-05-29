@@ -5,39 +5,39 @@ import * as types from './mutation_types';
 export default {
   [types.INITIAL_DETECT_BROWSER](state, isMetaMaskSupported) {
     Object.assign(state, {
-      isMetaMaskSupportedBrowser: isMetaMaskSupported
+      isMetaMaskSupportedBrowser: isMetaMaskSupported,
     });
 
     if (!state.isMetaMaskSupportedBrowser) {
       // the browser not support MetaMask
       Object.assign(state, {
-        unlockOptionState: 'mnemonic_phrase'
+        unlockOptionState: 'mnemonic_phrase',
       });
       return;
     }
 
     // to help decide the default unlock option is metamask
     Object.assign(state, {
-      unlockOptionState: 'metamask'
+      unlockOptionState: 'metamask',
     });
 
     if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
       Object.assign(state, {
-        isMetaMaskTurnedOn: true
+        isMetaMaskTurnedOn: true,
       });
       // if the user login the MetaMask account
       window.web3.eth.getAccounts((err, accounts) => {
         if (err != null) {
           Object.assign(state, {
-            isMetaMaskLoggedIn: false
+            isMetaMaskLoggedIn: false,
           });
         } else if (accounts.length > 0) {
           Object.assign(state, {
-            isMetaMaskLoggedIn: true
+            isMetaMaskLoggedIn: true,
           });
         } else {
           Object.assign(state, {
-            isMetaMaskLoggedIn: false
+            isMetaMaskLoggedIn: false,
           });
         }
       });
@@ -54,7 +54,7 @@ export default {
         if (err || accounts.length < 1) return;
         const [firstAccount] = accounts;
         Object.assign(state, {
-          accountAddress: firstAccount
+          accountAddress: firstAccount,
         });
         // Object.assign(state.web3Client.eth.defaultAccount, firstAccount);
         this.commit(types.UPDATE_BALANCE);
@@ -68,15 +68,15 @@ export default {
 
       if (!balance) {
         Object.assign(state, {
-          accountBalance: 'Query balance failed'
+          accountBalance: 'Query balance failed',
         });
       } else if (state.unlockOptionState === 'metamask') {
         Object.assign(state, {
-          accountBalance: state.web3Client.fromWei(balance, 'ether').toString()
+          accountBalance: state.web3Client.fromWei(balance, 'ether').toString(),
         });
       } else {
         Object.assign(state, {
-          accountBalance: state.web3Client.utils.fromWei(balance, 'ether').toString()
+          accountBalance: state.web3Client.utils.fromWei(balance, 'ether').toString(),
         });
       }
     });
@@ -85,45 +85,45 @@ export default {
   [types.UPDATE_UNLOCK_BUTTON_CLICKED](state, button, value) {
     if (button === 'metamask') {
       Object.assign(state, {
-        isConnectToMetaMaskButtonClicked: value
+        isConnectToMetaMaskButtonClicked: value,
       });
     } else if (button === 'private_key') {
       Object.assign(state, {
-        isUnlockByPrivateKeyButtonClicked: value
+        isUnlockByPrivateKeyButtonClicked: value,
       });
     } else if (button === 'mnemonic_phrase') {
       Object.assign(state, {
-        isUnlockByMnemonicPhraseButtonClicked: value
+        isUnlockByMnemonicPhraseButtonClicked: value,
       });
-    };
+    }
   },
 
   [types.CONNECT_TO_METAMASK](state) {
     Object.assign(state, {
-      isConnectToMetaMaskButtonClicked: true
+      isConnectToMetaMaskButtonClicked: true,
     });
 
     Object.assign(state, {
-      web3Client: new window.Web3(window.web3.currentProvider)
+      web3Client: new window.Web3(window.web3.currentProvider),
     });
   },
 
   [types.UNLOCK_BY_PRIVATE_KEY](state) {
     Object.assign(state, {
-      isUnlockByPrivateKeyButtonClicked: true
+      isUnlockByPrivateKeyButtonClicked: true,
     });
     const provider = new HDWalletProvider(
       `0x${state.privateKeyInput}`,
       'https://rinkeby.infura.io/v3/8d1ba1e9ef484906ba94d560cc1d3a87',
     );
     Object.assign(state, {
-      web3Client: new Web3One(provider)
+      web3Client: new Web3One(provider),
     });
   },
 
   [types.UNLOCK_BY_MNEMONIC_PHRASE](state) {
     Object.assign(state, {
-      isUnlockByMnemonicPhraseButtonClicked: true
+      isUnlockByMnemonicPhraseButtonClicked: true,
     });
     if (state.addressIndexInput < 1) return;
     const provider = new HDWalletProvider(
@@ -132,31 +132,31 @@ export default {
       state.addressIndexInput - 1,
     );
     Object.assign(state, {
-      web3Client: new Web3One(provider)
+      web3Client: new Web3One(provider),
     });
   },
 
   [types.UPDATE_UNLOCK_OPTION](state, option) {
     Object.assign(state, {
-      unlockOptionState: option
+      unlockOptionState: option,
     });
   },
 
   [types.UPDATE_MNEMONIC_PHRASE_INPUT](state, input) {
     Object.assign(state, {
-      mnemonicPhraseInput: input
+      mnemonicPhraseInput: input,
     });
   },
 
   [types.UPDATE_ADDRESS_INDEX_INPUT](state, input) {
     Object.assign(state, {
-      addressIndexInput: input
+      addressIndexInput: input,
     });
   },
 
   [types.UPDATE_PRIVATE_KEY_INPUT](state, input) {
     Object.assign(state, {
-      privateKeyInput: input
+      privateKeyInput: input,
     });
   },
 };
