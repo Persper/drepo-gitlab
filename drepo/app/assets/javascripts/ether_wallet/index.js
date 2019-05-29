@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import contractInfo from './contract';
 import EtherWallet from './components/ether_wallet.vue';
+import store from './stores';
 
 export default function initEtherWallet(el) {
   if (!el) return null;
@@ -9,6 +10,7 @@ export default function initEtherWallet(el) {
 
   return new Vue({
     el,
+    store,
     components: { EtherWallet },
     data() {
       return {
