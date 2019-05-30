@@ -1,0 +1,16 @@
+export default () => ({
+  web3Client: null,
+  accountAddress: '',
+  unlockOptionState: '',
+  isMetaMaskSupportedBrowser: false,
+  isMetaMaskTurnedOn: false,
+  isMetaMaskLoggedIn: false,
+  accountBalance: '0',
+  isConnectToMetaMaskButtonClicked: false,
+  isUnlockByPrivateKeyButtonClicked: false,
+  isUnlockByMnemonicPhraseButtonClicked: false,
+  mnemonicPhraseInput: '',
+  addressIndexInput: 1,
+  privateKeyInput: '',
+  gasLimit: 1000000,
+});

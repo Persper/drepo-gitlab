@@ -1,4 +1,4 @@
-import initEtherWallet from '../../../../ether_wallet/index';
+import initEtherWallet from '../../../../drepo_projects';
 import DrepoPreview from '../../../../drepo_preview';
 import CommitsList from '~/commits';
 

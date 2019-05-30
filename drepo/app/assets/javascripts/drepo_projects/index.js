@@ -1,6 +1,8 @@
 import Vue from 'vue';
+import EtherWallet from '../ether_wallet/components/ether_wallet.vue';
+import DrepoSubmit from './components/drepo_submit.vue';
 import contractInfo from './contract';
-import EtherWallet from './components/ether_wallet.vue';
+import store from '../ether_wallet/stores';
 
 export default function initEtherWallet(el) {
   if (!el) return null;
@@ -9,13 +11,15 @@ export default function initEtherWallet(el) {
 
   return new Vue({
     el,
-    components: { EtherWallet },
+    store,
+    components: { EtherWallet, DrepoSubmit },
     data() {
       return {
         projectPath,
         contractInfo,
       };
     },
-    template: '<EtherWallet :projectPath="projectPath" :contractInfo="contractInfo" />',
+    template:
+      '<div> <EtherWallet /> <DrepoSubmit :projectPath="projectPath" :contractInfo="contractInfo" /> </div>',
   });
 }
