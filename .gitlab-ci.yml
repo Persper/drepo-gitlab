@@ -12,11 +12,12 @@ variables:
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
   BUILD_ASSETS_IMAGE: "false"
 
+  ## Drepo specific variables ##
+  DREPO_KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master-drepo.json
+
 before_script:
-  - bundle --version
   - date
   - source scripts/utils.sh
-  - date
   - source scripts/prepare_build.sh
   - date
 

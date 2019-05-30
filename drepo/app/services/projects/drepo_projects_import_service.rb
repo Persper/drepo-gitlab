@@ -61,11 +61,18 @@ module Projects
         params[:path] += "-#{tmp_filename}"
       end
 
-      if template_file
+      if ipfs_path
+        params[:import_source] = ipfs_path
         params[:import_type] = 'drepo'
       end
 
       params[:import_data] = { data: data } if data.present?
+    end
+
+    def ipfs_path
+      strong_memoize(:ipfs_path) do
+        params.delete(:ipfs_path)
+      end
     end
   end
 end

@@ -6,8 +6,9 @@
 
 .use-pg-10: &use-pg-10
   services:
-    - postgres:10.7
-    - redis:alpine
+    - name: postgres:10.7
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
 
 ## Drepo-specific drepo not support mysql START
 #.use-mysql: &use-mysql
@@ -54,8 +55,10 @@
   script:
     - JOB_NAME=( $CI_JOB_NAME )
     - TEST_TOOL=${JOB_NAME[0]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${TEST_TOOL}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
-    - export KNAPSACK_GENERATE_REPORT=true
+    - TEST_LEVEL=${JOB_NAME[1]}
+    - DATABASE=${JOB_NAME[2]}
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${TEST_TOOL}_${TEST_LEVEL}_${DATABASE}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_GENERATE_REPORT=true KNAPSACK_LOG_LEVEL=debug KNAPSACK_TEST_DIR=spec
     - export SUITE_FLAKY_RSPEC_REPORT_PATH=${FLAKY_RSPEC_SUITE_REPORT_PATH}
     - export FLAKY_RSPEC_REPORT_PATH=rspec_flaky/all_${TEST_TOOL}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export NEW_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/new_${TEST_TOOL}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
@@ -65,7 +68,10 @@
     - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
-    - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml"
+    - date
+    - 'export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./lib/quality/test_level.rb -e "puts Quality::TestLevel.new.pattern(:${TEST_LEVEL})")'
+    - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag level:${TEST_LEVEL} --tag ~geo"
+    - date
   artifacts:
     expire_in: 31d
     when: always
@@ -81,6 +87,19 @@
     - /(^docs[\/-].*|.*-docs$)/
     - /(^qa[\/-].*|.*-qa$)/
 
+.rspec-metadata-drepo: &rspec-metadata-drepo
+  <<: *rspec-metadata
+  stage: test
+  script:
+    - JOB_NAME=( $CI_JOB_NAME )
+    - TEST_TOOL=${JOB_NAME[0]}
+    - export KNAPSACK_TEST_FILE_PATTERN="drepo/spec/**{,/*/**}/*_spec.rb" KNAPSACK_GENERATE_REPORT=true CACHE_CLASSES=true
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${TEST_TOOL}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - cp ${DREPO_KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
+    - scripts/gitaly-test-spawn
+    - bundle exec rake db:drepo:init
+    - knapsack rspec "-Ispec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml"
+
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
   <<: *use-pg
@@ -89,6 +108,10 @@
   <<: *rspec-metadata
   <<: *use-pg-10
   image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.21-chrome-73.0-node-10.x-yarn-1.12-postgresql-10-graphicsmagick-1.3.29"
+
+.rspec-metadata-pg-drepo: &rspec-metadata-pg-drepo
+  <<: *rspec-metadata-drepo
+  <<: *use-pg
 
 ## Drepo-specific drepo not support mysql START
 #.rspec-metadata-mysql: &rspec-metadata-mysql
@@ -144,20 +167,73 @@ setup-test-env:
   except:
     - /(^docs[\/-].*|.*-docs$)/
 
-rspec-pg:
+rspec unit pg:
   <<: *rspec-metadata-pg
-  parallel: 50
+  parallel: 20
 
-rspec-pg-10:
+rspec integration pg:
+  <<: *rspec-metadata-pg
+  parallel: 6
+
+rspec system pg:
+  <<: *rspec-metadata-pg
+  parallel: 24
+
+rspec unit pg-10:
   <<: *rspec-metadata-pg-10
   <<: *only-schedules-master
-  parallel: 50
+  parallel: 20
+
+rspec integration pg-10:
+  <<: *rspec-metadata-pg-10
+  <<: *only-schedules-master
+  parallel: 6
+
+rspec system pg-10:
+  <<: *rspec-metadata-pg-10
+  <<: *only-schedules-master
+  parallel: 24
+
+rspec-pg-drepo:
+  <<: *rspec-metadata-pg-drepo
+  parallel: 5
 
 ## Drepo-specific drepo not support mysql START
-#rspec-mysql:
+#rspec unit mysql:
 #  <<: *rspec-metadata-mysql
 #  <<: *only-schedules-master
-#  parallel: 50
+#  parallel: 20
+#
+#rspec integration mysql:
+#  <<: *rspec-metadata-mysql
+#  <<: *only-schedules-master
+#  parallel: 6
+#
+#rspec system mysql:
+#  <<: *rspec-metadata-mysql
+#  <<: *only-schedules-master
+#  parallel: 24
+#
+#.rspec-mysql-on-demand: &rspec-mysql-on-demand
+#  only:
+#    variables:
+#      - $CI_COMMIT_MESSAGE =~ /\[run mysql\]/i
+#      - $CI_COMMIT_REF_NAME =~ /mysql/
+#
+#rspec unit mysql on-demand:
+#  <<: *rspec-metadata-mysql
+#  <<: *rspec-mysql-on-demand
+#  parallel: 20
+#
+#rspec integration mysql on-demand:
+#  <<: *rspec-metadata-mysql
+#  <<: *rspec-mysql-on-demand
+#  parallel: 6
+#
+#rspec system mysql on-demand:
+#  <<: *rspec-metadata-mysql
+#  <<: *rspec-mysql-on-demand
+#  parallel: 24
 ## Drepo-specific drepo not support mysql END
 
 rspec-fast-spec-helper:
@@ -172,15 +248,28 @@ rspec-fast-spec-helper:
     - scripts/gitaly-test-spawn
     - bin/rspec --color --format documentation --tag quarantine spec/ drepo/spec/
 
-rspec-pg-quarantine:
+rspec quarantine pg:
   <<: *rspec-metadata-pg
   <<: *rspec-quarantine
   allow_failure: true
 
+.rspec-quarantine-drepo: &rspec-quarantine-drepo
+  <<: *only-schedules-master
+  script:
+    - export CACHE_CLASSES=true
+    - scripts/gitaly-test-spawn
+    - bin/rspec --color --format documentation --tag quarantine drepo/spec/
+
+rspec-pg-quarantine-drepo:
+  <<: *rspec-metadata-pg
+  <<: *rspec-quarantine-drepo
+  allow_failure: true
+
 ## Drepo-specific drepo not support mysql START
-#rspec-mysql-quarantine:
+#rspec quarantine mysql:
 #  <<: *rspec-metadata-mysql
 #  <<: *rspec-quarantine
+#  <<: *only-schedules-master
 #  allow_failure: true
 ## Drepo-specific drepo not support mysql END
 

@@ -280,11 +280,11 @@ namespace :db do
     end
 
     def user_shared_tables
-      Snapshot::USER_SHARED_TABLE_COLUMNS.keys.map { |t| ActiveRecord::Base.connection.quote(t) }.join(',')
+      Dg::Snapshot::USER_SHARED_TABLE_COLUMNS.keys.map { |t| ActiveRecord::Base.connection.quote(t) }.join(',')
     end
 
     def exclude_tables
-      Snapshot::EXCLUDE_TABLES.map { |t| ActiveRecord::Base.connection.quote(t) }.join(',')
+      Dg::Snapshot::EXCLUDE_TABLES.map { |t| ActiveRecord::Base.connection.quote(t) }.join(',')
     end
 
     def schema_present?(schema)
