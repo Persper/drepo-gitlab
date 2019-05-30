@@ -9,7 +9,6 @@ export default () => ({
   isConnectToMetaMaskButtonClicked: false,
   isUnlockByPrivateKeyButtonClicked: false,
   isUnlockByMnemonicPhraseButtonClicked: false,
-  isStartDrepoSyncButtonClicked: false,
   mnemonicPhraseInput: '',
   addressIndexInput: 1,
   privateKeyInput: '',
