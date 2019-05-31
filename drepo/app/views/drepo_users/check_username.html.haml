@@ -3,8 +3,8 @@
 - page_title    _('Create Username')
 - header_title  _("Create Username"), dashboard_groups_path
 
-.page-title-holder.d-flex.align-items-center
-  %h1.page-title= _('New username')
+.page-title-holder.flex.align-items-center
+  %h1.page-title= _('Create username')
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
     %p
@@ -19,16 +19,4 @@
       = _('Projects that belong to a group are prefixed with the group namespace. Existing projects may be moved into a group.')
 
   .col-lg-9
-    = form_for @user, as: :drepo_users, url: drepo_username_verified_path, method: :patch, html: { class: 'group-form gl-show-field-errors' } do |f|
-      = form_errors(@user)
-      .row
-        .form-group.group-name-holder.col-sm-12
-          = f.label :username, class: 'label-bold' do
-            = _("Pick a username")
-          = f.text_field :username, placeholder: 'My Awesome Username', class: 'form-control input-lg',
-            required: true,
-            title: _('Please fill in an available username.'),
-            autofocus: true
-
-      .form-actions
-        = f.submit 'Submit', class: "btn btn-success"
+    #check-username-form
