@@ -29,7 +29,6 @@
           class="btn btn-success"
           value="Submit"
           :disabled="!isSubmittable"
-          @click.stop.prevent="submitForm()"
         />
       </div>
     </form>
@@ -44,7 +43,6 @@ export default {
 
   data() {
     return {
-      isSubmitButtonClicked: false,
       isUsernameAvailable: true,
     };
   },
@@ -55,17 +53,7 @@ export default {
     ...mapGetters(['isUnlocked']),
 
     isSubmittable() {
-      return this.isUsernameAvailable && !this.isSubmitButtonClicked && this.isUnlocked;
-    },
-  },
-
-  methods: {
-    submitForm() {
-      if (this.isSubmitButtonClicked) return;
-      const checkUsernameForm = document.getElementById('check-username');
-      this.isSubmitButtonClicked = true;
-      checkUsernameForm.submit();
-      this.isSubmitButtonClicked = false;
+      return this.isUsernameAvailable && this.isUnlocked;
     },
   },
 };
