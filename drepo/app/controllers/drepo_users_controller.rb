@@ -2,12 +2,13 @@ class DrepoUsersController < ApplicationController
   skip_before_action :drepo_check_username_verification
   before_action :set_user
   before_action :check_username_verified
+  skip_before_action :verify_authenticity_token, only: :verified
 
   def check_username
   end
 
   def verified
-    username = params[:drepo_users][:username]
+    username = params[:username]
     return unless username || username == 'root'
 
     @user.is_username_verified = true
