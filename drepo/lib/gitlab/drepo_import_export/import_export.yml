@@ -181,10 +181,6 @@ excluded_attributes:
     - :artifacts_file
     - :artifacts_metadata
     - :commands
-    - :drepo_uuid
-    - :drepo_id
-    - :original_updated_at
-    - :original_created_at
   push_event_payload:
     - :event_id
   project_badges:
@@ -197,6 +193,10 @@ excluded_attributes:
     - :reference
     - :reference_html
     - :epic_id
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
   runners:
     - :token
     - :token_encrypted

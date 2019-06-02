@@ -24,7 +24,7 @@ class RenameDrepoSnapshotsAndDrepoSnapshotUploads < ActiveRecord::Migration[5.0]
     rename_table :drepo_project_snapshot_uploads, :drepo_snapshot_uploads
     remove_index :drepo_snapshots, :project_id
     rename_column :drepo_snapshot_uploads, :project_snapshot_id, :snapshot_id
-    # add_column :drepo_snapshots, :target_type, :string
+    add_column :drepo_snapshots, :target_type, :string
     rename_column :drepo_snapshots, :project_id, :target_id
     add_index :drepo_snapshots, [:target_id, :target_type]
   end
