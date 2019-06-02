@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
 module Dg
-  class Snapshot < ApplicationRecord
+  class ProjectSnapshot < ApplicationRecord
     extend Gitlab::Dg::Model
-
-    TARGET_TYPES = HashWithIndifferentAccess.new(
-      project: Project
-    ).freeze
 
     STATES = HashWithIndifferentAccess.new(
       created: 'created',
@@ -125,8 +121,8 @@ module Dg
   ].freeze
 
     belongs_to :author, class_name: 'User'
-    belongs_to :target, polymorphic: true, inverse_of: :snapshots
-    has_one :snapshot_upload, dependent: :destroy
+    belongs_to :project, inverse_of: :snapshots
+    has_one :project_snapshot_upload, dependent: :destroy
 
     state_machine :state, initial: :created do
       state :snapped
@@ -160,17 +156,11 @@ module Dg
       end
     end
 
-    def project_snapshot?
-      target_type == 'Project'
-    end
-
     def build_branches
-      return unless project_snapshot?
-
-      branch_names = target.repository.branch_names
+      branch_names = project.repository.branch_names
 
       self.branches = branch_names.each_with_object([]) do |name, object|
-        branch = target.repository.find_branch name
+        branch = project.repository.find_branch name
         object << { name: name, sha: branch.dereferenced_target.id }
       rescue
         # just drop this branch
@@ -178,12 +168,10 @@ module Dg
     end
 
     def build_tags
-      return unless project_snapshot?
-
-      tag_names = target.repository.tag_names
+      tag_names = project.repository.tag_names
 
       self.tags = tag_names.each_with_object([]) do |name, object|
-        tag = target.repository.find_tag name
+        tag = project.repository.find_tag name
         object << { name: name, sha: tag.dereferenced_target.id }
       rescue
         # just drop this tag
@@ -193,8 +181,8 @@ module Dg
     def remove_exports
       return unless export_file_exists?
 
-      snapshot_upload.remove_export_file!
-      snapshot_upload.save unless snapshot_upload.destroyed?
+      project_snapshot_upload.remove_export_file!
+      project_snapshot_upload.save unless project_snapshot_upload.destroyed?
     end
 
     def export_file_exists?
@@ -202,7 +190,7 @@ module Dg
     end
 
     def export_file
-      snapshot_upload&.export_file
+      project_snapshot_upload&.export_file
     end
   end
 end

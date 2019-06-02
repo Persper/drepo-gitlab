@@ -908,17 +908,16 @@ ActiveRecord::Schema.define(version: 20190529142545) do
     t.index ["project_id", "status"], name: "index_deployments_on_project_id_and_status", using: :btree
   end
 
-  create_table "drepo_snapshot_uploads", id: :serial, force: :cascade do |t|
+  create_table "drepo_project_snapshot_uploads", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "updated_at", null: false
-    t.integer "snapshot_id"
+    t.integer "project_snapshot_id"
     t.text "export_file"
-    t.index ["snapshot_id"], name: "index_drepo_snapshot_uploads_on_snapshot_id", using: :btree
-    t.index ["updated_at"], name: "index_drepo_snapshot_uploads_on_updated_at", using: :btree
+    t.index ["project_snapshot_id"], name: "index_drepo_project_snapshot_uploads_on_project_snapshot_id", using: :btree
+    t.index ["updated_at"], name: "index_drepo_project_snapshot_uploads_on_updated_at", using: :btree
   end
 
-  create_table "drepo_snapshots", id: :serial, force: :cascade do |t|
-    t.integer "target_id"
-    t.string "target_type"
+  create_table "drepo_project_snapshots", id: :serial, force: :cascade do |t|
+    t.integer "project_id"
     t.string "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -929,8 +928,8 @@ ActiveRecord::Schema.define(version: 20190529142545) do
     t.integer "author_id"
     t.jsonb "related_users"
     t.jsonb "ipfs_file"
-    t.index ["author_id"], name: "index_drepo_snapshots_on_author_id", using: :btree
-    t.index ["target_id", "target_type"], name: "index_drepo_snapshots_on_target_id_and_target_type", using: :btree
+    t.index ["author_id"], name: "index_drepo_project_snapshots_on_author_id", using: :btree
+    t.index ["project_id"], name: "index_drepo_project_snapshots_on_project_id", using: :btree
   end
 
   create_table "drepo_tasks", id: :serial, force: :cascade do |t|
@@ -1531,10 +1530,6 @@ ActiveRecord::Schema.define(version: 20190529142545) do
     t.integer "issue_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
-    t.datetime "drepo_updated_at", default: -> { "now()" }
-    t.index ["drepo_updated_at"], name: "index_merge_requests_closing_issues_on_drepo_updated_at", using: :btree
-    t.index ["drepo_uuid"], name: "index_merge_requests_closing_issues_on_drepo_uuid", using: :btree
     t.index ["issue_id"], name: "index_merge_requests_closing_issues_on_issue_id", using: :btree
     t.index ["merge_request_id"], name: "index_merge_requests_closing_issues_on_merge_request_id", using: :btree
   end
@@ -1695,6 +1690,7 @@ ActiveRecord::Schema.define(version: 20190529142545) do
     t.boolean "issue_due"
     t.uuid "drepo_uuid", default: -> { "uuid_generate_v4()" }, null: false
     t.datetime "drepo_updated_at", default: -> { "now()" }
+    t.string "notification_email"
     t.index ["drepo_updated_at"], name: "index_notification_settings_on_drepo_updated_at", using: :btree
     t.index ["drepo_uuid"], name: "index_notification_settings_on_drepo_uuid", using: :btree
     t.index ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
@@ -2821,7 +2817,7 @@ ActiveRecord::Schema.define(version: 20190529142545) do
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
-  add_foreign_key "drepo_snapshot_uploads", "drepo_snapshots", column: "snapshot_id", on_delete: :cascade
+  add_foreign_key "drepo_project_snapshot_uploads", "drepo_project_snapshots", column: "project_snapshot_id", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade
