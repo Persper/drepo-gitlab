@@ -15,6 +15,7 @@ describe Gitlab::ImportSources do
           'GitLab export'    => 'gitlab_project',
           'Gitea'            => 'gitea',
           'Manifest file'    => 'manifest',
+          'Phabricator'      => 'phabricator',
           'Drepo'            => 'drepo'
         }
 
@@ -36,6 +37,7 @@ describe Gitlab::ImportSources do
           gitlab_project
           gitea
           manifest
+          phabricator
           drepo
         )
 
@@ -55,6 +57,7 @@ describe Gitlab::ImportSources do
           fogbugz
           gitlab_project
           gitea
+          phabricator
           drepo
         )
 
@@ -74,6 +77,7 @@ describe Gitlab::ImportSources do
       'gitlab_project' => Gitlab::ImportExport::Importer,
       'gitea' => Gitlab::LegacyGithubImport::Importer,
       'manifest' => nil,
+      'phabricator' => Gitlab::PhabricatorImport::Importer,
       'drepo' => Gitlab::DrepoImportExport::Importer
     }
 
@@ -96,6 +100,7 @@ describe Gitlab::ImportSources do
       'gitlab_project' => 'GitLab export',
       'gitea' => 'Gitea',
       'manifest' => 'Manifest file',
+      'phabricator' => 'Phabricator',
       'drepo' => 'Drepo'
     }
 
@@ -107,7 +112,7 @@ describe Gitlab::ImportSources do
   end
 
   describe 'imports_repository? checker' do
-    let(:allowed_importers) { %w[github gitlab_project bitbucket_server drepo] }
+    let(:allowed_importers) { %w[github gitlab_project bitbucket_server phabricator drepo] }
 
     it 'fails if any importer other than the allowed ones implements this method' do
       current_importers = described_class.values.select { |kind| described_class.importer(kind).try(:imports_repository?) }

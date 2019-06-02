@@ -29,6 +29,7 @@ module Issuable
             drepo_uuid: nil,
             project: new_entity.project, noteable: new_entity,
             note: rewrite_content(new_note.note),
+            note_html: nil,
             created_at: note.created_at,
             updated_at: note.updated_at
           }
