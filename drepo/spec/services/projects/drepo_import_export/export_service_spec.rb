@@ -7,13 +7,13 @@ describe Projects::DrepoImportExport::ExportService do
     let!(:user) { create(:user) }
     let(:project) { create(:project) }
     let(:shared) { project.drepo_import_export_shared }
-    let(:snapshot) { create(:snapshot, target: project, author: user) }
-    let(:params) { { snapshot_id: snapshot.id } }
+    let(:project_snapshot) { create(:project_snapshot, project: project, author: user) }
+    let(:params) { { project_snapshot_id: project_snapshot.id } }
     let(:service) { described_class.new(project, user, params) }
     let!(:after_export_strategy) { Gitlab::DrepoImportExport::AfterExportStrategies::DownloadNotificationStrategy.new }
 
     before do
-      Snapshots::ProjectSnapshot.new(snapshot: snapshot, root_id: snapshot.target_id).create
+      ::Snapshots::ProjectSnapshot.new(snapshot: project_snapshot, root_id: project_snapshot.project_id).create
       stub_ipfs_add
     end
 

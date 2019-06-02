@@ -12,7 +12,7 @@ module Gitlab
         @current_user = current_user
         @shared = shared
         @full_path = File.join(@shared.export_path, DrepoImportExport.project_filename)
-        @snapshot = ::Dg::Snapshot.find_by(id: @params[:snapshot_id])
+        @snapshot = ::Dg::ProjectSnapshot.find_by(id: @params[:project_snapshot_id])
 
         # reload project from drepo_project_pending schema
         Apartment::Tenant.switch(Snapshots::BaseSnapshot::DREPO_PROJECT_PENDING) do
