@@ -5,8 +5,8 @@ module Drepo
     extend ActiveSupport::Concern
 
     prepended do
-      has_many :snapshots, class_name: 'Dg::Snapshot'
-      has_many :created_snapshots, foreign_key: :creator_id, class_name: 'Dg::Snapshot'
+      has_many :project_snapshots, class_name: 'Dg::ProjectSnapshot'
+      has_many :created_project_snapshots, foreign_key: :creator_id, class_name: 'Dg::ProjectSnapshot'
     end
   end
 end

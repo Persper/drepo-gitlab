@@ -13,7 +13,7 @@ module Gitlab
         @project = project
         @shared = shared
         @params = HashWithIndifferentAccess.new(params)
-        @snapshot = ::Dg::Snapshot.find(@params[:snapshot_id])
+        @snapshot = ::Dg::ProjectSnapshot.find(@params[:project_snapshot_id])
       end
 
       def save
@@ -55,7 +55,7 @@ module Gitlab
       end
 
       def save_upload
-        upload = ::Dg::SnapshotUpload.find_or_initialize_by(snapshot: @snapshot)
+        upload = ::Dg::ProjectSnapshotUpload.find_or_initialize_by(project_snapshot: @snapshot)
 
         File.open(archive_file) { |file| upload.export_file = file }
 

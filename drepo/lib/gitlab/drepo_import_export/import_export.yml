@@ -28,11 +28,12 @@ project_tree:
     - notes:
         :author
   - releases:
-      :author
+    - :links
   - project_members:
     - :user
   - merge_requests:
     - :metrics
+    - :suggestions
     - notes:
       - :author
       - events:
@@ -52,11 +53,17 @@ project_tree:
     - resource_label_events:
       - label:
           :priorities
+  - ci_pipelines:
+    - notes:
+      - :author
+      - events:
+        - :push_event_payload
+    - stages:
+      - :statuses
   - :auto_devops
   - :triggers
   - :pipeline_schedules
   - :services
-  - :hooks
   - protected_branches:
     - :merge_access_levels
     - :push_access_levels
@@ -66,6 +73,9 @@ project_tree:
   - :custom_attributes
   - :prometheus_metrics
   - :project_badges
+  - :ci_cd_settings
+  - :error_tracking_setting
+  - :metrics_setting
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -74,13 +84,12 @@ included_attributes:
     - :email
     - :username
   author:
-    - :id
     - :name
+  ci_cd_settings:
+    - :group_runners_enabled
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
-  user:
-    - :drepo_uuid
   project:
     - :name
     - :path
@@ -100,6 +109,7 @@ excluded_attributes:
     - :lfs_enabled
     - :created_at
     - :updated_at
+    - :id
     - :star_count
     - :last_activity_at
     - :last_repository_updated_at
@@ -109,11 +119,19 @@ excluded_attributes:
     - :description_html
     - :repository_languages
     - :bfg_object_map
+    - :detected_repository_languages
+    - :tag_list
     - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
   namespaces:
     - :runners_token
     - :runners_token_encrypted
     - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
   project_import_state:
     - :last_error
     - :jid
@@ -122,17 +140,37 @@ excluded_attributes:
     - :identifier
   snippets:
     - :expired_at
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
   merge_request_diff:
-    - :st_diffs
+    - :external_diff
+    - :stored_externally
+    - :external_diff_store
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
   merge_request_diff_files:
     - :diff
+    - :external_diff_offset
+    - :external_diff_size
   issues:
     - :milestone_id
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
   merge_requests:
     - :milestone_id
     - :ref_fetched
     - :merge_jid
     - :latest_merge_request_diff_id
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
   award_emoji:
     - :awardable_id
   statuses:
@@ -142,27 +180,125 @@ excluded_attributes:
     - :when
     - :artifacts_file
     - :artifacts_metadata
+    - :commands
   push_event_payload:
     - :event_id
   project_badges:
     - :group_id
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
   resource_label_events:
     - :reference
     - :reference_html
     - :epic_id
-  hooks:
-    - :token
-    - :encrypted_token
-    - :encrypted_token_iv
-    - :encrypted_url
-    - :encrypted_url_iv
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
   runners:
     - :token
     - :token_encrypted
   services:
     - :template
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  error_tracking_setting:
+    - :encrypted_token
+    - :encrypted_token_iv
+    - :enabled
+  milestones:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  notes:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  events:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  milestone:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  releases:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  project_members:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  label_links:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  labels:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  label:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  priorities:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  protected_branches:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  merge_access_levels:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  push_access_levels:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  protected_tags:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  create_access_levels:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  project_feature:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
+  metrics:
+    - :drepo_uuid
+    - :drepo_id
+    - :original_updated_at
+    - :original_created_at
 
 methods:
+  notes:
+    - :type
   labels:
     - :type
   label:
@@ -183,25 +319,3 @@ methods:
     - :action
   project_badges:
     - :type
-
-diffs:
-  - :issues
-  - :merge_requests
-  - :milestones
-  - :labels
-  - :project_members
-  - :protected_branches
-  - :protected_tags
-
-# must be the leaf node of the project_tree above
-inline_associations:
-  - :merge_request_diff_commits
-  - :merge_request_diff_files
-  - :issue_assignees
-  - :push_event_payload
-# inline tables:
-#  - :repository_languages
-#  - :system_note_metadata
-#  - :taggings
-#  - :tags
-#  - :user_interacted_projects
