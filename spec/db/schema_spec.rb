@@ -57,7 +57,8 @@ describe 'Database schema' do
     web_hooks: %w[service_id],
     suggestions: %w[commit_id],
     drepo_project_snapshots: %w[project_id author_id],
-    drepo_tasks: %w[source_id author_id]
+    drepo_tasks: %w[source_id author_id],
+    drepo_user_snapshots: %w[user_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do
