@@ -5444,6 +5444,9 @@ msgstr ""
 msgid "Issue update failed"
 msgstr ""
 
+msgid "Issue was closed by %{name} %{reason}"
+msgstr ""
+
 msgid "IssueBoards|Board"
 msgstr ""
 
@@ -5857,6 +5860,9 @@ msgid "List your GitHub repositories"
 msgstr ""
 
 msgid "Live preview"
+msgstr ""
+
+msgid "Loading functions timed out. Please reload the page to try again."
 msgstr ""
 
 msgid "Loading the GitLab IDE..."
@@ -11985,6 +11991,9 @@ msgstr ""
 msgid "commented on %{link_to_project}"
 msgstr ""
 
+msgid "commit %{commit_id}"
+msgstr ""
+
 msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
 msgstr ""
 
@@ -12244,6 +12253,9 @@ msgid "mrWidget|Merge"
 msgstr ""
 
 msgid "mrWidget|Merge failed."
+msgstr ""
+
+msgid "mrWidget|Merge failed: %{mergeError}. Please try again."
 msgstr ""
 
 msgid "mrWidget|Merge locally"
@@ -12508,6 +12520,12 @@ msgid "uses Kubernetes clusters to deploy your code!"
 msgstr ""
 
 msgid "verify ownership"
+msgstr ""
+
+msgid "via %{closed_via}"
+msgstr ""
+
+msgid "via merge request %{link}"
 msgstr ""
 
 msgid "view it on GitLab"
