@@ -955,6 +955,18 @@ ActiveRecord::Schema.define(version: 20190530154715) do
     t.index ["source_id", "source_type"], name: "index_drepo_tasks_on_source_id_and_source_type", using: :btree
   end
 
+  create_table "drepo_user_snapshots", id: :serial, force: :cascade do |t|
+    t.integer "user_id"
+    t.jsonb "content"
+    t.string "ipfs_path"
+    t.string "state"
+    t.text "reason"
+    t.datetime_with_timezone "state_updated_at"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["user_id"], name: "index_drepo_user_snapshots_on_user_id", using: :btree
+  end
+
   create_table "emails", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "email", null: false
