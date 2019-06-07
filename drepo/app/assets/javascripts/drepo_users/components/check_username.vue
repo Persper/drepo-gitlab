@@ -78,7 +78,13 @@ export default {
   },
 
   computed: {
-    ...mapState(['web3Client', 'accountAddress', 'unlockOptionState', 'gasLimit', 'privateKeyInput']),
+    ...mapState([
+      'web3Client',
+      'accountAddress',
+      'unlockOptionState',
+      'gasLimit',
+      'privateKeyInput',
+    ]),
 
     ...mapGetters(['isUnlocked']),
 
@@ -95,10 +101,14 @@ export default {
   methods: {
     createContract() {
       const contractData = this.contractInfo.central.interface;
-      const myContract = new this.web3Client.eth.Contract(contractData, contractInfo.central.address, {
-        from: this.accountAddress,
-        gas: this.gasLimit,
-      });
+      const myContract = new this.web3Client.eth.Contract(
+        contractData,
+        contractInfo.central.address,
+        {
+          from: this.accountAddress,
+          gas: this.gasLimit,
+        },
+      );
       return myContract;
     },
 
@@ -108,7 +118,7 @@ export default {
       myContract.methods
         .getEntity([this.web3Client.utils.soliditySha3(this.username)])
         .call({ from: this.accountAddress })
-        .then((result) => {
+        .then(result => {
           // eslint-disable-next-line no-console
           console.log(`result: ${result}`);
           if (result === null) {
@@ -119,7 +129,11 @@ export default {
     },
 
     metamaskSign() {
-      this.web3Client.personal.sign(this.web3Client.toHex('hello'),this.accountAddress, console.log);
+      this.web3Client.personal.sign(
+        this.web3Client.toHex('hello'),
+        this.accountAddress,
+        console.log,
+      );
     },
 
     // ethSign() {
@@ -138,7 +152,7 @@ export default {
       myContract.methods
         .register(this.username, gitlabClientName, this.contractInfo.gitlab.address)
         .send({ from: this.accountAddress })
-        .then((result) => {
+        .then(result => {
           console.log(`result: ${result}`);
         });
     },
