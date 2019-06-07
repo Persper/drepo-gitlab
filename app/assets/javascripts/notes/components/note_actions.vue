@@ -135,7 +135,7 @@ export default {
         @click="onResolve"
       >
         <template v-if="!isResolving">
-          <icon name="check-circle" />
+          <icon :name="isResolved ? 'check-circle-filled' : 'check-circle'" />
         </template>
         <gl-loading-icon v-else inline />
       </button>
@@ -147,6 +147,7 @@ export default {
         class="note-action-button note-emoji-button js-add-award js-note-emoji"
         href="#"
         title="Add reaction"
+        data-position="right"
       >
         <icon css-classes="link-highlight award-control-icon-neutral" name="slight-smile" />
         <icon css-classes="link-highlight award-control-icon-positive" name="smiley" />

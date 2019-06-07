@@ -62,7 +62,7 @@ namespace :db do
               'CREATE INDEX IF NOT EXISTS index_' || T.myTable || '_on_drepo_updated_at ON public.' || T.myTable || ' USING btree (drepo_updated_at);' as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.tables WHERE table_schema='public' AND table_name NOT IN (#{exclude_tables})
+                SELECT DISTINCT table_name as myTable FROM information_schema.tables WHERE table_schema='public' AND table_name IN (#{enhance_tables})
               ) t
         loop
         execute r.script;
@@ -97,7 +97,7 @@ namespace :db do
               'CREATE TRIGGER trig_drepo_touch BEFORE INSERT OR UPDATE ON public.' || T.myTable || ' FOR EACH ROW EXECUTE PROCEDURE shared_extensions.func_drepo_touch()' as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='drepo_updated_at' AND table_name NOT IN (#{exclude_tables})
+                SELECT DISTINCT table_name as myTable FROM information_schema.columns WHERE table_schema='public' AND column_name='drepo_updated_at' AND table_name IN (#{enhance_tables})
               ) t
         loop
         execute r.script;
@@ -223,7 +223,7 @@ namespace :db do
               as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.tables WHERE table_schema='public' AND table_name NOT IN (#{exclude_tables})
+                SELECT DISTINCT table_name as myTable FROM information_schema.tables WHERE table_schema='public' AND table_name IN (#{enhance_tables})
               ) t
         loop
         execute r.script;
@@ -244,7 +244,7 @@ namespace :db do
               as script
            from
               (
-                SELECT DISTINCT table_name as myTable FROM information_schema.tables WHERE table_schema='public' AND table_name NOT IN (#{exclude_tables})
+                SELECT DISTINCT table_name as myTable FROM information_schema.tables WHERE table_schema='public' AND table_name IN (#{enhance_tables})
               ) t
         loop
         execute r.script;
@@ -280,11 +280,11 @@ namespace :db do
     end
 
     def user_shared_tables
-      Dg::Snapshot::USER_SHARED_TABLE_COLUMNS.keys.map { |t| ActiveRecord::Base.connection.quote(t) }.join(',')
+      Dg::ProjectSnapshot::USER_SHARED_TABLE_COLUMNS.keys.map { |t| ActiveRecord::Base.connection.quote(t) }.join(',')
     end
 
-    def exclude_tables
-      Dg::Snapshot::EXCLUDE_TABLES.map { |t| ActiveRecord::Base.connection.quote(t) }.join(',')
+    def enhance_tables
+      Dg::ProjectSnapshot::ENHANCE_TABLES.map { |t| ActiveRecord::Base.connection.quote(t) }.join(',')
     end
 
     def schema_present?(schema)

@@ -102,7 +102,7 @@ export const updateFilesAfterCommit = ({ commit, dispatch, rootState, rootGetter
 
     eventHub.$emit(`editor.update.model.content.${file.key}`, {
       content: file.content,
-      changed: !!changedFile,
+      changed: Boolean(changedFile),
     });
   });
 };
@@ -133,6 +133,17 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
       if (!data.short_id) {
         flash(data.message, 'alert', document, null, false, true);
         return null;
+      }
+
+      if (!data.parent_ids.length) {
+        commit(
+          rootTypes.TOGGLE_EMPTY_STATE,
+          {
+            projectPath: rootState.currentProjectId,
+            value: false,
+          },
+          { root: true },
+        );
       }
 
       dispatch('setLastCommitMessage', data);

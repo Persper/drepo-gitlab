@@ -6,23 +6,17 @@ module Drepo
     extend ::Gitlab::Utils::Override
 
     prepended do
-      has_many :snapshots, class_name: 'Dg::Snapshot', as: :target, dependent: :destroy
+      has_many :snapshots, class_name: 'Dg::ProjectSnapshot', dependent: :destroy
     end
 
     def create_snapshot(current_user)
-      params = {
-        target_id: self.id,
-        target_type: self.class.name
-      }
-      Snapshots::CreateService.new(current_user, params).execute
+      params = { project_id: self.id }
+      Projects::Snapshots::CreateService.new(current_user, params).execute
     end
 
     def cancel_snapshot(current_user)
-      params = {
-        target_id: self.id,
-        target_type: self.class.name
-      }
-      Snapshots::CancelService.new(current_user, params).execute
+      params = { project_id: self.id }
+      Projects::Snapshots::CancelService.new(current_user, params).execute
     end
 
     def drepo_import_export_shared

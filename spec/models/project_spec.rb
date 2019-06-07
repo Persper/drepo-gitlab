@@ -1147,7 +1147,7 @@ describe Project do
         allow(project).to receive(:avatar_in_git) { true }
       end
 
-      let(:avatar_path) { "/#{project.full_path}/avatar" }
+      let(:avatar_path) { "/#{project.full_path}/-/avatar" }
 
       it { is_expected.to eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
@@ -3167,6 +3167,23 @@ describe Project do
 
         expect(projects).to eq([public_project])
       end
+    end
+  end
+
+  describe '.ids_with_milestone_available_for' do
+    let!(:user) { create(:user) }
+
+    it 'returns project ids with milestones available for user' do
+      project_1 = create(:project, :public, :merge_requests_disabled, :issues_disabled)
+      project_2 = create(:project, :public, :merge_requests_disabled)
+      project_3 = create(:project, :public, :issues_disabled)
+      project_4 = create(:project, :public)
+      project_4.project_feature.update(issues_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE )
+
+      project_ids = described_class.ids_with_milestone_available_for(user).pluck(:id)
+
+      expect(project_ids).to include(project_2.id, project_3.id)
+      expect(project_ids).not_to include(project_1.id, project_4.id)
     end
   end
 

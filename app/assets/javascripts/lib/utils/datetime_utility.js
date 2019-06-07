@@ -79,7 +79,12 @@ export const getDayName = date =>
  * @param {date} datetime
  * @returns {String}
  */
-export const formatDate = datetime => dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
+export const formatDate = datetime => {
+  if (_.isString(datetime) && datetime.match(/\d+-\d+\d+ /)) {
+    throw new Error('Invalid date');
+  }
+  return dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
+};
 
 /**
  * Timeago uses underscores instead of dashes to separate language from country code.
@@ -508,7 +513,7 @@ export const stringifyTime = (timeObject, fullNameFormat = false) => {
   const reducedTime = _.reduce(
     timeObject,
     (memo, unitValue, unitName) => {
-      const isNonZero = !!unitValue;
+      const isNonZero = Boolean(unitValue);
 
       if (fullNameFormat && isNonZero) {
         // Remove traling 's' if unit value is singular

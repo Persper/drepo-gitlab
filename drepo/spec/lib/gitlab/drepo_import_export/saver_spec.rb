@@ -6,8 +6,8 @@ describe Gitlab::DrepoImportExport::Saver do
   let!(:project) { create(:project, :public, name: 'project') }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let(:shared) { project.drepo_import_export_shared }
-  let(:snapshot) { create(:snapshot, target: project, author: user, state: Dg::Snapshot::STATES[:snapped]) }
-  let(:params) { { snapshot_id: snapshot.id } }
+  let(:project_snapshot) { create(:project_snapshot, project: project, author: user, state: Dg::ProjectSnapshot::STATES[:snapped]) }
+  let(:params) { { project_snapshot_id: project_snapshot.id } }
 
   subject { described_class.new(project: project, shared: shared, params: params) }
 
@@ -27,11 +27,11 @@ describe Gitlab::DrepoImportExport::Saver do
     stub_ipfs_add
 
     subject.save
-    snapshot.reset
+    project_snapshot.reset
 
-    expect(Dg::SnapshotUpload.find_by(snapshot: snapshot).export_file.url)
-      .to match(%r[\/uploads\/-\/system\/dg\/snapshot_upload\/export_file.*])
-    expect(snapshot.ipfs_file).to be_a Hash
-    expect(snapshot.exported?).to be_truthy
+    expect(Dg::ProjectSnapshotUpload.find_by(project_snapshot: project_snapshot).export_file.url)
+      .to match(%r[\/uploads\/-\/system\/dg\/project_snapshot_upload\/export_file.*])
+    expect(project_snapshot.ipfs_file).to be_a Hash
+    expect(project_snapshot.exported?).to be_truthy
   end
 end

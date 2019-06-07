@@ -7,6 +7,7 @@ import getFiles from '../../queries/getFiles.graphql';
 import getProjectPath from '../../queries/getProjectPath.graphql';
 import TableHeader from './header.vue';
 import TableRow from './row.vue';
+import ParentRow from './parent_row.vue';
 
 const PAGE_SIZE = 100;
 
@@ -15,6 +16,7 @@ export default {
     GlLoadingIcon,
     TableHeader,
     TableRow,
+    ParentRow,
   },
   mixins: [getRefMixin],
   apollo: {
@@ -46,6 +48,9 @@ export default {
         __('Files, directories, and submodules in the path %{path} for commit reference %{ref}'),
         { path: this.path, ref: this.ref },
       );
+    },
+    showParentRow() {
+      return !this.isLoadingFiles && ['', '/'].indexOf(this.path) === -1;
     },
   },
   watch: {
@@ -95,7 +100,7 @@ export default {
             this.fetchFiles();
           }
         })
-        .catch(() => createFlash(__('An error occurding while fetching folder content.')));
+        .catch(() => createFlash(__('An error occurred while fetching folder content.')));
     },
     normalizeData(key, data) {
       return this.entries[key].concat(data.map(({ node }) => node));
@@ -120,6 +125,7 @@ export default {
         </caption>
         <table-header v-once />
         <tbody>
+          <parent-row v-show="showParentRow" :commit-ref="ref" :path="path" />
           <template v-for="val in entries">
             <table-row
               v-for="entry in val"
@@ -128,6 +134,7 @@ export default {
               :current-path="path"
               :path="entry.flatPath"
               :type="entry.type"
+              :url="entry.webUrl"
             />
           </template>
         </tbody>

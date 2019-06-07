@@ -239,6 +239,7 @@ module API
         end
       end
 
+      expose :empty_repo?, as: :empty_repo
       expose :archived?, as: :archived
       expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
@@ -302,6 +303,7 @@ module API
       expose :commit_count
       expose :storage_size
       expose :repository_size
+      expose :wiki_size
       expose :lfs_objects_size
       expose :build_artifacts_size, as: :job_artifacts_size
     end
@@ -354,6 +356,7 @@ module API
         with_options format_with: -> (value) { value.to_i } do
           expose :storage_size
           expose :repository_size
+          expose :wiki_size
           expose :lfs_objects_size
           expose :build_artifacts_size, as: :job_artifacts_size
         end
@@ -696,7 +699,7 @@ module API
       # See https://gitlab.com/gitlab-org/gitlab-ce/issues/42344 for more
       # information.
       expose :merge_status do |merge_request|
-        merge_request.check_if_can_be_merged
+        merge_request.check_mergeability
         merge_request.merge_status
       end
       expose :diff_head_sha, as: :sha

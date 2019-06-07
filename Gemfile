@@ -154,6 +154,7 @@ end
 group :puma do
   gem 'puma', '~> 3.12', require: false
   gem 'puma_worker_killer', require: false
+  gem 'rack-timeout', require: false
 end
 
 # State machine
@@ -402,6 +403,7 @@ gem 'ruby-prof', '~> 0.17.0'
 gem 'rbtrace', '~> 0.4', require: false
 gem 'memory_profiler', '~> 0.9', require: false
 gem 'benchmark-memory', '~> 0.1', require: false
+gem 'activerecord-explain-analyze', '~> 0.1', require: false
 
 # OAuth
 gem 'oauth2', '~> 1.4'
@@ -424,7 +426,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.27.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.32.0', require: 'gitaly'
 
 gem 'grpc', '~> 1.19.0'
 

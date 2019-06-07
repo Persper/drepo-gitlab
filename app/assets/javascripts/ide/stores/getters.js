@@ -36,12 +36,16 @@ export const currentMergeRequest = state => {
 
 export const currentProject = state => state.projects[state.currentProjectId];
 
+export const emptyRepo = state =>
+  state.projects[state.currentProjectId] && state.projects[state.currentProjectId].empty_repo;
+
 export const currentTree = state =>
   state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
-export const hasChanges = state => !!state.changedFiles.length || !!state.stagedFiles.length;
+export const hasChanges = state =>
+  Boolean(state.changedFiles.length) || Boolean(state.stagedFiles.length);
 
-export const hasMergeRequest = state => !!state.currentMergeRequestId;
+export const hasMergeRequest = state => Boolean(state.currentMergeRequestId);
 
 export const allBlobs = state =>
   Object.keys(state.entries)
@@ -67,7 +71,7 @@ export const isCommitModeActive = state => state.currentActivityView === activit
 export const isReviewModeActive = state => state.currentActivityView === activityBarViews.review;
 
 export const someUncommittedChanges = state =>
-  !!(state.changedFiles.length || state.stagedFiles.length);
+  Boolean(state.changedFiles.length || state.stagedFiles.length);
 
 export const getChangesInFolder = state => path => {
   const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f.path, path)).length;

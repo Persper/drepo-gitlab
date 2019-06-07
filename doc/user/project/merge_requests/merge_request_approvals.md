@@ -3,7 +3,7 @@
 > Introduced in [GitLab Enterprise Edition 7.12](https://about.gitlab.com/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only).
 
 NOTE: **Note:**
-If you are running a self-managed instance, the new interface shown on
+Prior to 12.0, if you are running a self-managed instance, the new interface shown on
 this page will not be available unless the feature flag
 `approval_rules` is enabled, which can be done from the Rails console by
 instance administrators.
@@ -105,7 +105,7 @@ any [eligible approver](#eligible-approvers) may approve.
 The following can approve merge requests:
 
 - Users being added as approvers at project or merge request level.
-- [Code owners](https://docs.gitlab.com/ee/user/project/code_owners.html) related to the merge request ([introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/7933) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.5).
+- [Code owners](../code_owners.md) related to the merge request ([introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/7933) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.5).
 
 An individual user can be added as an approver for a project if they are a member of:
 
@@ -168,7 +168,7 @@ or a [failed CI/CD pipeline](merge_when_pipeline_succeeds.md).
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4418) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.9.
 
 It is possible to require at least one approval for each entry in the
-[`CODEOWNERS` file](https://docs.gitlab.com/ee/user/project/code_owners.html) that matches a file changed in
+[`CODEOWNERS` file](../code_owners.md) that matches a file changed in
 the merge request. To enable this feature:
 
 1. Navigate to your project's **Settings > General** and expand
