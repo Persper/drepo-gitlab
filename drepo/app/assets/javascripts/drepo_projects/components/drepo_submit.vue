@@ -58,7 +58,7 @@ export default {
 
   methods: {
     web3Contract() {
-      const contractData = JSON.parse(this.contractInfo.interface);
+      const contractData = this.contractInfo.interface;
       if (this.unlockOptionState === 'metamask') {
         const myContract = this.web3Client.eth.contract(contractData);
         const myContractInstance = myContract.at(this.contractInfo.address);

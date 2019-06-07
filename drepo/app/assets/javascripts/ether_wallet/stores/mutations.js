@@ -8,19 +8,6 @@ export default {
       isMetaMaskSupportedBrowser: isMetaMaskSupported,
     });
 
-    if (!state.isMetaMaskSupportedBrowser) {
-      // the browser not support MetaMask
-      Object.assign(state, {
-        unlockOptionState: 'mnemonic_phrase',
-      });
-      return;
-    }
-
-    // to help decide the default unlock option is metamask
-    Object.assign(state, {
-      unlockOptionState: 'metamask',
-    });
-
     if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
       Object.assign(state, {
         isMetaMaskTurnedOn: true,
@@ -119,8 +106,15 @@ export default {
     Object.assign(state, {
       isUnlockByPrivateKeyButtonClicked: true,
     });
+    if (!state.privateKeyInput.match(/^(?:0x)?\w{64}$/)) return;
+    if (state.privateKeyInput.length === 64 && !state.privateKeyInput.match(/^0x/)) {
+      const privateKey = `0x${state.privateKeyInput}`;
+      Object.assign(state, {
+        privateKeyInput: privateKey,
+      });
+    }
     const provider = new HDWalletProvider(
-      `0x${state.privateKeyInput}`,
+      state.privateKeyInput,
       'https://rinkeby.infura.io/v3/8d1ba1e9ef484906ba94d560cc1d3a87',
     );
     Object.assign(state, {

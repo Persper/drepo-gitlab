@@ -37,15 +37,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.addressIdenticon.float {
-  float: left;
-  margin-right: 0.5rem;
-}
-.addressIdenticon.med {
-  width: 3rem;
-  height: 3rem;
-  padding: 0;
-}
 .wrap {
   word-wrap: break-word;
 }
