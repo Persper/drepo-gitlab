@@ -1,7 +1,11 @@
+---
+type: index, reference, concepts
+---
+
 # Merge requests
 
-Merge requests allow you to exchange changes you made to source code and
-collaborate with other people on the same project.
+Merge requests allow you to visualize and collaborate on the proposed changes
+to source code that exist as commits on a given Git branch.
 
 ![Merge request view](img/merge_request.png)
 
@@ -511,7 +515,7 @@ seconds and the status will update automatically.
 
 Merge Request pipeline statuses can't be retrieved when the following occurs:
 
-1. A Merge Requst is created
+1. A Merge Request is created
 1. The Merge Request is closed
 1. Changes are made in the project
 1. The Merge Request is reopened
@@ -606,6 +610,9 @@ And to check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
+all the above can be done with [git-mr] script.
+
+[git-mr]: https://gitlab.com/glensc/git-mr
 [products]: https://about.gitlab.com/products/ "GitLab products page"
 [protected branches]: ../protected_branches.md
 [ci]: ../../../ci/README.md

@@ -427,7 +427,7 @@ msgstr ""
 msgid "A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project."
 msgstr ""
 
-msgid "A member of GitLab's abuse team will review your report as soon as possible."
+msgid "A member of the abuse team will review your report as soon as possible."
 msgstr ""
 
 msgid "A new branch will be created in your fork and a new merge request will be started."
@@ -563,6 +563,9 @@ msgid "Add bold text"
 msgstr ""
 
 msgid "Add comment now"
+msgstr ""
+
+msgid "Add email address"
 msgstr ""
 
 msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
@@ -773,6 +776,9 @@ msgid "All"
 msgstr ""
 
 msgid "All changes are committed"
+msgstr ""
+
+msgid "All email addresses will be used to identify your commits."
 msgstr ""
 
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
@@ -1485,9 +1491,6 @@ msgstr ""
 msgid "Begin with the selected commit"
 msgstr ""
 
-msgid "Behavior"
-msgstr ""
-
 msgid "Below are examples of regex for existing tools:"
 msgstr ""
 
@@ -1911,9 +1914,6 @@ msgstr ""
 msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
 
-msgid "Choose between fixed (max. 1280px) and fluid (100%%) application layout."
-msgstr ""
-
 msgid "Choose file…"
 msgstr ""
 
@@ -1921,9 +1921,6 @@ msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
 msgid "Choose visibility level, enable/disable project features (issues, repository, wiki, snippets) and set permissions."
-msgstr ""
-
-msgid "Choose what content you want to see on a project’s overview page."
 msgstr ""
 
 msgid "Choose your merge method, options, checks, and set up a default merge request description template."
@@ -2136,7 +2133,7 @@ msgstr ""
 msgid "ClusterIntegration|%{title} uninstalled successfully."
 msgstr ""
 
-msgid "ClusterIntegration|%{title} upgraded successfully."
+msgid "ClusterIntegration|%{title} updated successfully."
 msgstr ""
 
 msgid "ClusterIntegration|A service token scoped to %{code}kube-system%{end_code} with %{code}cluster-admin%{end_code} privileges."
@@ -2331,15 +2328,6 @@ msgstr ""
 msgid "ClusterIntegration|Ingress gives you a way to route requests to services based on the request host or path, centralizing a number of services into a single entrypoint."
 msgstr ""
 
-msgid "ClusterIntegration|Install"
-msgstr ""
-
-msgid "ClusterIntegration|Installed"
-msgstr ""
-
-msgid "ClusterIntegration|Installing"
-msgstr ""
-
 msgid "ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{pricingLink}."
 msgstr ""
 
@@ -2427,9 +2415,6 @@ msgstr ""
 msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create Kubernetes clusters"
 msgstr ""
 
-msgid "ClusterIntegration|Manage"
-msgstr ""
-
 msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}"
 msgstr ""
 
@@ -2494,9 +2479,6 @@ msgid "ClusterIntegration|Request to begin installing failed"
 msgstr ""
 
 msgid "ClusterIntegration|Request to begin uninstalling failed"
-msgstr ""
-
-msgid "ClusterIntegration|Retry update"
 msgstr ""
 
 msgid "ClusterIntegration|Save changes"
@@ -2596,21 +2578,6 @@ msgid "ClusterIntegration|Uninstall %{appTitle}"
 msgstr ""
 
 msgid "ClusterIntegration|Update failed. Please check the logs and try again."
-msgstr ""
-
-msgid "ClusterIntegration|Updating"
-msgstr ""
-
-msgid "ClusterIntegration|Upgrade"
-msgstr ""
-
-msgid "ClusterIntegration|Upgrade failed"
-msgstr ""
-
-msgid "ClusterIntegration|Upgraded"
-msgstr ""
-
-msgid "ClusterIntegration|Upgrading"
 msgstr ""
 
 msgid "ClusterIntegration|Validating project billing status"
@@ -2837,6 +2804,9 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
+msgid "Confirmation email sent to %{email}"
+msgstr ""
+
 msgid "Confirmation required"
 msgstr ""
 
@@ -2943,6 +2913,9 @@ msgid "ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limi
 msgstr ""
 
 msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
+msgstr ""
+
+msgid "Control emails linked to your account"
 msgstr ""
 
 msgid "Control the display of third party offers."
@@ -3197,9 +3170,6 @@ msgstr ""
 msgid "Customize language and region related settings."
 msgstr ""
 
-msgid "Customize the appearance of the application header and navigation sidebar."
-msgstr ""
-
 msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr ""
 
@@ -3285,9 +3255,6 @@ msgid "Default artifacts expiration"
 msgstr ""
 
 msgid "Default classification label"
-msgstr ""
-
-msgid "Default dashboard"
 msgstr ""
 
 msgid "Default first day of the week"
@@ -3802,6 +3769,9 @@ msgstr ""
 msgid "Enable Sentry for error reporting and logging."
 msgstr ""
 
+msgid "Enable access to the Performance Bar for a given group."
+msgstr ""
+
 msgid "Enable and configure InfluxDB metrics."
 msgstr ""
 
@@ -3833,9 +3803,6 @@ msgid "Enable reCAPTCHA or Akismet and set IP limits."
 msgstr ""
 
 msgid "Enable shared Runners"
-msgstr ""
-
-msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
 msgid "Enable two-factor authentication"
@@ -4698,6 +4665,9 @@ msgstr ""
 msgid "Git revision"
 msgstr ""
 
+msgid "Git shallow clone"
+msgstr ""
+
 msgid "Git strategy for pipelines"
 msgstr ""
 
@@ -5339,6 +5309,9 @@ msgstr ""
 msgid "Insert suggestion"
 msgstr ""
 
+msgid "Install"
+msgstr ""
+
 msgid "Install GitLab Runner"
 msgstr ""
 
@@ -5346,6 +5319,12 @@ msgid "Install Runner on Kubernetes"
 msgstr ""
 
 msgid "Install a soft token authenticator like %{free_otp_link} or Google Authenticator from your application repository and scan this QR code. More information is available in the %{help_link_start}documentation%{help_link_end}."
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Installing"
 msgstr ""
 
 msgid "Instance Statistics"
@@ -5388,6 +5367,9 @@ msgid "Introducing Your Conversational Development Index"
 msgstr ""
 
 msgid "Invalid Login or password"
+msgstr ""
+
+msgid "Invalid date"
 msgstr ""
 
 msgid "Invalid feature"
@@ -5791,9 +5773,6 @@ msgstr ""
 msgid "Latest pipeline for this branch"
 msgstr ""
 
-msgid "Layout width"
-msgstr ""
-
 msgid "Lead"
 msgstr ""
 
@@ -5849,6 +5828,9 @@ msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Linked emails (%{email_count})"
+msgstr ""
 
 msgid "LinkedIn"
 msgstr ""
@@ -5938,6 +5920,9 @@ msgid "Make sure you're logged into the account that owns the projects you'd lik
 msgstr ""
 
 msgid "Makes this issue confidential"
+msgstr ""
+
+msgid "Manage"
 msgstr ""
 
 msgid "Manage Git repositories with fine-grained access controls that keep your code secure. Perform code reviews and enhance collaboration with merge requests. Each project can also have an issue tracker and a wiki."
@@ -6970,7 +6955,7 @@ msgstr ""
 msgid "Paste a machine public key here. Read more about how to generate it %{link_start}here%{link_end}"
 msgstr ""
 
-msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
+msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_ed25519.pub' or '~/.ssh/id_rsa.pub' and begins with 'ssh-ed25519' or 'ssh-rsa'. Don't use your private SSH key."
 msgstr ""
 
 msgid "Path"
@@ -6992,6 +6977,9 @@ msgid "Pending"
 msgstr ""
 
 msgid "People without permission will never get a notification and won't be able to comment."
+msgstr ""
+
+msgid "People without permission will never get a notification."
 msgstr ""
 
 msgid "Perform advanced options such as changing path, transferring, or removing the group."
@@ -7315,7 +7303,7 @@ msgstr ""
 msgid "Please try again"
 msgstr ""
 
-msgid "Please use this form to report users to GitLab who create spam issues, comments or behave inappropriately."
+msgid "Please use this form to report to the admin users who create spam issues, comments or behave inappropriately."
 msgstr ""
 
 msgid "Please wait a moment, this page will automatically refresh when ready."
@@ -7330,19 +7318,49 @@ msgstr ""
 msgid "Preferences saved."
 msgstr ""
 
+msgid "Preferences|Behavior"
+msgstr ""
+
+msgid "Preferences|Choose between fixed (max. 1280px) and fluid (100%%) application layout."
+msgstr ""
+
+msgid "Preferences|Choose what content you want to see on a project’s overview page."
+msgstr ""
+
+msgid "Preferences|Customize the appearance of the application header and navigation sidebar."
+msgstr ""
+
+msgid "Preferences|Default dashboard"
+msgstr ""
+
 msgid "Preferences|Display time in 24-hour format"
 msgstr ""
 
 msgid "Preferences|For example: 30 mins ago."
 msgstr ""
 
+msgid "Preferences|Layout width"
+msgstr ""
+
 msgid "Preferences|Navigation theme"
+msgstr ""
+
+msgid "Preferences|Project overview content"
+msgstr ""
+
+msgid "Preferences|Syntax highlighting theme"
 msgstr ""
 
 msgid "Preferences|These settings will update how dates and times are displayed for you."
 msgstr ""
 
 msgid "Preferences|This feature is experimental and translations are not complete yet"
+msgstr ""
+
+msgid "Preferences|This setting allows you to customize the appearance of the syntax."
+msgstr ""
+
+msgid "Preferences|This setting allows you to customize the behavior of the system layout and default views."
 msgstr ""
 
 msgid "Preferences|Time display"
@@ -7471,6 +7489,9 @@ msgstr ""
 msgid "Profiles|Click on icon to activate signin with one of the following services"
 msgstr ""
 
+msgid "Profiles|Commit email"
+msgstr ""
+
 msgid "Profiles|Connect"
 msgstr ""
 
@@ -7481,6 +7502,9 @@ msgid "Profiles|Current path: %{path}"
 msgstr ""
 
 msgid "Profiles|Current status"
+msgstr ""
+
+msgid "Profiles|Default notification email"
 msgstr ""
 
 msgid "Profiles|Delete Account"
@@ -7549,6 +7573,9 @@ msgstr ""
 msgid "Profiles|No file chosen"
 msgstr ""
 
+msgid "Profiles|Notification email"
+msgstr ""
+
 msgid "Profiles|Organization"
 msgstr ""
 
@@ -7558,6 +7585,9 @@ msgstr ""
 msgid "Profiles|Position and size your new avatar"
 msgstr ""
 
+msgid "Profiles|Primary email"
+msgstr ""
+
 msgid "Profiles|Private contributions"
 msgstr ""
 
@@ -7565,6 +7595,9 @@ msgid "Profiles|Profile was successfully updated"
 msgstr ""
 
 msgid "Profiles|Public Avatar"
+msgstr ""
+
+msgid "Profiles|Public email"
 msgstr ""
 
 msgid "Profiles|Remove avatar"
@@ -7609,7 +7642,7 @@ msgstr ""
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
 msgstr ""
 
-msgid "Profiles|Typically starts with \"ssh-rsa …\""
+msgid "Profiles|Typically starts with \"ssh-ed25519 …\" or \"ssh-rsa …\""
 msgstr ""
 
 msgid "Profiles|Update username"
@@ -7775,9 +7808,6 @@ msgid "Project members"
 msgstr ""
 
 msgid "Project name"
-msgstr ""
-
-msgid "Project overview content"
 msgstr ""
 
 msgid "Project slug"
@@ -8382,7 +8412,7 @@ msgstr ""
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
-msgid "Report abuse to GitLab"
+msgid "Report abuse to admin"
 msgstr ""
 
 msgid "Reporting"
@@ -8463,6 +8493,9 @@ msgstr ""
 msgid "Require users to prove ownership of custom domains"
 msgstr ""
 
+msgid "Resend confirmation email"
+msgstr ""
+
 msgid "Resend invite"
 msgstr ""
 
@@ -8527,6 +8560,9 @@ msgid "Retry this job"
 msgstr ""
 
 msgid "Retry this job in order to create the necessary resources."
+msgstr ""
+
+msgid "Retry update"
 msgstr ""
 
 msgid "Retry verification"
@@ -8864,6 +8900,9 @@ msgstr ""
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
 msgstr ""
 
+msgid "Send confirmation email"
+msgstr ""
+
 msgid "Send email"
 msgstr ""
 
@@ -9125,6 +9164,12 @@ msgid "Sign-in restrictions"
 msgstr ""
 
 msgid "Sign-up restrictions"
+msgstr ""
+
+msgid "SignUp|Name is too long (maximum is %{max_length} characters)."
+msgstr ""
+
+msgid "SignUp|Username is too long (maximum is %{max_length} characters)."
 msgstr ""
 
 msgid "Signed in"
@@ -9676,9 +9721,6 @@ msgstr ""
 msgid "Switch to the source to copy it to the clipboard"
 msgstr ""
 
-msgid "Syntax highlighting theme"
-msgstr ""
-
 msgid "System Hooks"
 msgstr ""
 
@@ -9969,6 +10011,9 @@ msgstr ""
 msgid "The name %{entryName} is already taken in this directory."
 msgstr ""
 
+msgid "The number of changes to be fetched from GitLab when cloning a repository. This can speed up Pipelines execution. Keep empty or set to 0 to disable shallow clone by default and make GitLab CI fetch all branches and tags each time."
+msgstr ""
+
 msgid "The number of times an upload record could not find its file"
 msgstr ""
 
@@ -10137,6 +10182,9 @@ msgstr ""
 msgid "There was a problem communicating with your device."
 msgstr ""
 
+msgid "There was a problem sending the confirmation email"
+msgstr ""
+
 msgid "There was an error %{message} todo."
 msgstr ""
 
@@ -10177,6 +10225,9 @@ msgid "They can be managed using the %{link}."
 msgstr ""
 
 msgid "Third party offers"
+msgstr ""
+
+msgid "This %{issuableDisplayName} is locked. Only project members can comment."
 msgstr ""
 
 msgid "This %{issuable} is locked. Only <strong>project members</strong> can comment."
@@ -10273,9 +10324,6 @@ msgid "This is your current session"
 msgstr ""
 
 msgid "This issue is confidential"
-msgstr ""
-
-msgid "This issue is confidential and locked."
 msgstr ""
 
 msgid "This issue is locked."
@@ -10387,12 +10435,6 @@ msgid "This repository is currently empty. A new Auto DevOps pipeline will be cr
 msgstr ""
 
 msgid "This runner will only run on pipelines triggered on protected branches"
-msgstr ""
-
-msgid "This setting allows you to customize the appearance of the syntax."
-msgstr ""
-
-msgid "This setting allows you to customize the behavior of the system layout and default views."
 msgstr ""
 
 msgid "This setting can be overridden in each project."
@@ -10997,6 +11039,9 @@ msgid "UpdateProject|New visibility level not allowed!"
 msgstr ""
 
 msgid "UpdateProject|Project could not be updated!"
+msgstr ""
+
+msgid "Updated"
 msgstr ""
 
 msgid "Updating"
@@ -11862,7 +11907,13 @@ msgstr ""
 msgid "YouTube"
 msgstr ""
 
+msgid "Your Commit Email will be used for web based operations, such as edits and merges."
+msgstr ""
+
 msgid "Your Conversational Development Index gives an overview of how you are using GitLab from a feature perspective. View how you compare with other organizations, discover features you are not using, and learn best practices through blog posts and white papers."
+msgstr ""
+
+msgid "Your Default Notification Email will be used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set."
 msgstr ""
 
 msgid "Your GPG keys (%{count})"
@@ -11874,10 +11925,16 @@ msgstr ""
 msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
 msgstr ""
 
+msgid "Your Primary Email will be used for avatar detection."
+msgstr ""
+
 msgid "Your Projects (default)"
 msgstr ""
 
 msgid "Your Projects' Activity"
+msgstr ""
+
+msgid "Your Public Email will be displayed on your public profile."
 msgstr ""
 
 msgid "Your SSH keys (%{count})"
@@ -11926,9 +11983,6 @@ msgid "Your comment could not be submitted! Please check your network connection
 msgstr ""
 
 msgid "Your comment could not be updated! Please check your network connection and try again."
-msgstr ""
-
-msgid "Your comment will not be visible to the public."
 msgstr ""
 
 msgid "Your deployment services will be broken, you will need to manually fix the services after renaming."
