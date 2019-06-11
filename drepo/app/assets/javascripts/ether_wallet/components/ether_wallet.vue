@@ -1,40 +1,43 @@
 <template>
   <div class="row">
     <div class="col-lg-3">
-      <label>{{ unlockOptionsTitle }}</label>
-      <br />
-      <label for="metamask" class="ratio">
-        <input
-          id="metamask"
-          v-model="unlockOption"
-          type="radio"
-          value="metamask"
-          :disabled="optionAvailable('metamask')"
-        />
-        <span class="label-text">MetaMask</span>
-      </label>
-      <br />
-      <label for="mnemonic-phrase" class="ratio">
-        <input
-          id="mnemonic-phrase"
-          v-model="unlockOption"
-          type="radio"
-          value="mnemonic_phrase"
-          :disabled="optionAvailable('mnemonic_phrase')"
-        />
-        <span class="label-text">Mnemonic Phrase</span>
-      </label>
-      <br />
-      <label for="private-key" class="ratio">
-        <input
-          id="private-key"
-          v-model="unlockOption"
-          type="radio"
-          value="private_key"
-          :disabled="optionAvailable('private_key')"
-        />
-        <span class="label-text">Private Key</span>
-      </label>
+      <div v-if="optionAvailable('metamask')">
+        <label>{{ unlockOptionsTitle }}</label>
+        <br />
+        <label for="metamask" class="ratio">
+          <input
+            id="metamask"
+            v-model="unlockOption"
+            type="radio"
+            value="metamask"
+            />
+          <span class="label-text">MetaMask</span>
+        </label>
+        <br />
+      </div>
+      <div v-if="optionAvailable('mnemonic_phrase')">
+        <label for="mnemonic-phrase" class="ratio">
+          <input
+            id="mnemonic-phrase"
+            v-model="unlockOption"
+            type="radio"
+            value="mnemonic_phrase"
+            />
+          <span class="label-text">Mnemonic Phrase</span>
+        </label>
+        <br />
+      </div>
+      <div v-if="optionAvailable('private_key')">
+        <label for="private-key" class="ratio">
+          <input
+            id="private-key"
+            v-model="unlockOption"
+            type="radio"
+            value="private_key"
+            />
+          <span class="label-text">Private Key</span>
+        </label>
+      </div>
     </div>
     <div class="ether-form col-lg-5">
       <div v-if="unlockOption === 'metamask'">
@@ -231,7 +234,7 @@ export default {
     },
 
     optionAvailable(option) {
-      return !this.availableUnlockOptions.includes(option);
+      return this.availableUnlockOptions.includes(option);
     },
   },
 };

@@ -5,9 +5,8 @@ import store from '../../../ether_wallet/stores';
 
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('check-username-form');
-  const unlockOptionsTitle = 'Unlock by your private key:';
   const defaultUnlockOption = 'metamask';
-  const availableUnlockOptions = ['metamask', 'mnemonic_phrase', 'private_key'];
+  const availableUnlockOptions = ['metamask', 'private_key'];
 
   return new Vue({
     el,
@@ -15,12 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
     components: { EtherWallet, CheckUsername },
     data() {
       return {
-        unlockOptionsTitle,
         defaultUnlockOption,
         availableUnlockOptions,
       };
     },
     template:
-      '<div> <EtherWallet :unlockOptionsTitle="unlockOptionsTitle" :defaultUnlockOption="defaultUnlockOption" :availableUnlockOptions="availableUnlockOptions" /> <CheckUsername /> </div>',
+      '<div> <EtherWallet :defaultUnlockOption="defaultUnlockOption" :availableUnlockOptions="availableUnlockOptions" /> <CheckUsername /> </div>',
   });
 });
