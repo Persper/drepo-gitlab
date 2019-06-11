@@ -139,7 +139,7 @@ export default {
               this.isUsernameAvailable = true;
             }
             this.isUsernameVerified = true;
-          });
+          }).catch();
       }
     },
 
@@ -147,17 +147,14 @@ export default {
       this.web3Client.personal.sign(
         this.web3Client.toHex('hello'),
         this.accountAddress,
+        // eslint-disable-next-line no-console
         console.log,
       );
     },
 
-    // ethSign() {
-    //   this.web3Client.eth.sign('hello', this.accountAddress, console.log);
-    // },
-    //
-
     privateKeySign() {
       const r = this.web3Client.eth.accounts.sign('hello', this.privateKeyInput);
+      // eslint-disable-next-line no-console
       console.log(r);
     },
 
@@ -168,8 +165,9 @@ export default {
         .register(this.username, gitlabClientName, this.contractInfo.gitlab.address)
         .send({ from: this.accountAddress })
         .then(result => {
-          console.log(`result: ${result}`);
-        });
+          // eslint-disable-next-line no-console
+          console.log(result);
+        }).catch();
     },
   },
 };
