@@ -38,6 +38,7 @@ describe('Dashboard', () => {
   let DashboardComponent;
   let mock;
   let store;
+  let component;
 
   beforeEach(() => {
     setFixtures(`
@@ -59,14 +60,15 @@ describe('Dashboard', () => {
   });
 
   afterEach(() => {
+    component.$destroy();
     mock.restore();
   });
 
   describe('no metrics are available yet', () => {
     it('shows a getting started empty state when no metrics are present', () => {
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, showTimeWindowDropdown: false },
+        propsData: { ...propsData },
         store,
       });
 
@@ -81,9 +83,9 @@ describe('Dashboard', () => {
     });
 
     it('shows up a loading state', done => {
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: false },
+        propsData: { ...propsData, hasMetrics: true },
         store,
       });
 
@@ -94,13 +96,12 @@ describe('Dashboard', () => {
     });
 
     it('hides the legend when showLegend is false', done => {
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {
           ...propsData,
           hasMetrics: true,
           showLegend: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -114,13 +115,12 @@ describe('Dashboard', () => {
     });
 
     it('hides the group panels when showPanels is false', done => {
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -134,13 +134,12 @@ describe('Dashboard', () => {
     });
 
     it('renders the environments dropdown with a number of environments', done => {
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -165,13 +164,12 @@ describe('Dashboard', () => {
     });
 
     it('hides the environments dropdown list when there is no environments', done => {
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -195,13 +193,12 @@ describe('Dashboard', () => {
     });
 
     it('renders the environments dropdown with a single active element', done => {
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -228,14 +225,13 @@ describe('Dashboard', () => {
     });
 
     it('hides the dropdown', done => {
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
           environmentsEndpoint: '',
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -248,35 +244,13 @@ describe('Dashboard', () => {
       });
     });
 
-    it('does not show the time window dropdown when the feature flag is not set', done => {
-      const component = new DashboardComponent({
-        el: document.querySelector('.prometheus-graphs'),
-        propsData: {
-          ...propsData,
-          hasMetrics: true,
-          showPanels: false,
-          showTimeWindowDropdown: false,
-        },
-        store,
-      });
-
-      setTimeout(() => {
-        const timeWindowDropdown = component.$el.querySelector('.js-time-window-dropdown');
-
-        expect(timeWindowDropdown).toBeNull();
-
-        done();
-      });
-    });
-
     it('renders the time window dropdown with a set of options', done => {
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: true,
         },
         store,
       });
@@ -295,12 +269,47 @@ describe('Dashboard', () => {
       });
     });
 
+    it('fetches the metrics data with proper time window', done => {
+      component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showPanels: false,
+        },
+        store,
+      });
+
+      spyOn(component.$store, 'dispatch').and.stub();
+      const getTimeDiffSpy = spyOnDependency(Dashboard, 'getTimeDiff');
+
+      component.$store.commit(
+        `monitoringDashboard/${types.SET_ENVIRONMENTS_ENDPOINT}`,
+        '/environments',
+      );
+      component.$store.commit(
+        `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
+        environmentData,
+      );
+
+      component.$mount();
+
+      Vue.nextTick()
+        .then(() => {
+          expect(component.$store.dispatch).toHaveBeenCalled();
+          expect(getTimeDiffSpy).toHaveBeenCalledWith(component.selectedTimeWindow);
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
     it('shows a specific time window selected from the url params', done => {
       spyOnDependency(Dashboard, 'getParameterValues').and.returnValue(['thirtyMinutes']);
 
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: true },
+        propsData: { ...propsData, hasMetrics: true },
         store,
       });
 
@@ -319,9 +328,9 @@ describe('Dashboard', () => {
         '<script>alert("XSS")</script>',
       ]);
 
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: true },
+        propsData: { ...propsData, hasMetrics: true },
         store,
       });
 
@@ -344,13 +353,12 @@ describe('Dashboard', () => {
     });
 
     it('sets elWidth to page width when the sidebar is resized', done => {
-      const component = new DashboardComponent({
+      component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {
           ...propsData,
           hasMetrics: true,
           showPanels: false,
-          showTimeWindowDropdown: false,
         },
         store,
       });
@@ -374,14 +382,8 @@ describe('Dashboard', () => {
   });
 
   describe('external dashboard link', () => {
-    let component;
-
     beforeEach(() => {
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
-    });
-
-    afterEach(() => {
-      component.$destroy();
     });
 
     describe('with feature flag enabled', () => {
@@ -392,7 +394,6 @@ describe('Dashboard', () => {
             ...propsData,
             hasMetrics: true,
             showPanels: false,
-            showTimeWindowDropdown: false,
             externalDashboardUrl: '/mockUrl',
           },
           store,
@@ -418,7 +419,6 @@ describe('Dashboard', () => {
             ...propsData,
             hasMetrics: true,
             showPanels: false,
-            showTimeWindowDropdown: false,
             externalDashboardUrl: '',
           },
           store,

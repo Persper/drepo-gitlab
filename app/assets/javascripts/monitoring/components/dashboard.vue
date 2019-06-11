@@ -106,10 +106,6 @@ export default {
       type: String,
       required: true,
     },
-    showTimeWindowDropdown: {
-      type: Boolean,
-      required: true,
-    },
     customMetricsAvailable: {
       type: Boolean,
       required: false,
@@ -172,7 +168,7 @@ export default {
     if (!this.hasMetrics) {
       this.setGettingStartedEmptyState();
     } else {
-      this.fetchData(getTimeDiff(this.timeWindows.eightHours));
+      this.fetchData(getTimeDiff(this.selectedTimeWindow));
 
       sidebarMutationObserver = new MutationObserver(this.onSidebarMutation);
       sidebarMutationObserver.observe(document.querySelector('.layout-page'), {
@@ -248,7 +244,7 @@ export default {
             >
           </gl-dropdown>
         </div>
-        <div v-if="showTimeWindowDropdown" class="d-flex align-items-center prepend-left-8">
+        <div class="d-flex align-items-center prepend-left-8">
           <strong>{{ s__('Metrics|Show last') }}</strong>
           <gl-dropdown
             class="prepend-left-10 js-time-window-dropdown"

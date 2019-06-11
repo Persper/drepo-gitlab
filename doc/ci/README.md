@@ -29,8 +29,11 @@ the development cycle, ensuring that all the code deployed to
 production complies with the code standards you established for
 your app.
 
-For a complete overview of these methodologies and GitLab CI/CD,
-read the [Introduction to CI/CD with GitLab](introduction/index.md).
+For a:
+
+- Complete overview of these methodologies and GitLab CI/CD,
+  read the [Introduction to CI/CD with GitLab](introduction/index.md).
+- Video demonstration of GitLab CI/CD, see [Demo: CI/CD with GitLab](https://www.youtube.com/watch?v=1iXFbchozdY).
 
 ## Getting started
 
@@ -160,6 +163,33 @@ See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJ
 
 As GitLab CI/CD has evolved, certain breaking changes have
 been necessary. These are:
+
+#### 12.0
+
+- [Use refspec to clone/fetch git
+  repository](https://gitlab.com/gitlab-org/gitlab-runner/issues/4069).
+- [Old cache
+  configuration](https://gitlab.com/gitlab-org/gitlab-runner/issues/4070).
+- [Old metrics server
+  configuration](https://gitlab.com/gitlab-org/gitlab-runner/issues/4072).
+- [Remove
+  `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/issues/4073).
+- [Remove Linux distributions that reach
+  EOL](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1130).
+- [Update command line API for helper
+  images](https://gitlab.com/gitlab-org/gitlab-runner/issues/4013).
+- [Remove old `git clean`
+  flow](https://gitlab.com/gitlab-org/gitlab-runner/issues/4175).
+
+#### 11.0
+
+- No breaking changes.
+
+#### 10.0
+
+- No breaking changes.
+
+#### 9.0
 
 - [CI variables renaming for GitLab 9.0](variables/deprecated_variables.md#gitlab-90-renamed-variables). Read about the
   deprecated CI variables and what you should use for GitLab 9.0+.

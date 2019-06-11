@@ -26,6 +26,10 @@ and when hovering or tapping (on touchscreen devices) they will expand and be sh
 Multi-project pipelines are useful for larger products that require cross-project inter-dependencies, such as those
 adopting a [microservices architecture](https://about.gitlab.com/2016/08/16/trends-in-version-control-land-microservices/).
 
+For a demonstration of how cross-functional development teams can use cross-pipeline
+triggering to trigger multiple pipelines for different microservices projects, see
+[Cross-project Pipeline Triggering and Visualization](https://about.gitlab.com/handbook/marketing/product-marketing/demo/#cross-project-pipeline-triggering-and-visualization-may-2019---1110).
+
 ## Use cases
 
 Let's assume you deploy your web app from different projects in GitLab:
