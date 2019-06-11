@@ -107,14 +107,10 @@ export default {
         const contract = this.web3Client.eth.contract(contractData);
         myContract = contract.at(this.contractInfo.central.address);
       } else {
-        myContract = new this.web3Client.eth.Contract(
-          contractData,
-          contractInfo.central.address,
-          {
-            from: this.accountAddress,
-            gas: this.gasLimit,
-          },
-        );
+        myContract = new this.web3Client.eth.Contract(contractData, contractInfo.central.address, {
+          from: this.accountAddress,
+          gas: this.gasLimit,
+        });
       }
       return myContract;
     },
@@ -125,8 +121,16 @@ export default {
 
       if (this.unlockOptionState === 'metamask') {
         myContract.getEntity([window.web3.sha3(this.username)], (err, result) => {
-          // eslint-disable-next-line no-console
-          if (!err) console.log(result);
+          if (!err) {
+            // eslint-disable-next-line no-console
+            console.log(result);
+            this.checkVerifyResult(result);
+          } else {
+            // eslint-disable-next-line no-console
+            console.log(err);
+            // it seems that web3 0.20 can not decode `null` result properly
+            if (result === null) this.isUsernameAvailable = true;
+          }
         });
       } else {
         myContract.methods
@@ -135,12 +139,24 @@ export default {
           .then(result => {
             // eslint-disable-next-line no-console
             console.log(result);
-            if (result === null) {
-              this.isUsernameAvailable = true;
-            }
-            this.isUsernameVerified = true;
-          }).catch();
+            this.checkVerifyResult(result);
+          })
+          .catch(err => {
+            // eslint-disable-next-line no-console
+            console.log(err);
+          });
       }
+      this.isUsernameVerified = true;
+    },
+
+    checkVerifyResult(r) {
+      if (r !== null && typeof r === 'object' && r[0] === this.username) {
+        this.isUsernameAvailable = false;
+      } else {
+        this.isUsernameAvailable = true;
+      }
+      // eslint-disable-next-line no-console
+      console.log(this.isUsernameAvailable);
     },
 
     metamaskSign() {
@@ -167,7 +183,11 @@ export default {
         .then(result => {
           // eslint-disable-next-line no-console
           console.log(result);
-        }).catch();
+        })
+        .catch(err => {
+          // eslint-disable-next-line no-console
+          console.log(err);
+        });
     },
   },
 };
