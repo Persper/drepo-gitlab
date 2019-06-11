@@ -2921,9 +2921,9 @@ camelcase@^5.0.0:
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
 
 caniuse-lite@^1.0.30000844:
-  version "1.0.30000973"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000973.tgz#2f8e8e54f9e6c5b7a631c9e69bfa1093d8cfd360"
-  integrity sha512-/F3t/Yo8LEdRSEPCmI15fLu5vepVh9UCg/9inJXF5AAfW7xRRJkbaM2ut52iRMQMnGCLQouLbFdbOA+VEFOIsg==
+  version "1.0.30000974"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000974.tgz#b7afe14ee004e97ce6dc73e3f878290a12928ad8"
+  integrity sha512-xc3rkNS/Zc3CmpMKuczWEdY2sZgx09BkAxfvkxlAEBTqcMHeL8QnPqhKse+5sRTi3nrw2pJwToD2WvKn1Uhvww==
 
 caniuse-lite@^1.0.30000932, caniuse-lite@^1.0.30000967:
   version "1.0.30000969"
@@ -4314,9 +4314,9 @@ destroy@~1.0.4:
   integrity sha1-l4hXRCxEdJ5CBmE+N5RiBYJqvYA=
 
 detect-browser@^4.0.3:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/detect-browser/-/detect-browser-4.5.0.tgz#6a726bd21e9dd77b4e18676515d48c88b4156ee3"
-  integrity sha512-uwyZNBwMhvRIOBIBTuDu+h4/a2bfFE/elUIvAOuKuBZcuy6yAJ/9dOe4r3wyWO/ZW2PcsP0dhEwiVwTPTTJp2Q==
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/detect-browser/-/detect-browser-4.5.1.tgz#b9df3f66454a4f32adbc4db2949aa788b757921b"
+  integrity sha512-cGXvbxvDws+ZjzR3AI+2IcKQR3Tj85PaUn42u6A/DWOEYda5fgvkS/NrQp2lD4LZ/IE2nLE/0kV//qekOyxJ2Q==
 
 detect-file@^1.0.0:
   version "1.0.0"
@@ -4572,9 +4572,9 @@ electron-to-chromium@^1.3.133:
   integrity sha512-xXLNstRdVsisPF3pL3H9TVZo2XkMILfqtD6RiWIUmDK2sFX1Bjwqmd8LBp0Kuo2FgKO63JXPoEVGm8WyYdwP0Q==
 
 electron-to-chromium@^1.3.47:
-  version "1.3.148"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.148.tgz#5796c0d9eb0358d397163413b90bf376c5d8bf08"
-  integrity sha512-nuCOlXNlGMQmdzihIPGm2K3Yf3H1hke/1rK381i02pH8wNliJU9hVNnOi/xjmxt+mjABd/BzufP5nPHWKshLWA==
+  version "1.3.155"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.155.tgz#ebf0cc8eeaffd6151d1efad60fd9e021fb45fd3a"
+  integrity sha512-/ci/XgZG8jkLYOgOe3mpJY1onxPPTDY17y7scldhnSjjZqV6VvREG/LvwhRuV7BJbnENFfuDWZkSqlTh4x9ZjQ==
 
 elliptic@6.3.3:
   version "6.3.3"
@@ -5267,9 +5267,9 @@ ethereumjs-wallet@0.6.0:
     uuid "^2.0.1"
 
 ethers@^4.0.27:
-  version "4.0.29"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.29.tgz#b698f5d8a5a89bfd3d12dba2ad5a4cd9a95a93bb"
-  integrity sha512-WCaH8an3Y+i85zW6Y6fmt0oQE9GXJy9NjqNVDTJVUJ/WBLIB1z17nG16lbOz3zVYWFgarfnzVakN2G7AyXk1Xg==
+  version "4.0.30"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.30.tgz#140653fd08adf2834bb2f3aceefa10d04205b47d"
+  integrity sha512-1a39Y+q5zTfrXCLndV+CHsTHq+T5/TvAx5y0S/PKd700C0lfU70CJnU7q89bd+4pIuWp05TkrEsrTj2dXhkcSA==
   dependencies:
     "@types/node" "^10.3.2"
     aes-js "3.0.0"
