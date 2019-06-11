@@ -69,10 +69,10 @@ export default {
       };
     },
     canResolve() {
-      return this.note.resolvable && !!this.getUserData.id;
+      return this.note.resolvable && Boolean(this.getUserData.id);
     },
     canReportAsAbuse() {
-      return !!this.note.report_abuse_path && this.author.id !== this.getUserData.id;
+      return Boolean(this.note.report_abuse_path) && this.author.id !== this.getUserData.id;
     },
     noteAnchorId() {
       return `note_${this.note.id}`;

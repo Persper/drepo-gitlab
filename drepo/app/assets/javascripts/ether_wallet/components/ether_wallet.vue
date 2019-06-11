@@ -143,14 +143,15 @@ export default {
       required: false,
       default: 'metamask',
     },
+    /* eslint-disable */
     availableUnlockOptions: {
       type: [String, Array],
       required: false,
-      // eslint-disable-next-line object-shorthand
       default: function() {
         return ['metamask', 'mnemonic_phrase', 'private_key'];
       },
     },
+    /* eslint-enable */
   },
 
   computed: {
