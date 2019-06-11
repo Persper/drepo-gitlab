@@ -101,31 +101,46 @@ export default {
   methods: {
     createContract() {
       const contractData = this.contractInfo.central.interface;
-      const myContract = new this.web3Client.eth.Contract(
-        contractData,
-        contractInfo.central.address,
-        {
-          from: this.accountAddress,
-          gas: this.gasLimit,
-        },
-      );
+      let myContract;
+
+      if (this.unlockOptionState === 'metamask') {
+        const contract = this.web3Client.eth.contract(contractData);
+        myContract = contract.at(this.contractInfo.central.address);
+      } else {
+        myContract = new this.web3Client.eth.Contract(
+          contractData,
+          contractInfo.central.address,
+          {
+            from: this.accountAddress,
+            gas: this.gasLimit,
+          },
+        );
+      }
       return myContract;
     },
 
     usernameVerify() {
       this.isUsernameAvailable = false;
       const myContract = this.createContract();
-      myContract.methods
-        .getEntity([this.web3Client.utils.soliditySha3(this.username)])
-        .call({ from: this.accountAddress })
-        .then(result => {
+
+      if (this.unlockOptionState === 'metamask') {
+        myContract.getEntity([window.web3.sha3(this.username)], (err, result) => {
           // eslint-disable-next-line no-console
-          console.log(`result: ${result}`);
-          if (result === null) {
-            this.isUsernameAvailable = true;
-          }
-          this.isUsernameVerified = true;
+          if (!err) console.log(result);
         });
+      } else {
+        myContract.methods
+          .getEntity([this.web3Client.utils.soliditySha3(this.username)])
+          .call({ from: this.accountAddress })
+          .then(result => {
+            // eslint-disable-next-line no-console
+            console.log(result);
+            if (result === null) {
+              this.isUsernameAvailable = true;
+            }
+            this.isUsernameVerified = true;
+          });
+      }
     },
 
     metamaskSign() {
