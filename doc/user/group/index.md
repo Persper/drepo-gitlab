@@ -113,6 +113,8 @@ Add the following information:
 1. Optionally, choose an avatar for your group.
 1. Choose the [visibility level](../../public_access/public_access.md).
 
+For more details on creating groups, watch the video [GitLab Namespaces (users, groups and subgroups)](https://youtu.be/r0sJgjR2f5A).
+
 ## Add users to a group
 
 A benefit of putting multiple projects in one group is that you can
@@ -215,10 +217,8 @@ Get an overview of the vulnerabilities of all the projects in a group and its su
 
 ## Insights **[ULTIMATE]**
 
-> Introduced in [GitLab Ultimate][ee] 11.9 behind the `insights` feature flag.
-
-Configure the Insights that matter for your groups or projects, allowing users to explore data
-such as:
+Configure the Insights that matter for your groups or projects, allowing users
+to explore data such as:
 
 - Triage hygiene
 - Issues created/closed per a given period
