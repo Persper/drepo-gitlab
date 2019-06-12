@@ -16,42 +16,87 @@
       <input type="hidden" name="_method" value="patch" />
       <div class="form-group group-name-holder col-sm-12">
         <label class="label-bold" for="drepo_users_username">Pick a username</label>
-        <input
-          id="drepo_users_username"
-          v-model="username"
-          class="form-control input-lg"
-          required="required"
-          title="Please fill in an available username."
-          autofocus="autofocus"
-          type="text"
-          name="username"
-          placeholder="My Awesome Username"
-        />
+        <div class="row icon-row">
+          <input
+            id="drepo_users_username"
+            v-model.trim="username"
+            class="form-control input-lg"
+            required="required"
+            title="Please fill in an available username."
+            autofocus="autofocus"
+            type="text"
+            name="username"
+            placeholder="My Awesome Username"
+            @input="updateUsernameStates"
+          />
+          <template v-if="iconSuccessStatus">
+            <icon name="status_success_borderless" :size="32" css-classes="status-icon-success" />
+          </template>
+          <template v-if="iconFailureStatus">
+            <icon name="status_failed_borderless" :size="32" css-classes="status-icon-failed" />
+          </template>
+        </div>
       </div>
       <div class="form-group group-name-holder col-sm-12">
         <input
           type="button"
           class="btn btn-success col-lg-2"
           value="Verify"
-          :disabled="!isUnlocked"
+          :disabled="!isUnlocked || username.length === 0"
           @click.stop.prevent="usernameVerify()"
         />
       </div>
-      <hr />
-      <div class="form-group group-name-holder col-sm-12">
-        <input
-          type="button"
-          class="btn btn-success col-lg-2"
-          value="Register"
-          :disabled="!isUnlocked"
-          @click.stop.prevent="usernameRegister()"
-        />
+      <div v-if="isRegisterable">
+        <hr />
+        <div class="form-group group-name-holder col-sm-12">
+          <label class="label-bold" for="Username Register">
+            Username "{{ username }}" is available. Click to register on Ethereum:
+          </label>
+        </div>
+
+        <div class="form-group group-name-holder col-sm-12">
+          <input
+            type="button"
+            class="btn btn-success col-lg-2"
+            value="Register"
+            :disabled="!isUnlocked"
+            @click.stop.prevent="usernameRegister()"
+          />
+        </div>
       </div>
 
-      <!-- <div class="form&#45;group group&#45;name&#45;holder col&#45;sm&#45;12"> -->
-      <!--   <label class="label&#45;bold" for="">3) You need active your username</label> -->
-      <!--   <input type="button" class="btn btn&#45;success col&#45;lg&#45;2" value="Activate" :disabled="!isSubmittable" /> -->
-      <!-- </div> -->
+      <div v-if="isBindable">
+        <hr />
+        <div class="form-group group-name-holder col-sm-12">
+          <label class="label-bold" for="Username Register">
+            <div v-if="!isUsernameRegisteredSuccess && username !== addressHadUsername">
+              You've had registered a username "{{ addressHadUsername }}" by current Ethereum
+              address, you can't register another one again. <br />
+              You can bind the username "{{ addressHadUsername }}" to current GitLab account by
+              signing a message with current Ethereum account.
+            </div>
+            <div v-if="!isUsernameRegisteredSuccess && username === addressHadUsername">
+              You've had registered username "{{ username }}" by current Ethereum address. <br />
+              You can bind it to your current GitLab account by signing a message with this Ethereum
+              account:
+            </div>
+            <div v-if="isUsernameRegisteredSuccess">
+              Username "{{ username }}" registration success. You need activate it by signing a
+              message:
+            </div>
+          </label>
+        </div>
+
+        <div class="form-group group-name-holder col-sm-12">
+          <input
+            type="button"
+            class="btn btn-success col-lg-2"
+            :value="bindButtonText"
+            :disabled="!isUnlocked"
+            @click.stop.prevent="usernameBind()"
+          />
+        </div>
+      </div>
 
       <div class="form-actions">
         <input type="submit" class="btn btn-success" value="Submit" :disabled="!isSubmittable" />
@@ -61,11 +106,16 @@
 </template>
 
 <script>
+import Icon from '~/vue_shared/components/icon.vue';
 import { mapGetters, mapState } from 'vuex';
 import contractInfo from '../contract';
 
 export default {
   name: 'CheckUsername',
+
+  components: {
+    Icon,
+  },
 
   data() {
     return {
@@ -73,7 +123,10 @@ export default {
       isUsernameAvailable: false,
       isUsernameVerified: false,
       isUsernameActivated: false,
+      isUsernameRegisteredSuccess: false,
       username: '',
+      bindButtonText: 'Bind now',
+      addressHadUsername: '',
     };
   },
 
@@ -88,26 +141,64 @@ export default {
 
     ...mapGetters(['isUnlocked']),
 
-    isSubmittable() {
+    iconSuccessStatus() {
+      return this.isUsernameAvailable && this.isUsernameVerified;
+    },
+
+    iconFailureStatus() {
+      return !this.isUsernameAvailable && this.isUsernameVerified;
+    },
+
+    isBindable() {
       return (
-        this.isUnlocked &&
+        (!this.isUsernameAvailable && this.isUsernameVerified) ||
+        (this.isUsernameAvailable &&
+          this.addressHadUsername !== this.username &&
+          this.isUsernameVerified) ||
+        (this.isUsernameRegisteredSuccess && !this.isUsernameActivated)
+      );
+    },
+
+    isSubmittable() {
+      return this.isUnlocked && this.isUsernameVerified && this.isUsernameActivated;
+    },
+
+    isRegisterable() {
+      return (
         this.isUsernameAvailable &&
+        this.addressHadUsername === '' &&
         this.isUsernameVerified &&
-        this.isUsernameActivated
+        !this.isUsernameRegisteredSuccess
       );
     },
   },
 
+  watch: {
+    accountAddress() {
+      if (this.addressHadUsername !== '') {
+        this.addressHadUsername = '';
+      }
+    },
+  },
+
   methods: {
+    updateUsernameStates() {
+      this.isUsernameAvailable = false;
+      this.isUsernameVerified = false;
+      this.isUsernameRegisteredSuccess = false;
+      this.bindButtonText = 'Bind now';
+    },
+
     createContract() {
       const contractData = this.contractInfo.central.interface;
+      const contractAddress = this.contractInfo.central.address;
       let myContract;
 
       if (this.unlockOptionState === 'metamask') {
         const contract = this.web3Client.eth.contract(contractData);
-        myContract = contract.at(this.contractInfo.central.address);
+        myContract = contract.at(contractAddress);
       } else {
-        myContract = new this.web3Client.eth.Contract(contractData, contractInfo.central.address, {
+        myContract = new this.web3Client.eth.Contract(contractData, contractAddress, {
           from: this.accountAddress,
           gas: this.gasLimit,
         });
@@ -115,9 +206,57 @@ export default {
       return myContract;
     },
 
+    checkUserByAddress(contract) {
+      if (this.unlockOptionState === 'metamask') {
+        contract.getUser(this.accountAddress, (err, result) => {
+          if (!err) {
+            // eslint-disable-next-line no-console
+            console.log(result);
+            this.checkGetUserResult(result);
+          } else {
+            // eslint-disable-next-line no-console
+            console.log(err);
+          }
+        });
+      } else {
+        contract.methods
+          .getUser(this.accountAddress)
+          .call({ from: this.accountAddress })
+          .then(result => {
+            // eslint-disable-next-line no-console
+            console.log(result);
+            this.checkGetUserResult(result);
+          })
+          .catch(err => {
+            // eslint-disable-next-line no-console
+            console.log(err);
+          });
+      }
+    },
+
+    checkGetUserResult(user) {
+      if (user !== null && typeof user === 'object' && user[0].match(/^[a-z0-9]+$/)) {
+        // eslint-disable-next-line prefer-destructuring
+        this.addressHadUsername = user[0];
+      }
+    },
+
     usernameVerify() {
       this.isUsernameAvailable = false;
+      this.isUsernameVerified = false;
+      this.isUsernameRegisteredSuccess = false;
+
+      if (this.username.length > 255 || !this.username.match(/^[a-z0-9]+$/)) {
+        // eslint-disable-next-line no-alert
+        alert(
+          'Please create a username with only alphanumeric characters and length between 1 and 255.',
+        );
+        return;
+      }
+
       const myContract = this.createContract();
+      // check current account if had registered
+      this.checkUserByAddress(myContract);
 
       if (this.unlockOptionState === 'metamask') {
         myContract.getEntity([window.web3.sha3(this.username)], (err, result) => {
@@ -130,6 +269,7 @@ export default {
             console.log(err);
             // it seems that web3 0.20 can not decode `null` result properly
             if (result === null) this.isUsernameAvailable = true;
+            this.isUsernameVerified = true;
           }
         });
       } else {
@@ -146,7 +286,6 @@ export default {
             console.log(err);
           });
       }
-      this.isUsernameVerified = true;
     },
 
     checkVerifyResult(r) {
@@ -155,6 +294,7 @@ export default {
       } else {
         this.isUsernameAvailable = true;
       }
+      this.isUsernameVerified = true;
       // eslint-disable-next-line no-console
       console.log(this.isUsernameAvailable);
     },
@@ -177,17 +317,40 @@ export default {
     usernameRegister() {
       const myContract = this.createContract();
       const gitlabClientName = 'drepo-gitlab';
-      myContract.methods
-        .register(this.username, gitlabClientName, this.contractInfo.gitlab.address)
-        .send({ from: this.accountAddress })
-        .then(result => {
-          // eslint-disable-next-line no-console
-          console.log(result);
-        })
-        .catch(err => {
-          // eslint-disable-next-line no-console
-          console.log(err);
+      const gitlabAddress = this.contractInfo.gitlab.address;
+
+      if (this.unlockOptionState === 'metamask') {
+        myContract.register(this.username, gitlabClientName, gitlabAddress, (err, result) => {
+          if (!err) {
+            // eslint-disable-next-line no-console
+            console.log(result);
+            this.isUsernameRegisteredSuccess = true;
+            this.bindButtonText = 'Activate now';
+          } else {
+            // eslint-disable-next-line no-console
+            console.log(err);
+          }
         });
+      } else {
+        myContract.methods
+          .register(this.username, gitlabClientName, gitlabAddress)
+          .send({ from: this.accountAddress })
+          .then(result => {
+            // eslint-disable-next-line no-console
+            console.log(result);
+            this.isUsernameRegisteredSuccess = true;
+            this.bindButtonText = 'Activate now';
+          })
+          .catch(err => {
+            // eslint-disable-next-line no-console
+            console.log(err);
+          });
+      }
+    },
+
+    usernameBind() {
+      // eslint-disable-next-line no-alert
+      alert('not implemented!');
     },
   },
 };
@@ -199,5 +362,14 @@ export default {
 }
 .contract-address {
   color: #aaa;
+}
+.icon-row {
+  padding-left: 15px;
+}
+.status-icon-success {
+  color: #1aaa55;
+}
+.status-icon-failed {
+  color: #db3b21;
 }
 </style>
