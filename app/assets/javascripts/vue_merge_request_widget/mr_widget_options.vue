@@ -29,7 +29,7 @@ import UnresolvedDiscussionsState from './components/states/unresolved_discussio
 import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked.vue';
 import PipelineFailedState from './components/states/pipeline_failed.vue';
 import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
-import MergeWhenPipelineSucceedsState from './components/states/mr_widget_merge_when_pipeline_succeeds.vue';
+import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
 import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
 import CheckingState from './components/states/mr_widget_checking.vue';
 import eventHub from './event_hub';
@@ -64,7 +64,7 @@ export default {
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
     'mr-widget-pipeline-blocked': PipelineBlockedState,
     'mr-widget-pipeline-failed': PipelineFailedState,
-    'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
+    MrWidgetAutoMergeEnabled,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
     'mr-widget-rebase': RebaseState,
     SourceBranchRemovalStatus,
@@ -115,14 +115,6 @@ export default {
     showMergePipelineForkWarning() {
       return Boolean(
         this.mr.mergePipelinesEnabled && this.mr.sourceProjectId !== this.mr.targetProjectId,
-      );
-    },
-    showTargetBranchAdvancedError() {
-      return Boolean(
-        this.mr.isOpen &&
-          this.mr.pipeline &&
-          this.mr.pipeline.target_sha &&
-          this.mr.pipeline.target_sha !== this.mr.targetBranchSha,
       );
     },
     mergeError() {
@@ -359,18 +351,6 @@ export default {
             {{
               s__(
                 'mrWidget|Fork merge requests do not create merge request pipelines which validate a post merge result',
-              )
-            }}
-          </mr-widget-alert-message>
-
-          <mr-widget-alert-message
-            v-if="showTargetBranchAdvancedError"
-            type="danger"
-            :help-path="mr.mergeRequestPipelinesHelpPath"
-          >
-            {{
-              s__(
-                'mrWidget|The target branch has advanced, which invalidates the merge request pipeline. Please update the source branch and retry merging',
               )
             }}
           </mr-widget-alert-message>

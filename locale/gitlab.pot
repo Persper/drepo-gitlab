@@ -6045,6 +6045,9 @@ msgstr ""
 msgid "Members of <strong>%{project_name}</strong>"
 msgstr ""
 
+msgid "Merge"
+msgstr ""
+
 msgid "Merge Request"
 msgstr ""
 
@@ -12403,9 +12406,6 @@ msgid "mrWidget|The source branch will be deleted"
 msgstr ""
 
 msgid "mrWidget|The source branch will not be deleted"
-msgstr ""
-
-msgid "mrWidget|The target branch has advanced, which invalidates the merge request pipeline. Please update the source branch and retry merging"
 msgstr ""
 
 msgid "mrWidget|There are merge conflicts"
