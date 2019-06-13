@@ -215,10 +215,20 @@ This can be an array or a multi-line string.
 `after_script` is used to define the command that will be run after all
 jobs, including failed ones. This has to be an array or a multi-line string.
 
-The `before_script` and the main `script` are concatenated and run in a single context/container.
-The `after_script` is run separately. The current working directory is set back to
-default. Depending on the executor, changes done outside of the working tree might
-not be visible, e.g. software installed in the `before_script`.
+Script specified in `before_script` is:
+
+- Concatenated with script specified in the main `script`. Job-level `before_script` definition
+  override global-level `before_script` definition when concatenated with `script` definition.
+- Executed together with main `script` script as one script in a single shell context.
+
+Script specified in `after_script`:
+
+- Have a current working directory set back to the default.
+- Is executed in a shell context separated from `before_script` and `script` scripts.
+- Because of separated context, cannot see changes done by scripts defined in `before_script` or `script` scripts:
+    - in shell - for example, command aliases and variables exported in `script` script,
+    - outside of the working tree (depending on the Runner executor) - for example, software installed
+      by a `before_script` or `script` script.
 
 It's possible to overwrite the globally defined `before_script` and `after_script`
 if you set it per-job:
@@ -1458,7 +1468,7 @@ combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
-The `codequality` report collects [CodeQuality issues](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html)
+The `codequality` report collects [CodeQuality issues](../../user/project/merge_requests/code_quality.md)
 as artifacts.
 
 The collected Code Quality report will be uploaded to GitLab as an artifact and will
@@ -1468,7 +1478,7 @@ be automatically shown in merge requests.
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
-The `sast` report collects [SAST vulnerabilities](https://docs.gitlab.com/ee/user/application_security/sast/index.html)
+The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md)
 as artifacts.
 
 The collected SAST report will be uploaded to GitLab as an artifact and will
@@ -1479,7 +1489,7 @@ dashboards.
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
-The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/index.html)
+The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/index.md)
 as artifacts.
 
 The collected Dependency Scanning report will be uploaded to GitLab as an artifact and will
@@ -1490,7 +1500,7 @@ dashboards.
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
-The `container_scanning` report collects [Container Scanning vulnerabilities](https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html)
+The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/index.md)
 as artifacts.
 
 The collected Container Scanning report will be uploaded to GitLab as an artifact and will
@@ -1501,7 +1511,7 @@ dashboards.
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
-The `dast` report collects [DAST vulnerabilities](https://docs.gitlab.com/ee/user/application_security/dast/index.html)
+The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md)
 as artifacts.
 
 The collected DAST report will be uploaded to GitLab as an artifact and will
@@ -1512,7 +1522,7 @@ dashboards.
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
-The `license_management` report collects [Licenses](https://docs.gitlab.com/ee/user/project/merge_requests/license_management.html)
+The `license_management` report collects [Licenses](../../user/project/merge_requests/license_management.md)
 as artifacts.
 
 The collected License Management report will be uploaded to GitLab as an artifact and will
@@ -1523,7 +1533,7 @@ dashboards.
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
-The `performance` report collects [Performance metrics](https://docs.gitlab.com/ee//user/project/merge_requests/browser_performance_testing.html)
+The `performance` report collects [Performance metrics](../../user/project/merge_requests/browser_performance_testing.md)
 as artifacts.
 
 The collected Performance report will be uploaded to GitLab as an artifact and will
@@ -1716,7 +1726,7 @@ parallel. This value has to be greater than or equal to two (2) and less than or
 This creates N instances of the same job that run in parallel. They're named
 sequentially from `job_name 1/N` to `job_name N/N`.
 
-For every job, `CI_NODE_INDEX` and `CI_NODE_TOTAL` [environment variables](../variables/README.html#predefined-environment-variables) are set.
+For every job, `CI_NODE_INDEX` and `CI_NODE_TOTAL` [environment variables](../variables/README.md#predefined-environment-variables) are set.
 
 A simple example:
 
