@@ -103,6 +103,20 @@ describe Project do
       expect(described_class.reflect_on_association(:merge_requests).has_inverse?).to eq(:target_project)
     end
 
+    it 'has a distinct has_many :lfs_objects relation through lfs_objects_projects' do
+      project = create(:project)
+      lfs_object = create(:lfs_object)
+      [:project, :design].each do |repository_type|
+        create(:lfs_objects_project, project: project,
+                                     lfs_object: lfs_object,
+                                     repository_type: repository_type)
+      end
+
+      expect(project.lfs_objects_projects.size).to eq(2)
+      expect(project.lfs_objects.size).to eq(1)
+      expect(project.lfs_objects.to_a).to eql([lfs_object])
+    end
+
     context 'after initialized' do
       it "has a project_feature" do
         expect(described_class.new.project_feature).to be_present
@@ -1479,11 +1493,28 @@ describe Project do
     end
 
     context 'when set to INTERNAL in application settings' do
+      using RSpec::Parameterized::TableSyntax
+
       before do
         stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
       end
 
       it { is_expected.to eq(Gitlab::VisibilityLevel::INTERNAL) }
+
+      where(:attribute_name, :value) do
+        :visibility | 'public'
+        :visibility_level | Gitlab::VisibilityLevel::PUBLIC
+        'visibility' | 'public'
+        'visibility_level' | Gitlab::VisibilityLevel::PUBLIC
+      end
+
+      with_them do
+        it 'sets the visibility level' do
+          proj = described_class.new(attribute_name => value, name: 'test', path: 'test')
+
+          expect(proj.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+        end
+      end
     end
   end
 

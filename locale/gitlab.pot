@@ -2828,9 +2828,6 @@ msgstr ""
 msgid "Container registry images"
 msgstr ""
 
-msgid "ContainerRegistry|Created"
-msgstr ""
-
 msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
 msgstr ""
 
@@ -2838,6 +2835,9 @@ msgid "ContainerRegistry|GitLab supports up to 3 levels of image names. The foll
 msgstr ""
 
 msgid "ContainerRegistry|How to use the Container Registry"
+msgstr ""
+
+msgid "ContainerRegistry|Last Updated"
 msgstr ""
 
 msgid "ContainerRegistry|Learn more about"
@@ -4498,12 +4498,6 @@ msgid "Finished"
 msgstr ""
 
 msgid "First day of the week"
-msgstr ""
-
-msgid "FirstPushedBy|First"
-msgstr ""
-
-msgid "FirstPushedBy|pushed by"
 msgstr ""
 
 msgid "FlowdockService|Flowdock Git source token"
@@ -7048,9 +7042,6 @@ msgstr ""
 msgid "Pipeline"
 msgstr ""
 
-msgid "Pipeline ID (IID)"
-msgstr ""
-
 msgid "Pipeline Schedule"
 msgstr ""
 
@@ -8311,9 +8302,6 @@ msgid "Register with two-factor app"
 msgstr ""
 
 msgid "Registry"
-msgstr ""
-
-msgid "Related Commits"
 msgstr ""
 
 msgid "Related Deployed Jobs"

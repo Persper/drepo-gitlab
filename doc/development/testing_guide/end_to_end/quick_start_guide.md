@@ -532,6 +532,7 @@ end
 ##### Details of `select_labels_and_refresh`
 
 Notice that we have not only moved the `select_labels_and_refresh` method, but we have also changed its implementation to:
+
 1. Click the `:edit_link_labels` element previously defined, instead of using `find('.block.labels .edit-link').click`
 2. Use `within_element(:dropdown_menu_labels, text: label)`, and inside of it, we call `send_keys_to_element(:dropdown_input_field, [label, :enter])`, which is a method that we will implement in the `QA::Page::Base` class to replace `find('.dropdown-menu-labels .dropdown-input-field').send_keys [label, :enter]`
 3. Use `click_body` after iterating on each label, instead of using `find('#content-body').click`
@@ -547,15 +548,27 @@ Now let's change the view and the `dropdowns_helper` files to add the selectors 
 
 In the [app/views/shared/issuable/_sidebar.html.haml](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/app/views/shared/issuable/_sidebar.html.haml) file, on [line 105 ](https://gitlab.com/gitlab-org/gitlab-ee/blob/84043fa72ca7f83ae9cde48ad670e6d5d16501a3/app/views/shared/issuable/_sidebar.html.haml#L105), add an extra class `qa-edit-link-labels`.
 
-The code should look like this: `= link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right qa-edit-link-labels'`.
+The code should look like this:
+
+```haml
+= link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right qa-edit-link-labels'
+```
 
 In the same file, on [line 121](https://gitlab.com/gitlab-org/gitlab-ee/blob/84043fa72ca7f83ae9cde48ad670e6d5d16501a3/app/views/shared/issuable/_sidebar.html.haml#L121), add an extra class `.qa-dropdown-menu-labels`.
 
-The code should look like this: `.dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.qa-dropdown-menu-labels`.
+The code should look like this:
+
+```haml
+.dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.qa-dropdown-menu-labels
+```
 
 In the [`dropdowns_helper.rb`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/app/helpers/dropdowns_helper.rb) file, on [line 94](https://gitlab.com/gitlab-org/gitlab-ee/blob/99e51a374f2c20bee0989cac802e4b5621f72714/app/helpers/dropdowns_helper.rb#L94), add an extra class `qa-dropdown-input-field`.
 
-The code should look like this: `filter_output = search_field_tag search_id, nil, class: "dropdown-input-field qa-dropdown-input-field", placeholder: placeholder, autocomplete: 'off'`.
+The code should look like this:
+
+```ruby
+filter_output = search_field_tag search_id, nil, class: "dropdown-input-field qa-dropdown-input-field", placeholder: placeholder, autocomplete: 'off'
+```
 
 > Classes starting with `qa-` are used for testing purposes only, and by defining such classes in the elements we add **testability** in the application.
 
