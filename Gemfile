@@ -449,4 +449,6 @@ gem 'apartment', git: 'https://gitlab.com/persper/apartment.git', ref: 'decentra
 # gem 'ipfs-http-client', path: '../../ipfs-ruby'
 gem 'ipfs-http-client', '~> 0.3'
 # rubocop:enable Cop/GemFetcher
+gem 'eth'
+gem 'ethereum.rb'
 # Drepo-specific end
