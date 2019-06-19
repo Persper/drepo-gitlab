@@ -71,13 +71,25 @@
         <hr />
         <div class="form-group group-name-holder col-sm-12">
           <label class="label-bold" for="Username Register">
-            <div v-if="!isUsernameRegisteredSuccess && addressHadUsername !== '' && username.toLowerCase() !== addressHadUsername.toLowerCase()">
+            <div
+              v-if="
+                !isUsernameRegisteredSuccess &&
+                  addressHadUsername !== '' &&
+                  username.toLowerCase() !== addressHadUsername.toLowerCase()
+              "
+            >
               You've had registered a username "{{ addressHadUsername }}" by current Ethereum
               address, you can't register another one again. <br />
               You can bind the username "{{ addressHadUsername }}" to current GitLab account by
               signing a message with current Ethereum account.
             </div>
-            <div v-if="!isUsernameRegisteredSuccess && addressHadUsername !== '' && username.toLowerCase() === addressHadUsername.toLowerCase()">
+            <div
+              v-if="
+                !isUsernameRegisteredSuccess &&
+                  addressHadUsername !== '' &&
+                  username.toLowerCase() === addressHadUsername.toLowerCase()
+              "
+            >
               You've had registered username "{{ username }}" by current Ethereum address. <br />
               You can bind it to your current GitLab account by signing a message with this Ethereum
               account:
@@ -184,14 +196,18 @@ export default {
 
     isBindable() {
       return (
-        (this.username.trim() !== '' && this.isUsernameVerified && this.addressHadUsername !== '') ||
+        (this.username.trim() !== '' &&
+          this.isUsernameVerified &&
+          this.addressHadUsername !== '') ||
         (this.isUsernameRegisteredSuccess && !this.isUsernameActivated)
       );
     },
 
     isSubmittable() {
       return (
-        this.isUnlocked && this.isUsernameVerified && this.isMessageSigned &&
+        this.isUnlocked &&
+        this.isUsernameVerified &&
+        this.isMessageSigned &&
         (this.isBindable || this.isUsernameActivated)
       );
     },
@@ -344,29 +360,29 @@ export default {
     },
 
     metamaskSign() {
-      this.web3Client.personal.sign(this.web3Client.toHex(this.originMessage), this.accountAddress,
+      this.web3Client.personal.sign(
+        this.web3Client.toHex(this.originMessage),
+        this.accountAddress,
         (err, result) => {
           if (err) return;
           if (result && result !== '') {
-            console.log(result)
+            console.log(result);
             this.signature = result;
           }
           this.isMessageSigned = true;
-        }
+        },
       );
     },
 
     privateKeySign() {
-      this.web3Client.eth.accounts.sign(this.originMessage, this.privateKeyInput,
-        (err, result) => {
-          if (err) return;
-          if (result && result !== '') {
-            console.log(result)
-            this.signature = result;
-          }
-          this.isMessageSigned = true;
+      this.web3Client.eth.accounts.sign(this.originMessage, this.privateKeyInput, (err, result) => {
+        if (err) return;
+        if (result && result !== '') {
+          console.log(result);
+          this.signature = result;
         }
-      );
+        this.isMessageSigned = true;
+      });
     },
 
     usernameRegister() {
@@ -404,27 +420,31 @@ export default {
     },
 
     usernameBind() {
-      let username;
+      let username = this.username;
       if (this.addressHadUsername !== '') {
         username = this.addressHadUsername;
-      } else {
-        username = this.username;
       }
-      axios.get('/-/drepo/sign_message', {
-        params: {
-          username: username,
-          address: this.accountAddress,
-        }
-      }).then(resp => {
-        console.log(resp.data);
-        if (resp.data && resp.data.status === 'success' &&
-          this.accountAddress === resp.data.data.address) {
-          this.originMessage = resp.data.data.message;
-          this.signMessage();
-        } else {
-          console.log("request sign message error")
-        }
-      })
+      axios
+        .get('/-/drepo/sign_message', {
+          params: {
+            username,
+            address: this.accountAddress,
+          },
+        })
+        .then(resp => {
+          console.log(resp.data);
+          if (
+            resp.data &&
+            resp.data.status === 'success' &&
+            this.accountAddress === resp.data.data.address
+          ) {
+            this.originMessage = resp.data.data.message;
+            this.signMessage();
+          } else {
+            console.log('request sign message error');
+          }
+        })
+        .catch();
     },
   },
 };

@@ -16,8 +16,8 @@ class DrepoUsersController < ApplicationController
       return
     end
 
-    isEqual, address = verify_signature(username, message, signature)
-    unless isEqual
+    is_equal, address = verify_signature(username, message, signature)
+    unless is_equal
       @user.errors[:base] << "Unmatch signature. Verify failure."
       return
     end
@@ -84,7 +84,7 @@ class DrepoUsersController < ApplicationController
 
     if result[0] && result[0] =~ /^[a-zA-Z0-9]{1,255}$/ && result[0] == username &&
         result[5] && result[5].is_a?(Array)
-      return result[5].include?(address.gsub(/^0x/,''))
+      return result[5].include?(address.gsub(/^0x/, ''))
     end
   end
 
@@ -95,7 +95,7 @@ class DrepoUsersController < ApplicationController
 
     public_key = Eth::Key.personal_recover(message, signature)
     recovered_address = Eth::Utils.public_key_to_address(public_key)
-    [stored_address.downcase == recovered_address.downcase, stored_address]
+    [stored_address.casecmp(recovered_address).zero?, stored_address]
   end
 
   def set_bind_info_in_redis(key, val)
