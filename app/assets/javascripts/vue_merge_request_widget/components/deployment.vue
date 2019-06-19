@@ -49,6 +49,7 @@ export default {
       required: false,
       default: () => ({
         sourceProjectId: '',
+        sourceProjectPath: '',
         mergeRequestId: '',
         appUrl: '',
       }),
@@ -184,11 +185,6 @@ export default {
                     :link="deploymentExternalUrl"
                     :css-class="`deploy-link js-deploy-url inline ${slotProps.className}`"
                   />
-                  <visual-review-app-link
-                    v-if="showVisualReviewApp"
-                    :link="deploymentExternalUrl"
-                    :app-metadata="visualReviewAppMeta"
-                  />
                 </template>
 
                 <template slot="result" slot-scope="slotProps">
@@ -213,12 +209,12 @@ export default {
                   :link="deploymentExternalUrl"
                   css-class="js-deploy-url js-deploy-url-feature-flag deploy-link btn btn-default btn-sm inline"
                 />
-                <visual-review-app-link
-                  v-if="showVisualReviewApp"
-                  :link="deploymentExternalUrl"
-                  :app-metadata="visualReviewAppMeta"
-                />
               </template>
+              <visual-review-app-link
+                v-if="showVisualReviewApp"
+                :link="deploymentExternalUrl"
+                :app-metadata="visualReviewAppMeta"
+              />
             </template>
             <span
               v-if="deployment.stop_url"

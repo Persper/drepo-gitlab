@@ -223,19 +223,33 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       let(:namespace) { 'namespace-123' }
 
       it { is_expected.to eq(namespace) }
+
+      context 'kubernetes namespace is present but has no service account token' do
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster) }
+
+        it { is_expected.to eq(namespace) }
+      end
     end
 
     context 'with no namespace assigned' do
       let(:namespace) { nil }
 
       context 'when kubernetes namespace is present' do
-        let(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster) }
+        let(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, cluster: cluster) }
 
         before do
           kubernetes_namespace
         end
 
         it { is_expected.to eq(kubernetes_namespace.namespace) }
+
+        context 'kubernetes namespace has no service account token' do
+          before do
+            kubernetes_namespace.update!(namespace: 'old-namespace', service_account_token: nil)
+          end
+
+          it { is_expected.to eq("#{project.path}-#{project.id}") }
+        end
       end
 
       context 'when kubernetes namespace is not present' do
@@ -283,6 +297,46 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
         expect(subject).to include(
           { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true }
         )
+      end
+
+      context 'the cluster has been set to unmanaged after the namespace was created' do
+        before do
+          cluster.update!(managed: false)
+        end
+
+        it_behaves_like 'setting variables'
+
+        it 'sets KUBE_TOKEN from the platform' do
+          expect(subject).to include(
+            { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
+          )
+        end
+
+        context 'the platform has a custom namespace set' do
+          before do
+            kubernetes.update!(namespace: 'custom-namespace')
+          end
+
+          it 'sets KUBE_NAMESPACE from the platform' do
+            expect(subject).to include(
+              { key: 'KUBE_NAMESPACE', value: kubernetes.namespace, public: true, masked: false }
+            )
+          end
+        end
+
+        context 'there is no namespace specified on the platform' do
+          let(:project) { cluster.project }
+
+          before do
+            kubernetes.update!(namespace: nil)
+          end
+
+          it 'sets KUBE_NAMESPACE to a default for the project' do
+            expect(subject).to include(
+              { key: 'KUBE_NAMESPACE', value: "#{project.path}-#{project.id}", public: true, masked: false }
+            )
+          end
+        end
       end
     end
 

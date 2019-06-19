@@ -514,19 +514,43 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     subject { cluster.allow_user_defined_namespace? }
 
     context 'project type cluster' do
-      it { is_expected.to be_truthy }
+      context 'gitlab managed' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'not managed' do
+        let(:cluster) { create(:cluster, :provided_by_gcp, managed: false) }
+
+        it { is_expected.to be_truthy }
+      end
     end
 
     context 'group type cluster' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
+      context 'gitlab managed' do
+        let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
 
-      it { is_expected.to be_falsey }
+        it { is_expected.to be_falsey }
+      end
+
+      context 'not managed' do
+        let(:cluster) { create(:cluster, :provided_by_gcp, :group, managed: false) }
+
+        it { is_expected.to be_truthy }
+      end
     end
 
     context 'instance type cluster' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+      context 'gitlab managed' do
+        let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
 
-      it { is_expected.to be_falsey }
+        it { is_expected.to be_falsey }
+      end
+
+      context 'not managed' do
+        let(:cluster) { create(:cluster, :provided_by_gcp, :instance, managed: false) }
+
+        it { is_expected.to be_truthy }
+      end
     end
   end
 
@@ -551,6 +575,63 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
         end
 
         it { is_expected.to eq('global_domain.com') }
+      end
+    end
+  end
+
+  describe '#find_or_initialize_kubernetes_namespace_for_project' do
+    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+    let(:project) { cluster.projects.first }
+
+    subject { cluster.find_or_initialize_kubernetes_namespace_for_project(project) }
+
+    context 'kubernetes namespace exists' do
+      context 'with no service account token' do
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, project: project, cluster: cluster) }
+
+        it { is_expected.to eq kubernetes_namespace }
+      end
+
+      context 'with a service account token' do
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, project: project, cluster: cluster) }
+
+        it { is_expected.to eq kubernetes_namespace }
+      end
+    end
+
+    context 'kubernetes namespace does not exist' do
+      it 'initializes a new namespace and sets default values' do
+        expect(subject).to be_new_record
+        expect(subject.project).to eq project
+        expect(subject.cluster).to eq cluster
+        expect(subject.namespace).to be_present
+        expect(subject.service_account_name).to be_present
+      end
+    end
+
+    context 'a custom scope is provided' do
+      let(:scope) { cluster.kubernetes_namespaces.has_service_account_token }
+
+      subject { cluster.find_or_initialize_kubernetes_namespace_for_project(project, scope: scope) }
+
+      context 'kubernetes namespace exists' do
+        context 'with no service account token' do
+          let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, project: project, cluster: cluster) }
+
+          it 'initializes a new namespace and sets default values' do
+            expect(subject).to be_new_record
+            expect(subject.project).to eq project
+            expect(subject.cluster).to eq cluster
+            expect(subject.namespace).to be_present
+            expect(subject.service_account_name).to be_present
+          end
+        end
+
+        context 'with a service account token' do
+          let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, project: project, cluster: cluster) }
+
+          it { is_expected.to eq kubernetes_namespace }
+        end
       end
     end
   end

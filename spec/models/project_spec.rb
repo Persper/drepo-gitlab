@@ -2652,25 +2652,15 @@ describe Project do
     end
 
     context 'when project has a deployment service' do
-      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has not been executed' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
         it 'returns variables from this service' do
           expect(project.deployment_variables).to include(
             { key: 'KUBE_TOKEN', value: project.deployment_platform.token, public: false, masked: true }
           )
         end
-      end
-
-      context 'when user configured kubernetes from Integration > Kubernetes' do
-        let(:project) { create(:kubernetes_project) }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-      end
-
-      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has not been executed' do
-        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
 
       context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has been executed' do
@@ -3478,6 +3468,7 @@ describe Project do
 
     before do
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+      stub_application_setting(hashed_storage_enabled: false)
     end
 
     describe '#base_dir' do
@@ -3583,10 +3574,6 @@ describe Project do
     let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
     let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
     let(:hashed_path) { File.join(hashed_prefix, hash) }
-
-    before do
-      stub_application_setting(hashed_storage_enabled: true)
-    end
 
     describe '#legacy_storage?' do
       it 'returns false' do
@@ -4729,10 +4716,6 @@ describe Project do
 
     subject { project.object_pool_params }
 
-    before do
-      stub_application_setting(hashed_storage_enabled: true)
-    end
-
     context 'when the objects cannot be pooled' do
       let(:project) { create(:project, :repository, :private) }
 
@@ -4777,10 +4760,6 @@ describe Project do
 
       context 'when objects are poolable' do
         let(:project) { create(:project, :repository, :public) }
-
-        before do
-          stub_application_setting(hashed_storage_enabled: true)
-        end
 
         it { is_expected.to be_git_objects_poolable }
       end

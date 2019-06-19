@@ -53,6 +53,7 @@ export default {
         appUrl: this.mr.appUrl,
         mergeRequestId: this.mr.iid,
         sourceProjectId: this.mr.sourceProjectId,
+        sourceProjectPath: this.mr.sourceProjectFullPath,
       };
     },
     pipeline() {
@@ -85,7 +86,7 @@ export default {
           :class="deploymentClass"
           :deployment="deployment"
           :show-metrics="hasDeploymentMetrics"
-          :show-visual-review-app="true"
+          :show-visual-review-app="showVisualReviewAppLink"
           :visual-review-app-meta="visualReviewAppMeta"
         />
       </div>
