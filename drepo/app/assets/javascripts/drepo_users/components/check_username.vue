@@ -14,6 +14,8 @@
     >
       <input name="utf8" type="hidden" value="✓" />
       <input type="hidden" name="_method" value="patch" />
+      <input type="hidden" name="message" :value="originMessage" />
+      <input type="hidden" name="signature" :value="signature" />
       <div class="form-group group-name-holder col-sm-12">
         <label class="label-bold" for="drepo_users_username">Pick a username</label>
         <div class="row icon-row">
@@ -69,13 +71,13 @@
         <hr />
         <div class="form-group group-name-holder col-sm-12">
           <label class="label-bold" for="Username Register">
-            <div v-if="!isUsernameRegisteredSuccess && username !== addressHadUsername">
+            <div v-if="!isUsernameRegisteredSuccess && addressHadUsername !== '' && username.toLowerCase() !== addressHadUsername.toLowerCase()">
               You've had registered a username "{{ addressHadUsername }}" by current Ethereum
               address, you can't register another one again. <br />
               You can bind the username "{{ addressHadUsername }}" to current GitLab account by
               signing a message with current Ethereum account.
             </div>
-            <div v-if="!isUsernameRegisteredSuccess && username === addressHadUsername">
+            <div v-if="!isUsernameRegisteredSuccess && addressHadUsername !== '' && username.toLowerCase() === addressHadUsername.toLowerCase()">
               You've had registered username "{{ username }}" by current Ethereum address. <br />
               You can bind it to your current GitLab account by signing a message with this Ethereum
               account:
@@ -108,6 +110,7 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
 import { mapGetters, mapState } from 'vuex';
+import axios from 'axios';
 import contractInfo from '../contract';
 
 export default {
@@ -127,6 +130,9 @@ export default {
       username: '',
       bindButtonText: 'Bind now',
       addressHadUsername: '',
+      originMessage: '',
+      signature: '',
+      isMessageSigned: false,
     };
   },
 
@@ -149,18 +155,45 @@ export default {
       return !this.isUsernameAvailable && this.isUsernameVerified;
     },
 
+    usernameNotAvailableAndCanNotBeBound() {
+      return (
+        this.username.trim() !== '' &&
+        !this.isUsernameAvailable &&
+        this.isUsernameVerified &&
+        this.addressHadUsername === ''
+      );
+    },
+
+    usernameAvailableAndCanBeRegistered() {
+      return (
+        this.username.trim() !== '' &&
+        this.isUsernameAvailable &&
+        this.isUsernameVerified &&
+        this.addressHadUsername === ''
+      );
+    },
+
+    usernameAvailableAndCanNotBeRegistered() {
+      return (
+        this.username.trim() !== '' &&
+        this.isUsernameAvailable &&
+        this.isUsernameVerified &&
+        this.addressHadUsername !== ''
+      );
+    },
+
     isBindable() {
       return (
-        (!this.isUsernameAvailable && this.isUsernameVerified) ||
-        (this.isUsernameAvailable &&
-          this.addressHadUsername !== this.username &&
-          this.isUsernameVerified) ||
+        (this.username.trim() !== '' && this.isUsernameVerified && this.addressHadUsername !== '') ||
         (this.isUsernameRegisteredSuccess && !this.isUsernameActivated)
       );
     },
 
     isSubmittable() {
-      return this.isUnlocked && this.isUsernameVerified && this.isUsernameActivated;
+      return (
+        this.isUnlocked && this.isUsernameVerified && this.isMessageSigned &&
+        (this.isBindable || this.isUsernameActivated)
+      );
     },
 
     isRegisterable() {
@@ -178,6 +211,9 @@ export default {
       if (this.addressHadUsername !== '') {
         this.addressHadUsername = '';
       }
+      this.isUsernameAvailable = false;
+      this.isUsernameVerified = false;
+      this.username = '';
     },
   },
 
@@ -235,7 +271,7 @@ export default {
     },
 
     checkGetUserResult(user) {
-      if (user !== null && typeof user === 'object' && user[0].match(/^[a-z0-9]+$/)) {
+      if (user !== null && typeof user === 'object' && user[0].match(/^[a-zA-Z0-9]+$/)) {
         // eslint-disable-next-line prefer-destructuring
         this.addressHadUsername = user[0];
       }
@@ -246,7 +282,7 @@ export default {
       this.isUsernameVerified = false;
       this.isUsernameRegisteredSuccess = false;
 
-      if (this.username.length > 255 || !this.username.match(/^[a-z0-9]+$/)) {
+      if (this.username.length > 255 || !this.username.match(/^[a-zA-Z0-9]+$/)) {
         // eslint-disable-next-line no-alert
         alert(
           'Please create a username with only alphanumeric characters and length between 1 and 255.',
@@ -299,19 +335,38 @@ export default {
       console.log(this.isUsernameAvailable);
     },
 
+    signMessage() {
+      if (this.unlockOptionState === 'metamask') {
+        this.metamaskSign();
+      } else {
+        this.privateKeySign();
+      }
+    },
+
     metamaskSign() {
-      this.web3Client.personal.sign(
-        this.web3Client.toHex('hello'),
-        this.accountAddress,
-        // eslint-disable-next-line no-console
-        console.log,
+      this.web3Client.personal.sign(this.web3Client.toHex(this.originMessage), this.accountAddress,
+        (err, result) => {
+          if (err) return;
+          if (result && result !== '') {
+            console.log(result)
+            this.signature = result;
+          }
+          this.isMessageSigned = true;
+        }
       );
     },
 
     privateKeySign() {
-      const r = this.web3Client.eth.accounts.sign('hello', this.privateKeyInput);
-      // eslint-disable-next-line no-console
-      console.log(r);
+      this.web3Client.eth.accounts.sign(this.originMessage, this.privateKeyInput,
+        (err, result) => {
+          if (err) return;
+          if (result && result !== '') {
+            console.log(result)
+            this.signature = result;
+          }
+          this.isMessageSigned = true;
+        }
+      );
     },
 
     usernameRegister() {
@@ -349,8 +404,27 @@ export default {
     },
 
     usernameBind() {
-      // eslint-disable-next-line no-alert
-      alert('not implemented!');
+      let username;
+      if (this.addressHadUsername !== '') {
+        username = this.addressHadUsername;
+      } else {
+        username = this.username;
+      }
+      axios.get('/-/drepo/sign_message', {
+        params: {
+          username: username,
+          address: this.accountAddress,
+        }
+      }).then(resp => {
+        console.log(resp.data);
+        if (resp.data && resp.data.status === 'success' &&
+          this.accountAddress === resp.data.data.address) {
+          this.originMessage = resp.data.data.message;
+          this.signMessage();
+        } else {
+          console.log("request sign message error")
+        }
+      })
     },
   },
 };
