@@ -214,6 +214,13 @@ describe Project do
       expect(project2).not_to be_valid
     end
 
+    it 'validates the visibility' do
+      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_group).and_call_original
+
+      create(:project)
+    end
+
     describe 'wiki path conflict' do
       context "when the new path has been used by the wiki of other Project" do
         it 'has an error on the name attribute' do
@@ -3163,62 +3170,123 @@ describe Project do
     end
   end
 
-  describe '.with_feature_available_for_user' do
+  describe '.ids_with_milestone_available_for' do
     let!(:user) { create(:user) }
-    let!(:feature) { MergeRequest }
-    let!(:project) { create(:project, :public, :merge_requests_enabled) }
+
+    it 'returns project ids with milestones available for user' do
+      project_1 = create(:project, :public, :merge_requests_disabled, :issues_disabled)
+      project_2 = create(:project, :public, :merge_requests_disabled)
+      project_3 = create(:project, :public, :issues_disabled)
+      project_4 = create(:project, :public)
+      project_4.project_feature.update(issues_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE )
+
+      project_ids = described_class.ids_with_milestone_available_for(user).pluck(:id)
+
+      expect(project_ids).to include(project_2.id, project_3.id)
+      expect(project_ids).not_to include(project_1.id, project_4.id)
+    end
+  end
+
+  describe '.with_feature_available_for_user' do
+    let(:user) { create(:user) }
+    let(:feature) { MergeRequest }
 
     subject { described_class.with_feature_available_for_user(feature, user) }
 
-    context 'when user has access to project' do
-      subject { described_class.with_feature_available_for_user(feature, user) }
+    shared_examples 'feature disabled' do
+      let(:project) { create(:project, :public, :merge_requests_disabled) }
 
+      it 'does not return projects with the project feature disabled' do
+        is_expected.not_to include(project)
+      end
+    end
+
+    shared_examples 'feature public' do
+      let(:project) { create(:project, :public, :merge_requests_public) }
+
+      it 'returns projects with the project feature public' do
+        is_expected.to include(project)
+      end
+    end
+
+    shared_examples 'feature enabled' do
+      let(:project) { create(:project, :public, :merge_requests_enabled) }
+
+      it 'returns projects with the project feature enabled' do
+        is_expected.to include(project)
+      end
+    end
+
+    shared_examples 'feature access level is nil' do
+      let(:project) { create(:project, :public) }
+
+      it 'returns projects with the project feature access level nil' do
+        project.project_feature.update(merge_requests_access_level: nil)
+
+        is_expected.to include(project)
+      end
+    end
+
+    context 'with user' do
       before do
         project.add_guest(user)
       end
 
-      context 'when public project' do
-        context 'when feature is public' do
-          it 'returns project' do
-            is_expected.to include(project)
-          end
-        end
+      it_behaves_like 'feature disabled'
+      it_behaves_like 'feature public'
+      it_behaves_like 'feature enabled'
+      it_behaves_like 'feature access level is nil'
 
-        context 'when feature is private' do
-          let!(:project) { create(:project, :public, :merge_requests_private) }
+      context 'when feature is private' do
+        let(:project) { create(:project, :public, :merge_requests_private) }
 
-          it 'returns project when user has access to the feature' do
-            project.add_maintainer(user)
-
-            is_expected.to include(project)
-          end
-
-          it 'does not return project when user does not have the minimum access level required' do
+        context 'when user does not has access to the feature' do
+          it 'does not return projects with the project feature private' do
             is_expected.not_to include(project)
           end
         end
-      end
 
-      context 'when private project' do
-        let!(:project) { create(:project) }
+        context 'when user has access to the feature' do
+          it 'returns projects with the project feature private' do
+            project.add_reporter(user)
 
-        it 'returns project when user has access to the feature' do
-          project.add_maintainer(user)
-
-          is_expected.to include(project)
-        end
-
-        it 'does not return project when user does not have the minimum access level required' do
-          is_expected.not_to include(project)
+            is_expected.to include(project)
+          end
         end
       end
     end
 
-    context 'when user does not have access to project' do
-      let!(:project) { create(:project) }
+    context 'user is an admin' do
+      let(:user) { create(:user, :admin) }
 
-      it 'does not return project when user cant access project' do
-        is_expected.not_to include(project)
+      it_behaves_like 'feature disabled'
+      it_behaves_like 'feature public'
+      it_behaves_like 'feature enabled'
+      it_behaves_like 'feature access level is nil'
+
+      context 'when feature is private' do
+        let(:project) { create(:project, :public, :merge_requests_private) }
+
+        it 'returns projects with the project feature private' do
+          is_expected.to include(project)
+        end
+      end
+    end
+
+    context 'without user' do
+      let(:user) { nil }
+
+      it_behaves_like 'feature disabled'
+      it_behaves_like 'feature public'
+      it_behaves_like 'feature enabled'
+      it_behaves_like 'feature access level is nil'
+
+      context 'when feature is private' do
+        let(:project) { create(:project, :public, :merge_requests_private) }
+
+        it 'does not return projects with the project feature private' do
+          is_expected.not_to include(project)
+        end
       end
     end
   end

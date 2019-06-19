@@ -111,7 +111,7 @@ sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libs
 # Download and compile from source
 cd /tmp
 curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.21.0.tar.gz
-echo '85eca51c7404da75e353eba587f87fea9481ba41e162206a6f70ad8118147bee'  git-2.21.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.21.0.tar.gz
+echo '85eca51c7404da75e353eba587f87fea9481ba41e162206a6f70ad8118147bee  git-2.21.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.21.0.tar.gz
 cd git-2.21.0/
 ./configure
 make prefix=/usr/local all
@@ -434,7 +434,8 @@ sudo -u git -H editor config/resque.yml
 ```
 
 CAUTION: **Caution:**
-Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
+Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup. 
+If you want to use Puma web server, see [Using Puma](#using-puma) for the additional steps.
 
 NOTE: **Note:**
 If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
@@ -447,6 +448,18 @@ sudo -u git cp config/database.yml.postgresql config/database.yml
 
 # MySQL only:
 sudo -u git cp config/database.yml.mysql config/database.yml
+
+# PostgreSQL only:
+# Remove host, username, and password lines from config/database.yml.
+# Once modified, the `production` settings will be as follows:
+#
+#   production:
+#     adapter: postgresql
+#     encoding: unicode
+#     database: gitlabhq_production
+#     pool: 10
+#
+sudo -u git -H editor config/database.yml
 
 # MySQL and remote PostgreSQL only:
 # Update username/password in config/database.yml.
@@ -565,6 +578,18 @@ sudo -u git -H editor config.toml
 For more information about configuring Gitaly see
 [doc/administration/gitaly](../administration/gitaly).
 
+### Start Gitaly
+
+Gitaly must be running for the next section.
+
+```sh
+gitlab_path=/home/git/gitlab
+gitaly_path=/home/git/gitaly
+
+sudo -u git -H $gitlab_path/bin/daemon_with_pidfile $gitlab_path/tmp/pids/gitaly.pid \
+  $gitaly_path/gitaly $gitaly_path/config.toml >> $gitlab_path/log/gitaly.log 2>&1 &
+```
+
 ### Initialize Database and Activate Advanced Features
 
 ```sh
@@ -579,10 +604,10 @@ sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production force=yes
 ```
 
 NOTE: **Note:**
-You can set the Administrator/root password and e-mail by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL` respectively, as seen below. If you don't set the password (and it is set to the default one), wait to expose GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login, you'll be forced to change the default password.
+You can set the Administrator/root password and e-mail by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL` respectively, as seen below. If you don't set the password (and it is set to the default one), wait to expose GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login, you'll be forced to change the default password. An Enterprise Edition license may also be installed at this time by supplying a full path in the `GITLAB_LICENSE_FILE` environment variable.
 
 ```sh
-sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword GITLAB_ROOT_EMAIL=youremail
+sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword GITLAB_ROOT_EMAIL=youremail GITLAB_LICENSE_FILE="/path/to/license"
 ```
 
 ### Secure secrets.yml
@@ -638,6 +663,12 @@ sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 ```sh
 sudo -u git -H yarn install --production --pure-lockfile
 sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
+```
+
+If `rake` fails with `JavaScript heap out of memory` error, try to run it with `NODE_OPTIONS` set as follows.
+
+```sh
+sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 ```
 
 ### Start Your GitLab Instance
@@ -844,6 +875,25 @@ You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, 
 ### Additional Markup Styles
 
 Apart from the always supported markdown style, there are other rich text files that GitLab can display. But you might have to install a dependency to do so. See the [github-markup gem README](https://github.com/gitlabhq/markup#markups) for more information.
+
+### Using Puma
+
+Puma is a multi-threaded HTTP 1.1 server for Ruby applications.
+
+To use GitLab with Puma:
+
+1. Finish GitLab setup so you have it up and running.
+1. Copy the supplied example Puma config file into place:
+
+   ```sh
+   cd /home/git/gitlab
+
+   # Copy config file for the web server
+   sudo -u git -H config/puma.rb.example config/puma.rb
+   ```
+
+1. Edit the system `init.d` script to use `EXPERIMENTAL_PUMA=1` flag. If you have `/etc/default/gitlab`, then you should edit it instead.
+1. Restart GitLab.
 
 ## Troubleshooting
 

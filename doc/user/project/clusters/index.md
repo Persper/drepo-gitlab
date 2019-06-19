@@ -19,8 +19,10 @@ or provide the credentials to an [existing Kubernetes cluster](#adding-an-existi
 
 NOTE: **Note:**
 From [GitLab 11.6](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) you
-can also associate a Kubernetes cluster to your groups. Learn more about
-[group Kubernetes clusters](../../group/clusters/index.md).
+can also associate a Kubernetes cluster to your groups and from
+[GitLab 11.11](https://gitlab.com/gitlab-org/gitlab-ce/issues/39840),
+to the GitLab instance. Learn more about [group-level](../../group/clusters/index.md)
+and [instance-level](../../instance/clusters/index.md) Kubernetes clusters.
 
 ## Adding and creating a new GKE cluster via GitLab
 
@@ -406,6 +408,27 @@ Upgrades will reset values back to the values built into the `runner`
 chart plus the values set by
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/vendor/runner/values.yaml)
 
+### Uninstalling applications
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/60665) in
+> GitLab 11.11.
+
+The applications below can be uninstalled.
+
+| Application | GitLab version | Notes |
+| ----------- | -------------- | ----- |
+| Prometheus  | 11.11+         | All data will be deleted and cannot be restored. |
+
+To uninstall an application:
+
+1. Navigate to your project's **Operations > Kubernetes**.
+1. Select your cluster.
+1. Click the **Uninstall** button for the application.
+
+Support for uninstalling all applications is planned for progressive rollout.
+To follow progress, see [the relevant
+epic](https://gitlab.com/groups/gitlab-org/-/epics/1201).
+
 ### Troubleshooting applications
 
 Applications can fail with the following error:
@@ -527,7 +550,7 @@ differentiate the new cluster with the rest.
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments.md) similar to how the
-[environment-specific variables](https://docs.gitlab.com/ee/ci/variables/README.html#limiting-environment-scopes-of-variables-premium) work.
+[environment-specific variables](https://docs.gitlab.com/ee/ci/variables/index.html#limiting-environment-scopes-of-environment-variables-premium) work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
 environment, will use that cluster. Each scope can only be used by a single
@@ -625,7 +648,7 @@ Common reasons for failure include:
 
 When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
 
-![Cluster Monitoring](https://docs.gitlab.com/ee/user/project/clusters/img/k8s_cluster_monitoring.png)
+![Cluster Monitoring](img/k8s_cluster_monitoring.png)
 
 ## Enabling or disabling the Kubernetes cluster integration
 
@@ -656,7 +679,7 @@ and add a Kubernetes cluster again.
 ## View Kubernetes pod logs from GitLab **[ULTIMATE]**
 
 Learn how to easily
-[view the logs of running pods in connected Kubernetes clusters](https://docs.gitlab.com/ee/user/project/clusters/kubernetes_pod_logs.html).
+[view the logs of running pods in connected Kubernetes clusters](kubernetes_pod_logs.md).
 
 ## What you can get with the Kubernetes integration
 

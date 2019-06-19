@@ -19,7 +19,7 @@ If all the jobs in a stage:
 - Fail, the next stage is not (usually) executed and the pipeline ends early.
 
 NOTE: **Note:**
-If you have a [mirrored repository that GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository-starter),
+If you have a [mirrored repository that GitLab pulls from](../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -220,7 +220,7 @@ For information on adding pipeline badges to projects, see [Pipeline badges](../
 
 Pipelines for different projects can be combined and visualized together.
 
-For more information, see [Multi-project pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipelines.html).
+For more information, see [Multi-project pipelines](multi_project_pipelines.md).
 
 ## Working with pipelines
 
@@ -265,9 +265,6 @@ Clicking on an individual job will show you its job trace, and allow you to:
 - Cancel the job.
 - Retry the job.
 - Erase the job trace.
-
-NOTE: **Note:**
-To prevent jobs from being bypassed or run out of order, canceled jobs can only be retried when the whole pipeline they belong to is retried.
 
 ### Seeing the failure reason for jobs
 
@@ -329,6 +326,19 @@ GitLab provides API endpoints to:
 - Trigger pipeline runs. For more information, see:
   - [Triggering pipelines through the API](triggers/README.md).
   - [Pipeline triggers API](../api/pipeline_triggers.md).
+
+### Start multiple manual actions in a stage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27188) in GitLab 11.11.
+
+Multiple manual actions in a single stage can be started at the same time using the "Play all manual" button.
+Once the user clicks this button, each individual manual action will be triggered and refreshed
+to an updated status.
+
+This functionality is only available:
+
+- For users with at least Developer access.
+- If the the stage contains [manual actions](#manual-actions-from-pipeline-graphs).
 
 ## Security on protected branches
 

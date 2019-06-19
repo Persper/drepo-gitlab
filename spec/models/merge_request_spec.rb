@@ -31,6 +31,29 @@ describe MergeRequest do
     end
   end
 
+  describe 'locking' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:lock_version) do
+      [
+        [0],
+        ["0"]
+      ]
+    end
+
+    with_them do
+      it 'works when a merge request has a NULL lock_version' do
+        merge_request = create(:merge_request)
+
+        described_class.where(id: merge_request.id).update_all('lock_version = NULL')
+
+        merge_request.update!(lock_version: lock_version, title: 'locking test')
+
+        expect(merge_request.reload.title).to eq('locking test')
+      end
+    end
+  end
+
   describe '#squash_in_progress?' do
     let(:repo_path) do
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
@@ -147,6 +170,42 @@ describe MergeRequest do
         subject.merge_user = build(:user)
 
         expect(subject).to be_valid
+      end
+    end
+
+    context 'for branch' do
+      before do
+        stub_feature_flags(stricter_mr_branch_name: false)
+      end
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:branch_name, :valid) do
+        'foo' | true
+        'foo:bar' | false
+        '+foo:bar' | false
+        'foo bar' | false
+        '-foo' | false
+        'HEAD' | true
+        'refs/heads/master' | true
+      end
+
+      with_them do
+        it "validates source_branch" do
+          subject = build(:merge_request, source_branch: branch_name, target_branch: 'master')
+
+          subject.valid?
+
+          expect(subject.errors.added?(:source_branch)).to eq(!valid)
+        end
+
+        it "validates target_branch" do
+          subject = build(:merge_request, source_branch: 'master', target_branch: branch_name)
+
+          subject.valid?
+
+          expect(subject.errors.added?(:target_branch)).to eq(!valid)
+        end
       end
     end
 

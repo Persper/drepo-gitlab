@@ -337,8 +337,8 @@ class Project < ApplicationRecord
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_personal_projects_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
-  validate :visibility_level_allowed_by_group, if: -> { changes.has_key?(:visibility_level) }
-  validate :visibility_level_allowed_as_fork, if: -> { changes.has_key?(:visibility_level) }
+  validate :visibility_level_allowed_by_group, if: :should_validate_visibility_level?
+  validate :visibility_level_allowed_as_fork, if: :should_validate_visibility_level?
   validate :check_wiki_path_conflict
   validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validates :repository_storage,
@@ -357,7 +357,8 @@ class Project < ApplicationRecord
 
   # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
   scope :sorted_by_activity, -> { reorder("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC") }
-  scope :sorted_by_stars, -> { reorder(star_count: :desc) }
+  scope :sorted_by_stars_desc, -> { reorder(star_count: :desc) }
+  scope :sorted_by_stars_asc, -> { reorder(star_count: :asc) }
 
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
@@ -406,6 +407,7 @@ class Project < ApplicationRecord
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
+  scope :with_merge_requests_available_for_user, ->(current_user) { with_feature_available_for_user(:merge_requests, current_user) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
   scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
 
@@ -463,10 +465,12 @@ class Project < ApplicationRecord
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
-  def self.public_or_visible_to_user(user = nil)
+  def self.public_or_visible_to_user(user = nil, min_access_level = nil)
+    min_access_level = nil if user&.admin?
+
     if user
       where('EXISTS (?) OR projects.visibility_level IN (?)',
-            user.authorizations_for_projects,
+            user.authorizations_for_projects(min_access_level: min_access_level),
             Gitlab::VisibilityLevel.levels_for_user(user))
     else
       public_to_user
@@ -476,30 +480,32 @@ class Project < ApplicationRecord
   # project features may be "disabled", "internal", "enabled" or "public". If "internal",
   # they are only available to team members. This scope returns projects where
   # the feature is either public, enabled, or internal with permission for the user.
+  # Note: this scope doesn't enforce that the user has access to the projects, it just checks
+  # that the user has access to the feature. It's important to use this scope with others
+  # that checks project authorizations first.
   #
   # This method uses an optimised version of `with_feature_access_level` for
   # logged in users to more efficiently get private projects with the given
   # feature.
   def self.with_feature_available_for_user(feature, user)
     visible = [ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
-    min_access_level = ProjectFeature.required_minimum_access_level(feature)
 
     if user&.admin?
       with_feature_enabled(feature)
     elsif user
+      min_access_level = ProjectFeature.required_minimum_access_level(feature)
       column = ProjectFeature.quoted_access_level_column(feature)
 
       with_project_feature
-        .where(
-          "(projects.visibility_level > :private AND (#{column} IS NULL OR #{column} >= (:public_visible) OR (#{column} = :private_visible AND EXISTS(:authorizations))))"\
-          " OR (projects.visibility_level = :private AND (#{column} IS NULL OR #{column} >= :private_visible) AND EXISTS(:authorizations))",
-          {
-            private: Gitlab::VisibilityLevel::PRIVATE,
-            public_visible: ProjectFeature::ENABLED,
-            private_visible: ProjectFeature::PRIVATE,
-            authorizations: user.authorizations_for_projects(min_access_level: min_access_level)
-          })
+      .where("#{column} IS NULL OR #{column} IN (:public_visible) OR (#{column} = :private_visible AND EXISTS (:authorizations))",
+            {
+              public_visible: visible,
+              private_visible: ProjectFeature::PRIVATE,
+              authorizations: user.authorizations_for_projects(min_access_level: min_access_level)
+            })
     else
+      # This has to be added to include features whose value is nil in the db
+      visible << nil
       with_feature_access_level(feature, visible)
     end
   end
@@ -544,7 +550,9 @@ class Project < ApplicationRecord
       when 'latest_activity_asc'
         reorder(last_activity_at: :asc)
       when 'stars_desc'
-        sorted_by_stars
+        sorted_by_stars_desc
+      when 'stars_asc'
+        sorted_by_stars_asc
       else
         order_by(method)
       end
@@ -589,6 +597,17 @@ class Project < ApplicationRecord
 
     def group_ids
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
+    end
+
+    # Returns ids of projects with milestones available for given user
+    #
+    # Used on queries to find milestones which user can see
+    # For example: Milestone.where(project_id: ids_with_milestone_available_for(user))
+    def ids_with_milestone_available_for(user)
+      with_issues_enabled = with_issues_available_for_user(user).select(:id)
+      with_merge_requests_enabled = with_merge_requests_available_for_user(user).select(:id)
+
+      from_union([with_issues_enabled, with_merge_requests_enabled]).select(:id)
     end
   end
 
@@ -883,6 +902,10 @@ class Project < ApplicationRecord
       end
 
     self.errors.add(:limit_reached, error % { limit: limit })
+  end
+
+  def should_validate_visibility_level?
+    new_record? || changes.has_key?(:visibility_level)
   end
 
   def visibility_level_allowed_by_group

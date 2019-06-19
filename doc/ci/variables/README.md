@@ -58,8 +58,29 @@ the need to specify the value itself.
 
 There are two types of variables supported by GitLab:
 
-- `env_var`: the runner will create environment variable named same as the variable key and set its value to the variable value.
-- `file`: the runner will write the variable value to a temporary file and set the path to this file as the value of an environment variable named same as the variable key.
+- "Variable": the Runner will create an environment variable named same as the variable key and set its value to the variable value.
+- "File": the Runner will write the variable value to a temporary file and set the path to this file as the value of an environment variable named same as the variable key.
+
+Many tools (like [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html) and [kubectl](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/#the-kubeconfig-environment-variable)) provide the ability to customise configuration using files by either providing the file path as a command line argument or an environment variable. Prior to the introduction of variable types, the common pattern was to use the value of a CI variable, save it in a file, and then use the newly created file in your script:
+
+```bash
+# Save the content of variable in a file
+echo "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
+ # Use the newly created file
+kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$(pwd)/kube.ca.pem"
+```
+
+This can be simplified by creating a variable of type "File" and using it directly. For example, let's say we have the following variables.
+
+![CI/CD settings - variable types usage example](img/variable_types_usage_example.png)
+
+We can then call them from `.gitlab-ci.yml` like this:
+
+```bash
+kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KUBE_CA_PEM"
+```
+
+Variable types can be set via the [UI](#via-the-ui) or the [API](../../api/project_level_variables.md#create-variable), but not in `.gitlab-ci.yml`.
 
 #### Masked variables
 
@@ -365,6 +386,25 @@ Protected variables can be added by going to your project's
 **Variables**, and check "Protected".
 
 Once you set them, they will be available for all subsequent pipelines.
+
+### Limiting environment scopes of environment variables **[PREMIUM]**
+
+> [Introduced][ee-2112] in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
+
+You can limit the environment scope of a variable by
+[defining which environments][envs] it can be available for.
+
+Wildcards can be used, and the default environment scope is `*` which means
+any jobs will have this variable, not matter if an environment is defined or
+not.
+
+For example, if the environment scope is `production`, then only the jobs
+having the environment `production` defined would have this specific variable.
+Wildcards (`*`) can be used along with the environment name, therefore if the
+environment scope is `review/*` then any jobs with environment names starting
+with `review/` would have that particular variable.
+
+To learn more about about scoping environments, see [Scoping environments with specs](../environments.md#scoping-environments-with-specs-premium).
 
 ### Deployment environment variables
 
@@ -677,13 +717,15 @@ MIIFQzCCBCugAwIBAgIRAL/ElDjuf15xwja1ZnCocWAwDQYJKoZIhvcNAQELBQAw'
 ...
 ```
 
+[ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI variables"
-[eep]: https://about.gitlab.com/pricing/ "Available only in GitLab Premium"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
 [shellexecutors]: https://docs.gitlab.com/runner/executors/
 [triggered]: ../triggers/README.md
+[trigger-job-token]: ../triggers/README.md#ci-job-token
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
 [registry]: ../../user/project/container_registry.md
 [dependent-repositories]: ../../user/project/new_ci_build_permissions_model.md#dependent-repositories
+[get-job-artifacts]:  ../../api/jobs.html#get-job-artifacts
