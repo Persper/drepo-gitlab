@@ -1,4 +1,5 @@
 class DrepoUsersController < ApplicationController
+  skip_around_action :set_session_storage, only: :sign_message
   skip_before_action :drepo_check_username_verification
   before_action :set_user
   before_action :check_username_verified
