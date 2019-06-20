@@ -16,6 +16,7 @@
       <input type="hidden" name="_method" value="patch" />
       <input type="hidden" name="message" :value="originMessage" />
       <input type="hidden" name="signature" :value="signature" />
+      <input type="hidden" name="bind_username" :value="bindUsername" />
       <div class="form-group group-name-holder col-sm-12">
         <label class="label-bold" for="drepo_users_username">Pick a username</label>
         <div class="row icon-row">
@@ -145,6 +146,7 @@ export default {
       originMessage: '',
       signature: '',
       isMessageSigned: false,
+      bindUsername: '',
     };
   },
 
@@ -230,6 +232,7 @@ export default {
       this.isUsernameAvailable = false;
       this.isUsernameVerified = false;
       this.username = '';
+      this.bindUsername = '';
     },
   },
 
@@ -420,14 +423,15 @@ export default {
     },
 
     usernameBind() {
-      let username = this.username;
+      let bindUsername = this.username;
       if (this.addressHadUsername !== '') {
-        username = this.addressHadUsername;
+        bindUsername = this.addressHadUsername;
       }
+      this.bindUsername = bindUsername;
       axios
         .get('/-/drepo/sign_message', {
           params: {
-            username,
+            username: bindUsername,
             address: this.accountAddress,
           },
         })
