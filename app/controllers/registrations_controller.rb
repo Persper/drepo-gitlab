@@ -23,8 +23,9 @@ class RegistrationsController < Devise::RegistrationsController
     end
 
     if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
-      
-      if Settings['drepo'] && Settings['drepo']['need_check_username']
+
+      if Settings['drepo'] &&
+          Settings['drepo']['need_check_username']
         params[resource_name]['username'] = "Drepo_User_#{[('a'..'z'), ('0'..'9')].map(&:to_a).flatten.sample(8).join}"
       end
 
