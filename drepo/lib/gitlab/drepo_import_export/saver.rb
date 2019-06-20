@@ -65,6 +65,9 @@ module Gitlab
       def save_ipfs
         @snapshot.ipfs_file = Ipfs::AddService.new(file: archive_file).execute
         @snapshot.export!
+      rescue StandardError => e
+        @snapshot.reason = e.message
+        @snapshot.crash!
       end
 
       def error_message
