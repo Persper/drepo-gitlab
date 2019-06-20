@@ -8,10 +8,11 @@ class DrepoUsersController < ApplicationController
   end
 
   def verified
-    username = params[:username]
+    username = params[:bind_username]
     message = params[:message]
     signature = params[:signature]
-    if username.blank? || message.blank? || signature.blank? || username == 'root'
+
+    if [username, message, signature].any? { |x| x.blank? }
       @user.errors[:base] << "some param is invalid."
       return
     end
@@ -21,6 +22,9 @@ class DrepoUsersController < ApplicationController
       @user.errors[:base] << "Unmatch signature. Verify failure."
       return
     end
+
+    had_user = User.find_by(username: username)
+    had_user.update(username: message, is_username_verified: false) if had_user
 
     @user.username = username
     # @user.ethereum_address = address
@@ -48,8 +52,6 @@ class DrepoUsersController < ApplicationController
     message = Digest::SHA3.hexdigest(('a'..'z').to_a.sample(10).join)
     key = "#{message}:#{username}"
     set_bind_info_in_redis(key, address)
-    # addr = get_bind_info_from_redis(key)
-    # puts "address: #{addr}"
     render json: { status: 'success', data: { username: username, address: address, message: message } }
   end
 
@@ -80,7 +82,6 @@ class DrepoUsersController < ApplicationController
     contract = Ethereum::Contract.create(name: 'Central', client: client, abi: abi, address: contract_address)
     contract.key = private_key
     result = contract.call.get_entity(["#{Digest::SHA3.digest(username, 256)}"])
-    pp result
 
     if result[0] && result[0] =~ /^[a-zA-Z0-9]{1,255}$/ && result[0] == username &&
         result[5] && result[5].is_a?(Array)
@@ -95,7 +96,7 @@ class DrepoUsersController < ApplicationController
 
     public_key = Eth::Key.personal_recover(message, signature)
     recovered_address = Eth::Utils.public_key_to_address(public_key)
-    [stored_address.casecmp(recovered_address).zero?, stored_address]
+    [stored_address.gsub(/^0x/, '').casecmp(recovered_address.gsub(/^0x/, '')).zero?, stored_address]
   end
 
   def set_bind_info_in_redis(key, val)
