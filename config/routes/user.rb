@@ -73,7 +73,7 @@ end
 
 # Drepo-specific
 scope '-/drepo', controller: :drepo_users do
-  get :check_username, action: :check_username, as: :drepo_check_username
+  get :check_username, as: :drepo_check_username
   patch :username_verified, action: :verified, as: :drepo_username_verified
   get :sign_message
 end

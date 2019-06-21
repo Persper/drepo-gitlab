@@ -1,7 +1,6 @@
 class DrepoUsersController < ApplicationController
-  skip_around_action :set_session_storage, only: :sign_message
   skip_before_action :drepo_check_username_verification
-  before_action :set_user
+  before_action :set_user, only: [:check_username, :verified]
   before_action :check_username_verified
   skip_before_action :verify_authenticity_token, only: :verified
 
@@ -24,11 +23,12 @@ class DrepoUsersController < ApplicationController
       return
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     had_user = User.find_by(username: username)
     had_user.update(username: message, is_username_verified: false) if had_user
 
     @user.username = username
-    # @user.ethereum_address = address
+    @user.ethereum_addresses << address
     @user.is_username_verified = true
 
     if @user.save

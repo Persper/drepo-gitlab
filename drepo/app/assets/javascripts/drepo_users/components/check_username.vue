@@ -26,7 +26,6 @@
             class="form-control input-lg"
             required="required"
             title="Please fill in an available username."
-            autofocus="autofocus"
             type="text"
             name="username"
             placeholder="My Awesome Username"
@@ -369,7 +368,6 @@ export default {
         (err, result) => {
           if (err) return;
           if (result && result !== '') {
-            console.log(result);
             this.signature = result;
           }
           this.isMessageSigned = true;
@@ -381,7 +379,6 @@ export default {
       this.web3Client.eth.accounts.sign(this.originMessage, this.privateKeyInput, (err, result) => {
         if (err) return;
         if (result && result !== '') {
-          console.log(result);
           this.signature = result;
         }
         this.isMessageSigned = true;
@@ -436,7 +433,6 @@ export default {
           },
         })
         .then(resp => {
-          console.log(resp.data);
           if (
             resp.data &&
             resp.data.status === 'success' &&
@@ -445,6 +441,7 @@ export default {
             this.originMessage = resp.data.data.message;
             this.signMessage();
           } else {
+            // eslint-disable-next-line no-console
             console.log('request sign message error');
           }
         })
