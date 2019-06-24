@@ -58,7 +58,8 @@ describe 'Database schema' do
     suggestions: %w[commit_id],
     drepo_project_snapshots: %w[project_id author_id],
     drepo_tasks: %w[source_id author_id],
-    drepo_user_snapshots: %w[user_id]
+    drepo_user_snapshots: %w[user_id],
+    drepo_group_snapshots: %w[author_id group_id parent_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do
