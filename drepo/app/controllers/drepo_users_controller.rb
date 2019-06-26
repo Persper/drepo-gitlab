@@ -13,13 +13,13 @@ class DrepoUsersController < ApplicationController
     signature = params[:signature]
 
     if [username, message, signature].any? { |x| x.blank? }
-      @user.errors[:base] << "some param is invalid."
+      flash[:alert] = "some param is invalid."
       return
     end
 
     is_equal, address = verify_signature(username, message, signature)
     unless is_equal
-      @user.errors[:base] << "Unmatch signature. Verify failure."
+      flash[:alert] = "Unmatch signature. Verify failure."
       return
     end
 
