@@ -77,7 +77,7 @@ class DrepoUsersController < ApplicationController
     client = Ethereum::HttpClient.new('https://rinkeby.infura.io/v3/8d1ba1e9ef484906ba94d560cc1d3a87')
     client.default_account = private_key.address
 
-    contract_file_path = Rails.root.join('drepo/app/assets/javascripts/drepo_users/contract/central.json').to_s
+    contract_file_path = Rails.root.join('drepo/app/assets/javascripts/drepo_contract/central.json').to_s
     contract_address, abi = parse_contract_file(contract_file_path)
 
     contract = Ethereum::Contract.create(name: 'Central', client: client, abi: abi, address: contract_address)
