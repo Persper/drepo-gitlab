@@ -794,6 +794,11 @@ production: &base
   ipfs:
     http_api: 'https://ipfs.infura.io:5001'
 
+  ## Uncomment the following to enable Drepo username registration
+  #  drepo:
+  #    need_check_username: true
+
+
 development:
   <<: *base
 
