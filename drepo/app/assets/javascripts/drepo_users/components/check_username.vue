@@ -123,7 +123,7 @@
 import Icon from '~/vue_shared/components/icon.vue';
 import { mapGetters, mapState } from 'vuex';
 import axios from 'axios';
-import contractInfo from '../contract';
+import contractInfo from '../../drepo_contract';
 
 export default {
   name: 'CheckUsername',
