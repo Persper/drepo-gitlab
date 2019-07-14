@@ -908,6 +908,23 @@ ActiveRecord::Schema.define(version: 20190621093932) do
     t.index ["project_id", "status"], name: "index_deployments_on_project_id_and_status", using: :btree
   end
 
+  create_table "drepo_group_snapshots", id: :serial, force: :cascade do |t|
+    t.integer "author_id"
+    t.jsonb "content"
+    t.string "ipfs_path"
+    t.string "state"
+    t.text "reason"
+    t.integer "group_id"
+    t.integer "group_path"
+    t.integer "parent_id"
+    t.datetime_with_timezone "state_updated_at"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["author_id"], name: "index_drepo_group_snapshots_on_author_id", using: :btree
+    t.index ["group_id"], name: "index_drepo_group_snapshots_on_group_id", using: :btree
+    t.index ["parent_id"], name: "index_drepo_group_snapshots_on_parent_id", using: :btree
+  end
+
   create_table "drepo_project_snapshot_uploads", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "updated_at", null: false
     t.integer "project_snapshot_id"
