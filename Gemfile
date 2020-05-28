@@ -87,7 +87,7 @@ gem 'apollo_upload_server', '~> 2.0.0.beta3'
 gem 'hashie-forbidden_attributes'
 
 # Pagination
-gem 'kaminari', '~> 1.0'
+gem 'kaminari', '~> 1.2'
 
 # HAML
 gem 'hamlit', '~> 2.8.8'
