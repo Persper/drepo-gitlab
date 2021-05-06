@@ -103,7 +103,7 @@
     "raphael": "^2.2.7",
     "raven-js": "^3.22.1",
     "raw-loader": "^1.0.0",
-    "sanitize-html": "^1.16.1",
+    "sanitize-html": "^2.3.2",
     "select2": "3.5.2-browserify",
     "sha1": "^1.1.1",
     "smooshpack": "^0.0.54",
