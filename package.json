@@ -185,7 +185,7 @@
     "node-sass": "^4.11.0",
     "nodemon": "^1.18.9",
     "pixelmatch": "^4.0.2",
-    "postcss": "^7.0.14",
+    "postcss": "^8.2.10",
     "prettier": "1.16.4",
     "stylelint": "^9.10.1",
     "stylelint-config-recommended": "^2.1.0",
